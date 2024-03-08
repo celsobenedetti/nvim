@@ -1,0 +1,111 @@
+local enabled = true
+
+-- toggle completion on/off
+local toggle = function()
+  local cmp = require 'cmp'
+  local augroupName = 'cmp-augroup'
+  local toggle_completion = function(is_enabled)
+    cmp.setup.buffer { enabled = is_enabled }
+  end
+
+  enabled = not enabled
+  toggle_completion(enabled)
+
+  if enabled then
+    print 'Enabled completion (cmp)'
+    vim.api.nvim_clear_autocmds { group = augroupName }
+  else
+    vim.api.nvim_create_autocmd('BufEnter', {
+      desc = ('Disable completion: %s'):format 'BufEnter',
+      group = vim.api.nvim_create_augroup(augroupName, { clear = true }),
+      callback = function()
+        toggle_completion(false)
+      end,
+    })
+    print 'Disabled completion (cmp)'
+  end
+end
+
+return {
+  { -- Autocompletion
+    'hrsh7th/nvim-cmp',
+    event = 'InsertEnter',
+    dependencies = {
+      -- Snippet Engine & its associated nvim-cmp source
+      {
+        'L3MON4D3/LuaSnip',
+        build = 'make install_jsregexp',
+      },
+      'saadparwaiz1/cmp_luasnip',
+
+      -- Adds other completion capabilities.
+      --  nvim-cmp does not ship with all sources by default. They are split
+      --  into multiple repos for maintenance purposes.
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-path',
+
+      {
+        'rafamadriz/friendly-snippets',
+        config = function()
+          require('luasnip.loaders.from_vscode').lazy_load()
+        end,
+      },
+    },
+    config = function()
+      -- See `:help cmp`
+      local cmp = require 'cmp'
+      local luasnip = require 'luasnip'
+      luasnip.config.setup {}
+
+      vim.keymap.set('n', '<leader>uc', toggle, { desc = 'Toggle Completion' })
+
+      cmp.setup {
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        completion = { completeopt = 'menu,menuone,noinsert' },
+
+        -- For an understanding of why these mappings were
+        -- chosen, you will need to read `:help ins-completion`
+        --
+        -- No, but seriously. Please read `:help ins-completion`, it is really good!
+        mapping = cmp.mapping.preset.insert {
+          ['<C-n>'] = cmp.mapping.select_next_item(), -- Select the [n]ext item
+          ['<C-j>'] = cmp.mapping.select_next_item(), -- Select the [n]ext item
+          ['<C-p>'] = cmp.mapping.select_prev_item(), -- Select the [p]revious item
+          ['<C-k>'] = cmp.mapping.select_prev_item(), -- Select the [p]revious item
+
+          -- Accept ([y]es) the completion.
+          --  This will auto-import if your LSP supports it.
+          --  This will expand snippets if the LSP sent a snippet.
+          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
+
+          -- Manually trigger a completion from nvim-cmp.
+          --  Generally you don't need this, because nvim-cmp will display
+          --  completions whenever it has completion options available.
+          ['<C-Space>'] = cmp.mapping.complete {},
+
+          ['<C-l>'] = cmp.mapping(function()
+            if luasnip.expand_or_locally_jumpable() then
+              luasnip.expand_or_jump()
+            end
+          end, { 'i', 's' }),
+          ['<C-h>'] = cmp.mapping(function()
+            if luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            end
+          end, { 'i', 's' }),
+        },
+        sources = {
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'path' },
+          { name = 'copilot' },
+        },
+      }
+    end,
+  },
+}
