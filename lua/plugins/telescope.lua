@@ -46,6 +46,10 @@ return {
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
+      vim.keymap.set('n', '<leader>sn', require('telescope.builtin').treesitter, { desc = 'Find Treesitter nodes' })
+      vim.keymap.set('n', '<leader>dot', require('functions.telescope').search_dotfiles, { desc = 'Search Dotfiles' })
+      vim.keymap.set('n', '<leader>mv', require('functions.telescope').move_note, { desc = 'Search Dotfiles' })
+
       vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })
 
       -- Also possible to pass additional configuration options.
@@ -57,7 +61,7 @@ return {
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
+      vim.keymap.set('n', '<leader>sv', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
     end,
