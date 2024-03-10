@@ -7,6 +7,7 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require 'config.options'
+require 'config.sensible'
 require 'config.keymaps'
 require 'config.autocmds'
 require 'config.commands'

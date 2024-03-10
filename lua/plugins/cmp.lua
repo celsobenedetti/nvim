@@ -60,6 +60,10 @@ return {
       vim.keymap.set('n', '<leader>uc', toggle, { desc = 'Toggle Completion' })
 
       cmp.setup {
+        window = {
+          completion = cmp.config.window.bordered { col_offset = -1 },
+          documentation = cmp.config.window.bordered(),
+        },
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -107,5 +111,44 @@ return {
         },
       }
     end,
+  },
+
+  {
+    'uga-rosa/cmp-dictionary',
+    -- TODO: see if newer versions work
+    commit = 'd17bc1f87736b6a7f058b2f246e651d34d648b47',
+    config = function()
+      local dict = require 'cmp_dictionary'
+      dict.setup {
+        -- The following are default values.
+        exact = 2,
+        first_case_insensitive = false,
+        document = false,
+        document_command = 'wn %s -over',
+        async = false,
+        sqlite = false,
+        max_items = -1,
+        capacity = 5,
+        debug = false,
+      }
+      -- dict.update()
+      dict.switcher {
+        spelllang = {
+          en = '~/.dotfiles/english.dict',
+        },
+      }
+    end,
+    ft = { 'markdown', 'tex', 'latex', 'vimwiki', 'gitcommit' },
+    dependencies = {
+      {
+        'hrsh7th/nvim-cmp',
+        opts = function(_, opts)
+          local cmp = require 'cmp'
+          opts.sources = cmp.config.sources(vim.list_extend(opts.sources or {}, {
+            { name = 'dictionary', keyword_length = 2 },
+          }))
+        end,
+      },
+    },
   },
 }

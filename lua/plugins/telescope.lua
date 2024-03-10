@@ -11,6 +11,23 @@ return {
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font }, -- Useful for getting pretty icons, but requires a Nerd Font.
+
+      {
+        'nvim-telescope/telescope-live-grep-args.nvim',
+        version = '^1.0.0',
+        config = function()
+          require('telescope').load_extension 'live_grep_args'
+        end,
+        keys = {
+          {
+            '<leader>sG',
+            function()
+              require('telescope').extensions.live_grep_args.live_grep_args()
+            end,
+            desc = 'Telescope grep with args',
+          },
+        },
+      },
     },
     config = function()
       require('telescope').setup {
@@ -33,6 +50,9 @@ return {
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
+      ---@diagnostic disable-next-line: different-requires
+      local custom = require 'functions.telescope'
+
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
 
@@ -46,9 +66,9 @@ return {
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
-      vim.keymap.set('n', '<leader>sn', require('telescope.builtin').treesitter, { desc = 'Find Treesitter nodes' })
-      vim.keymap.set('n', '<leader>dot', require('functions.telescope').search_dotfiles, { desc = 'Search Dotfiles' })
-      vim.keymap.set('n', '<leader>mv', require('functions.telescope').move_note, { desc = 'Search Dotfiles' })
+      vim.keymap.set('n', '<leader>sn', builtin.treesitter, { desc = 'Find Treesitter nodes' })
+      vim.keymap.set('n', '<leader>dot', custom.search_dotfiles, { desc = 'Search Dotfiles' })
+      vim.keymap.set('n', '<leader>mv', custom.move_note, { desc = 'Search Dotfiles' })
 
       vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })
 

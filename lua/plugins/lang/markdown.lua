@@ -1,45 +1,4 @@
 return {
-
-  {
-    'uga-rosa/cmp-dictionary',
-    -- TODO: see if newer versions work
-    commit = 'd17bc1f87736b6a7f058b2f246e651d34d648b47',
-    config = function()
-      local dict = require 'cmp_dictionary'
-      dict.setup {
-        -- The following are default values.
-        exact = 2,
-        first_case_insensitive = false,
-        document = false,
-        document_command = 'wn %s -over',
-        async = false,
-        sqlite = false,
-        max_items = -1,
-        capacity = 5,
-        debug = false,
-      }
-      -- dict.update()
-      dict.switcher {
-        spelllang = {
-          en = '~/.dotfiles/english.dict',
-        },
-      }
-    end,
-    ft = { 'markdown', 'tex', 'latex', 'vimwiki', 'gitcommit' },
-    dependencies = {
-      {
-        'hrsh7th/nvim-cmp',
-        opts = function(_, opts)
-          local cmp = require 'cmp'
-          opts.sources = cmp.config.sources(vim.list_extend(opts.sources or {}, {
-            { name = 'dictionary', keyword_length = 2 },
-          }))
-        end,
-      },
-    },
-  },
-
-  -- zk
   {
     'zk-org/zk-nvim',
     ft = 'markdown',
@@ -66,6 +25,27 @@ return {
       require('zk').setup {
         picker = 'telescope',
       }
+
+      vim.keymap.set('v', '<c-k>', require('functions.markdown').wrap.link, { desc = 'Wrap current selection in markdown link' })
+      vim.keymap.set('v', '<leader>k', require('functions.markdown').wrap.link, { desc = 'Wrap current selection in markdown link' })
+      vim.keymap.set('v', '<leader>i', require('functions.markdown').wrap.italic, { desc = 'Wrap current selection in italic' })
+      vim.keymap.set('v', '<c-b>', require('functions.markdown').wrap.bold, { desc = 'Wrap current selection in bold' })
+      vim.keymap.set('v', '<leader>b', require('functions.markdown').wrap.bold, { desc = 'Wrap current selection in bold' })
+      vim.keymap.set('v', '<c-t>', require('functions.markdown').wrap.strikethrough, { desc = 'Strikethrough current selection in bold' })
+      vim.keymap.set('v', '<leader>t', require('functions.markdown').wrap.strikethrough, { desc = 'Strikethrough current selection in bold' })
+      vim.keymap.set('v', '<leader>`', require('functions.markdown').wrap.code, { desc = 'Wrap current selection in code' })
+
+      vim.keymap.set('i', '<c-b>', function()
+        vim.api.nvim_feedkeys(Keys '****<Esc>hha', 'n', true)
+      end, { desc = 'Add bold tags for insert mode in bold' })
+
+      vim.keymap.set('i', '<c-i>', function()
+        vim.api.nvim_feedkeys('__' .. Keys '<Esc>ha', 'n', false)
+      end, { desc = 'Add italic tags for insert mode in bold' })
+
+      vim.keymap.set('i', '<c-t>', function()
+        vim.api.nvim_feedkeys(Keys '~~~~<Esc>hha', 'n', true)
+      end, { desc = 'Add Strikeghrough italic tags for insert mode in bold' })
     end,
   },
 
