@@ -49,7 +49,7 @@ if new_note then
   vim.api.nvim_create_autocmd({ 'VimEnter' }, {
     pattern = 'title_editor',
     callback = function()
-      vim.api.nvim_feedkeys(Escape 'ggi', 'n', true)
+      vim.api.nvim_feedkeys(Keys 'ggi', 'n', true)
     end,
     group = new_note,
     desc = 'Run when entering new_note files',
