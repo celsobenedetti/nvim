@@ -1,11 +1,13 @@
+local color = 'default'
 require 'config'
 
 require('lazy').setup({
   -- local plugin configuration
   { import = 'plugins' },
   { import = 'plugins.dap.dap' },
-  { import = 'plugins.lang.markdown', ft = { 'markdown' } },
+  { import = 'plugins.lang.markdown', ft = { 'markdown' }, vscode = false },
 
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
   'wakatime/vim-wakatime', -- code time tracking goodness
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   { 'qpkorr/vim-bufkill', event = 'VeryLazy' },
@@ -32,7 +34,7 @@ require('lazy').setup({
   },
 })
 
-vim.cmd.colorscheme 'default'
+vim.cmd.colorscheme(color)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
