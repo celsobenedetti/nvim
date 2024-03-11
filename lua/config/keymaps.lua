@@ -2,6 +2,7 @@ local map = vim.keymap.set
 
 -- new file
 map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
+map('n', '<leader>re', '<cmd>e %<cr>', { desc = 'Refresh Buffer' })
 
 map('n', 'g[', '<cmd>Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', 'g]', '<cmd>Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
@@ -32,12 +33,17 @@ local track_position_before_relative_jump = require 'functions.relative_jump'
 map('n', 'k', track_position_before_relative_jump.up)
 map('n', 'j', track_position_before_relative_jump.down)
 
+map('n', 'gv', function()
+  vim.api.nvim_feedkeys(Keys '<c-w>v', 'n', true)
+  require('telescope.builtin').lsp_definitions { reuse_win = true }
+end, { desc = 'Split vertical and go to definition' })
+
 --- toggles
 
-map('n', 'ud', require('functions.toggle').diagnostics, { desc = 'Toggle diagnostics' })
+map('n', '<leader>ud', require('functions.toggle').diagnostics, { desc = 'Toggle diagnostics' })
 
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
-map('n', 'uC', function()
+map('n', '<leader>uC', function()
   require('functions.toggle').option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }
 end, { desc = 'Toggle diagnostics' })
 

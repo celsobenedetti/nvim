@@ -140,9 +140,15 @@ return {
       vim.list_extend(ensure_installed, {
         'js-debug-adapter', -- Used to format lua code
         'stylua', -- Used to format lua code
+        'prettierd',
         'zk',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      --- these servers should be ignored by mason-lspconfig
+      local disable = {
+        zk = true,
+      }
 
       require('mason-lspconfig').setup {
         handlers = {
@@ -151,8 +157,11 @@ return {
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for tsserver)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            --
+            if not disable[server_name] then
+              server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+              require('lspconfig')[server_name].setup(server)
+            end
           end,
         },
       }

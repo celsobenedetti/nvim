@@ -26,6 +26,21 @@ return {
             end,
             desc = 'Telescope grep with args',
           },
+          {
+            '<leader>sc',
+            function()
+              require('telescope.builtin').commands()
+            end,
+            desc = 'Telescope search commands',
+          },
+
+          {
+            '<leader>sC',
+            function()
+              require('telescope.builtin').command_history()
+            end,
+            desc = 'Telescope search command history',
+          },
         },
       },
     },
@@ -63,11 +78,10 @@ return {
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       vim.keymap.set('n', '<leader>sn', builtin.treesitter, { desc = 'Find Treesitter nodes' })
-      vim.keymap.set('n', '<leader>dot', custom.search_dotfiles, { desc = 'Search Dotfiles' })
+      vim.keymap.set('n', '<leader>s.', custom.search_dotfiles, { desc = 'Search Dotfiles' })
       vim.keymap.set('n', '<leader>mv', custom.move_note, { desc = 'Search Dotfiles' })
 
       vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })

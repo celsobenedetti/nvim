@@ -2,36 +2,52 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.autoformat = true
 
+local opt = vim.opt
+
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed
-vim.opt.number = true -- Make line numbers default
-vim.opt.relativenumber = true
+opt.number = true -- Make line numbers default
+opt.relativenumber = true
 vim.o.conceallevel = 2
 
-vim.opt.mouse = 'a' -- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.showmode = false -- Don't show the mode, since it's already in status line
+opt.mouse = 'a' -- Enable mouse mode, can be useful for resizing splits for example!
+opt.showmode = false -- Don't show the mode, since it's already in status line
 
-vim.opt.clipboard = 'unnamedplus' -- Sync clipboard between OS and Neovim.
-vim.opt.breakindent = true -- Enable break indent
-vim.opt.undofile = true -- Save undo history
+opt.clipboard = 'unnamedplus' -- Sync clipboard between OS and Neovim.
+opt.breakindent = true -- Enable break indent
+opt.undofile = true -- Save undo history
+opt.spelllang = { 'en' }
 
-vim.opt.ignorecase = true -- Case-insensitive searching UNLESS \C or capital in search
-vim.opt.smartcase = true
-vim.opt.signcolumn = 'yes' -- Keep signcolumn on by default
+opt.ignorecase = true -- Case-insensitive searching UNLESS \C or capital in search
+opt.smartcase = true
+opt.signcolumn = 'yes' -- Keep signcolumn on by default
 
-vim.opt.updatetime = 250 -- Decrease update time
-vim.opt.timeoutlen = 300
+opt.updatetime = 250 -- Decrease update time
+opt.timeoutlen = 300
 
-vim.opt.splitright = true -- Configure how new splits should be opened
-vim.opt.splitbelow = true
+opt.splitright = true -- Configure how new splits should be opened
+opt.splitbelow = true
 
-vim.opt.list = true -- Sets how neovim will display certain whitespace in the editor.
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+opt.list = true -- Sets how neovim will display certain whitespace in the editor.
+opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
-vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
-vim.opt.cursorline = true -- Show which line your cursor is on
-vim.opt.scrolloff = 10 -- Minimal number of screen lines to keep above and below the cursor.
+opt.inccommand = 'split' -- Preview substitutions live, as you type!
+opt.cursorline = true -- Show which line your cursor is on
+opt.scrolloff = 10 -- Minimal number of screen lines to keep above and below the cursor.
 
-vim.opt.hlsearch = true -- Set highlight on search, but clear on pressing <Esc> in normal mode
+opt.hlsearch = true -- Set highlight on search, but clear on pressing <Esc> in normal mode
+
+-- fold
+
+opt.foldmethod = 'indent'
+opt.foldlevel = 99
+opt.fillchars = {
+  foldopen = '',
+  foldclose = '',
+  fold = ' ',
+  foldsep = ' ',
+  diff = '╱',
+  eob = ' ',
+}
 
 --- Base keymaps
 
