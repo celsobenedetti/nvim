@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local surround_map = require('functions.surround').surround_map
 
 -- new file
 map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
@@ -55,3 +56,12 @@ end, { desc = 'Toggle Spelling' })
 map('n', '<leader>uf', function()
   require('functions.toggle').format()
 end, { desc = 'Toggle auto format (global)' })
+
+surround_map({ '(', ')' }, '(')
+surround_map({ '{', '}' }, '{')
+surround_map({ '[', ']' }, '[')
+surround_map({ '"' }, '"')
+surround_map({ "'" }, "'")
+surround_map({ '`' }, '`')
+surround_map({ '*' }, '**')
+surround_map({ '_' }, '_')
