@@ -27,15 +27,23 @@ local toggle = function()
 end
 
 return {
+  {
+    'L3MON4D3/LuaSnip',
+    build = 'make install_jsregexp',
+    dependencies = {
+      {
+        'rafamadriz/friendly-snippets',
+        config = function()
+          require('luasnip.loaders.from_vscode').lazy_load {}
+        end,
+      },
+    },
+  },
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
-      {
-        'L3MON4D3/LuaSnip',
-        build = 'make install_jsregexp',
-      },
       'saadparwaiz1/cmp_luasnip',
 
       -- Adds other completion capabilities.
@@ -43,13 +51,6 @@ return {
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
-
-      {
-        'rafamadriz/friendly-snippets',
-        config = function()
-          require('luasnip.loaders.from_vscode').lazy_load()
-        end,
-      },
     },
     config = function()
       -- See `:help cmp`

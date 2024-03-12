@@ -39,10 +39,6 @@ return {
         vim.api.nvim_feedkeys(Keys '****<Esc>hha', 'n', true)
       end, { desc = 'Add bold tags for insert mode in bold' })
 
-      vim.keymap.set('i', '<c-i>', function()
-        vim.api.nvim_feedkeys('__' .. Keys '<Esc>ha', 'n', false)
-      end, { desc = 'Add italic tags for insert mode in bold' })
-
       vim.keymap.set('i', '<c-t>', function()
         vim.api.nvim_feedkeys(Keys '~~~~<Esc>hha', 'n', true)
       end, { desc = 'Add Strikeghrough italic tags for insert mode in bold' })
