@@ -1,10 +1,10 @@
 return {
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
+      'folke/trouble.nvim',
       { -- If encountering errors, see telescope-fzf-native README for install instructions
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make',
@@ -45,10 +45,15 @@ return {
       },
     },
     config = function()
+      local trouble = require 'trouble.providers.telescope'
       require('telescope').setup {
         defaults = {
           mappings = {
-            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+            i = {
+              ['<c-enter>'] = 'to_fuzzy_refine',
+              ['<c-t>'] = trouble.open_with_trouble,
+            },
+            n = { ['<c-t>'] = trouble.open_with_trouble },
           },
         },
         -- pickers = {}

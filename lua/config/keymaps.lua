@@ -3,6 +3,7 @@ local map = vim.keymap.set
 -- new file
 map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
 map('n', '<leader>re', '<cmd>e %<cr>', { desc = 'Refresh Buffer' })
+map('n', '<leader>dd', '<cmd>bdelete<cr>', { desc = 'Refresh Buffer' })
 
 map('n', 'g[', '<cmd>Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', 'g]', '<cmd>Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
