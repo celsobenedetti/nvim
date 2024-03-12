@@ -26,6 +26,13 @@ return {
         desc = 'Debug: Start/Continue',
       },
       {
+        '<leader>dC',
+        function()
+          require('dap').run_to_cursor()
+        end,
+        desc = 'Run to Cursor',
+      },
+      {
         '<leader>di',
         function()
           require('dap').step_into()
