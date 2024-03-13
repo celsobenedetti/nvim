@@ -3,6 +3,19 @@ return {
     'echasnovski/mini.files',
     version = '*',
     opts = {
+      mappings = {
+        close = 'q',
+        go_in = '<NOP>',
+        go_out = '<NOP>',
+        go_in_plus = 'L',
+        go_out_plus = 'H',
+        reset = '<BS>',
+        reveal_cwd = '@',
+        show_help = 'g?',
+        synchronize = '=',
+        trim_left = '<',
+        trim_right = '>',
+      },
       options = {
         use_as_default_explorer = true,
       },
