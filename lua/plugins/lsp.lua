@@ -140,6 +140,7 @@ return {
       vim.list_extend(ensure_installed, {
         'js-debug-adapter', -- Used to format lua code
         'stylua', -- Used to format lua code
+        'taplo', -- The TOML toolkit
         'prettierd',
         'zk',
       })

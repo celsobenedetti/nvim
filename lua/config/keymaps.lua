@@ -58,7 +58,6 @@ map('n', '<leader>uf', function()
 end, { desc = 'Toggle auto format (global)' })
 
 surround_map({ '(', ')' }, '(')
-surround_map({ '{', '}' }, '{')
 surround_map({ '[', ']' }, '[')
 surround_map({ '"' }, '"')
 surround_map({ "'" }, "'")

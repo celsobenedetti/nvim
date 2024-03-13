@@ -1,3 +1,4 @@
+-- TODO: extract markdown module for all markdown config
 return {
   {
     'zk-org/zk-nvim',
@@ -9,6 +10,9 @@ return {
       { '<leader>zb', ':ZkBacklinks<CR>' },
       { '<leader>zt', ':ZkTags<CR>' },
       { '<leader>zm', ':ZkMatch<CR>', mode = 'v' },
+      { '<leader>zl', ':ZkLinks<CR>' },
+      { '<leader>zL', ':ZkInsertLink<CR>' },
+      { '<leader>ch', ':norm @c<CR>', mode = 'v' },
     },
     dependencies = {
       {
@@ -76,8 +80,9 @@ return {
       { '<leader>zk', ':ObsidianSearch<CR>' },
       { '<leader>oo', ':ObsidianOpen<CR>' },
       { '<leader>ob', ':ObsidianBacklinks<CR>' },
-      { '<leader>zl', ':ObsidianLinks<CR>' },
+      { '<leader>ol', ':ObsidianLinks<CR>' },
       { '<leader>ot', ':ObsidianTags<CR>' },
+      { '<leader>ch', ':norm @c<CR>', mode = 'v' },
     },
     cond = function()
       local path = vim.fn.expand '%:p:h'

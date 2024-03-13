@@ -11,7 +11,6 @@ require('lazy').setup({
   'wakatime/vim-wakatime', -- code time tracking goodness
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'vim-scripts/bufkill.vim',
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 }, {
   ui = {
     -- If you have a Nerd Font, set icons to an empty table which will use the

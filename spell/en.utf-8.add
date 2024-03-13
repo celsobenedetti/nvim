@@ -229,3 +229,7 @@ GenAI
 env
 to/!
 to
+Keymap
+keymaps
+todo
+neovim
