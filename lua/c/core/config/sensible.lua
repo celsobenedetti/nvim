@@ -1,25 +1,13 @@
+---@module Sensible defaults, taken from LazyVim
+
 Keys = function(str)
   return vim.api.nvim_replace_termcodes(str, false, false, true)
 end
 
 local map = vim.keymap.set
 
--- Diagnostic keymaps
-map('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-map('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
-map('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-
--- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
-map('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true, desc = 'Next search result' })
-map('x', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next search result' })
-map('o', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next search result' })
-map('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev search result' })
-map('x', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
-map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
-
-map('n', '<leader>la', ':Lazy<CR>')
-map('n', '<leader>ma', ':Mason<CR>')
-map({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' }) -- save file
+map('n', '<Esc>', '<cmd>nohlsearch<CR>')
+map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- better up/down
 map({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -54,3 +42,53 @@ map('n', '[b', '<cmd>bprevious<cr>', { desc = 'Prev buffer' })
 map('n', ']b', '<cmd>bnext<cr>', { desc = 'Next buffer' })
 map('n', '<leader>bb', '<cmd>e #<cr>', { desc = 'Switch to Other Buffer' })
 map('n', '<leader>`', '<cmd>e #<cr>', { desc = 'Switch to Other Buffer' })
+
+-- Clear search with <esc>
+map({ 'i', 'n' }, '<esc>', '<cmd>noh<cr><esc>', { desc = 'Escape and clear hlsearch' })
+
+-- Clear search, diff update and redraw
+-- taken from runtime/lua/_editor.lua
+map('n', '<leader>ur', '<Cmd>nohlsearch<Bar>diffupdate<Bar>normal! <C-L><CR>', { desc = 'Redraw / clear hlsearch / diff update' })
+
+-- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
+map('n', 'n', "'Nn'[v:searchforward].'zv'", { expr = true, desc = 'Next search result' })
+map('x', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next search result' })
+map('o', 'n', "'Nn'[v:searchforward]", { expr = true, desc = 'Next search result' })
+map('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev search result' })
+map('x', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
+map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
+
+-- Add undo break-points
+map('i', ',', ',<c-g>u')
+map('i', '.', '.<c-g>u')
+map('i', ';', ';<c-g>u')
+
+-- save file
+map({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
+
+-- =================== LazyVim ===================
+
+--keywordprg
+map('n', '<leader>K', '<cmd>norm! K<cr>', { desc = 'Keywordprg' })
+
+-- better indenting
+map('v', '<', '<gv')
+map('v', '>', '>gv')
+
+-- lazy
+map('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
+
+-- new file
+map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
+
+map('n', '<leader>xl', '<cmd>lopen<cr>', { desc = 'Location List' })
+map('n', '<leader>xq', '<cmd>copen<cr>', { desc = 'Quickfix List' })
+
+map('n', '[q', vim.cmd.cprev, { desc = 'Previous quickfix' })
+map('n', ']q', vim.cmd.cnext, { desc = 'Next quickfix' })
+
+-- quit
+map('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Quit all' })
+
+-- highlights under cursor
+map('n', '<leader>ui', vim.show_pos, { desc = 'Inspect Pos' })
