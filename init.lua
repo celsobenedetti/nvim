@@ -3,7 +3,8 @@ require '@core.config'
 require('lazy').setup({
   -- local plugin configuration
   { import = '@core.plugins' },
-  { import = '@modules' },
+
+  { import = '@modules.editor' },
   { import = '@modules.dap.dap' },
   { import = '@modules.lang.markdown', ft = { 'markdown' }, vscode = false },
 
