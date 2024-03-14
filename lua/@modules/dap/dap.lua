@@ -125,7 +125,7 @@ return {
       local filetype = vim.api.nvim_get_option_value('filetype', {})
 
       if filetype == 'typescript' or filetype == 'javascript' then
-        require('@plugins.dap.typescript').setup()
+        require('@modules.dap.typescript').setup()
       end
 
       if filetype == 'go' then
