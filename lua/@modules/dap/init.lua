@@ -120,17 +120,16 @@ return {
         },
       }
 
-      -- Basic debugging keymaps, feel free to change to your liking!
-
       local filetype = vim.api.nvim_get_option_value('filetype', {})
-
       if filetype == 'typescript' or filetype == 'javascript' then
-        require('@modules.dap.typescript').setup()
+        require '@modules.typescript.dap.setup'()
+        return
       end
 
       if filetype == 'go' then
         -- Install golang specific config
         require('dap-go').setup()
+        return
       end
     end,
   },
