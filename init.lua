@@ -3,9 +3,9 @@ require '@core.config'
 require('lazy').setup({
   -- local plugin configuration
   { import = '@core.plugins' },
-  { import = 'plugins' },
-  { import = 'plugins.dap.dap' },
-  { import = 'plugins.lang.markdown', ft = { 'markdown' }, vscode = false },
+  { import = '@plugins' },
+  { import = '@plugins.dap.dap' },
+  { import = '@plugins.lang.markdown', ft = { 'markdown' }, vscode = false },
 
   { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
   'wakatime/vim-wakatime', -- code time tracking goodness

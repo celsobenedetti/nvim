@@ -91,6 +91,13 @@ return {
         end,
         desc = 'List DAP Breakpoints',
       },
+      {
+        '<leader>dtT',
+        function()
+          require('dap').list_breakpoints(true)
+        end,
+        desc = 'List DAP Breakpoints',
+      },
     },
     config = function()
       vim.fn.sign_define('DapBreakpoint', { text = '', texthl = '', linehl = '', numhl = '' })
@@ -118,7 +125,7 @@ return {
       local filetype = vim.api.nvim_get_option_value('filetype', {})
 
       if filetype == 'typescript' or filetype == 'javascript' then
-        require('plugins.dap.typescript').setup()
+        require('@plugins.dap.typescript').setup()
       end
 
       if filetype == 'go' then
@@ -131,28 +138,26 @@ return {
   {
     'rcarriga/nvim-dap-ui',
     ft = ft,
-    config = function()
+    config = function(_, opts)
       local dap = require 'dap'
       local dapui = require 'dapui'
-      dapui.setup {
-        -- Set icons to characters that are more likely to work in every terminal.
-        --    Feel free to remove or use ones that you like more! :)
-        --    Don't feel like these are good choices.
-        icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-        controls = {
-          icons = {
-            pause = '⏸',
-            play = '▶',
-            step_into = '⏎',
-            step_over = '⏭',
-            step_out = '⏮',
-            step_back = 'b',
-            run_last = '▶▶',
-            terminate = '⏹',
-            disconnect = '⏏',
-          },
+
+      opts.icons = { expanded = '▾', collapsed = '▸', current_frame = '*' }
+      opts.controls = {
+        icons = {
+          pause = '⏸',
+          play = '▶',
+          step_into = '⏎',
+          step_over = '⏭',
+          step_out = '⏮',
+          step_back = 'b',
+          run_last = '▶▶',
+          terminate = '⏹',
+          disconnect = '⏏',
         },
       }
+
+      dapui.setup(opts)
 
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close
