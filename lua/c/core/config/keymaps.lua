@@ -1,5 +1,5 @@
 local map = vim.keymap.set
-local surround_map = require('functions.surround').surround_map
+local surround_map = require('c.functions.surround').surround_map
 
 -- new file
 map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
@@ -31,7 +31,7 @@ map('n', '<leader>rm', function()
   vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
 end, { desc = 'rm buffer file' })
 
-local track_position_before_relative_jump = require 'functions.relative_jump'
+local track_position_before_relative_jump = require 'c.functions.relative_jump'
 map('n', 'k', track_position_before_relative_jump.up)
 map('n', 'j', track_position_before_relative_jump.down)
 
@@ -42,19 +42,19 @@ end, { desc = 'Split vertical and go to definition' })
 
 --- toggles
 
-map('n', '<leader>ud', require('functions.toggle').diagnostics, { desc = 'Toggle diagnostics' })
+map('n', '<leader>ud', require('c.functions.toggle').diagnostics, { desc = 'Toggle diagnostics' })
 
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
 map('n', '<leader>uC', function()
-  require('functions.toggle').option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }
+  require('c.functions.toggle').option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }
 end, { desc = 'Toggle diagnostics' })
 
 map('n', '<leader>us', function()
-  require('functions.toggle').option { option = 'spell' }
+  require('c.functions.toggle').option { option = 'spell' }
 end, { desc = 'Toggle Spelling' })
 
 map('n', '<leader>uf', function()
-  require('functions.toggle').format()
+  require('c.functions.toggle').format()
 end, { desc = 'Toggle auto format (global)' })
 
 surround_map({ '(', ')' }, '(')

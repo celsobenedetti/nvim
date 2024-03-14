@@ -1,2 +1,2 @@
 test:
-	nvim --headless -c 'PlenaryBustedDirectory ./lua/functions/tests'
+	nvim --headless -c 'PlenaryBustedDirectory ./lua/c/functions.tests'

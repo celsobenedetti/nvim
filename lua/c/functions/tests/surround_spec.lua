@@ -5,11 +5,11 @@ end
 -- import the luassert.mock module
 local mock = require 'luassert.mock'
 
-describe('surround functions', function()
+describe('surround c.functions., function()
   local M
 
   before_each(function()
-    M = require 'functions.surround'
+    M = require 'c.functions.surround'
   end)
 
   describe('M.adds_additional_space', function()

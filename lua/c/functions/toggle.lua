@@ -1,4 +1,4 @@
----@class functions.toggle
+---@class c.functions.toggle
 local M = {}
 
 local enabled = true

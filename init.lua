@@ -1,13 +1,12 @@
-require '@core.config'
+require 'c.core.config'
 
 require('lazy').setup({
-  -- local plugin configuration
-  { import = '@core.plugins' },
+  { import = 'c.core.plugins' },
+  { import = 'c.modules.editor' },
+  { import = 'c.modules.dap' },
 
-  { import = '@modules.editor' },
-  { import = '@modules.dap' },
-  -- { import = '@modules.typescript' },
-  { import = '@modules.lang.markdown', ft = { 'markdown' }, vscode = false },
+  -- { import = 'c.modules.typescript' },
+  { import = 'c.modules.lang.markdown', ft = { 'markdown' }, vscode = false },
 
   { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
   'wakatime/vim-wakatime', -- code time tracking goodness

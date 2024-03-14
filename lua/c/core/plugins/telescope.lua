@@ -71,7 +71,7 @@ return {
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
       ---@diagnostic disable-next-line: different-requires
-      local custom = require 'functions.telescope'
+      local custom = require 'c.functions.telescope'
 
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
