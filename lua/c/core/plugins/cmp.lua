@@ -33,10 +33,10 @@ return {
       vim.keymap.set('n', '<leader>uc', require 'c.core.commands.toggle_completion', { desc = '' })
 
       cmp.setup {
-        window = {
-          completion = cmp.config.window.bordered { col_offset = -1 },
-          documentation = cmp.config.window.bordered(),
-        },
+        -- window = {
+        --   completion = cmp.config.window.bordered {},
+        --   documentation = cmp.config.window.bordered(),
+        -- },
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -59,6 +59,7 @@ return {
           --  This will expand snippets if the LSP sent a snippet.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
           ['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<Tab>'] = cmp.mapping.confirm { select = true },
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
