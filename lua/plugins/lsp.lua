@@ -138,10 +138,11 @@ return {
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+        'eslint',
         'js-debug-adapter', -- Used to format lua code
+        'prettierd',
         'stylua', -- Used to format lua code
         'taplo', -- The TOML toolkit
-        'prettierd',
         'zk',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -156,9 +157,9 @@ return {
           function(server_name)
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for tsserver)
-            --
+            -- by the server configuration above. Useful when disabling
+
             if not disable[server_name] then
               server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
               require('lspconfig')[server_name].setup(server)

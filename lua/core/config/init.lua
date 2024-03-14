@@ -6,8 +6,8 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
-require 'config.options'
-require 'config.sensible'
-require 'config.keymaps'
-require 'config.autocmds'
-require 'config.commands'
+require 'core.config.options'
+require 'core.config.sensible'
+require 'core.config.keymaps'
+require 'core.config.autocmds'
+require 'core.config.commands'
