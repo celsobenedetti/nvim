@@ -2,6 +2,7 @@ require 'core.config'
 
 require('lazy').setup({
   -- local plugin configuration
+  { import = 'core.plugins' },
   { import = 'plugins' },
   { import = 'plugins.dap.dap' },
   { import = 'plugins.lang.markdown', ft = { 'markdown' }, vscode = false },

@@ -7,15 +7,25 @@ return {
         if not vim.g.autoformat then
           return
         end
-        return { timeout_ms = 500, lsp_fallback = true }
+        return {
+          timeout_ms = 500,
+          lsp_fallback = true,
+          filter = function(client)
+            return client.name ~= 'tsserver'
+          end,
+        }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
         python = { 'isort', 'black' },
-        javascript = { { 'prettierd' } },
         markdown = { { 'prettierd' } },
         json = { { 'prettierd' } },
         toml = { { 'taplo' } },
+
+        javascript = { { 'prettierd' } },
+        javascriptreact = { { 'prettierd' } },
+        typescript = { { 'prettierd' } },
+        typescriptreact = { { 'prettierd' } },
       },
       formatters = {
         goimports = {
