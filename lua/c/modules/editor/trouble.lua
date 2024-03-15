@@ -13,20 +13,6 @@ return {
         desc = 'Trouble toggle',
       },
       {
-        '<leader>xw',
-        function()
-          require('trouble').toggle 'workspace_diagnostics'
-        end,
-        desc = 'Trouble Workspace Diagnostics',
-      },
-      {
-        '<leader>xd',
-        function()
-          require('trouble').toggle 'document_diagnostics'
-        end,
-        desc = 'Trouble Document Diagnostics',
-      },
-      {
         '<leader>xq',
         function()
           require('trouble').toggle 'quickfix'

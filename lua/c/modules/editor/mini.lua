@@ -4,7 +4,7 @@ return {
     version = '*',
     opts = {
       mappings = {
-        close = 'q',
+        close = 'Q',
         go_in = 'L',
         go_out = 'H',
         go_in_plus = '<C-l>',
@@ -12,7 +12,7 @@ return {
         reset = '<BS>',
         reveal_cwd = '@',
         show_help = 'g?',
-        synchronize = '=',
+        synchronize = 'q',
         trim_left = '<',
         trim_right = '>',
       },
