@@ -26,21 +26,6 @@ return {
             end,
             desc = 'Telescope grep with args',
           },
-          {
-            '<leader>sc',
-            function()
-              require('telescope.builtin').commands()
-            end,
-            desc = 'Telescope search commands',
-          },
-
-          {
-            '<leader>sC',
-            function()
-              require('telescope.builtin').command_history()
-            end,
-            desc = 'Telescope search command history',
-          },
         },
       },
     },
@@ -71,27 +56,31 @@ return {
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
       ---@diagnostic disable-next-line: different-requires
-      local custom = require 'c.functions.telescope'
 
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>fF', builtin.git_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>st', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('v', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord Selection' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>sn', builtin.treesitter, { desc = 'Find Treesitter nodes' })
-      vim.keymap.set('n', '<leader>s.', custom.search_dotfiles, { desc = 'Search Dotfiles' })
-      vim.keymap.set('n', '<leader>mv', custom.move_note, { desc = 'Search Dotfiles' })
+      map('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+      map('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+      map('n', '<leader>ff', builtin.find_files, { desc = '[S]earch [F]iles' })
+      map('n', '<leader>fF', builtin.git_files, { desc = '[S]earch [F]iles' })
+      map('n', '<leader>st', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+      map('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
 
-      vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })
+      map('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      map('n', '<leader>sd', function()
+        builtin.diagnostics { bufnr = 0 }
+      end, { desc = '[S]earch [D]iagnostics for Current Document' })
+      map('n', '<leader>sD', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      map('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      map('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      map('n', '<leader>sn', builtin.treesitter, { desc = 'Find Treesitter nodes' })
+
+      map('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })
+
+      map('n', '<leader>sc', require('telescope.builtin').commands, { desc = 'Telescope search commands' })
+      map('n', '<leader>sC', require('telescope.builtin').command_history, { desc = 'Telescope search command history' })
 
       -- Also possible to pass additional configuration options.
-      vim.keymap.set('n', '<leader>s/', function()
+      map('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
@@ -99,9 +88,76 @@ return {
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your neovim configuration files
-      vim.keymap.set('n', '<leader>sv', function()
+      map('n', '<leader>sv', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      ------------- Custom functions ----------------------
+
+      local pickers = require 'telescope.pickers'
+      local finders = require 'telescope.finders'
+      local conf = require('telescope.config').values
+      local actions = require 'telescope.actions'
+      local action_state = require 'telescope.actions.state'
+
+      local functions = {
+        search_dotfiles = function()
+          builtin.find_files {
+            prompt_title = '< Dotfiles >',
+            layout_config = {
+              prompt_position = 'top',
+            },
+            sorting_strategy = 'ascending',
+            search_dirs = {
+              '~/.dotfiles',
+            },
+            hidden = true,
+            find_command = { 'rg', '--files', '--hidden', '-g', '!.git' },
+          }
+        end,
+
+        -- opens telescope with each subdirectory of ~/Documents/notes
+        -- moves the current file to the selected directory
+        move_note = function(opts)
+          local fd = '!fd . --type=directory -E hugo/ ~/Documents/notes/'
+          local fd_result = vim.api.nvim_exec2(fd, { output = true })
+
+          local dirs = vim.split(fd_result.output, '\n')
+          dirs = vim.tbl_filter(function(item)
+            return item ~= '' and not string.match(item, '--type=directory')
+          end, dirs)
+
+          pickers
+            .new({}, {
+              prompt_title = 'Move file to directory',
+              finder = finders.new_table {
+                results = dirs,
+              },
+              sorter = conf.generic_sorter(opts),
+              attach_mappings = function(prompt_bufnr, _)
+                actions.select_default:replace(function()
+                  actions.close(prompt_bufnr)
+                  local selection = action_state.get_selected_entry()
+
+                  local destination = selection[1]
+                  if not destination then
+                    return
+                  end
+
+                  local original_buffer = vim.api.nvim_get_current_buf()
+                  vim.cmd('silent! !mv % ' .. destination)
+                  vim.cmd('e ' .. destination .. '/' .. vim.fn.expand '%:t')
+                  vim.api.nvim_buf_delete(original_buffer, { force = true })
+                end)
+                return true
+              end,
+            })
+            :find()
+        end,
+      }
+      -- Add custom
+      map('n', '<leader>s.', functions.search_dotfiles, { desc = 'Search Dotfiles' })
+      map('n', '<leader>mv', functions.move_note, { desc = 'Search Dotfiles' })
     end,
   },
 }
