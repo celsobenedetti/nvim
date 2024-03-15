@@ -1,3 +1,7 @@
+--- Sets a mark at the current position before doing a relative jump
+--- Adding it to the jump list
+---
+---@param key which key was pressed (j or k)
 local function track_position_before_relative_jump(key)
   local count = vim.v.count or 1
   local orig_key = vim.api.nvim_replace_termcodes(key, true, true, true)

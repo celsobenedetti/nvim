@@ -5,7 +5,7 @@ require('lazy').setup({
   { import = 'c.modules.editor' },
   { import = 'c.modules.dap' },
 
-  -- { import = 'c.modules.typescript' },
+  { import = 'c.modules.typescript' },
   { import = 'c.modules.lang.markdown', ft = { 'markdown' }, vscode = false },
 
   { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
