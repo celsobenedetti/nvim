@@ -11,8 +11,8 @@ end
 return {
   { 'wakatime/vim-wakatime' }, -- code time tracking goodness
   { 'tpope/vim-sleuth' }, -- Detect tabstop and shiftwidth automatically
-  { 'vim-scripts/bufkill.vim' },
-  { 'numToStr/Comment.nvim', opts = {} }, -- "gc" to comment visual regions/lines
+  { 'vim-scripts/bufkill.vim' }, -- Delete buffers without affecting window layout
+  { 'numToStr/Comment.nvim', opts = {} }, --  comment visual regions/lines
   { 'kylechui/nvim-surround', version = '*', config = true, vscode = true },
 
   {
