@@ -16,20 +16,22 @@ return {
         }
       end,
       formatters_by_ft = {
+        go = { 'goimports' },
         lua = { 'stylua' },
         python = { 'isort', 'black' },
         markdown = { { 'markdownlint-cli2' } },
+
+        typescript = { { 'prettierd' } },
+        javascript = { { 'prettierd' } },
+        javascriptreact = { { 'prettierd' } },
+        typescriptreact = { { 'prettierd' } },
+
         json = { { 'prettierd' } },
         toml = { { 'taplo' } },
 
         sh = { { 'shfmt' } },
         bash = { { 'shfmt' } },
         zsh = { { 'shfmt' } },
-
-        javascript = { { 'prettierd' } },
-        javascriptreact = { { 'prettierd' } },
-        typescript = { { 'prettierd' } },
-        typescriptreact = { { 'prettierd' } },
       },
       formatters = {
         goimports = {

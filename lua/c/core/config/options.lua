@@ -52,3 +52,4 @@ opt.fillchars = {
 -- open buffers verticaly
 vim.cmd 'autocmd FileType help wincmd L' --help
 vim.cmd 'autocmd FileType man wincmd L' -- man
+vim.cmd 'autocmd FileType Trouble wincmd L' -- man

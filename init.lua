@@ -5,8 +5,8 @@ require('lazy').setup({
 
   { import = 'c.modules.editor' },
   { import = 'c.modules.dap' },
-  { import = 'c.modules.typescript', ft = { 'typescript', 'typescriptreact' } },
-  { import = 'c.modules.markdown', ft = { 'markdown', 'gitcommit' } },
+  { import = 'c.modules.typescript' },
+  { import = 'c.modules.markdown' },
 }, {
   ui = {
     icons = {

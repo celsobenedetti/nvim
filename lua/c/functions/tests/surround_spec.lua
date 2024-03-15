@@ -5,7 +5,7 @@ end
 -- import the luassert.mock module
 local mock = require 'luassert.mock'
 
-describe('surround c.functions., function()
+describe('surround c.functions', function()
   local M
 
   before_each(function()

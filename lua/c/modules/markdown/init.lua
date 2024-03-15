@@ -2,7 +2,7 @@ return {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
-    ft = { 'markdown', 'gitcommit' },
+    ft = { 'markdown', 'gitcommit', 'txt' },
     config = function()
       vim.cmd.colorscheme 'catppuccin-mocha'
     end,
