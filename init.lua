@@ -6,9 +6,14 @@ require('lazy').setup({
   { import = 'c.modules.editor' },
   { import = 'c.modules.dap' },
   { import = 'c.modules.typescript', ft = { 'typescript', 'typescriptreact' } },
-  { import = 'c.modules.lang.markdown', ft = { 'markdown' }, vscode = false },
+  { import = 'c.modules.markdown', ft = { 'markdown' } },
 
-  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    ft = { 'markdown', 'gitcommit' },
+  },
 }, {
   ui = {
     icons = {

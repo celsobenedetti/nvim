@@ -37,6 +37,15 @@ if markdown then
     group = markdown,
     desc = 'Run when entering vim in Markdown file',
   })
+
+  vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+    pattern = '.git/COMMIT_EDITMSG',
+    callback = function()
+      vim.cmd.colorscheme 'catppuccin-mocha'
+    end,
+    group = markdown,
+    desc = 'Run when entering gitcommit filetype',
+  })
 end
 
 -- JSON --------------------------------------------------------------

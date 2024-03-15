@@ -2,24 +2,24 @@ local map = vim.keymap.set
 local surround_map = require('c.functions.surround').surround_map
 
 -- new file
-map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
-map('n', '<leader>re', '<cmd>e %<cr>', { desc = 'Refresh Buffer' })
-map('n', '<leader>dd', '<cmd>bdelete<cr>', { desc = 'Delete Buffer' })
+map('n', '<leader>fn', ':enew<cr>', { desc = 'New File' })
+map('n', '<leader>re', ':e! %<cr>', { desc = 'Refresh Buffer' })
+map('n', '<leader>dd', ':bdelete<cr>', { desc = 'Delete Buffer' })
 
-map('n', '[g', '<cmd>Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
-map('n', ']g', '<cmd>Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
+map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
+map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
 
 -- macro
 map('v', '<leader>Q', ':norm @q<CR>', { desc = 'Execute @q macro in selected lines' })
 
 -- Commands
 
-map('n', '<leader>G', '<cmd>ChatGPT<CR>', { desc = 'Open ChatGPT' })
-map('n', '<leader>C', '<cmd>Clip<CR>', { desc = 'Copy file path to clipboard' })
-map('n', '<leader>D', '<cmd>Diff<CR>', { desc = 'Open tmux popup for with current file diff' })
-map('n', '<leader>L', '<cmd>Log<CR>', { desc = 'Open tmux popup for git log' })
-map('n', '<leader>gl', '<cmd>Glow<CR>', { desc = 'Open tmux popup for git log' })
-map('n', '<leader>n', '<cmd>Note<CR>', { desc = 'Run bash on current line' })
+map('n', '<leader>G', ':ChatGPT<CR>', { desc = 'Open ChatGPT' })
+map('n', '<leader>C', ':Clip<CR>', { desc = 'Copy file path to clipboard' })
+map('n', '<leader>D', ':Diff<CR>', { desc = 'Open tmux popup for with current file diff' })
+map('n', '<leader>L', ':Log<CR>', { desc = 'Open tmux popup for git log' })
+map('n', '<leader>gl', ':Glow<CR>', { desc = 'Open tmux popup for git log' })
+map('n', '<leader>n', ':Note<CR>', { desc = 'Run bash on current line' })
 
 map('n', '<leader>B', function()
   vim.api.nvim_feedkeys(Keys 'V!bash<CR>', 'n', true)
