@@ -2,16 +2,13 @@ require 'c.core.config'
 
 require('lazy').setup({
   { import = 'c.core.plugins' },
+
   { import = 'c.modules.editor' },
   { import = 'c.modules.dap' },
-
-  { import = 'c.modules.typescript' },
+  { import = 'c.modules.typescript', ft = { 'typescript', 'typescriptreact' } },
   { import = 'c.modules.lang.markdown', ft = { 'markdown' }, vscode = false },
 
   { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
-  'wakatime/vim-wakatime', -- code time tracking goodness
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  'vim-scripts/bufkill.vim',
 }, {
   ui = {
     -- If you have a Nerd Font, set icons to an empty table which will use the

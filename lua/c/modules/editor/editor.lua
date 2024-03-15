@@ -1,4 +1,6 @@
-local navigate_tmux = function(cmd)
+--- Runs cmd if not inside Luasnip snippet
+---@param cmd string
+local cmd = function(cmd)
   return function()
     if not require('luasnip').in_snippet() then
       vim.cmd(cmd)
@@ -7,24 +9,25 @@ local navigate_tmux = function(cmd)
 end
 
 return {
+  { 'wakatime/vim-wakatime' }, -- code time tracking goodness
+  { 'tpope/vim-sleuth' }, -- Detect tabstop and shiftwidth automatically
+  { 'vim-scripts/bufkill.vim' },
   { 'numToStr/Comment.nvim', opts = {} }, -- "gc" to comment visual regions/lines
   { 'kylechui/nvim-surround', version = '*', config = true, vscode = true },
 
   {
     'christoomey/vim-tmux-navigator',
     keys = {
-      { '<C-h>', navigate_tmux 'TmuxNavigateLeft', desc = 'Go to Left tmux pane' },
-      { '<C-j>', navigate_tmux 'TmuxNavigateDown', desc = 'Go to Down tmux pane' },
-      { '<C-k>', navigate_tmux 'TmuxNavigateUp', desc = 'Go to Up tmux pane' },
-      { '<C-l>', navigate_tmux 'TmuxNavigateRight', desc = 'Go to Right tmux pane' },
+      { '<C-h>', cmd 'TmuxNavigateLeft', desc = 'Go to Left tmux pane' },
+      { '<C-j>', cmd 'TmuxNavigateDown', desc = 'Go to Down tmux pane' },
+      { '<C-k>', cmd 'TmuxNavigateUp', desc = 'Go to Up tmux pane' },
+      { '<C-l>', cmd 'TmuxNavigateRight', desc = 'Go to Right tmux pane' },
     },
   },
 
   {
     'mbbill/undotree',
-    keys = {
-      { '<leader>U', '<cmd>UndotreeToggle<cr>', desc = 'Undotree Toggle' },
-    },
+    keys = { { '<leader>U', '<cmd>UndotreeToggle<cr>', desc = 'Undotree Toggle' } },
     config = function()
       vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
     end,

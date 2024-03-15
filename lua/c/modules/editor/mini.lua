@@ -5,8 +5,8 @@ return {
     opts = {
       mappings = {
         close = 'q',
-        go_in = '<NOP>',
-        go_out = '<NOP>',
+        go_in = 'L',
+        go_out = 'H',
         go_in_plus = '<C-l>',
         go_out_plus = '<C-h>',
         reset = '<BS>',

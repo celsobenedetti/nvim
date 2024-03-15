@@ -30,8 +30,6 @@ return {
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
-      vim.keymap.set('n', '<leader>uc', require 'c.core.commands.toggle_completion', { desc = '' })
-
       cmp.setup {
         -- window = {
         --   completion = cmp.config.window.bordered {},

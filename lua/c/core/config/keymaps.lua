@@ -40,23 +40,6 @@ map('n', 'gv', function()
   require('telescope.builtin').lsp_definitions { reuse_win = true }
 end, { desc = 'Split vertical and go to definition' })
 
---- toggles
-
-map('n', '<leader>ud', require('c.functions.toggle').diagnostics, { desc = 'Toggle diagnostics' })
-
-local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
-map('n', '<leader>uC', function()
-  require('c.functions.toggle').option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }
-end, { desc = 'Toggle diagnostics' })
-
-map('n', '<leader>us', function()
-  require('c.functions.toggle').option { option = 'spell' }
-end, { desc = 'Toggle Spelling' })
-
-map('n', '<leader>uf', function()
-  require('c.functions.toggle').format()
-end, { desc = 'Toggle auto format (global)' })
-
 surround_map({ '(', ')' }, '(')
 surround_map({ '[', ']' }, '[')
 surround_map({ '"' }, '"')

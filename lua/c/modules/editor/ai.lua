@@ -8,7 +8,7 @@ return {
         json = true,
       },
       suggestion = {
-        auto_trigger = false,
+        auto_trigger = false, -- disable ghost text
       },
     },
   },
