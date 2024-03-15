@@ -6,16 +6,12 @@
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
-local ft = { 'typescript', 'javascript', 'go' }
-
 return {
   {
     'mfussenegger/nvim-dap',
-    ft = ft,
     dependencies = {
       'williamboman/mason.nvim', -- Installs the debug adapters for you
       'jay-babu/mason-nvim-dap.nvim',
-      'leoluz/nvim-dap-go', -- Add your own debuggers here
     },
     keys = {
       {
@@ -70,13 +66,6 @@ return {
       },
 
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-      {
-        '<leader>du',
-        function()
-          require('dapui').toggle()
-        end,
-        desc = 'Debug: See last session result.',
-      },
       {
         '<leader>bC',
         function()
@@ -135,8 +124,21 @@ return {
   },
 
   {
+    'leoluz/nvim-dap-go', -- Add your own debuggers here
+    ft = { 'go' },
+  },
+
+  {
     'rcarriga/nvim-dap-ui',
-    ft = ft,
+    keys = {
+      {
+        '<leader>du',
+        function()
+          require('dapui').toggle()
+        end,
+        desc = 'DAP: UI Toggle',
+      },
+    },
     config = function(_, opts)
       local dap = require 'dap'
       local dapui = require 'dapui'

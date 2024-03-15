@@ -11,23 +11,6 @@ return {
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font }, -- Useful for getting pretty icons, but requires a Nerd Font.
-
-      {
-        'nvim-telescope/telescope-live-grep-args.nvim',
-        version = '^1.0.0',
-        config = function()
-          require('telescope').load_extension 'live_grep_args'
-        end,
-        keys = {
-          {
-            '<leader>sG',
-            function()
-              require('telescope').extensions.live_grep_args.live_grep_args()
-            end,
-            desc = 'Telescope grep with args',
-          },
-        },
-      },
     },
     config = function()
       local trouble = require 'trouble.providers.telescope'
@@ -159,5 +142,22 @@ return {
       map('n', '<leader>s.', functions.search_dotfiles, { desc = 'Search Dotfiles' })
       map('n', '<leader>mv', functions.move_note, { desc = 'Search Dotfiles' })
     end,
+  },
+
+  {
+    'nvim-telescope/telescope-live-grep-args.nvim',
+    version = '^1.0.0',
+    config = function()
+      require('telescope').load_extension 'live_grep_args'
+    end,
+    keys = {
+      {
+        '<leader>sG',
+        function()
+          require('telescope').extensions.live_grep_args.live_grep_args()
+        end,
+        desc = 'Telescope grep with args',
+      },
+    },
   },
 }
