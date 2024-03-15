@@ -4,8 +4,6 @@ Keys = function(str)
   return vim.api.nvim_replace_termcodes(str, false, false, true)
 end
 
-local map = vim.keymap.set
-
 map('n', '<Esc>', '<cmd>nohlsearch<CR>')
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 

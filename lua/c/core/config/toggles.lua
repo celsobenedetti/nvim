@@ -1,10 +1,8 @@
 --- toggles
 
-local map = vim.keymap.set
-
-local copilot = true
-local completion = true
-local diagnostics = true
+local copilot = vim.g.copilot
+local completion = vim.g.completion
+local diagnostics = vim.g.diagnostics
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
 
 --- Functions for each toggle

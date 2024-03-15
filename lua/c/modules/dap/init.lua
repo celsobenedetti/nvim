@@ -202,4 +202,23 @@ return {
       -- code
     end,
   },
+
+  {
+    'nvim-telescope/telescope-dap.nvim',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+    },
+    config = function()
+      pcall(require('telescope').load_extension, 'fzf')
+    end,
+    keys = {
+      {
+        '<leader>sb',
+        function()
+          require('telescope').extensions.dap.list_breakpoints()
+        end,
+        desc = 'DAP: [S]earch [B]reakpoints',
+      },
+    },
+  },
 }

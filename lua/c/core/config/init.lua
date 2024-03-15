@@ -6,6 +6,9 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+---@diagnostic disable: lowercase-global
+map = vim.keymap.set
+
 require 'c.core.config.options'
 require 'c.core.config.sensible'
 require 'c.core.config.keymaps'

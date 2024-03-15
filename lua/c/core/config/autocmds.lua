@@ -58,7 +58,7 @@ if new_note then
   vim.api.nvim_create_autocmd({ 'VimEnter' }, {
     pattern = 'title_editor',
     callback = function()
-      vim.api.nvim_feedkeys(Keys 'ggi', 'n', true)
+      vim.api.nvim_feedkeys(Keys 'ggi<BS><BS><BS>', 'n', true)
     end,
     group = new_note,
     desc = 'Run when entering new_note files',
@@ -72,5 +72,14 @@ vim.api.nvim_create_autocmd('FileType', {
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
+  end,
+})
+
+-- insert mode when entering git commit
+vim.api.nvim_create_autocmd('FileType', {
+  group = augroup 'git-commit-augroup',
+  pattern = { 'gitcommit' },
+  callback = function()
+    vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
   end,
 })

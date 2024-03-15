@@ -1,4 +1,4 @@
-local map = vim.keymap.set
+
 local surround_map = require('c.functions.surround').surround_map
 
 map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy UI' })
