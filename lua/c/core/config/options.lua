@@ -48,3 +48,7 @@ opt.fillchars = {
   diff = '╱',
   eob = ' ',
 }
+
+-- open buffers verticaly
+vim.cmd 'autocmd FileType help wincmd L' --help
+vim.cmd 'autocmd FileType man wincmd L' -- man

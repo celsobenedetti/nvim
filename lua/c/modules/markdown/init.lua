@@ -1,5 +1,26 @@
 return {
   {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    ft = { 'markdown', 'gitcommit' },
+    config = function()
+      vim.cmd.colorscheme 'catppuccin-mocha'
+    end,
+    priority = 1000,
+  },
+
+  {
+    'folke/twilight.nvim',
+    config = function()
+      require('twilight').setup {
+        context = 20, -- amount of lines we will try to show around the current line
+      }
+    end,
+    ft = { 'markdown' },
+    keys = { { '<leader>tw', ':Twilight<CR>' } },
+  },
+
+  {
     'zk-org/zk-nvim',
     ft = 'markdown',
     keys = {
@@ -45,26 +66,6 @@ return {
       vim.keymap.set('i', '<c-t>', function()
         vim.api.nvim_feedkeys(Keys '~~~~<Esc>hha', 'n', true)
       end, { desc = 'Add Strikeghrough italic tags for insert mode in bold' })
-    end,
-  },
-
-  {
-    'lukas-reineke/headlines.nvim',
-    config = function()
-      require('headlines').setup {
-        markdown = {
-          headline_highlights = { 'DevIconEditorConfig' },
-          codeblock_highlight = 'None',
-          dash_highlight = 'None',
-          dash_string = '',
-
-          quote_highlight = 'None',
-          quote_string = '>',
-          fat_headlines = true,
-          fat_headline_upper_string = '',
-          fat_headline_lower_string = '━',
-        },
-      }
     end,
   },
 

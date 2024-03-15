@@ -1,4 +1,4 @@
----@module Sensible defaults, taken from LazyVim
+---@module Sensible defaults, many taken from LazyVim
 
 Keys = function(str)
   return vim.api.nvim_replace_termcodes(str, false, false, true)
