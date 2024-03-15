@@ -221,6 +221,14 @@ return {
         end,
         desc = 'DAP: [S]earch [B]reakpoints',
       },
+
+      {
+        '<leader>sv',
+        function()
+          require('telescope').extensions.dap.variables()
+        end,
+        desc = 'DAP: [S]earch [V]ariables',
+      },
     },
   },
 }

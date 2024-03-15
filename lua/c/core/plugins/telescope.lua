@@ -54,7 +54,7 @@ return {
       end, { desc = '[S]earch [D]iagnostics for Current Document' })
       map('n', '<leader>sD', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       map('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      map('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      map('n', '<leader><leader>', require('c.functions.telescope.open_buffers').run, { desc = '[ ] Find existing buffers' })
       map('n', '<leader>sn', builtin.treesitter, { desc = 'Find Treesitter nodes' })
 
       map('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })
@@ -71,7 +71,7 @@ return {
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your neovim configuration files
-      map('n', '<leader>sv', function()
+      map('n', '<leader>fv', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
 
