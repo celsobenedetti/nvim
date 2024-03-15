@@ -71,9 +71,6 @@ map('n', '<leader>K', '<cmd>norm! K<cr>', { desc = 'Keywordprg' })
 map('v', '<', '<gv')
 map('v', '>', '>gv')
 
--- lazy
-map('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
-
 -- new file
 map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
 

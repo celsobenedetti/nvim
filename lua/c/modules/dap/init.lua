@@ -92,11 +92,11 @@ return {
         desc = 'List DAP Breakpoints',
       },
       {
-        '<leader>dtT',
+        '<leader>dt',
         function()
-          require('dap').list_breakpoints(true)
+          require('dap').terminate()
         end,
-        desc = 'List DAP Breakpoints',
+        desc = 'DAP: Terminate',
       },
     },
     config = function()

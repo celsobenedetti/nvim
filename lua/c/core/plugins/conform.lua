@@ -18,9 +18,13 @@ return {
       formatters_by_ft = {
         lua = { 'stylua' },
         python = { 'isort', 'black' },
-        markdown = { { 'prettierd' } },
+        markdown = { { 'markdownlint-cli2' } },
         json = { { 'prettierd' } },
         toml = { { 'taplo' } },
+
+        sh = { { 'shfmt' } },
+        bash = { { 'shfmt' } },
+        zsh = { { 'shfmt' } },
 
         javascript = { { 'prettierd' } },
         javascriptreact = { { 'prettierd' } },
