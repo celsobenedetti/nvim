@@ -46,15 +46,6 @@ local spec = {
         picker = 'telescope',
       }
 
-      vim.keymap.set('v', '<c-k>', require('c.functions.markdown').wrap.link, { desc = 'Wrap current selection in markdown link' })
-      vim.keymap.set('v', '<leader>k', require('c.functions.markdown').wrap.link, { desc = 'Wrap current selection in markdown link' })
-      vim.keymap.set('v', '<leader>i', require('c.functions.markdown').wrap.italic, { desc = 'Wrap current selection in italic' })
-      vim.keymap.set('v', '<c-b>', require('c.functions.markdown').wrap.bold, { desc = 'Wrap current selection in bold' })
-      vim.keymap.set('v', '<leader>b', require('c.functions.markdown').wrap.bold, { desc = 'Wrap current selection in bold' })
-      vim.keymap.set('v', '<c-t>', require('c.functions.markdown').wrap.strikethrough, { desc = 'Strikethrough current selection in bold' })
-      vim.keymap.set('v', '<leader>t', require('c.functions.markdown').wrap.strikethrough, { desc = 'Strikethrough current selection in bold' })
-      vim.keymap.set('v', '<leader>`', require('c.functions.markdown').wrap.code, { desc = 'Wrap current selection in code' })
-
       vim.keymap.set('i', '<c-b>', function()
         vim.api.nvim_feedkeys(Keys '****<Esc>hha', 'n', true)
       end, { desc = 'Add bold tags for insert mode in bold' })
