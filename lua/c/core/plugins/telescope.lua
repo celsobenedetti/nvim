@@ -160,4 +160,17 @@ return {
       },
     },
   },
+  {
+    'benfowler/telescope-luasnip.nvim',
+    config = function()
+      require('telescope').load_extension 'luasnip'
+    end,
+    keys = {
+      {
+        '<leader>tl',
+        ':Telescope luasnip<CR>',
+        desc = 'Telescope grep with args',
+      },
+    },
+  },
 }
