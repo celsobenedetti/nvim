@@ -1,20 +1,7 @@
-vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-  pattern = '*.md',
-  callback = function()
-    vim.api.nvim_feedkeys(Keys 'gg/#<CR>', 'n', true)
-    vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
-    vim.cmd.colorscheme(vim.g.secondary_color)
-    require('twilight').enable()
-  end,
-  group = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true }),
-  desc = 'Run on Markdown file when first entering Neovim',
-})
-
-return {
+local spec = {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
-    ft = { 'markdown', 'gitcommit', 'txt' },
     priority = 1000,
   },
 
@@ -138,3 +125,26 @@ return {
     },
   },
 }
+
+vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+  pattern = '*.md',
+  callback = function()
+    vim.api.nvim_feedkeys(Keys 'gg/#<CR>', 'n', true)
+    vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
+    vim.cmd.colorscheme(vim.g.pretty_colorscheme)
+    require('twilight').enable()
+  end,
+  group = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true }),
+  desc = 'Run on Markdown file when first entering Neovim',
+})
+
+vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+  pattern = 'title_editor',
+  callback = function()
+    vim.api.nvim_feedkeys(Keys 'ggi<BS><BS><BS>', 'n', true)
+  end,
+  group = vim.api.nvim_create_augroup('NewNoteGroup', { clear = true }),
+  desc = 'Run when entering new_note files',
+})
+
+return spec

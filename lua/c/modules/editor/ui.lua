@@ -1,14 +1,11 @@
-return {
-
-  -- Packer
+local spec = {
   {
     'folke/styler.nvim',
-    ft = { 'markdown', 'help' },
+    ft = { 'help' },
     config = function()
       require('styler').setup {
         themes = {
-          help = { colorscheme = vim.g.secondary_color },
-          gitcommit = { colorscheme = vim.g.secondary_color },
+          help = { colorscheme = 'catppuccin-mocha' },
         },
       }
     end,
@@ -33,3 +30,33 @@ return {
     end,
   },
 }
+
+local code_files = {
+  '*.lua',
+  '*.go',
+  '*.ts',
+  '*.js',
+  '*.tsx',
+  '*.jsx',
+}
+
+local colorscheme_group = vim.api.nvim_create_augroup('ColorschemeGroup', { clear = true })
+vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+  pattern = code_files,
+  group = colorscheme_group,
+  desc = 'Run on code files',
+  callback = function()
+    vim.cmd.colorscheme(vim.g.code_colorscheme)
+  end,
+})
+
+vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
+  pattern = code_files,
+  group = colorscheme_group,
+  desc = 'Run when leaving code files',
+  callback = function()
+    vim.cmd.colorscheme(vim.g.pretty_colorscheme)
+  end,
+})
+
+return spec

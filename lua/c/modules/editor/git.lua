@@ -1,5 +1,3 @@
-local neogit_is_open = false
-
 return {
 
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
@@ -46,17 +44,15 @@ return {
     },
     config = function()
       require('neogit').setup {}
-      map('n', '<leader>gg', function()
-        if neogit_is_open then
-          require('neogit').close()
-          vim.cmd.colorscheme(vim.g.color)
-        else
-          require('neogit').open()
-          vim.cmd.colorscheme(vim.g.secondary_color)
-        end
-        neogit_is_open = not neogit_is_open
-      end, { desc = 'Neogit toggle' })
+
+      vim.api.nvim_create_autocmd({ 'FileType' }, {
+        pattern = { 'NeogitStatus' },
+        callback = function()
+          vim.cmd.colorscheme(vim.g.pretty_colorscheme)
+        end,
+        desc = 'Run when opening Neogit',
+      })
     end,
-    keys = { { '<leader>gg' } },
+    keys = { { '<leader>gg', ':Neogit<CR>', desc = 'Neogit' } },
   },
 }
