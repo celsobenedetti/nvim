@@ -1,11 +1,20 @@
+vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+  pattern = '*.md',
+  callback = function()
+    vim.api.nvim_feedkeys(Keys 'gg/#<CR>', 'n', true)
+    vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
+    vim.cmd.colorscheme(vim.g.secondary_color)
+    require('twilight').enable()
+  end,
+  group = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true }),
+  desc = 'Run on Markdown file when first entering Neovim',
+})
+
 return {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
     ft = { 'markdown', 'gitcommit', 'txt' },
-    config = function()
-      vim.cmd.colorscheme 'catppuccin-mocha'
-    end,
     priority = 1000,
   },
 

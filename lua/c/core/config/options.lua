@@ -6,6 +6,9 @@ vim.g.copilot = true
 vim.g.completion = true
 vim.g.diagnostics = true
 
+vim.g.color = 'default'
+vim.g.secondary_color = 'catppuccin-mocha'
+
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed
 
 local opt = vim.opt

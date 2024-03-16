@@ -1,5 +1,4 @@
 local all = vim.api.nvim_create_augroup('AllFilesGroup', { clear = true })
-local markdown = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true })
 local json = vim.api.nvim_create_augroup('JSONGroup', { clear = true })
 local new_note = vim.api.nvim_create_augroup('NewNoteGroup', { clear = true })
 
@@ -17,25 +16,6 @@ if all then
     end,
     group = all,
     desc = 'Run on all files',
-  })
-end
-
--- Markdown --------------------------------------------------------------
-
-if markdown then
-  vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-    pattern = '*.md',
-    callback = function()
-      vim.api.nvim_feedkeys(Keys '/#<CR>', 'n', true)
-      vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
-
-      require('twilight').enable()
-
-      -- NOTE: for some reason catpuccin loads differently if not set in autocmd
-      vim.cmd.colorscheme 'catppuccin-mocha'
-    end,
-    group = markdown,
-    desc = 'Run when entering vim in Markdown file',
   })
 end
 
@@ -76,10 +56,11 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- insert mode when entering git commit
-vim.api.nvim_create_autocmd('FileType', {
+vim.api.nvim_create_autocmd('VimEnter', {
   group = augroup 'git-commit-augroup',
-  pattern = { 'gitcommit' },
+  pattern = { 'COMMIT_EDITMSG' },
   callback = function()
+    vim.cmd.colorscheme(vim.g.secondary_color)
     vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
   end,
 })

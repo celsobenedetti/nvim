@@ -1,5 +1,19 @@
 return {
 
+  -- Packer
+  {
+    'folke/styler.nvim',
+    ft = { 'markdown', 'help' },
+    config = function()
+      require('styler').setup {
+        themes = {
+          help = { colorscheme = vim.g.secondary_color },
+          gitcommit = { colorscheme = vim.g.secondary_color },
+        },
+      }
+    end,
+  },
+
   -- filenamees
   {
     'b0o/incline.nvim',
