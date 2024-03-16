@@ -37,7 +37,11 @@ end
 
 local M = {}
 
+--- Run open buffers picker
 M.run = function(opts)
+  --current buffer
+  local curr_buf = vim.api.nvim_get_current_buf()
+
   opts = apply_cwd_only_aliases(opts or {})
 
   local bufnrs = vim.tbl_filter(function(bufnr)
@@ -113,6 +117,7 @@ M.run = function(opts)
       sorter = conf.generic_sorter(opts),
       default_selection_index = default_selection_idx,
       attach_mappings = function(_, map)
+        -- delete buffer under cursor
         map('i', '<C-d>', function(prompt_number)
           local selection = action_state.get_selected_entry()
           local buffnr = selection.bufnr
@@ -127,6 +132,14 @@ M.run = function(opts)
           -- close the current picker
           -- call this function again
           vim.api.nvim_buf_delete(0, { force = true })
+
+          -- if deleting current buffer, switch to next buffer
+          if buffnr == curr_buf then
+            vim.cmd ':bnext'
+            vim.api.nvim_buf_delete(buffnr, { force = true })
+          end
+
+          -- if not deleted last buffer, refresh the picker (with remaining open buffers)
           if not is_last then
             M.run(opts)
           end
