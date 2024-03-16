@@ -1,4 +1,7 @@
+local neogit_is_open = false
+
 return {
+
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -32,5 +35,28 @@ return {
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
       end,
     },
+  },
+
+  {
+    'NeogitOrg/neogit',
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- required
+      'sindrets/diffview.nvim', -- optional - Diff integration
+      'nvim-telescope/telescope.nvim', -- optional
+    },
+    config = function()
+      require('neogit').setup {}
+      map('n', '<leader>gg', function()
+        if neogit_is_open then
+          require('neogit').close()
+          vim.cmd.colorscheme(vim.g.color)
+        else
+          require('neogit').open()
+          vim.cmd.colorscheme(vim.g.secondary_color)
+        end
+        neogit_is_open = not neogit_is_open
+      end, { desc = 'Neogit toggle' })
+    end,
+    keys = { { '<leader>gg' } },
   },
 }
