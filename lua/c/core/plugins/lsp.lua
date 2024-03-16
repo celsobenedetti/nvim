@@ -2,6 +2,7 @@ local servers = {
   gopls = {},
   pyright = {},
   tsserver = {},
+  vale_ls = {},
 
   lua_ls = {
     settings = {

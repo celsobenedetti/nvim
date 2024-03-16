@@ -17,6 +17,7 @@ return {
         'stylua', -- Lua formatter
         'taplo', -- TOML language server / toolkit
         'tsserver', -- TS language server
+        'vale_ls', -- Markdown linter with LSP providers
         'zk', -- zk plain text note-taking assitant - Markdown
       }
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
