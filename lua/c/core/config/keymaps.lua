@@ -5,6 +5,7 @@ map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 map('n', '<leader>fn', ':enew<cr>', { desc = 'New File' })
 map('n', '<leader>re', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('n', '<leader>dd', ':bdelete<cr>', { desc = 'Delete Buffer' })
+map('n', '<leader>cd', ':colorscheme default<cr>', { desc = 'Set default colorscheme' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })

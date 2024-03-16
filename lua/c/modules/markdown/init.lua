@@ -1,9 +1,5 @@
+---@diagnostic disable: param-type-mismatch
 local spec = {
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    priority = 1000,
-  },
 
   {
     'folke/twilight.nvim',
@@ -73,8 +69,9 @@ local spec = {
     },
     cond = function()
       local path = vim.fn.expand '%:p:h'
-      ---@diagnostic disable-next-line: param-type-mismatch
-      return not string.match(path, 'templates')
+      local is_notes = string.match(path, 'notes')
+      local is_templates = string.match(path, 'templates')
+      return is_notes and not is_templates
     end,
     opts = function(_, opts)
       opts.new_notes_location = 'notes_subdir'

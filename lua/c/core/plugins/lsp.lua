@@ -59,7 +59,7 @@ return {
             end
           end
 
-          map('<leader>cd', vim.diagnostic.open_float, 'Line Diagnostics')
+          map('<leader>e', vim.diagnostic.open_float, 'Line Diagnostics')
           map(']d', diagnostic_goto(true), 'Next Diagnostic')
           map('[d', diagnostic_goto(false), 'Prev Diagnostic')
           map(']e', diagnostic_goto(true, 'ERROR'), 'Next Error')

@@ -27,4 +27,4 @@ require('lazy').setup({
   },
 })
 
-vim.cmd.colorscheme(vim.g.pretty_colorscheme)
+vim.cmd.colorscheme(vim.g.code_colorscheme)
