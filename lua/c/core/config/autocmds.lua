@@ -20,8 +20,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- JSON --------------------------------------------------------------
 
-vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-  pattern = '*.json',
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  pattern = 'json',
   callback = function()
     vim.o.conceallevel = 3
   end,

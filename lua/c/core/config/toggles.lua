@@ -18,8 +18,10 @@ local toggles = {
   copilot = function()
     if copilot then
       vim.api.nvim_command 'Copilot disable'
+      print 'Copilot disabled'
     else
       vim.api.nvim_command 'Copilot start'
+      print 'Copilot enabled'
     end
     copilot = not copilot
   end,

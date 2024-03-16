@@ -47,6 +47,7 @@ return {
       map('n', '<leader>st', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       map('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
+      map('n', '<leader>sb', builtin.git_branches, { desc = '[S]earch [B]ranches' })
 
       map('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       map('n', '<leader>sd', function()
