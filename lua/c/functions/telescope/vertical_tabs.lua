@@ -24,15 +24,17 @@ M.run = function(exclude_files)
     return item ~= '' and not string.match(item, '--type=')
   end, dirs)
 
+  local dirFromHome = string.gsub(dir, vim.env.HOME, '~')
   pickers
     .new({}, {
-      prompt_title = '<C-v> to open buffer in vertical split',
+      prompt_title = dirFromHome .. ' | <C-v> to stack',
       finder = finders.new_table {
         results = dirs,
         entry_maker = function(entry)
+          -- remove dir from entry
           local result = {
             value = entry,
-            display = entry,
+            display = string.gsub(entry, dir .. '/', ''),
             ordinal = entry,
           }
 
@@ -55,7 +57,7 @@ M.run = function(exclude_files)
       attach_mappings = function(prompt_bufnr, map)
         map('i', '<C-v>', function()
           local selection = action_state.get_selected_entry()
-          local target_file = selection[1]
+          local target_file = selection.value
 
           -- append target_file to exclude_files
           table.insert(exclude_files, target_file)
