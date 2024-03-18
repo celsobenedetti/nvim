@@ -43,34 +43,6 @@ return {
     },
     config = function()
       require('neogit').setup {}
-
-      local neogit_group = vim.api.nvim_create_augroup('ColorschemeGroup', { clear = true })
-      vim.api.nvim_create_autocmd({ 'BufEnter' }, {
-        pattern = { 'NeogitStatus' },
-        callback = function()
-          vim.cmd.colorscheme(vim.g.pretty_colorscheme)
-        end,
-        group = neogit_group,
-        desc = 'Run when opening Neogit',
-      })
-
-      vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
-        pattern = { 'NeogitStatus' },
-        callback = function()
-          vim.cmd.colorscheme(vim.g.code_colorscheme)
-        end,
-        group = neogit_group,
-        desc = 'Run when opening Neogit',
-      })
-
-      vim.api.nvim_create_autocmd({ 'FileType' }, {
-        pattern = 'DiffviewFiles',
-        group = neogit_group,
-        desc = 'Run when entering diff view',
-        callback = function()
-          vim.cmd.colorscheme(vim.g.code_colorscheme)
-        end,
-      })
     end,
     keys = { { '<leader>gg', ':Neogit<CR>', desc = 'Neogit' } },
   },
