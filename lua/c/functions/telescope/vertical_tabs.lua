@@ -14,7 +14,6 @@ M.run = function(exclude_files)
   local dir = vim.fn.expand '%:p:h' -- get directory for current file
   local fd = '!fd . --type=file ' .. dir
   local fd_result = vim.api.nvim_exec2(fd, { output = true })
-
   local dirs = vim.split(fd_result.output, '\n')
 
   -- remove files already openned as tabs from result set
@@ -30,10 +29,24 @@ M.run = function(exclude_files)
       prompt_title = '<C-v> to open buffer in vertical split',
       finder = finders.new_table {
         results = dirs,
+        entry_maker = function(entry)
+          local result = {
+            value = entry,
+            display = entry,
+            ordinal = entry,
+          }
+
+          -- if entry is a markdown file
+          if string.match(entry, '.md$') then
+            result.display = M.get_markdown_title(entry)
+          end
+
+          return result
+        end,
       },
       previewer = previewers.new_termopen_previewer {
         get_command = function(entry, _)
-          return { 'bat', entry[1] }
+          return { 'bat', entry.value }
         end,
       },
 
@@ -58,6 +71,26 @@ M.run = function(exclude_files)
       end,
     })
     :find()
+end
+
+M.get_markdown_title = function(filename)
+  local file = io.open(filename, 'r')
+  if not file then
+    return filename
+  end
+
+  -- Read the entire file content
+  local content = file:read '*all'
+  file:close()
+
+  local title = string.match(content, '\n# [% %a%x%p]*\n')
+  if not title then
+    return filename
+  end
+
+  title = string.gsub(title, '# ', '')
+  title = string.gsub(title, '\n', '')
+  return title
 end
 
 return M

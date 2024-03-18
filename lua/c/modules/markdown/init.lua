@@ -2,7 +2,7 @@
 local spec = {
 
   {
-    'zk-org/zk-nvim',
+    'celsobenedetti/zk-nvim',
     ft = 'markdown',
     keys = {
       { '<leader>zn', ':ZkNewFromTitleSelection<CR>', mode = 'v' },
