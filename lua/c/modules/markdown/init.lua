@@ -2,17 +2,6 @@
 local spec = {
 
   {
-    'folke/twilight.nvim',
-    config = function()
-      require('twilight').setup {
-        context = 20, -- amount of lines we will try to show around the current line
-      }
-    end,
-    ft = { 'markdown' },
-    keys = { { '<leader>tw', ':Twilight<CR>' } },
-  },
-
-  {
     'zk-org/zk-nvim',
     ft = 'markdown',
     keys = {
