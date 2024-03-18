@@ -24,7 +24,15 @@ return {
             n = { ['<c-t>'] = trouble.open_with_trouble },
           },
         },
-        -- pickers = {}
+        pickers = {
+          buffers = {
+            mappings = {
+              i = {
+                ['<C-d>'] = require('telescope.actions').delete_buffer,
+              },
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -48,6 +56,7 @@ return {
       map('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
       map('n', '<leader>sb', builtin.git_branches, { desc = '[S]earch [B]ranches' })
+      map('n', '<leader><leader>', builtin.buffers, { desc = '[S]earch [B]ranches' })
 
       map('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       map('n', '<leader>sd', function()
@@ -81,8 +90,7 @@ return {
 
       map('n', '<leader>mv', functions.move_note, { desc = 'Move file of current buffer to dir' })
       map('n', '<leader>s.', functions.dotfiles, { desc = 'Search Dotfiles' })
-      map('n', '<leader><leader>', functions.open_buffers, { desc = '[ ] Find existing buffers' })
-      map('n', '<leader>sv', functions.vertical_tabs, { desc = '[ ] Find existing buffers' })
+      map('n', '<leader>s<leader>', functions.vertical_tabs, { desc = '[Telescope] Search crrent dir with vertical tabs mapping' })
     end,
   },
 
