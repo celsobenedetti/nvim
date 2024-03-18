@@ -6,6 +6,13 @@ local conf = require('telescope.config').values
 local action_state = require 'telescope.actions.state'
 local previewers = require 'telescope.previewers'
 
+-- Is entry a markdown file
+---@param entry string
+---@return boolean
+local function is_markdown(entry)
+  return string.match(entry, '.md$')
+end
+
 --- Vartical tabs is a picker to show files for current directory
 --- <c-v> to open file in vertical split
 M.run = function(exclude_files)
@@ -39,7 +46,7 @@ M.run = function(exclude_files)
           }
 
           -- if entry is a markdown file
-          if string.match(entry, '.md$') then
+          if is_markdown(entry) then
             result.display = M.get_markdown_title(entry)
           end
 
@@ -48,7 +55,11 @@ M.run = function(exclude_files)
       },
       previewer = previewers.new_termopen_previewer {
         get_command = function(entry, _)
-          return { 'bat', entry.value }
+          if is_markdown(entry.value) then
+            return { 'glow', entry.value }
+          end
+
+          return { 'bat', '--style', 'numbers,changes', entry.value }
         end,
       },
 
