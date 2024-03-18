@@ -82,6 +82,7 @@ return {
       map('n', '<leader>mv', functions.move_note, { desc = 'Move file of current buffer to dir' })
       map('n', '<leader>s.', functions.dotfiles, { desc = 'Search Dotfiles' })
       map('n', '<leader><leader>', functions.open_buffers, { desc = '[ ] Find existing buffers' })
+      map('n', '<leader>sv', functions.vertical_tabs, { desc = '[ ] Find existing buffers' })
     end,
   },
 
