@@ -5,7 +5,9 @@ map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 map('n', '<leader>fn', ':enew<cr>', { desc = 'New File' })
 map('n', '<leader>re', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('n', '<leader>dd', ':bdelete<cr>', { desc = 'Delete Buffer' })
-map('n', '<leader>cd', ':colorscheme default<cr>', { desc = 'Set default colorscheme' })
+
+map('n', '<leader>u1', ':colorscheme ' .. vim.g.code_colorscheme .. '<CR>', { desc = 'Set code colorscheme' })
+map('n', '<leader>u2', ':colorscheme ' .. vim.g.pretty_colorscheme .. '<CR>', { desc = 'Set pretty colorscheme' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
@@ -21,11 +23,20 @@ map('n', '<leader>n', ':Note<CR>', { desc = 'Run bash on current line' })
 
 map('n', '<leader>B', function()
   vim.api.nvim_feedkeys(Keys 'V!bash<CR>', 'n', true)
-end, { desc = 'Run bash on current line' })
+end, { desc = 'Run current line as bash command' })
 
 map('v', '<leader>B', function()
   vim.api.nvim_feedkeys(Keys '!bash<CR>', 'n', true)
-end, { desc = 'Run bash on current line' })
+end, { desc = 'Run current line as bash command' })
+
+-- get current line to variable
+
+-- run current line as lua command in vim
+map('n', '<leader>V', function()
+  ---@diagnostic disable-next-line: param-type-mismatch
+  local line = vim.fn.getline '.'
+  vim.api.nvim_feedkeys(Keys(':lua ' .. line .. '<CR>'), 'n', true)
+end, { desc = 'Run current line as vim command' })
 
 map('n', '<leader>rm', function()
   vim.api.nvim_feedkeys(Keys ':!rm %<CR>', 'n', true)

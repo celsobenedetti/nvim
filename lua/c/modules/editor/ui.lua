@@ -1,4 +1,4 @@
-local spec = {
+return {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
@@ -37,5 +37,3 @@ local spec = {
     end,
   },
 }
-
-return spec

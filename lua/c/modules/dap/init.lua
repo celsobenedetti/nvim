@@ -223,7 +223,7 @@ return {
       },
 
       {
-        '<leader>sv',
+        '<leader>dv',
         function()
           require('telescope').extensions.dap.variables()
         end,

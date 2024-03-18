@@ -4,14 +4,11 @@ return {
     opts = {
       notify_on_error = false,
       format_on_save = function()
-        if not vim.g.autoformat then
-          return
-        end
         return {
           timeout_ms = 500,
           lsp_fallback = true,
           filter = function(client)
-            return client.name ~= 'tsserver'
+            return vim.g.autoformat and client.name ~= 'tsserver'
           end,
         }
       end,

@@ -127,8 +127,9 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
 })
 
 vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-  pattern = 'title_editor',
+  pattern = 'new_note',
   callback = function()
+    vim.cmd.colorscheme(vim.g.pretty_colorscheme)
     vim.api.nvim_feedkeys(Keys 'ggi<BS><BS><BS>', 'n', true)
   end,
   group = vim.api.nvim_create_augroup('NewNoteGroup', { clear = true }),
