@@ -13,9 +13,26 @@ return {
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font }, -- Useful for getting pretty icons, but requires a Nerd Font.
     },
     config = function()
+      local ignore_patterns = {
+        'node_modules',
+        '.git',
+      }
+
+      local is_work = string.match(vim.fn.getcwd(), 'work/chatbot')
+      if is_work then
+        ignore_patterns = vim.list_extend(ignore_patterns, {
+          'drupal',
+          'python',
+          'terraform',
+          'nestjs',
+        })
+      end
+
       local trouble = require 'trouble.providers.telescope'
+
       require('telescope').setup {
         defaults = {
+          file_ignore_patterns = ignore_patterns,
           mappings = {
             i = {
               ['<c-enter>'] = 'to_fuzzy_refine',
