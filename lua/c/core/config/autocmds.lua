@@ -44,6 +44,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
   group = augroup 'git-commit-augroup',
   pattern = { 'COMMIT_EDITMSG' },
   callback = function()
+    vim.cmd.colorscheme(vim.g.pretty_colorscheme)
     vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
   end,
 })
