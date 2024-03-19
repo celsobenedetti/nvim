@@ -19,7 +19,7 @@ map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to r
 
 -- Commands
 map('n', '<leader>C', ':Clip<CR>', { desc = 'Copy file path to clipboard' })
-map('n', '<leader>n', ':Note<CR>', { desc = 'Run bash on current line' })
+map('n', '<leader>N', ':Note<CR>', { desc = 'Run bash on current line' })
 
 map('n', '<leader>B', function()
   vim.api.nvim_feedkeys(Keys 'V!bash<CR>', 'n', true)
@@ -58,6 +58,6 @@ surround_map({ '[', ']' }, '[')
 surround_map({ '"' }, '"')
 surround_map({ "'" }, "'")
 surround_map({ '`' }, '`')
-surround_map({ '<leader>b' }, '**')
-surround_map({ 'i', '<leader>i' }, '_')
+surround_map({ '<leader>b', '<C-b>' }, '**')
+surround_map({ '<leader>i', '<C-_>' }, '_')
 surround_map({ '<leader>~' }, '~~')

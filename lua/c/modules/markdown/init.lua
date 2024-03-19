@@ -5,7 +5,7 @@ local spec = {
     'celsobenedetti/zk-nvim',
     ft = 'markdown',
     keys = {
-      { '<leader>zn', ':ZkNewFromTitleSelection<CR>', mode = 'v' },
+      { '<leader>n', ':ZkNewFromTitleSelection<CR>', mode = 'v' },
       { '<leader>zn', ':ZkNewFromTitleSelection<CR>', mode = 'v' },
       { '<leader>zz', ':ZkNotes<CR>' },
       { '<leader>zb', ':ZkBacklinks<CR>' },
