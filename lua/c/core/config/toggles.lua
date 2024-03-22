@@ -5,6 +5,9 @@ local completion = vim.g.completion
 local diagnostics = vim.g.diagnostics
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
 
+local OFF = '🍎 Disabled '
+local ON = '🍏 Enabled '
+
 --- Functions for each toggle
 local toggles = {
 
@@ -18,10 +21,11 @@ local toggles = {
   copilot = function()
     if copilot then
       vim.api.nvim_command 'Copilot disable'
-      print 'Copilot disabled'
+      print(OFF .. 'Copilot')
     else
       vim.api.nvim_command 'Copilot start'
-      print 'Copilot enabled'
+
+      print(ON .. 'Copilot')
     end
     copilot = not copilot
   end,
@@ -29,7 +33,7 @@ local toggles = {
   -- completion
   completion = function()
     local cmp = require 'cmp'
-    local augroupName = 'cmp-augroup'
+    local group = vim.api.nvim_create_augroup('cmp-augroup', { clear = true })
     local toggle_completion = function(is_enabled)
       cmp.setup.buffer { enabled = is_enabled }
     end
@@ -38,17 +42,17 @@ local toggles = {
     toggle_completion(completion)
 
     if completion then
-      print 'Enabled completion (cmp)'
-      vim.api.nvim_clear_autocmds { group = augroupName }
+      print(ON .. 'Completion (CMP)')
+      vim.api.nvim_clear_autocmds { group = group }
     else
       vim.api.nvim_create_autocmd('BufEnter', {
         desc = ('Disable completion: %s'):format 'BufEnter',
-        group = vim.api.nvim_create_augroup(augroupName, { clear = true }),
+        group = group,
         callback = function()
           toggle_completion(false)
         end,
       })
-      print 'Disabled completion (cmp)'
+      print(OFF .. 'Completion (CMP)')
     end
   end,
 
@@ -56,10 +60,10 @@ local toggles = {
   diagnostics = function()
     if diagnostics then
       vim.diagnostic.disable()
-      print 'Disabled diagnostics'
+      print(OFF .. 'Dianostics')
     else
       vim.diagnostic.enable()
-      print 'Enabled diagnostics'
+      print(ON .. 'Dianostics')
     end
     diagnostics = not diagnostics
   end,

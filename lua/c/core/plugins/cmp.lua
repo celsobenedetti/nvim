@@ -82,6 +82,8 @@ return {
           { name = 'copilot' },
         },
       }
+
+      cmp.setup.buffer { enabled = vim.g.completion }
     end,
   },
 

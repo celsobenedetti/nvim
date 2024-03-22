@@ -1,7 +1,7 @@
 local M = {}
 
 local dawn = 6
-local dusk = 16
+local dusk = 15
 
 --- Sets the colorscheme, and background light/dark based on time of day.
 ---@param colorscheme string

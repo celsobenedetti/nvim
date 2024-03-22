@@ -7,14 +7,14 @@ return {
         yaml = true,
         json = true,
       },
-      suggestion = {
-        auto_trigger = false, -- disable ghost text
-      },
+      suggestion = { enabled = false },
+      panel = { enabled = false },
     },
   },
 
   {
     'zbirenbaum/copilot-cmp',
+    dependencies = { 'zbirenbaum/copilot.lua' },
     config = function()
       require('copilot_cmp').setup()
     end,
