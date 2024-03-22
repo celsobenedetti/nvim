@@ -15,7 +15,7 @@ return {
     config = function()
       local ignore_patterns = {
         'node_modules',
-        '.git',
+        'pnpm-lock.yaml',
       }
 
       local is_work = string.match(vim.fn.getcwd(), 'work/chatbot')
@@ -25,6 +25,7 @@ return {
           'python',
           'terraform',
           'nestjs',
+          'packages/conversation/public/static',
         })
       end
 

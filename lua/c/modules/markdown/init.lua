@@ -31,6 +31,11 @@ local spec = {
         picker = 'telescope',
       }
 
+      map('n', '<leader>rm', function()
+        vim.api.nvim_feedkeys(Keys ':!rm %<CR>', 'n', true)
+        vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
+      end, { desc = 'rm buffer file' })
+
       vim.keymap.set('i', '<c-b>', function()
         vim.api.nvim_feedkeys(Keys '****<Esc>hha', 'n', true)
       end, { desc = 'Add bold tags for insert mode in bold' })

@@ -29,6 +29,14 @@ map('v', '<leader>B', function()
   vim.api.nvim_feedkeys(Keys '!bash<CR>', 'n', true)
 end, { desc = 'Run current line as bash command' })
 
+map('n', '<leader>T', function()
+  vim.api.nvim_feedkeys(Keys 'V!title<CR>', 'n', true)
+end, { desc = 'Run current line as bash command' })
+
+map('v', '<leader>T', function()
+  vim.api.nvim_feedkeys(Keys '!title<CR>', 'n', true)
+end, { desc = 'Run current line as bash command' })
+
 -- get current line to variable
 
 -- run current line as lua command in vim
@@ -37,11 +45,6 @@ map('n', '<leader>V', function()
   local line = vim.fn.getline '.'
   vim.api.nvim_feedkeys(Keys(':lua ' .. line .. '<CR>'), 'n', true)
 end, { desc = 'Run current line as vim command' })
-
-map('n', '<leader>rm', function()
-  vim.api.nvim_feedkeys(Keys ':!rm %<CR>', 'n', true)
-  vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
-end, { desc = 'rm buffer file' })
 
 local track_position_before_relative_jump = require 'c.functions.relative_jump'
 map('n', 'k', track_position_before_relative_jump.up)

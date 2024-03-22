@@ -1,3 +1,5 @@
+local is_diffview_open = false
+
 return {
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
