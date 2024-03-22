@@ -108,7 +108,7 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   callback = function()
     vim.api.nvim_feedkeys(Keys 'gg/#<CR>', 'n', true)
     vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
-    vim.cmd.colorscheme(vim.g.pretty_colorscheme)
+    require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
     require('twilight').enable()
   end,
   group = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true }),
@@ -118,7 +118,7 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
 vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   pattern = 'new_note',
   callback = function()
-    vim.cmd.colorscheme(vim.g.pretty_colorscheme)
+    require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
     vim.api.nvim_feedkeys(Keys 'ggi<BS><BS><BS>', 'n', true)
   end,
   group = vim.api.nvim_create_augroup('NewNoteGroup', { clear = true }),

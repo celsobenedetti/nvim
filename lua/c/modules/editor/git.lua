@@ -33,37 +33,55 @@ return {
       end,
     },
   },
-
   {
-    'NeogitOrg/neogit',
-    dependencies = {
-      'nvim-lua/plenary.nvim', -- required
-      'sindrets/diffview.nvim', -- optional - Diff integration
-      'nvim-telescope/telescope.nvim', -- optional
+    'sindrets/diffview.nvim',
+    keys = {
+      {
+        '<leader>D',
+        function()
+          if is_diffview_open then
+            is_diffview_open = false
+            require('diffview').close()
+          else
+            is_diffview_open = true
+            require('diffview').open()
+          end
+        end,
+        desc = 'Toggle Diffview',
+      },
     },
-    config = function()
-      require('neogit').setup {}
-
-      local neogit_group = vim.api.nvim_create_augroup('ColorschemeGroup', { clear = true })
-      vim.api.nvim_create_autocmd({ 'BufEnter' }, {
-        pattern = { 'NeogitStatus' },
-        callback = function()
-          vim.cmd.colorscheme(vim.g.pretty_colorscheme)
-        end,
-        group = neogit_group,
-        desc = 'Run when opening Neogit',
-      })
-
-      vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
-        pattern = { 'NeogitStatus' },
-        callback = function()
-          vim.cmd.colorscheme(vim.g.code_colorscheme)
-        end,
-        group = neogit_group,
-        desc = 'Run when opening Neogit',
-      })
-    end,
-
-    keys = { { '<leader>gg', ':Neogit<CR>', desc = 'Neogit' } },
   },
+
+  -- {
+  --   'NeogitOrg/neogit',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim', -- required
+  --     'sindrets/diffview.nvim', -- optional - Diff integration
+  --     'nvim-telescope/telescope.nvim', -- optional
+  --   },
+  --   config = function()
+  --     require('neogit').setup {}
+  --
+  --     -- local neogit_group = vim.api.nvim_create_augroup('ColorschemeGroup', { clear = true })
+  --     -- vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+  --     --   pattern = { 'NeogitStatus' },
+  --     --   callback = function()
+  --     --     require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
+  --     --   end,
+  --     --   group = neogit_group,
+  --     --   desc = 'Run when opening Neogit',
+  --     -- })
+  --     --
+  --     -- vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
+  --     --   pattern = { 'NeogitStatus' },
+  --     --   callback = function()
+  --     --     require('c.functions').set_colorscheme(vim.g.code_colorscheme)
+  --     --   end,
+  --     --   group = neogit_group,
+  --     --   desc = 'Run when opening Neogit',
+  --     -- })
+  --   end,
+  --
+  --   keys = { { '<leader>gg', ':Neogit<CR>', desc = 'Neogit' } },
+  -- },
 }
