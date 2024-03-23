@@ -82,6 +82,7 @@ return {
           { name = 'copilot' },
         },
       }
+      map('i', '<C-Space>', cmp.mapping.complete, { desc = 'cmp: Trigger Completion' })
 
       cmp.setup.buffer { enabled = vim.g.completion }
     end,
