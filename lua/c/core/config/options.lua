@@ -3,8 +3,8 @@ vim.g.maplocalleader = ' '
 
 -- defaults
 vim.g.autoformat = true
-vim.g.copilot = false
-vim.g.completion = false
+vim.g.copilot = true
+vim.g.completion = true
 vim.g.diagnostics = true
 
 vim.opt.background = 'dark'

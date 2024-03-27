@@ -48,9 +48,9 @@ return {
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           ['<C-n>'] = cmp.mapping.select_next_item(), -- Select the [n]ext item
-          ['<C-j>'] = cmp.mapping.select_next_item(), -- Select the [n]ext item
+          ['<C-j>'] = cmp.mapping.select_next_item { select = false }, -- Select the [n]ext item
           ['<C-p>'] = cmp.mapping.select_prev_item(), -- Select the [p]revious item
-          ['<C-k>'] = cmp.mapping.select_prev_item(), -- Select the [p]revious item
+          ['<C-k>'] = cmp.mapping.select_prev_item { select = false }, -- Select the [p]revious item
 
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.

@@ -1,5 +1,6 @@
 local M = {}
 
+local use_light = false
 local dawn = 6
 local dusk = 15
 
@@ -7,6 +8,11 @@ local dusk = 15
 ---@param colorscheme string
 M.run = function(colorscheme)
   vim.cmd.colorscheme(colorscheme)
+
+  if not use_light then
+    vim.opt.background = 'dark'
+    return
+  end
 
   local hour = tonumber(os.date '%H')
   if hour >= dawn and hour < dusk then
