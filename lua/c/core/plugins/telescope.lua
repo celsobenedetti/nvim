@@ -26,6 +26,7 @@ return {
           'terraform',
           'nestjs',
           'packages/conversation/public/static',
+          'public/static',
         })
       end
 
@@ -88,6 +89,7 @@ return {
 
       map('n', '<leader>sc', require('telescope.builtin').commands, { desc = 'Telescope search commands' })
       map('n', '<leader>sC', require('telescope.builtin').command_history, { desc = 'Telescope search command history' })
+      map('n', '<leader>gs', ':Telescope git_status<CR>', { desc = 'Telescope: [G]it [S]Status' })
 
       -- Also possible to pass additional configuration options.
       map('n', '<leader>s/', function()
