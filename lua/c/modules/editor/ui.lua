@@ -1,9 +1,10 @@
 return {
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    priority = 1000,
-  },
+  -- {
+  --   'catppuccin/nvim',
+  --   name = 'catppuccin',
+  --   priority = 1000,
+  -- },
+  { 'rose-pine/neovim', name = 'rose-pine', config = true },
 
   {
     'folke/styler.nvim',
@@ -11,8 +12,8 @@ return {
     config = function()
       require('styler').setup {
         themes = {
-          help = { colorscheme = 'catppuccin-mocha' },
-          markdown = { colorscheme = 'catppuccin-mocha' },
+          help = { colorscheme = vim.g.pretty_colorscheme },
+          markdown = { colorscheme = vim.g.pretty_colorscheme },
         },
       }
     end,

@@ -2,7 +2,8 @@ local servers = {
   gopls = {},
   pyright = {},
   tsserver = {},
-  vale_ls = {},
+  -- vale_ls = {},
+  tailwindcss = {},
 
   lua_ls = {
     settings = {

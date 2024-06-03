@@ -1,4 +1,5 @@
 local is_diffview_open = false
+local is_conflict_enabled = true
 
 return {
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
@@ -22,10 +23,10 @@ return {
         -- stylua: ignore start
         map("n", "]h", gs.next_hunk, "Next Hunk")
         map("n", "[h", gs.prev_hunk, "Prev Hunk")
-        map({ "n", "v" }, "<leader>gs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
         map("n", "<leader>gu", gs.undo_stage_hunk, "Undo Stage Hunk")
+        map({ "n", "v" }, "<leader>ga", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
+        map("n", "<leader>gA", gs.stage_buffer, "Stage Buffer")
         map({ "n", "v" }, "<leader>gr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
-        map("n", "<leader>gS", gs.stage_buffer, "Stage Buffer")
         map("n", "<leader>gR", gs.reset_buffer, "Reset Buffer")
         map("n", "<leader>gp", gs.preview_hunk_inline, "Preview Hunk Inline")
         map("n", "<leader>gb", function() gs.blame_line({ full = true }) end, "Blame Line")
@@ -54,36 +55,33 @@ return {
     },
   },
 
-  -- {
-  --   'NeogitOrg/neogit',
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim', -- required
-  --     'sindrets/diffview.nvim', -- optional - Diff integration
-  --     'nvim-telescope/telescope.nvim', -- optional
-  --   },
-  --   config = function()
-  --     require('neogit').setup {}
-  --
-  --     -- local neogit_group = vim.api.nvim_create_augroup('ColorschemeGroup', { clear = true })
-  --     -- vim.api.nvim_create_autocmd({ 'BufEnter' }, {
-  --     --   pattern = { 'NeogitStatus' },
-  --     --   callback = function()
-  --     --     require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
-  --     --   end,
-  --     --   group = neogit_group,
-  --     --   desc = 'Run when opening Neogit',
-  --     -- })
-  --     --
-  --     -- vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
-  --     --   pattern = { 'NeogitStatus' },
-  --     --   callback = function()
-  --     --     require('c.functions').set_colorscheme(vim.g.code_colorscheme)
-  --     --   end,
-  --     --   group = neogit_group,
-  --     --   desc = 'Run when opening Neogit',
-  --     -- })
-  --   end,
-  --
-  --   keys = { { '<leader>gg', ':Neogit<CR>', desc = 'Neogit' } },
-  -- },
+  {
+    'akinsho/git-conflict.nvim',
+    version = '*',
+    enabled = is_conflict_enabled,
+    config = function()
+      require('git-conflict').setup {
+        default_mappings = false,
+      }
+
+      vim.keymap.set('n', '<leader>co', ':GitConflictChooseOurs<CR>')
+      vim.keymap.set('n', '<leader>ct', ':GitConflictChooseTheirs<CR>')
+      vim.keymap.set('n', '<leader>cb', ':GitConflictChooseBoth<CR>')
+      vim.keymap.set('n', '<leader>c0', ':GitConflictChooseNone<CR>')
+      vim.keymap.set('n', '[x', ':GitConflictPrevConflict<CR>')
+      vim.keymap.set('n', ']x', ':GitConflictNextConflict<CR>')
+    end,
+  },
+  {
+    'pwntester/octo.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+    cmd = { 'Octo' },
+    config = function()
+      require('octo').setup()
+    end,
+  },
 }

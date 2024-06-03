@@ -5,6 +5,8 @@ require('lazy').setup({
 
   { import = 'c.modules.editor' },
   { import = 'c.modules.dap' },
+  { import = 'c.modules.trouble' },
+
   { import = 'c.modules.typescript' },
   { import = 'c.modules.markdown' },
 }, {

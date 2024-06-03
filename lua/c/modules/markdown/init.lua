@@ -11,8 +11,8 @@ local spec = {
       { '<leader>zb', ':ZkBacklinks<CR>' },
       { '<leader>zt', ':ZkTags<CR>' },
       { '<leader>zm', ':ZkMatch<CR>', mode = 'v' },
-      { '<leader>zl', ':ZkLinks<CR>' },
-      { '<leader>zL', ':ZkInsertLink<CR>' },
+      { '<leader>zl', ':ZkInsertLink<CR>' },
+      { '<leader>zL', ':ZkLinks<CR>' },
       { '<leader>ch', ':norm @c<CR>', mode = 'v' },
     },
     dependencies = {
@@ -31,7 +31,7 @@ local spec = {
         picker = 'telescope',
       }
 
-      map('n', '<leader>rm', function()
+      map('n', '<leader>remove', function()
         vim.api.nvim_feedkeys(Keys ':!rm %<CR>', 'n', true)
         vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
       end, { desc = 'rm buffer file' })
@@ -86,6 +86,9 @@ local spec = {
           ['x'] = { char = '✔', hl_group = 'ObsidianDone' },
         },
       }
+      opts.note_id_func = function(title)
+        return title
+      end
       opts.note_frontmatter_func = function(note)
         local frontmatter = {
           id = note.id,

@@ -11,9 +11,20 @@ end
 return {
   { 'wakatime/vim-wakatime' }, -- code time tracking goodness
   { 'tpope/vim-sleuth' }, -- Detect tabstop and shiftwidth automatically
-  { 'vim-scripts/bufkill.vim' }, -- Delete buffers without affecting window layout
-  { 'numToStr/Comment.nvim', opts = {} }, --  comment visual regions/lines
+  { 'moll/vim-bbye' }, -- Delete buffers without affecting window layout :Bdelete
   { 'kylechui/nvim-surround', version = '*', config = true, vscode = true },
+
+  {
+    'numToStr/Comment.nvim',
+    dependencies = {
+      { 'JoosepAlviste/nvim-ts-context-commentstring' },
+    },
+    config = function()
+      require('Comment').setup {
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      }
+    end,
+  }, --  comment visual regions/lines
 
   {
     'christoomey/vim-tmux-navigator',

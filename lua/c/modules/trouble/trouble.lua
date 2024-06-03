@@ -2,7 +2,10 @@ return {
   {
     'folke/trouble.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    opts = {},
+    config = function()
+      require('trouble').setup()
+      require 'c.modules.trouble.autocmds.delete_entry'
+    end,
 
     keys = {
       {

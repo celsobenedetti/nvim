@@ -1,6 +1,7 @@
 return {
   {
     'zbirenbaum/copilot.lua',
+    enabled = vim.g.copilot,
     event = 'VeryLazy',
     opts = {
       filetypes = {
@@ -14,6 +15,7 @@ return {
 
   {
     'zbirenbaum/copilot-cmp',
+    enabled = vim.g.copilot,
     dependencies = { 'zbirenbaum/copilot.lua' },
     config = function()
       require('copilot_cmp').setup()

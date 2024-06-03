@@ -12,6 +12,7 @@ return {
     dependencies = {
       'williamboman/mason.nvim', -- Installs the debug adapters for you
       'jay-babu/mason-nvim-dap.nvim',
+      'theHamsta/nvim-dap-virtual-text',
     },
     keys = {
       {
@@ -19,7 +20,7 @@ return {
         function()
           require('dap').continue()
         end,
-        desc = 'Debug: Start/Continue',
+        desc = 'DAP: Start/Continue',
       },
       {
         '<leader>dC',
@@ -33,28 +34,28 @@ return {
         function()
           require('dap').step_into()
         end,
-        desc = 'Debug: Step Into',
+        desc = 'DAP: Step Into',
       },
       {
         '<leader>do',
         function()
           require('dap').step_over()
         end,
-        desc = 'Debug: Step Over',
+        desc = 'DAP: Step Over',
       },
       {
         '<leader>dO',
         function()
           require('dap').step_out()
         end,
-        desc = 'Debug: Step Out',
+        desc = 'DAP: Step Out',
       },
       {
         '<leader>db',
         function()
           require('dap').toggle_breakpoint()
         end,
-        desc = 'Debug: Toggle Breakpoint',
+        desc = 'DAP: Toggle Breakpoint',
       },
 
       {
@@ -62,7 +63,7 @@ return {
         function()
           require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
         end,
-        desc = 'Debug: Set Breakpoint',
+        desc = 'DAP: Set Breakpoint',
       },
 
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
@@ -109,6 +110,8 @@ return {
         },
       }
 
+      require('nvim-dap-virtual-text').setup()
+
       local filetype = vim.api.nvim_get_option_value('filetype', {})
       if filetype == 'typescript' or filetype == 'javascript' then
         require 'c.modules.typescript.dap.setup'()
@@ -130,6 +133,7 @@ return {
 
   {
     'rcarriga/nvim-dap-ui',
+    dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
     keys = {
       {
         '<leader>du',
@@ -158,13 +162,6 @@ return {
         },
       }
 
-      dapui.setup(opts)
-
-      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-      dap.listeners.before.event_exited['dapui_config'] = dapui.close
-    end,
-    opts = function(_, opts)
       opts.layouts = {
 
         {
@@ -201,7 +198,12 @@ return {
           size = 15,
         },
       }
-      -- code
+
+      dapui.setup(opts)
+
+      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
+      dap.listeners.before.event_exited['dapui_config'] = dapui.close
     end,
   },
 
