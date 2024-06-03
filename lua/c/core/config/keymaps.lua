@@ -4,7 +4,8 @@ map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 -- new file
 map('n', '<leader>fn', ':enew<cr>', { desc = 'New File' })
 map('n', '<leader>re', ':e! %<cr>', { desc = 'Refresh Buffer' })
-map('n', '<leader>dd', ':bdelete<cr>', { desc = 'Delete Buffer' })
+map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
+map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
 
 map('n', '<leader>u1', ':colorscheme ' .. vim.g.code_colorscheme .. '<CR>', { desc = 'Set code colorscheme' })
 map('n', '<leader>u2', ':colorscheme ' .. vim.g.pretty_colorscheme .. '<CR>', { desc = 'Set pretty colorscheme' })
