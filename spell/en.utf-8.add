@@ -250,3 +250,5 @@ csv
 whitespace
 Emailer
 webhook
+emailer
+Jsonapi

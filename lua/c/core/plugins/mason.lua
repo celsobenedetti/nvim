@@ -5,6 +5,7 @@ return {
     config = function()
       local ensure_installed = {
         'black', -- Python formatter
+        'checkmake', -- Makefile linter
         'eslint', -- JS/TS linter
         'gopls', -- Go language server
         'isort', -- Python import formatter
@@ -15,11 +16,11 @@ return {
         'pyright', -- Python language server
         'shfmt', -- sh/bash/zsh formatter
         'stylua', -- Lua formatter
+        'tailwindcss-language-server', -- Tailwindcss LSP
         'taplo', -- TOML language server / toolkit
         'tsserver', -- TS language server
         'vale_ls', -- Markdown linter with LSP providers
         'zk', -- zk plain text note-taking assitant - Markdown
-        'tailwindcss-language-server', -- Tailwindcss LSP
       }
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
     end,

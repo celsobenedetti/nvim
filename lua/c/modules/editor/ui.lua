@@ -4,7 +4,18 @@ return {
   --   name = 'catppuccin',
   --   priority = 1000,
   -- },
-  { 'rose-pine/neovim', name = 'rose-pine', config = true },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+    opts = function(_, opts)
+      opts.styles = {
+        bold = true,
+        italic = false,
+        transparency = false,
+      }
+      -- code
+    end,
+  },
 
   {
     'folke/styler.nvim',

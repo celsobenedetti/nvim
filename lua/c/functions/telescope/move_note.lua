@@ -7,7 +7,7 @@ local actions = require 'telescope.actions'
 local action_state = require 'telescope.actions.state'
 
 M.run = function(opts)
-  local fd = '!fd . --type=directory -E hugo/ ~/Documents/notes/'
+  local fd = '!fd . --type=directory -E hugo/ ~/notes/'
   local fd_result = vim.api.nvim_exec2(fd, { output = true })
 
   local dirs = vim.split(fd_result.output, '\n')

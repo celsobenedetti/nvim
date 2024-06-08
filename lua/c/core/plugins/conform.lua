@@ -23,6 +23,7 @@ return {
         javascriptreact = { { 'prettierd' } },
         typescriptreact = { { 'prettierd' } },
 
+        graphql = { { 'prettierd' } },
         json = { { 'prettierd' } },
         toml = { { 'taplo' } },
 

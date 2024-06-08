@@ -45,17 +45,13 @@ return {
   },
 
   {
-    'simrat39/symbols-outline.nvim',
-    config = true,
+    'hedyhli/outline.nvim',
+    lazy = true,
+    cmd = { 'Outline', 'OutlineOpen' },
     keys = {
-      {
-        '<leader>sO',
-        function()
-          require('symbols-outline').toggle_outline()
-        end,
-        desc = 'SymbolsOutline toggle',
-      },
+      { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle outline' },
     },
+    opts = {},
   },
 
   {

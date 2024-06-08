@@ -72,7 +72,7 @@ local spec = {
       opts.workspaces = {
         {
           name = 'notes',
-          path = '~/Documents/notes',
+          path = '~/notes',
           overrides = {
             notes_subdir = '0-inbox',
           },
