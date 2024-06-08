@@ -38,6 +38,10 @@ map('v', '<leader>T', function()
   vim.api.nvim_feedkeys(Keys '!title<CR>', 'n', true)
 end, { desc = 'Run current line as bash command' })
 
+map('v', '<leader>I', function()
+  require('c.functions.jira').open_selected_issue()
+end, { desc = 'Open Jira Issue in current selection' })
+
 -- get current line to variable
 
 -- run current line as lua command in vim
