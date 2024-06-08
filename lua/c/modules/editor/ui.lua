@@ -59,4 +59,9 @@ return {
       end
     end,
   },
+
+  {
+    'levouh/tint.nvim',
+    opts = true,
+  },
 }
