@@ -6,6 +6,7 @@ return {
       local ensure_installed = {
         'black', -- Python formatter
         'checkmake', -- Makefile linter
+        'dockerls', -- Docker LSP
         'eslint', -- JS/TS linter
         'gopls', -- Go language server
         'isort', -- Python import formatter

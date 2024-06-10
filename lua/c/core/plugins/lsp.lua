@@ -2,6 +2,7 @@ local servers = {
   gopls = {},
   pyright = {},
   tsserver = {},
+  dockerls = {},
   -- tailwindcss = {},
 
   lua_ls = {
