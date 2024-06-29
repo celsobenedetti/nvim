@@ -40,7 +40,7 @@ map('v', '<leader>T', function()
 end, { desc = 'Run current line as bash command' })
 
 map({ 'v', 'n' }, '<leader>I', function()
-  require('c.functions.jira').open_selected_issue()
+  require('c.functions.issues').open_selected_issue()
 end, { desc = 'Open Jira Issue in current selection' })
 
 -- get current line to variable
