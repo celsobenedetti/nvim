@@ -18,7 +18,7 @@ return {
         'pnpm-lock.yaml',
       }
 
-      local is_work = string.match(vim.fn.getcwd(), 'work/chatbot')
+      local is_work = string.match(vim.fn.getcwd(), 'chatbot')
       if is_work then
         ignore_patterns = vim.list_extend(ignore_patterns, {
           'drupal',

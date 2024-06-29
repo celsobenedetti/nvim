@@ -1,7 +1,8 @@
 local servers = {
   gopls = {},
   pyright = {},
-  tsserver = {},
+  -- tsserver = {},
+  vtsls = {},
   dockerls = {},
   -- tailwindcss = {},
 

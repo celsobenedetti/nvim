@@ -1,4 +1,5 @@
 return {
+
   -- {
   --   'catppuccin/nvim',
   --   name = 'catppuccin',
@@ -73,6 +74,7 @@ return {
         char = '│',
         tab_char = '│',
       },
+      scope = { enabled = false, show_start = false, show_end = false },
     },
   },
 }
