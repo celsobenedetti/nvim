@@ -9,7 +9,7 @@ vim.g.diagnostics = true
 
 vim.opt.background = 'dark'
 vim.g.code_colorscheme = 'default'
-vim.g.pretty_colorscheme = 'rose-pine'
+vim.g.pretty_colorscheme = 'kanagawa-wave'
 
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed
 

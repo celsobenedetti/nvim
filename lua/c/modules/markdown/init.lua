@@ -111,17 +111,17 @@ local spec = {
   },
 }
 
-vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-  pattern = '*.md',
-  callback = function()
-    vim.api.nvim_feedkeys(Keys 'gg/#<CR>', 'n', true)
-    vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
-    require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
-    require('twilight').enable()
-  end,
-  group = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true }),
-  desc = 'Run on Markdown file when first entering Neovim',
-})
+-- vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+--   pattern = '*.md',
+--   callback = function()
+--     vim.api.nvim_feedkeys(Keys 'gg/#<CR>', 'n', true)
+--     vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
+--     require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
+--     require('twilight').enable()
+--   end,
+--   group = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true }),
+--   desc = 'Run on Markdown file when first entering Neovim',
+-- })
 
 vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   pattern = 'new_note',
