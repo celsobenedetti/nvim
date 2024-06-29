@@ -6,6 +6,7 @@ map('n', '<leader>fn', ':enew<cr>', { desc = 'New File' })
 map('n', '<leader>re', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
+map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 
 map('n', '<leader>u1', ':colorscheme ' .. vim.g.code_colorscheme .. '<CR>', { desc = 'Set code colorscheme' })
 map('n', '<leader>u2', ':colorscheme ' .. vim.g.pretty_colorscheme .. '<CR>', { desc = 'Set pretty colorscheme' })
@@ -57,6 +58,11 @@ map('n', 'j', track_position_before_relative_jump.down)
 
 map('n', 'gv', function()
   vim.api.nvim_feedkeys(Keys '<c-w>v', 'n', true)
+  require('telescope.builtin').lsp_definitions { reuse_win = true }
+end, { desc = 'Split vertical and go to definition' })
+
+map('n', 'gs', function()
+  vim.api.nvim_feedkeys(Keys '<c-w>s', 'n', true)
   require('telescope.builtin').lsp_definitions { reuse_win = true }
 end, { desc = 'Split vertical and go to definition' })
 
