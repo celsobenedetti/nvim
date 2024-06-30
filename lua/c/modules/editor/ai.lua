@@ -1,24 +1,41 @@
 return {
-  {
-    'zbirenbaum/copilot.lua',
-    enabled = vim.g.copilot,
-    event = 'VeryLazy',
-    opts = {
-      filetypes = {
-        yaml = true,
-        json = true,
-      },
-      suggestion = { enabled = false },
-      panel = { enabled = false },
-    },
-  },
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   enabled = vim.g.copilot,
+  --   event = 'VeryLazy',
+  --   opts = {
+  --     filetypes = {
+  --       yaml = true,
+  --       json = true,
+  --     },
+  --     suggestion = { enabled = false },
+  --     panel = { enabled = false },
+  --   },
+  -- },
+  --
+  -- {
+  --   'zbirenbaum/copilot-cmp',
+  --   enabled = vim.g.copilot,
+  --   dependencies = { 'zbirenbaum/copilot.lua' },
+  --   config = function()
+  --     require('copilot_cmp').setup()
+  --   end,
+  -- },
 
   {
-    'zbirenbaum/copilot-cmp',
-    enabled = vim.g.copilot,
-    dependencies = { 'zbirenbaum/copilot.lua' },
+    'robitx/gp.nvim',
+    cmd = {
+      'GpChatNew',
+    },
+    keys = {
+      {
+        '<leader>G',
+        ':GpChatNew tabnew<CR>',
+        desc = 'Open ChatGPT in new tab',
+      },
+    },
     config = function()
-      require('copilot_cmp').setup()
+      require('gp').setup()
     end,
   },
 

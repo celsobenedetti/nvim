@@ -79,7 +79,7 @@ return {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
-          { name = 'copilot' },
+          -- { name = 'copilot' },
         },
       }
       map('i', '<C-Space>', cmp.mapping.complete, { desc = 'cmp: Trigger Completion' })
