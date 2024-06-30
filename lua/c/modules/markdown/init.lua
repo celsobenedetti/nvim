@@ -79,6 +79,7 @@ local spec = {
         },
       }
       opts.ui = {
+        enable = false,
         checkboxes = {
           [' '] = { char = '󰄱', hl_group = 'ObsidianTodo' },
           ['>'] = { char = '', hl_group = 'ObsidianRightArrow' },
@@ -108,6 +109,30 @@ local spec = {
     dependencies = {
       'nvim-lua/plenary.nvim',
     },
+  },
+
+  {
+    'MeanderingProgrammer/markdown.nvim',
+    ft = 'markdown',
+    name = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter', -- Mandatory
+      'nvim-tree/nvim-web-devicons', -- Optional but recommended
+    },
+    config = function()
+      require('render-markdown').setup {
+        headings = { '# ', '## ', '### ', '󰲧 ', '󰲩 ', '󰲫 ' },
+        -- Character to use for the bullet points in lists
+        bullets = { '◆', '', '󱨉', '' },
+        callout = {
+          note = '󰋽 Note',
+          tip = '󰌶 Tip',
+          important = '󰅾 Important',
+          warning = '󰀪 Warning',
+          caution = '󰳦 Caution',
+        },
+      }
+    end,
   },
 }
 

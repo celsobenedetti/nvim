@@ -1,41 +1,8 @@
 return {
 
   {
-    'catppuccin/nvim',
-    enabled = false,
-    name = 'catppuccin',
-    priority = 1000,
-  },
-
-  {
     'rebelot/kanagawa.nvim',
     priority = 1000,
-  },
-
-  {
-    'rose-pine/neovim',
-    enabled = false,
-    name = 'rose-pine',
-    opts = function(_, opts)
-      opts.styles = {
-        bold = true,
-        italic = false,
-        transparency = false,
-      }
-      -- code
-    end,
-  },
-
-  {
-    'folke/styler.nvim',
-    ft = { 'help' },
-    config = function()
-      require('styler').setup {
-        themes = {
-          help = { colorscheme = vim.g.pretty_colorscheme },
-        },
-      }
-    end,
   },
 
   {
