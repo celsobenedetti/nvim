@@ -1,6 +1,7 @@
+vim.api.nvim_set_hl(0, 'markdownLinkText', { fg = '#000000' }) ---
+---
 ---@diagnostic disable: param-type-mismatch
-local spec = {
-
+return {
   {
     'celsobenedetti/zk-nvim',
     ft = 'markdown',
@@ -124,13 +125,28 @@ local spec = {
       require('render-markdown').setup {
         headings = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
         -- Character to use for the bullet points in lists
-        bullets = { '◆', '', '󱨉', '' },
+        -- { '', '◆  ','',  '', '' }
+        bullet = {
+          enabled = true,
+          highlight = 'RenderMarkdownBullet',
+          icons = { '', '', '', '' },
+        },
         callout = {
-          note = '󰋽 Note',
-          tip = '󰌶 Tip',
-          important = '󰅾 Important',
-          warning = '󰀪 Warning',
-          caution = '󰳦 Caution',
+          note = { raw = '[!NOTE]', rendered = '󰋽 Note', highlight = 'DiagnosticInfo' },
+          tip = { raw = '[!TIP]', rendered = '󰌶 Tip', highlight = 'DiagnosticOk' },
+          important = { raw = '[!IMPORTANT]', rendered = '󰅾 Important', highlight = 'DiagnosticHint' },
+          warning = { raw = '[!WARNING]', rendered = '󰀪 Warning', highlight = 'DiagnosticWarn' },
+          caution = { raw = '[!CAUTION]', rendered = '󰳦 Caution', highlight = 'DiagnosticError' },
+          -- Obsidian: https://help.a.md/Editing+and+formatting/Callouts
+          abstract = { raw = '[!ABSTRACT]', rendered = '󰨸 Abstract', highlight = 'DiagnosticInfo' },
+          todo = { raw = '[!TODO]', rendered = '󰗡 Todo', highlight = 'DiagnosticInfo' },
+          success = { raw = '[!SUCCESS]', rendered = '󰄬 Success', highlight = 'DiagnosticOk' },
+          question = { raw = '[!QUESTION]', rendered = '󰘥 Question', highlight = 'DiagnosticWarn' },
+          failure = { raw = '[!FAILURE]', rendered = '󰅖 Failure', highlight = 'DiagnosticError' },
+          danger = { raw = '[!DANGER]', rendered = '󱐌 Danger', highlight = 'DiagnosticError' },
+          bug = { raw = '[!BUG]', rendered = '󰨰 Bug', highlight = 'DiagnosticError' },
+          example = { raw = '[!EXAMPLE]', rendered = '󰉹 Example', highlight = 'DiagnosticHint' },
+          quote = { raw = '[!QUOTE]', rendered = '󱆨 Quote', highlight = '@markup.quote' },
         },
         markdown_query = [[
         (atx_heading [
@@ -176,7 +192,7 @@ local spec = {
         highlights = {
           heading = {
             -- Background of heading line
-            backgrounds = { '@markup.heading', '@comment.warning', '@diff.delta', '@diff.minus' },
+            backgrounds = { 'CursorLine', '@comment.warning', '@diff.minus', '@diff.plus' },
             -- Foreground of heading character only
             foregrounds = {
               'markdownH1',
@@ -190,7 +206,7 @@ local spec = {
           -- Horizontal break
           dash = 'LineNr',
           -- Code blocks
-          code = 'ColorColumn',
+          code = 'CursorLine',
           -- Bullet points in list
           bullet = 'Normal',
           checkbox = {
@@ -222,27 +238,3 @@ local spec = {
     end,
   },
 }
-
--- vim.api.nvim_create_autocmd({ 'VimEnter' }, {
---   pattern = '*.md',
---   callback = function()
---     vim.api.nvim_feedkeys(Keys 'gg/#<CR>', 'n', true)
---     vim.api.nvim_feedkeys(Keys ':nohlsearch<CR>', 'n', true)
---     require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
---     require('twilight').enable()
---   end,
---   group = vim.api.nvim_create_augroup('MarkdownGroup', { clear = true }),
---   desc = 'Run on Markdown file when first entering Neovim',
--- })
-
-vim.api.nvim_create_autocmd({ 'VimEnter' }, {
-  pattern = 'new_note',
-  callback = function()
-    require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
-    vim.api.nvim_feedkeys(Keys 'ggi<BS><BS><BS>', 'n', true)
-  end,
-  group = vim.api.nvim_create_augroup('NewNoteGroup', { clear = true }),
-  desc = 'Run when entering new_note files',
-})
-
-return spec

@@ -24,10 +24,39 @@ local servers = {
       },
     },
   },
+
+  jsonls = {
+    on_new_config = function(new_config)
+      new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+      vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+    end,
+    settings = {
+      json = {
+        validate = { enable = true },
+      },
+    },
+  },
+
+  yamlls = {
+    settings = {
+      yaml = {
+        schemaStore = {
+          -- You must disable built-in schemaStore support if you want to use
+          -- this plugin and its advanced options like `ignore`.
+          enable = false,
+          -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+          url = '',
+        },
+        schemas = require('schemastore').yaml.schemas(),
+      },
+    },
+  },
 }
 
 return {
-
+  {
+    'b0o/schemastore.nvim',
+  },
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {

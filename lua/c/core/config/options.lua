@@ -1,3 +1,6 @@
+vim.g.pretty_colorscheme = 'github_dark_default'
+vim.g.code_colorscheme = 'default'
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -8,8 +11,6 @@ vim.g.completion = true
 vim.g.diagnostics = true
 
 vim.opt.background = 'dark'
-vim.g.code_colorscheme = 'default'
-vim.g.pretty_colorscheme = 'kanagawa-wave'
 
 vim.g.have_nerd_font = true -- Set to true if you have a Nerd Font installed
 

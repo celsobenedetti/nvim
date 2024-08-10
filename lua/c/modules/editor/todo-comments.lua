@@ -34,6 +34,7 @@ return {
         TODO = { icon = ' ', color = 'info' },
         ERR = { icon = ' ', color = 'error' },
         HACK = { icon = ' ', color = 'warning' },
+        WIP = { icon = ' ', color = 'warning' },
         WARN = { icon = ' ', color = 'warning', alt = { 'WARNING', 'XXX' } },
         PERF = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
         NOTE = { icon = '', color = 'hint', alt = { 'INFO' } },

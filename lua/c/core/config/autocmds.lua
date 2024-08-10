@@ -39,16 +39,6 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- insert mode when entering git commit
-vim.api.nvim_create_autocmd('VimEnter', {
-  group = augroup 'git-commit-augroup',
-  pattern = { 'COMMIT_EDITMSG' },
-  callback = function()
-    require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
-    vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
-  end,
-})
-
 -- tmux
 
 local wr_group = vim.api.nvim_create_augroup('WinResize', { clear = true })
@@ -58,4 +48,25 @@ vim.api.nvim_create_autocmd('VimResized', {
   pattern = '*',
   command = 'wincmd =',
   desc = 'Automatically resize windows when the host window size changes.',
+})
+
+-- markdown
+-- vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+--   pattern = 'new_note',
+--   callback = function()
+--     require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
+--     vim.api.nvim_feedkeys(Keys 'ggi<BS><BS><BS>', 'n', true)
+--   end,
+--   group = augroup 'new-note',
+--   desc = 'Run when entering new_note files',
+-- })
+--
+
+-- insert mode when entering git commit
+vim.api.nvim_create_autocmd('VimEnter', {
+  group = augroup 'git-commit-augroup',
+  pattern = { 'COMMIT_EDITMSG' },
+  callback = function()
+    vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
+  end,
 })
