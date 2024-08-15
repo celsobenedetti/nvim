@@ -54,9 +54,6 @@ local servers = {
 }
 
 return {
-  {
-    'b0o/schemastore.nvim',
-  },
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {

@@ -16,20 +16,20 @@ return {
         go = { 'goimports' },
         lua = { 'stylua' },
         python = { 'isort', 'black' },
-        markdown = { { 'markdownlint-cli2' } },
+        markdown = { 'markdownlint-cli2' },
 
-        typescript = { { 'prettierd' } },
-        javascript = { { 'prettierd' } },
-        javascriptreact = { { 'prettierd' } },
-        typescriptreact = { { 'prettierd' } },
+        typescript = { 'prettierd' },
+        javascript = { 'prettierd' },
+        javascriptreact = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
 
-        graphql = { { 'prettierd' } },
-        json = { { 'prettierd' } },
-        toml = { { 'taplo' } },
+        graphql = { 'prettierd' },
+        json = { 'prettierd' },
+        toml = { 'taplo' },
 
-        sh = { { 'shfmt' } },
-        bash = { { 'shfmt' } },
-        zsh = { { 'shfmt' } },
+        sh = { 'shfmt' },
+        bash = { 'shfmt' },
+        zsh = { 'shfmt' },
       },
       formatters = {
         goimports = {

@@ -1,6 +1,8 @@
 require 'c.core.config'
 
 require('lazy').setup({
+
+  { 'b0o/schemastore.nvim', lazy = true },
   { import = 'c.core.plugins' },
 
   { import = 'c.modules.editor' },
