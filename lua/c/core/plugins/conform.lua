@@ -2,10 +2,11 @@ return {
   { -- Autoformat
     'stevearc/conform.nvim',
     opts = {
+      log_level = vim.log.levels.WARN,
       notify_on_error = false,
       format_on_save = function()
         return {
-          timeout_ms = 500,
+          timeout_ms = 5000,
           lsp_fallback = true,
           filter = function(client)
             return vim.g.autoformat and client.name ~= 'tsserver'
