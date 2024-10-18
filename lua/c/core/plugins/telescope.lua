@@ -24,7 +24,7 @@ return {
           'drupal',
           'python',
           'terraform',
-          'nestjs',
+          -- 'nestjs',
           'packages/conversation/public/static',
           'public/static',
         })

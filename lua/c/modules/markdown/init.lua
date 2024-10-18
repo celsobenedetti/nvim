@@ -1,4 +1,5 @@
 vim.api.nvim_set_hl(0, 'markdownLinkText', { fg = '#000000' }) ---
+-- https://github.com/OXY2DEV/markview.nvim
 ---
 ---@diagnostic disable: param-type-mismatch
 return {
@@ -15,6 +16,21 @@ return {
       { '<leader>zl', ':ZkInsertLink<CR>' },
       { '<leader>zL', ':ZkLinks<CR>' },
       { '<leader>ch', ':norm @c<CR>', mode = 'v' },
+      {
+        '<leader>P',
+        function()
+          vim.api.nvim_feedkeys(Keys 'vip', 'n', true)
+          vim.api.nvim_feedkeys(Keys '!prettier --parser=markdown<CR>', 'n', true)
+        end,
+        mode = 'n',
+      },
+      {
+        '<leader>P',
+        function()
+          vim.api.nvim_feedkeys(Keys '!prettier --parser=markdown<CR>', 'n', true)
+        end,
+        mode = 'v',
+      },
     },
     dependencies = {
       {
@@ -120,7 +136,7 @@ return {
       'nvim-tree/nvim-web-devicons', -- Optional but recommended
     },
     config = function()
-      map('n', '<leader>md', ':RenderMarkdownToggle<CR>', { desc = 'Toggle markdown.nvim' })
+      map('n', '<leader>md', ':RenderMarkdown toggle<CR>', { desc = 'Toggle markdown.nvim' })
 
       require('render-markdown').setup {
         headings = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
@@ -147,6 +163,7 @@ return {
           bug = { raw = '[!BUG]', rendered = '󰨰 Bug', highlight = 'DiagnosticError' },
           example = { raw = '[!EXAMPLE]', rendered = '󰉹 Example', highlight = 'DiagnosticHint' },
           quote = { raw = '[!QUOTE]', rendered = '󱆨 Quote', highlight = '@markup.quote' },
+          hot = { raw = '[!HOT]', rendered = '󰈸 Hot', highlight = 'DiagnosticWarn' },
         },
         markdown_query = [[
         (atx_heading [

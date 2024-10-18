@@ -1,5 +1,6 @@
-vim.g.pretty_colorscheme = 'github_dark_default'
-vim.g.code_colorscheme = 'default'
+vim.g.colorscheme_1 = 'default'
+vim.g.colorscheme_2 = 'gruvbox'
+vim.g.colorscheme_3 = 'oxocarbon'
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '

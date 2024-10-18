@@ -8,8 +8,9 @@ map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 
-map('n', '<leader>u1', ':colorscheme ' .. vim.g.code_colorscheme .. '<CR>', { desc = 'Set code colorscheme' })
-map('n', '<leader>u2', ':colorscheme ' .. vim.g.pretty_colorscheme .. '<CR>', { desc = 'Set pretty colorscheme' })
+map('n', '<leader>u1', ':colorscheme ' .. vim.g.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
+map('n', '<leader>u2', ':colorscheme ' .. vim.g.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })
+map('n', '<leader>u3', ':colorscheme ' .. vim.g.colorscheme_3 .. '<CR>', { desc = 'Set colorscheme 3' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
@@ -41,6 +42,10 @@ end, { desc = 'Run current line as bash command' })
 
 map({ 'v', 'n' }, '<leader>I', function()
   require('c.functions.issues').open_selected_issue()
+end, { desc = 'Open Jira Issue in current selection' })
+
+map({ 'v' }, '<leader>G', function()
+  require('c.functions.google').google_search()()
 end, { desc = 'Open Jira Issue in current selection' })
 
 -- get current line to variable
