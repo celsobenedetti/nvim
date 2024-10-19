@@ -1,8 +1,9 @@
 local servers = {
   gopls = {},
   pyright = {},
-  -- tsserver = {},
-  vtsls = {},
+  tsserver = {},
+  -- vtsls = {},
+  deno = {},
   dockerls = {},
   -- tailwindcss = {},
 
@@ -175,8 +176,11 @@ return {
       -- require('mason').setup()
 
       --- these servers should be ignored by mason-lspconfig
+      local is_deno = require('lspconfig.util').root_pattern('deno.json', 'deno.jsonc')
       local disable = {
         zk = true,
+        deno = not is_deno,
+        ts_ls = is_deno,
       }
 
       require('mason-lspconfig').setup {
