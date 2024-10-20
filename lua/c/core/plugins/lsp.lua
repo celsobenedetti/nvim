@@ -176,14 +176,16 @@ return {
       -- require('mason').setup()
 
       --- these servers should be ignored by mason-lspconfig
-      local is_deno = require('lspconfig.util').root_pattern('deno.json', 'deno.jsonc')
+      local is_deno = require('c.functions.utils.deno').is_deno()
+
       local disable = {
         zk = true,
-        deno = not is_deno,
+        denols = not is_deno,
         ts_ls = is_deno,
       }
 
       require('mason-lspconfig').setup {
+
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
