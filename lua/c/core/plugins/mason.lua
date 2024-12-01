@@ -11,6 +11,7 @@ return {
         'eslint', -- JS/TS linter
         'gopls', -- Go language server
         'js-debug-adapter', -- JS/TS debugger
+        'json-lsp', -- JSON LSP jsonls
         'isort', -- Python import formatter
         'lua_ls', -- Lua language server
         'markdownlint-cli2', -- Markdown linter an formatter
