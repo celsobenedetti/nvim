@@ -3,7 +3,7 @@ return {
   { -- Autoformat
     'stevearc/conform.nvim',
     opts = function()
-      local js_formatter = require('c.functions.utils.deno').is_deno() and 'deno' or 'prettierd'
+      local js_formatter = require('c.functions.utils.cwd').is_deno() and 'deno' or 'prettierd'
 
       return {
         log_level = vim.log.levels.WARN,

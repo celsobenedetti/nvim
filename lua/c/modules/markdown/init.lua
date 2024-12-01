@@ -150,6 +150,8 @@ return {
         callout = {
           note = { raw = '[!NOTE]', rendered = '󰋽 Note', highlight = 'DiagnosticInfo' },
           tip = { raw = '[!TIP]', rendered = '󰌶 Tip', highlight = 'DiagnosticOk' },
+          idea = { raw = '[!idea]', rendered = '󰌶 Idea', highlight = 'DiagnosticOk' },
+          ideas = { raw = '[!ideas]', rendered = '󰌶 Ideas', highlight = 'DiagnosticOk' },
           important = { raw = '[!IMPORTANT]', rendered = '󰅾 Important', highlight = 'DiagnosticHint' },
           warning = { raw = '[!WARNING]', rendered = '󰀪 Warning', highlight = 'DiagnosticWarn' },
           caution = { raw = '[!CAUTION]', rendered = '󰳦 Caution', highlight = 'DiagnosticError' },
@@ -161,6 +163,7 @@ return {
           failure = { raw = '[!FAILURE]', rendered = '󰅖 Failure', highlight = 'DiagnosticError' },
           danger = { raw = '[!DANGER]', rendered = '󱐌 Danger', highlight = 'DiagnosticError' },
           bug = { raw = '[!BUG]', rendered = '󰨰 Bug', highlight = 'DiagnosticError' },
+          bugs = { raw = '[!bugs]', rendered = '󰨰 Bugs', highlight = 'DiagnosticError' },
           example = { raw = '[!EXAMPLE]', rendered = '󰉹 Example', highlight = 'DiagnosticHint' },
           quote = { raw = '[!QUOTE]', rendered = '󱆨 Quote', highlight = '@markup.quote' },
           hot = { raw = '[!HOT]', rendered = '󰈸 Hot', highlight = 'DiagnosticWarn' },

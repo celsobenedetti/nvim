@@ -5,7 +5,7 @@ local servers = {
   -- vtsls = {},
   deno = {},
   dockerls = {},
-  -- tailwindcss = {},
+  tailwindcss = {},
 
   lua_ls = {
     settings = {
@@ -176,12 +176,14 @@ return {
       -- require('mason').setup()
 
       --- these servers should be ignored by mason-lspconfig
-      local is_deno = require('c.functions.utils.deno').is_deno()
+      local is_deno = require('c.functions.utils.cwd').is_deno()
+      local is_tailwind = require('c.functions.utils.cwd').is_tailwind()
 
       local disable = {
         zk = true,
         denols = not is_deno,
         ts_ls = is_deno,
+        tailwindcss = not is_tailwind,
       }
 
       require('mason-lspconfig').setup {
