@@ -35,6 +35,20 @@ return function()
           '!**/.pnpm/**',
         },
       },
+
+      {
+        type = 'pwa-node',
+        request = 'attach',
+        name = 'Attach Nest ',
+        port = 7000,
+        processId = require('dap.utils').pick_process,
+        cwd = '${workspaceFolder}',
+        resolveSourceMapLocations = {
+          '${workspaceFolder}/**',
+          '!**/node_modules/**',
+          '!**/.pnpm/**',
+        },
+      },
     }
   end
 end
