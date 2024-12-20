@@ -1,0 +1,23 @@
+{
+  "name": "celso-snippets",
+  "engines": {
+    "vscode": "^1.11.0"
+  },
+  "contributes": {
+    "snippets": [
+      {
+        "language": [
+          "typescript",
+          "typescriptreact"
+        ],
+        "path": "./snippets/typescript.json"
+      },
+      {
+        "language": [
+          "go"
+        ],
+        "path": "./snippets/go.json"
+      }
+    ]
+  }
+}
