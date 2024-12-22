@@ -1,7 +1,7 @@
 {
   "console.log": {
     "prefix": "cl",
-    "body": ["console.log(", "$0", ")"],
+    "body": ["console.log($0)"],
     "description": "console.log"
   },
   "jsdoc": {
@@ -10,7 +10,7 @@
     "description": "jsdoc"
   },
   "Function Statementesa": {
-    "prefix": "fu",
+    "prefix": ["fu", "fn"],
     "body": [
       "function ${1:name}(${2:params}:${3:type}): (${4:type}) {",
       "\t$0",

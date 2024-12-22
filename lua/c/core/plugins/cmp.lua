@@ -12,7 +12,7 @@ return {
       require('luasnip.loaders.from_vscode').lazy_load {
         paths = {
           '/home/celso/.config/nvim',
-          -- '/home/celso/.local/share/nvim/lazy/friendly-snippets',
+          '/home/celso/.local/share/nvim/lazy/friendly-snippets',
         },
       }
     end,
