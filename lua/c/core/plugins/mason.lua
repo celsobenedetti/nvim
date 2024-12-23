@@ -10,6 +10,7 @@ return {
         'dockerls', -- Docker language server
         'eslint', -- JS/TS linter
         'gopls', -- Go language server
+        'goimports', -- Go Imports formatter
         'js-debug-adapter', -- JS/TS debugger
         'json-lsp', -- JSON LSP jsonls
         'isort', -- Python import formatter
