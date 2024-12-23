@@ -62,7 +62,7 @@ return {
     },
     keys = {
       {
-        '<leader>A',
+        '<leader>an',
         ':Neogen<CR>',
         desc = 'Neogen annotation',
       },

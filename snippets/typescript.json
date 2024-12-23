@@ -6,7 +6,7 @@
   },
   "jsdoc": {
     "prefix": ["jsd", "jsdoc"],
-    "body": ["/**", "$0", "*/"],
+    "body": ["/**", "* $0", "*/"],
     "description": "jsdoc"
   },
   "Function Statementesa": {
