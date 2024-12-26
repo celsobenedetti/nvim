@@ -18,22 +18,19 @@ return {
           }
         end,
         formatters_by_ft = {
-          go = { 'goimports' },
-          lua = { 'stylua' },
-          python = { 'isort', 'black' },
-          markdown = { 'markdownlint-cli2' },
-
-          typescript = { js_formatter },
+          bash = { 'shfmt' },
+          go = { 'gofumpt', 'goimports' },
+          graphql = { 'prettierd' },
           javascript = { js_formatter },
           javascriptreact = { js_formatter },
-          typescriptreact = { js_formatter },
-
-          graphql = { js_formatter },
           json = { js_formatter },
-          toml = { 'taplo' },
-
+          lua = { 'stylua' },
+          markdown = { 'markdownlint-cli2' },
+          python = { 'isort', 'black' },
           sh = { 'shfmt' },
-          bash = { 'shfmt' },
+          toml = { 'taplo' },
+          typescript = { js_formatter },
+          typescriptreact = { js_formatter },
           zsh = { 'shfmt' },
         },
         formatters = {

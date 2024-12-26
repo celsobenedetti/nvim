@@ -1,4 +1,9 @@
 vim.api.nvim_set_hl(0, 'markdownLinkText', { fg = '#000000' }) ---
+
+vim.g.markdown_fenced_languages = {
+  'ts=typescript',
+}
+
 -- https://github.com/OXY2DEV/markview.nvim
 ---
 ---@diagnostic disable: param-type-mismatch

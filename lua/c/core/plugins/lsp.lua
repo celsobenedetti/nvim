@@ -1,11 +1,12 @@
 local servers = {
-  gopls = {},
-  pyright = {},
-  tsserver = {},
-  -- vtsls = {},
   deno = {},
   dockerls = {},
+  gopls = {},
+  graphql = {},
+  pyright = {},
   tailwindcss = {},
+  tsserver = {},
+  -- vtsls = {},
 
   lua_ls = {
     settings = {

@@ -9,8 +9,10 @@ return {
         'deno', -- Deno is a JavaScript, TypeScript, and WebAssembly runtime with secure defaults and a great developer experience.
         'dockerls', -- Docker language server
         'eslint', -- JS/TS linter
+        'gofumpt', -- Strict Go formatter
         'gopls', -- Go language server
         'goimports', -- Go Imports formatter
+        'graphql', -- GQL Language server
         'js-debug-adapter', -- JS/TS debugger
         'json-lsp', -- JSON LSP jsonls
         'isort', -- Python import formatter
