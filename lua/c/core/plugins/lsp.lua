@@ -1,59 +1,61 @@
-local servers = {
-  deno = {},
-  dockerls = {},
-  gopls = {},
-  graphql = {},
-  pyright = {},
-  tailwindcss = {},
-  tsserver = {},
-  -- vtsls = {},
+local getServerConfigs = function()
+  return {
+    deno = {},
+    dockerls = {},
+    gopls = {},
+    graphql = {},
+    pyright = {},
+    tailwindcss = {},
+    tsserver = {},
+    -- vtsls = {},
 
-  lua_ls = {
-    settings = {
-      Lua = {
-        runtime = { version = 'LuaJIT' },
-        workspace = {
-          checkThirdParty = false,
-          library = {
-            '${3rd}/luv/library',
-            unpack(vim.api.nvim_get_runtime_file('', true)),
+    lua_ls = {
+      settings = {
+        Lua = {
+          runtime = { version = 'LuaJIT' },
+          workspace = {
+            checkThirdParty = false,
+            library = {
+              '${3rd}/luv/library',
+              unpack(vim.api.nvim_get_runtime_file('', true)),
+            },
           },
+          completion = {
+            callSnippet = 'Replace',
+          },
+          -- diagnostics = { disable = { 'missing-fields' } }, -- Toggle to supress specific warnings
         },
-        completion = {
-          callSnippet = 'Replace',
-        },
-        -- diagnostics = { disable = { 'missing-fields' } }, -- Toggle to supress specific warnings
       },
     },
-  },
 
-  jsonls = {
-    on_new_config = function(new_config)
-      new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-      vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
-    end,
-    settings = {
-      json = {
-        validate = { enable = true },
-      },
-    },
-  },
-
-  yamlls = {
-    settings = {
-      yaml = {
-        schemaStore = {
-          -- You must disable built-in schemaStore support if you want to use
-          -- this plugin and its advanced options like `ignore`.
-          enable = false,
-          -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
-          url = '',
+    jsonls = {
+      on_new_config = function(new_config)
+        new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+        vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+      end,
+      settings = {
+        json = {
+          validate = { enable = true },
         },
-        schemas = require('schemastore').yaml.schemas(),
       },
     },
-  },
-}
+
+    yamlls = {
+      settings = {
+        yaml = {
+          schemaStore = {
+            -- You must disable built-in schemaStore support if you want to use
+            -- this plugin and its advanced options like `ignore`.
+            enable = false,
+            -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+            url = '',
+          },
+          schemas = require('schemastore').yaml.schemas(),
+        },
+      },
+    },
+  }
+end
 
 return {
   { -- LSP Configuration & Plugins
@@ -63,6 +65,8 @@ return {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+
+      { 'b0o/schemastore.nvim', lazy = true },
 
       { 'j-hui/fidget.nvim', opts = {} }, -- Useful status updates for LSP.
     },
@@ -188,8 +192,9 @@ return {
         tailwindcss = not is_tailwind,
       }
 
-      require('mason-lspconfig').setup {
+      local servers = getServerConfigs()
 
+      require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
