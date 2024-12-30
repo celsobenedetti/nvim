@@ -1,26 +1,17 @@
 return {
-  -- {
-  --   'zbirenbaum/copilot.lua',
-  --   enabled = vim.g.copilot,
-  --   event = 'VeryLazy',
-  --   opts = {
-  --     filetypes = {
-  --       yaml = true,
-  --       json = true,
-  --     },
-  --     suggestion = { enabled = false },
-  --     panel = { enabled = false },
-  --   },
-  -- },
-  --
-  -- {
-  --   'zbirenbaum/copilot-cmp',
-  --   enabled = vim.g.copilot,
-  --   dependencies = { 'zbirenbaum/copilot.lua' },
-  --   config = function()
-  --     require('copilot_cmp').setup()
-  --   end,
-  -- },
+  {
+    'zbirenbaum/copilot.lua',
+    enabled = vim.g.copilot,
+    event = 'VeryLazy',
+    opts = {
+      filetypes = {
+        yaml = true,
+        json = true,
+      },
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+    },
+  },
 
   {
     'robitx/gp.nvim',
@@ -71,9 +62,14 @@ return {
     lazy = false,
     keys = {
       {
-        '<leader>A',
+        '<leader>av',
         ':AvanteAsk<CR>',
         desc = 'Avante GenAI Prompt',
+      },
+      {
+        '<leader>ac',
+        ':AvanteClear<CR>',
+        desc = 'Avante Clear',
       },
     },
     version = false, -- set this if you want to always pull the latest change

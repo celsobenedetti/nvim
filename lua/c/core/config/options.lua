@@ -4,11 +4,11 @@ vim.g.colorscheme_3 = 'gruvbox'
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-vim.g.hardtime = true
+vim.g.hardtime = false
 
 -- defaults
 vim.g.autoformat = true
-vim.g.copilot = false
+vim.g.copilot = true
 vim.g.completion = true
 vim.g.diagnostics = true
 
