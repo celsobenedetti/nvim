@@ -1,9 +1,10 @@
 vim.g.colorscheme_1 = 'default'
-vim.g.colorscheme_2 = 'gruvbox'
-vim.g.colorscheme_3 = 'oxocarbon'
+vim.g.colorscheme_2 = 'rose-pine'
+vim.g.colorscheme_3 = 'gruvbox'
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.g.hardtime = true
 
 -- defaults
 vim.g.autoformat = true
