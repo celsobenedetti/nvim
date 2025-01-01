@@ -1,22 +1,5 @@
 return {
-
-  -- { 'catppuccin/nvim' },
-  { 'ellisonleao/gruvbox.nvim', priority = 1000, config = true, lazy = true },
-  {
-    'rose-pine/neovim',
-    lazy = true,
-    name = 'rose-pine',
-    opts = {
-      styles = { italic = false },
-    },
-  },
-  {
-    'projekt0n/github-nvim-theme',
-    lazy = true, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    opts = true,
-  },
-
+  -- TODO: change this for snack zen
   {
     'folke/twilight.nvim',
     config = function()
@@ -29,6 +12,7 @@ return {
   },
 
   -- filenamees
+  -- TODO: is this needed? Maybe tabs would be better
   {
     'b0o/incline.nvim',
     opts = function(_, opts)

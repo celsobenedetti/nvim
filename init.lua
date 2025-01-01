@@ -4,6 +4,7 @@ require('lazy').setup({
 
   { import = 'c.core.plugins' },
 
+  { import = 'c.modules.ui' },
   { import = 'c.modules.editor' },
   { import = 'c.modules.dap' },
   { import = 'c.modules.trouble' },
