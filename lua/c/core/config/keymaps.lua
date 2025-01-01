@@ -11,6 +11,7 @@ map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>u1', ':colorscheme ' .. vim.g.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
 map('n', '<leader>u2', ':colorscheme ' .. vim.g.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })
 map('n', '<leader>u3', ':colorscheme ' .. vim.g.colorscheme_3 .. '<CR>', { desc = 'Set colorscheme 3' })
+map('n', '<leader>u4', ':colorscheme ' .. vim.g.colorscheme_4 .. '<CR>', { desc = 'Set colorscheme 4' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })

@@ -96,7 +96,7 @@ return {
           name = 'notes',
           path = '~/notes',
           overrides = {
-            notes_subdir = '0-inbox',
+            notes_subdir = 'inbox',
           },
         },
       }

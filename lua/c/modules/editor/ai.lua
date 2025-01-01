@@ -58,8 +58,8 @@ return {
 
   {
     'yetone/avante.nvim',
-    event = 'VeryLazy',
-    lazy = false,
+    -- event = 'VeryLazy',
+    lazy = true,
     keys = {
       {
         '<leader>av',

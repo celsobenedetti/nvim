@@ -1,6 +1,7 @@
 vim.g.colorscheme_1 = 'default'
 vim.g.colorscheme_2 = 'rose-pine'
 vim.g.colorscheme_3 = 'gruvbox'
+vim.g.colorscheme_4 = 'github_dark_high_contrast'
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '

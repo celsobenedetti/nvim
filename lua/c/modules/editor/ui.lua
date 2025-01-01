@@ -2,18 +2,20 @@ return {
 
   -- { 'catppuccin/nvim' },
   { 'ellisonleao/gruvbox.nvim', priority = 1000, config = true, lazy = true },
-  { 'rose-pine/neovim', name = 'rose-pine', opts = {
-    styles = { italic = false },
-  } },
-  -- { 'nyoom-engineering/oxocarbon.nvim' },
-  -- {
-  --   'projekt0n/github-nvim-theme',
-  --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
-  --   priority = 1000, -- make sure to load this before all the other start plugins
-  --   config = function()
-  --     require('github-theme').setup {}
-  --   end,
-  -- },
+  {
+    'rose-pine/neovim',
+    lazy = true,
+    name = 'rose-pine',
+    opts = {
+      styles = { italic = false },
+    },
+  },
+  {
+    'projekt0n/github-nvim-theme',
+    lazy = true, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    opts = true,
+  },
 
   {
     'folke/twilight.nvim',
@@ -64,5 +66,5 @@ return {
 
   { 'norcalli/nvim-colorizer.lua', config = {
     'toml',
-  } },
+  }, ft = { 'toml' } },
 }
