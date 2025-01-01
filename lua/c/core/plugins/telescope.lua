@@ -68,30 +68,39 @@ return {
       local builtin = require 'telescope.builtin'
       ---@diagnostic disable-next-line: different-requires
 
-      map('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      map('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      map('n', '<leader>ff', builtin.find_files, { desc = '[S]earch [F]iles' })
-      map('n', '<leader>fF', builtin.git_files, { desc = '[S]earch [F]iles' })
-      map('n', '<leader>st', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      map('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
-      map('n', '<leader>sb', builtin.git_branches, { desc = '[S]earch [B]ranches' })
-      map('n', '<leader><leader>', builtin.buffers, { desc = '[S]earch [B]ranches' })
+      map('n', '<leader>sh', builtin.help_tags, { desc = 'Telescope [S]earch [H]elp' })
+      map('n', '<leader>sk', builtin.keymaps, { desc = 'Telescope [S]earch [K]eymaps' })
+      map('n', '<leader>ff', builtin.find_files, { desc = 'Telescope [S]earch [F]iles' })
+      map('n', '<leader>fF', builtin.git_files, { desc = 'Telescope [S]earch [F]iles' })
+      map('n', '<leader>st', builtin.builtin, { desc = 'Telescope [S]earch [S]elect Telescope' })
+      map('n', '<leader>sw', builtin.grep_string, { desc = 'Telescope [S]earch current [W]ord' })
+      map('v', '<leader>sw', function()
+        local selection = require 'c.functions.utils.get_visual_selection'()
+        if not selection then
+          return
+        end
+
+        local cleaned_selection = string.gsub(selection, '\n$', '')
+        builtin.grep_string { search = cleaned_selection }
+      end, { desc = 'Telescope [S]earch current selection' })
+      -- map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
+      map('n', '<leader>sb', builtin.git_branches, { desc = 'Telescope [S]earch [B]ranches' })
+      map('n', '<leader><leader>', builtin.buffers, { desc = 'Telescope [S]earch [B]ranches' })
       map('n', '<leader>sH', '<cmd>Telescope highlights<cr>', { desc = 'Search Highlight Groups' })
 
-      map('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      map('n', '<leader>sg', builtin.live_grep, { desc = 'Telescope [S]earch by [G]rep' })
       map('n', '<leader>sd', function()
         builtin.diagnostics { bufnr = 0 }
-      end, { desc = '[S]earch [D]iagnostics for Current Document' })
-      map('n', '<leader>sD', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      map('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      end, { desc = 'Telescope [S]earch [D]iagnostics for Current Document' })
+      map('n', '<leader>sD', builtin.diagnostics, { desc = 'Telescope [S]earch [D]iagnostics' })
+      map('n', '<leader>sr', builtin.resume, { desc = 'Telescope [S]earch [R]esume' })
       map('n', '<leader>sn', builtin.treesitter, { desc = 'Find Treesitter nodes' })
 
       map('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })
 
       map('n', '<leader>sc', require('telescope.builtin').commands, { desc = 'Telescope search commands' })
       map('n', '<leader>sC', require('telescope.builtin').command_history, { desc = 'Telescope search command history' })
-      map('n', '<leader>gs', ':Telescope git_status<CR>', { desc = 'Telescope: [G]it [S]Status' })
+      map('n', '<leader>gs', ':Telescope git_status<CR>', { desc = 'Telescope: [G]it Telescope [S]Status' })
 
       -- Also possible to pass additional configuration options.
       map('n', '<leader>s/', function()
@@ -99,12 +108,12 @@ return {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
         }
-      end, { desc = '[S]earch [/] in Open Files' })
+      end, { desc = 'Telescope [S]earch [/] in Open Files' })
 
       -- Shortcut for searching your neovim configuration files
       map('n', '<leader>fv', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
+      end, { desc = 'Telescope [S]earch [N]eovim files' })
 
       ------------- Custom functions ----------------------
 

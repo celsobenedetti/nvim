@@ -18,17 +18,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- JSON --------------------------------------------------------------
-
-vim.api.nvim_create_autocmd({ 'FileType' }, {
-  pattern = 'json',
-  callback = function()
-    vim.o.conceallevel = 3
-  end,
-  group = augroup 'JSONGroup',
-  desc = 'Run when entering JSON files',
-})
-
 -- wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd('FileType', {
   group = augroup 'wrap_spell',
@@ -49,18 +38,6 @@ vim.api.nvim_create_autocmd('VimResized', {
   command = 'wincmd =',
   desc = 'Automatically resize windows when the host window size changes.',
 })
-
--- markdown
--- vim.api.nvim_create_autocmd({ 'VimEnter' }, {
---   pattern = 'new_note',
---   callback = function()
---     require('c.functions').set_colorscheme(vim.g.pretty_colorscheme)
---     vim.api.nvim_feedkeys(Keys 'ggi<BS><BS><BS>', 'n', true)
---   end,
---   group = augroup 'new-note',
---   desc = 'Run when entering new_note files',
--- })
---
 
 -- insert mode when entering git commit
 vim.api.nvim_create_autocmd('VimEnter', {

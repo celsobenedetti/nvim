@@ -103,8 +103,8 @@ local toggles = {
 
 map('n', '<leader>uf', toggles.format, { desc = 'Toggle auto format (global)' })
 map('n', '<leader>uc', toggles.completion, { desc = 'Toggle completion' })
-map('n', '<leader>uC', toggles.copilot, { desc = 'Toggle diagnostics' })
+map('n', '<leader>uC', toggles.copilot, { desc = 'Toggle copilot' })
 map('n', '<leader>ud', toggles.diagnostics, { desc = 'Toggle diagnostics' })
 
 map('n', '<leader>us', toggles.option { option = 'spell' }, { desc = 'Toggle Spelling' })
-map('n', '<leader>tc', toggles.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle diagnostics' })
+map('n', '<leader>tC', toggles.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle conceal' })
