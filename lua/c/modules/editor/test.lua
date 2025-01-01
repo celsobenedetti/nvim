@@ -24,6 +24,13 @@ return {
         end,
         desc = 'Neotest run nearest',
       },
+      {
+        '<leader>td',
+        function()
+          require('neotest').run.run { strategy = 'dap' }
+        end,
+        desc = 'Neotest run nearest',
+      },
       { '<leader>ts', ':Neotest summary<CR>', desc = 'Neotest summary' },
     },
     cmd = { 'Neotest' },
