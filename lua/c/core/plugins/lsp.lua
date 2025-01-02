@@ -194,7 +194,17 @@ return {
 
       local servers = getServerConfigs()
 
+      vim.diagnostic.config {
+        virtual_text = {
+          prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
+        },
+        ---@diagnostic disable-next-line: assign-type-mismatch
+        float = { border = 'rounded' },
+      }
+
       require('mason-lspconfig').setup {
+        automatic_installation = true,
+        ensure_installed = {}, -- handled in mason.lua
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
