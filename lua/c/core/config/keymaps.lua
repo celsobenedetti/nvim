@@ -47,7 +47,7 @@ end, { desc = 'Open Jira Issue in current selection' })
 
 map({ 'v' }, '<leader>G', function()
   require('c.functions.google').google_search()()
-end, { desc = 'Open Jira Issue in current selection' })
+end, { desc = 'Search current selected string with google' })
 
 -- get current line to variable
 

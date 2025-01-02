@@ -8,7 +8,7 @@ local colors = {
   gray = '#d7dae1',
   darkgray = '#0B0C11',
   lightgray = '#303340',
-  inactivegray = '#7c6f64',
+  inactivegray = '#303340',
 }
 
 local theme = {
