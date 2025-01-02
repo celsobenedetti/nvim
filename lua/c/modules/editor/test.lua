@@ -11,14 +11,14 @@ return {
     },
     keys = {
       {
-        '<leader>tr',
+        '<leader>tf',
         function()
           require('neotest').run.run(vim.fn.expand '%')
         end,
         desc = 'Neotest run file',
       },
       {
-        '<leader>tc',
+        '<leader>tt',
         function()
           require('neotest').run.run()
         end,

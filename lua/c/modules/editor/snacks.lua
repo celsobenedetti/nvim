@@ -10,10 +10,12 @@ return {
       bufdelete = { enabled = false }, -- using moll/vim-bbye instead
       dashboard = { enabled = true },
       indent = { enabled = true }, -- indent highlight animation
+      gitbrowse = { enabled = true },
       input = { enabled = true },
       notifier = { enabled = true },
       quickfile = { enabled = true },
       scratch = { enabled = true },
+      terminal = { enabled = false },
       scroll = { enabled = false }, -- smooth scroll
       statuscolumn = { enabled = true }, -- pretty status coluikn
       words = { enabled = true },
@@ -40,13 +42,6 @@ return {
         end,
         desc = 'Snacks: Git Browse',
         mode = { 'n', 'v' },
-      },
-      {
-        '<leader>gb',
-        function()
-          Snacks.git.blame_line()
-        end,
-        desc = 'Snacks: Git Blame Line',
       },
       {
         '<leader>gf',
@@ -77,20 +72,6 @@ return {
         desc = 'Snacks: Dismiss All Notifications',
       },
       {
-        '<c-/>',
-        function()
-          Snacks.terminal()
-        end,
-        desc = 'Snacks: Toggle Terminal',
-      },
-      {
-        '<c-_>',
-        function()
-          Snacks.terminal()
-        end,
-        desc = 'Snacks: which_key_ignore',
-      },
-      {
         ']]',
         function()
           Snacks.words.jump(vim.v.count1)
@@ -105,24 +86,6 @@ return {
         end,
         desc = 'Snacks: Prev Reference',
         mode = { 'n', 't' },
-      },
-      {
-        '<leader>news',
-        desc = 'Neovim News',
-        function()
-          Snacks.win {
-            file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],
-            width = 0.6,
-            height = 0.6,
-            wo = {
-              spell = false,
-              wrap = false,
-              signcolumn = 'yes',
-              statuscolumn = ' ',
-              conceallevel = 3,
-            },
-          }
-        end,
       },
     },
   },

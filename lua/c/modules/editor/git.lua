@@ -23,18 +23,18 @@ return {
         end
 
         -- stylua: ignore start
-        map("n", "]h", gs.next_hunk, "Next Hunk")
-        map("n", "[h", gs.prev_hunk, "Prev Hunk")
-        map("n", "<leader>gu", gs.undo_stage_hunk, "Undo Stage Hunk")
-        map({ "n", "v" }, "<leader>ga", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
-        map("n", "<leader>gA", gs.stage_buffer, "Stage Buffer")
-        map({ "n", "v" }, "<leader>gr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
-        map("n", "<leader>gR", gs.reset_buffer, "Reset Buffer")
-        map("n", "<leader>gp", gs.preview_hunk_inline, "Preview Hunk Inline")
-        map("n", "<leader>gb", function() gs.blame_line({ full = true }) end, "Blame Line")
-        map("n", "<leader>gd", gs.diffthis, "Diff This")
-        map("n", "<leader>gD", function() gs.diffthis("~") end, "Diff This ~")
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
+        map("n", "]h", gs.next_hunk, "Gitsigns: Next Hunk")
+        map("n", "[h", gs.prev_hunk, "Gitsigns: Prev Hunk")
+        map("n", "<leader>gu", gs.undo_stage_hunk, "Gitsigns: Undo Stage Hunk")
+        map({ "n", "v" }, "<leader>ga", ":Gitsigns stage_hunk<CR>", "Gitsigns: Stage Hunk")
+        map("n", "<leader>gA", gs.stage_buffer, "Gitsigns: Stage Buffer")
+        map({ "n", "v" }, "<leader>gr", ":Gitsigns reset_hunk<CR>", "Gitsigns: Reset Hunk")
+        map("n", "<leader>gR", gs.reset_buffer, "Gitsigns: Reset Buffer")
+        map("n", "<leader>gp", gs.preview_hunk_inline, "Gitsigns: Preview Hunk Inline")
+        map("n", "<leader>gb", function() gs.blame_line({ full = true }) end, "Gitsigns: Blame Line")
+        map("n", "<leader>gd", gs.diffthis, "Gitsigns: Diff This")
+        map("n", "<leader>gD", function() gs.diffthis("~") end, "Gitsigns: Diff This ~")
+        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Gitsigns: Select Hunk")
       end,
     },
   },
@@ -277,37 +277,5 @@ return {
         },
       }
     end,
-  },
-
-  {
-    'folke/snacks.nvim',
-    priority = 1000,
-    lazy = false,
-    ---@type snacks.Config
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-      -- bigfile = { enabled = true },
-      -- dashboard = { enabled = true },
-      -- indent = { enabled = true },
-      -- input = { enabled = true },
-      -- notifier = { enabled = true },
-      -- quickfile = { enabled = true },
-      -- scroll = { enabled = true },
-      -- statuscolumn = { enabled = true },
-      -- words = { enabled = true },
-      gitbrowse = { enabled = true },
-    },
-    keys = {
-      {
-        '<leader>gB',
-        function()
-          require('snacks').gitbrowse()
-        end,
-        desc = 'Git Browse',
-        mode = { 'n', 'v' },
-      },
-    },
   },
 }
