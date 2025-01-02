@@ -43,9 +43,17 @@ return {
             env = { CI = true },
             cwd = function(path)
               local cwd = vim.fn.getcwd()
-              print(cwd)
               if cwd:find 'chatbot' then
-                return cwd .. '/packages/conversation'
+                if path:find 'packages/conversation' then
+                  return cwd .. '/packages/conversation'
+                end
+
+                if path:find 'nestjs' then
+                  if cwd:find 'nestjs' then
+                    return cwd
+                  end
+                  return cwd .. '/nestjs'
+                end
               end
               return cwd
             end,

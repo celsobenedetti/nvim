@@ -150,7 +150,7 @@ return {
         bullet = {
           enabled = true,
           highlight = 'RenderMarkdownBullet',
-          icons = { '', '', '', '' },
+          icons = { '', '', '', '' },
         },
         callout = {
           note = { raw = '[!NOTE]', rendered = '󰋽 Note', highlight = 'DiagnosticInfo' },

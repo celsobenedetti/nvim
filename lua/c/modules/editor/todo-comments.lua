@@ -8,8 +8,8 @@ return {
       'folke/trouble.nvim',
     },
     keys = {
-      { '<leader>tt', ':TodoTelescope<CR>' },
-      { '<leader>tT', ':TodoTrouble<CR>' },
+      { '<leader>to', ':TodoTelescope<CR>' },
+      { '<leader>tO', ':TodoTrouble<CR>' },
     },
 
     opts = {
