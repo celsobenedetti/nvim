@@ -28,7 +28,12 @@ return {
     },
   },
 
-  { 'norcalli/nvim-colorizer.lua', config = {
-    'toml',
-  }, ft = { 'toml' } },
+  {
+    'norcalli/nvim-colorizer.lua',
+    config = {
+      'toml',
+      'lua',
+    },
+    ft = { 'toml', 'lua' },
+  },
 }
