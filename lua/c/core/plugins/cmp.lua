@@ -1,4 +1,5 @@
 return {
+
   {
     'L3MON4D3/LuaSnip',
     build = 'make install_jsregexp',
@@ -43,16 +44,56 @@ return {
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
+      local cmp_kinds = {
+        Text = '  ',
+        Method = '  ',
+        Function = '  ',
+        Constructor = '  ',
+        Field = '  ',
+        Variable = '  ',
+        Class = '  ',
+        Interface = '  ',
+        Module = '  ',
+        Property = '  ',
+        Unit = '  ',
+        Value = '  ',
+        Enum = '  ',
+        Keyword = '  ',
+        Snippet = '  ',
+        Color = '  ',
+        File = '  ',
+        Reference = '  ',
+        Folder = '  ',
+        EnumMember = '  ',
+        Constant = '  ',
+        Struct = '  ',
+        Event = '  ',
+        Operator = '  ',
+        TypeParameter = '  ',
+        Copilot = '  ',
+      }
+
       cmp.setup {
-        -- window = {
-        --   completion = cmp.config.window.bordered {},
-        --   documentation = cmp.config.window.bordered(),
-        -- },
+
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
         },
+
+        --- appearance
+        window = {
+          completion = cmp.config.window.bordered {},
+          documentation = cmp.config.window.bordered(),
+        },
+        formatting = {
+          fields = { 'kind', 'abbr', 'menu' },
+          format = function(_, vim_item)
+            vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind
+            return vim_item
+          end,
+        },
+
         completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- For an understanding of why these mappings were
