@@ -25,8 +25,9 @@ return {
         desc = 'Open ChatGPT in new tab',
       },
     },
-    config = function()
-      require('gp').setup()
+    config = function(opts)
+      opts.chat_dir = os.getenv 'NOTES' .. '/.local/chats'
+      require('gp').setup(opts)
     end,
   },
 
