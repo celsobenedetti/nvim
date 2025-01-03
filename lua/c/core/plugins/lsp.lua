@@ -69,7 +69,23 @@ return {
       { 'b0o/schemastore.nvim', lazy = true },
 
       { 'j-hui/fidget.nvim', opts = {} }, -- Useful status updates for LSP.
+      {
+        -- PERF: disable for performance option
+        'ray-x/lsp_signature.nvim',
+        event = 'VeryLazy',
+        opts = {},
+        config = function(_, opts)
+          opts = vim.tbl_deep_extend('force', opts or {}, {
+            floating_window = false,
+            hint_enable = true,
+            hint_prefix = '',
+          })
+
+          require('lsp_signature').setup(opts)
+        end,
+      },
     },
+
     config = function()
       --  This function gets run when an LSP attaches to a particular buffer.
       --    That is to say, every time a new file is opened that is associated with
@@ -80,8 +96,8 @@ return {
         callback = function(event)
           -- In this case, we create a function that lets us more easily define mappings specific
           -- for LSP related items. It sets the mode, buffer and description for us each time.
-          local map = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          local lsp_map = function(mode, keys, func, desc)
+            map(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
           -- diagnostic
@@ -93,54 +109,27 @@ return {
             end
           end
 
-          map('<leader>e', vim.diagnostic.open_float, 'Line Diagnostics')
-          map(']d', diagnostic_goto(true), 'Next Diagnostic')
-          map('[d', diagnostic_goto(false), 'Prev Diagnostic')
-          map(']e', diagnostic_goto(true, 'ERROR'), 'Next Error')
-          map('[e', diagnostic_goto(false, 'ERROR'), 'Prev Error')
-          map(']w', diagnostic_goto(true, 'WARN'), 'Next Warning')
-          map('[w', diagnostic_goto(false, 'WARN'), 'Prev Warning')
-
-          -- Jump to the definition of the word under your cursor.
-          --  This is where a variable was first declared, or where a function is defined, etc.
-          --  To jump back, press <C-T>.
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-
-          -- Find references for the word under your cursor.
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-
-          -- Jump to the implementation of the word under your cursor.
-          --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-
-          -- Jump to the type of the word under your cursor.
-          --  Useful when you're not sure what type a variable is and you want to see
-          --  the definition of its *type*, not where it was *defined*.
-          -- map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-
-          -- Fuzzy find all the symbols in your current document.
-          --  Symbols are things like variables, c.functions. types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-
-          -- Fuzzy find all the symbols in your current workspace
-          --  Similar to document symbols, except searches over your whole project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-          -- Rename the variable under your cursor
-          --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-
-          -- Execute a code action, usually your cursor needs to be on top of an error
-          -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-          vim.keymap.set('v', '<leader>ca', vim.lsp.buf.code_action, { buffer = event.buf, desc = 'LSP: [C]ode [A]ction' })
-
-          -- Opens a popup that displays documentation about the word under your cursor
-          map('K', vim.lsp.buf.hover, 'Hover Documentation')
-
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          lsp_map('n', '<leader>e', vim.diagnostic.open_float, 'Line Diagnostics')
+          lsp_map('n', ']d', diagnostic_goto(true), 'Next Diagnostic')
+          lsp_map('n', '[d', diagnostic_goto(false), 'Prev Diagnostic')
+          lsp_map('n', ']e', diagnostic_goto(true, 'ERROR'), 'Next Error')
+          lsp_map('n', '[e', diagnostic_goto(false, 'ERROR'), 'Prev Error')
+          lsp_map('n', ']w', diagnostic_goto(true, 'WARN'), 'Next Warning')
+          lsp_map('n', '[w', diagnostic_goto(false, 'WARN'), 'Prev Warning')
+          lsp_map('n', 'gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          lsp_map('n', 'gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+          lsp_map('n', 'gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+          lsp_map('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          lsp_map('n', '<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          lsp_map('n', '<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          lsp_map('n', '<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+          lsp_map('v', '<leader>ca', vim.lsp.buf.code_action, 'LSP: [C]ode [A]ction')
+          lsp_map('n', 'K', vim.lsp.buf.hover, 'Hover Documentation')
+          lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          lsp_map('i', '<C-i>', function()
+            vim.lsp.buf.signature_help()
+          end, 'show signature help')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
