@@ -3,5 +3,10 @@
     "prefix": ["fr", "mr"],
     "body": "func (${1:receiver} ${2:type}) ${3:method}($4) $5 {\n\t$0\n}",
     "description": "Snippet for function reeceiver"
+  },
+  "function declaration": {
+    "prefix": "fu",
+    "body": "func $1($2) $3 {\n\t$0\n}",
+    "description": "Snippet for function declaration"
   }
 }
