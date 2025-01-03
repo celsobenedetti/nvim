@@ -21,6 +21,8 @@ return {
           bash = { 'shfmt' },
           go = { 'gofumpt', 'goimports' },
           graphql = { 'prettierd' },
+          html = { 'prettierd' },
+          css = { 'prettierd' },
           javascript = { js_formatter },
           javascriptreact = { js_formatter },
           json = { js_formatter },
