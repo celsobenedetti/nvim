@@ -1,6 +1,6 @@
 return {
-  { 'levouh/tint.nvim', opts = true }, -- Slightly tint unfocused pane
 
+  { 'levouh/tint.nvim', opts = true }, -- Slightly tint unfocused pane
   {
     'folke/twilight.nvim',
     lazy = true,

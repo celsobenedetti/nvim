@@ -40,6 +40,7 @@ return {
   },
   {
     'sindrets/diffview.nvim',
+    lazy = true,
     keys = {
       {
         '<leader>D',

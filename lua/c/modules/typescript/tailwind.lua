@@ -10,8 +10,8 @@ return {
       'neovim/nvim-lspconfig', -- optional
     },
     opts = {}, -- your configuration
-    enabled = function()
-      return require('c.functions.utils.cwd').is_tailwind()
+    lazy = function()
+      return not C.CWD.is_tailwind()
     end,
   },
 }

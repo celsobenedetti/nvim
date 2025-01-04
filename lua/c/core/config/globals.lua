@@ -4,6 +4,8 @@ C = {
     autoformat = true,
     completion = true, -- cmp
     diagnostics = true,
+    performance = false,
+    hardtime = false,
 
     --- Path to the directory where md files for GPT chats are stored.
     gpt_chats_path = os.getenv 'NOTES' .. '/.local/chats',
@@ -86,7 +88,8 @@ C = {
   },
 }
 
-C.UI.set_colorscheme = require('c.lib.util.set_colorscheme').run
+C.UI.set_colorscheme = require('c.lib.utils.set_colorscheme').run
+C.CWD = require 'c.lib.utils.cwd'
 
 -- iterate over all global variables
 for key, value in pairs(C.Globals) do

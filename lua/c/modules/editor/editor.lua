@@ -56,6 +56,7 @@ return {
   },
 
   {
+    lazy = true,
     'danymat/neogen',
     dependencies = 'nvim-treesitter/nvim-treesitter',
     opts = {
@@ -72,6 +73,7 @@ return {
 
   -- search/replace in multiple files
   {
+    lazy = true,
     'nvim-pack/nvim-spectre',
     build = false,
     cmd = 'Spectre',

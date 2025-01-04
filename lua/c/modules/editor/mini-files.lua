@@ -11,6 +11,7 @@ return {
   {
     'echasnovski/mini.files',
     version = '*',
+    lazy = true,
     opts = {
       mappings = {
         close = 'q',

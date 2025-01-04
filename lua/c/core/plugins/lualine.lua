@@ -1,4 +1,4 @@
-local Lualine = require 'c.lib.util.lualine'
+local Lualine = require 'c.lib.utils.lualine'
 
 return {
 
