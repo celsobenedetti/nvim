@@ -1,3 +1,5 @@
+--- Provides the <c-d> keymap for deleting entries
+--- from an active trouble window
 vim.api.nvim_create_autocmd({ 'FileType' }, {
   pattern = 'Trouble',
   callback = function(event)

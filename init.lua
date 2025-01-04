@@ -7,6 +7,8 @@ require('lazy').setup({
 
   { import = 'c.modules.ui' },
   { import = 'c.modules.editor' },
+
+  { import = 'c.modules.ai' },
   { import = 'c.modules.dap' },
   { import = 'c.modules.trouble' },
 
