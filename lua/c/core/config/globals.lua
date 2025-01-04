@@ -86,7 +86,6 @@ C = {
   },
 }
 
-C.Lualine = require 'c.lib.util.lualine'
 C.UI.set_colorscheme = require('c.lib.util.set_colorscheme').run
 
 -- iterate over all global variables

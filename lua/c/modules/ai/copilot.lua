@@ -11,8 +11,5 @@ return {
       suggestion = { enabled = false },
       panel = { enabled = false },
     },
-    dependencies = {
-      C.Lualine.add_cmp_source 'copilot',
-    },
   },
 }

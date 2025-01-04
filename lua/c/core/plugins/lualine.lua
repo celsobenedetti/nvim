@@ -1,41 +1,4 @@
-local theme = {
-  normal = {
-    a = { bg = C.UI.colors.gray, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
-  },
-  insert = {
-    a = { bg = C.UI.colors.blue, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-  },
-  visual = {
-    a = { bg = C.UI.colors.yellow, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.inactivegray, fg = C.UI.colors.black },
-  },
-  replace = {
-    a = { bg = C.UI.colors.red, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.black, fg = C.UI.colors.white },
-  },
-  command = {
-    a = { bg = C.UI.colors.green, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.inactivegray, fg = C.UI.colors.black },
-  },
-  inactive = {
-    a = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray, gui = 'bold' },
-    b = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
-    c = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
-  },
-}
-
-local function getFg(name)
-  local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
-  local fg = hl and hl.fg or hl.foreground
-  return { fg = string.format('#%06x', fg), bg = 'none' } or nil
-end
+local Lualine = require 'c.lib.util.lualine'
 
 return {
 
@@ -62,7 +25,7 @@ return {
 
       local opts = {
         options = {
-          theme = theme,
+          theme = Lualine.theme,
           globalstatus = vim.o.laststatus == 3,
           disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' } },
         },
@@ -104,25 +67,25 @@ return {
             {
               function() return require("noice").api.status.command.get() end,
               cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-              color = function() return getFg("Statement") end,
+              color = function() return Lualine.fg("Statement") end,
             },
             -- stylua: ignore
             {
               function() return require("noice").api.status.mode.get() end,
               cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-              color = function() return getFg("Constant") end,
+              color = function() return Lualine.fg("Constant") end,
             },
             -- stylua: ignore
             {
               function() return "  " .. require("dap").status() end,
               cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-              color = function() return getFg("Debug") end,
+              color = function() return Lualine.fg("Debug") end,
             },
             -- stylua: ignore
             {
               require("lazy.status").updates,
               cond = require("lazy.status").has_updates,
-              color = function() return getFg("Special") end,
+              color = function() return Lualine.fg("Special") end,
             },
             {
               'diff',
