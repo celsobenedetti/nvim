@@ -13,7 +13,7 @@ return {
             timeout_ms = 5000,
             lsp_fallback = true,
             filter = function(client)
-              return Globals.autoformat and client.name ~= 'tsserver'
+              return C.Globals.autoformat and client.name ~= 'tsserver'
             end,
           }
         end,

@@ -1,7 +1,7 @@
 return {
   {
     'zbirenbaum/copilot.lua',
-    enabled = Globals.copilot,
+    enabled = C.Globals.copilot,
     event = 'VeryLazy',
     opts = {
       filetypes = {
@@ -10,6 +10,9 @@ return {
       },
       suggestion = { enabled = false },
       panel = { enabled = false },
+    },
+    dependencies = {
+      C.Lualine.add_cmp_source 'copilot',
     },
   },
 }

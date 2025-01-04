@@ -17,7 +17,7 @@ return {
       local path = vim.fn.expand '%:p:h'
       local is_notes = string.match(path, 'notes')
       local is_templates = string.match(path, 'templates')
-      local is_gpt_chat = string.match(path, Globals.gpt_chats_path)
+      local is_gpt_chat = string.match(path, C.Globals.gpt_chats_path)
 
       return is_notes and not is_templates and not is_gpt_chat
     end,

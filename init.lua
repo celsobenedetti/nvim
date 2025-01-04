@@ -1,7 +1,6 @@
 require 'c.core.config'
 
 require('lazy').setup({
-
   { import = 'c.core.plugins' },
 
   { import = 'c.modules.ui' },
@@ -33,4 +32,4 @@ require('lazy').setup({
   },
 })
 
-require('c.functions').set_colorscheme(UI.colorscheme_1)
+C.UI.set_colorscheme(C.UI.colorscheme_1)

@@ -1,46 +1,33 @@
-local colors = {
-  black = '#0B0C11',
-  white = '#d7dae1',
-  red = '#ffbcb5',
-  green = '#7FAD8A',
-  blue = '#7FAAC9',
-  yellow = '#f4d88c',
-  gray = '#d7dae1',
-  darkgray = '#0B0C11',
-  lightgray = '#303340',
-  inactivegray = '#303340',
-}
-
 local theme = {
   normal = {
-    a = { bg = colors.gray, fg = colors.black, gui = 'bold' },
-    b = { bg = colors.lightgray, fg = colors.white },
-    c = { bg = colors.darkgray, fg = colors.gray },
+    a = { bg = C.UI.colors.gray, fg = C.UI.colors.black, gui = 'bold' },
+    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
+    c = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
   },
   insert = {
-    a = { bg = colors.blue, fg = colors.black, gui = 'bold' },
-    b = { bg = colors.lightgray, fg = colors.white },
-    c = { bg = colors.lightgray, fg = colors.white },
+    a = { bg = C.UI.colors.blue, fg = C.UI.colors.black, gui = 'bold' },
+    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
+    c = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
   },
   visual = {
-    a = { bg = colors.yellow, fg = colors.black, gui = 'bold' },
-    b = { bg = colors.lightgray, fg = colors.white },
-    c = { bg = colors.inactivegray, fg = colors.black },
+    a = { bg = C.UI.colors.yellow, fg = C.UI.colors.black, gui = 'bold' },
+    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
+    c = { bg = C.UI.colors.inactivegray, fg = C.UI.colors.black },
   },
   replace = {
-    a = { bg = colors.red, fg = colors.black, gui = 'bold' },
-    b = { bg = colors.lightgray, fg = colors.white },
-    c = { bg = colors.black, fg = colors.white },
+    a = { bg = C.UI.colors.red, fg = C.UI.colors.black, gui = 'bold' },
+    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
+    c = { bg = C.UI.colors.black, fg = C.UI.colors.white },
   },
   command = {
-    a = { bg = colors.green, fg = colors.black, gui = 'bold' },
-    b = { bg = colors.lightgray, fg = colors.white },
-    c = { bg = colors.inactivegray, fg = colors.black },
+    a = { bg = C.UI.colors.green, fg = C.UI.colors.black, gui = 'bold' },
+    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
+    c = { bg = C.UI.colors.inactivegray, fg = C.UI.colors.black },
   },
   inactive = {
-    a = { bg = colors.darkgray, fg = colors.gray, gui = 'bold' },
-    b = { bg = colors.darkgray, fg = colors.gray },
-    c = { bg = colors.darkgray, fg = colors.gray },
+    a = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray, gui = 'bold' },
+    b = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
+    c = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
   },
 }
 
@@ -71,62 +58,6 @@ return {
       lualine_require.require = require
       local root = vim.fs.root(0, '.git') --[[@as string]]
 
-      local icons = {
-        diagnostics = {
-          Error = ' ',
-          Warn = ' ',
-          Hint = ' ',
-          Info = ' ',
-        },
-        git = {
-          added = ' ',
-          modified = ' ',
-          removed = ' ',
-        },
-        kinds = {
-          Array = ' ',
-          Boolean = '󰨙 ',
-          Class = ' ',
-          Codeium = '󰘦 ',
-          Color = ' ',
-          Control = ' ',
-          Collapsed = ' ',
-          Constant = '󰏿 ',
-          Constructor = ' ',
-          Copilot = ' ',
-          Enum = ' ',
-          EnumMember = ' ',
-          Event = ' ',
-          Field = ' ',
-          File = ' ',
-          Folder = ' ',
-          Function = '󰊕 ',
-          Interface = ' ',
-          Key = ' ',
-          Keyword = ' ',
-          Method = '󰊕 ',
-          Module = ' ',
-          Namespace = '󰦮 ',
-          Null = ' ',
-          Number = '󰎠 ',
-          Object = ' ',
-          Operator = ' ',
-          Package = ' ',
-          Property = ' ',
-          Reference = ' ',
-          Snippet = ' ',
-          String = ' ',
-          Struct = '󰆼 ',
-          Supermaven = ' ',
-          TabNine = '󰏚 ',
-          Text = ' ',
-          TypeParameter = ' ',
-          Unit = ' ',
-          Value = ' ',
-          Variable = '󰀫 ',
-        },
-      }
-
       vim.o.laststatus = vim.g.lualine_laststatus
 
       local opts = {
@@ -142,15 +73,15 @@ return {
             {
               function()
                 -- split 'root' strin by '/' and get the last element
-                return icons.kinds.Folder .. root:match '([^/]+)$'
+                return C.UI.icons.kinds.Folder .. root:match '([^/]+)$'
               end,
             },
             {
               'diagnostics',
               symbols = {
-                error = icons.diagnostics.Error,
+                error = C.UI.icons.diagnostics.Error,
 
-                hint = icons.diagnostics.Hint,
+                hint = C.UI.icons.diagnostics.Hint,
               },
             },
 
@@ -196,9 +127,9 @@ return {
             {
               'diff',
               symbols = {
-                added = icons.git.added,
-                modified = icons.git.modified,
-                removed = icons.git.removed,
+                added = C.UI.icons.git.added,
+                modified = C.UI.icons.git.modified,
+                removed = C.UI.icons.git.removed,
               },
               source = function()
                 local gitsigns = vim.b.gitsigns_status_dict
