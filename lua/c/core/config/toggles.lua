@@ -5,8 +5,8 @@ local completion = vim.g.completion
 local diagnostics = vim.g.diagnostics
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
 
-local OFF = '🍎 Disabled '
-local ON = '🍏 Enabled '
+local OFF = '❌ Disabled '
+local ON = '✅ Enabled '
 
 --- Functions for each toggle
 local toggles = {
@@ -23,8 +23,7 @@ local toggles = {
       vim.api.nvim_command 'Copilot disable'
       print(OFF .. 'Copilot')
     else
-      vim.api.nvim_command 'Copilot start'
-
+      vim.api.nvim_command 'Copilot enable'
       print(ON .. 'Copilot')
     end
     copilot = not copilot

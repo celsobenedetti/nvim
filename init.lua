@@ -1,3 +1,4 @@
+require 'c.core.globals'
 require 'c.core.config'
 
 require('lazy').setup({

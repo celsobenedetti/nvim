@@ -1,17 +1,15 @@
-vim.g.colorscheme_1 = 'default'
-vim.g.colorscheme_2 = 'rose-pine'
-vim.g.colorscheme_3 = 'gruvbox'
-vim.g.colorscheme_4 = 'github_dark_high_contrast'
+-- ----
+-- This file contains the global options that are set in Neovim.
+--
+--
+-- For global variables see globals.lua
+--
+-- ----
+--
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.hardtime = false
-
--- defaults
-vim.g.autoformat = true
-vim.g.copilot = true
-vim.g.completion = true
-vim.g.diagnostics = true
 
 vim.opt.background = 'dark'
 
