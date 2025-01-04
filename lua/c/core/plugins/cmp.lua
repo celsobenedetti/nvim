@@ -38,40 +38,11 @@ return {
         end,
       },
     },
-    config = function()
+    opts = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
-
-      local cmp_kinds = {
-        Text = '  ',
-        Method = '  ',
-        Function = '  ',
-        Constructor = '  ',
-        Field = '  ',
-        Variable = '  ',
-        Class = '  ',
-        Interface = '  ',
-        Module = '  ',
-        Property = '  ',
-        Unit = '  ',
-        Value = '  ',
-        Enum = '  ',
-        Keyword = '  ',
-        Snippet = '  ',
-        Color = '  ',
-        File = '  ',
-        Reference = '  ',
-        Folder = '  ',
-        EnumMember = '  ',
-        Constant = '  ',
-        Struct = '  ',
-        Event = '  ',
-        Operator = '  ',
-        TypeParameter = '  ',
-        Copilot = '  ',
-      }
 
       cmp.setup {
 
@@ -89,7 +60,7 @@ return {
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
           format = function(_, vim_item)
-            vim_item.kind = (cmp_kinds[vim_item.kind] or '') .. vim_item.kind
+            vim_item.kind = (C.UI.icons.kinds[vim_item.kind] or '') .. vim_item.kind
             return vim_item
           end,
         },
@@ -134,50 +105,12 @@ return {
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'copilot' },
+          { name = 'dictionary', keyword_length = 2 },
         },
       }
       map('i', '<C-Space>', cmp.mapping.complete, { desc = 'cmp: Trigger Completion' })
 
       cmp.setup.buffer { enabled = C.Globals.completion }
     end,
-  },
-
-  {
-    'uga-rosa/cmp-dictionary',
-    -- TODO: see if newer versions work
-    ft = { 'markdown', 'gitcommit' },
-    commit = 'd17bc1f87736b6a7f058b2f246e651d34d648b47',
-    config = function()
-      local dict = require 'cmp_dictionary'
-      dict.setup {
-        -- The following are default values.
-        exact = 2,
-        first_case_insensitive = false,
-        document = false,
-        document_command = 'wn %s -over',
-        async = false,
-        sqlite = false,
-        max_items = -1,
-        capacity = 5,
-        debug = false,
-      }
-      -- dict.update()
-      dict.switcher {
-        spelllang = {
-          en = '~/.dotfiles/english.dict',
-        },
-      }
-    end,
-    dependencies = {
-      {
-        'hrsh7th/nvim-cmp',
-        opts = function(_, opts)
-          local cmp = require 'cmp'
-          opts.sources = cmp.config.sources(vim.list_extend(opts.sources or {}, {
-            { name = 'dictionary', keyword_length = 2 },
-          }))
-        end,
-      },
-    },
   },
 }

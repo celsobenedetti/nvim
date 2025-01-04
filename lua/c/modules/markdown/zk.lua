@@ -63,4 +63,15 @@ return {
       end, { desc = 'Add Strikeghrough italic tags for insert mode in bold' })
     end,
   },
+
+  {
+    'uga-rosa/cmp-dictionary',
+    ft = { 'markdown', 'gitcommit' },
+    config = function()
+      require('cmp_dictionary').setup {
+        exact_length = 2,
+        paths = { '~/.dotfiles/english.dict' },
+      }
+    end,
+  },
 }

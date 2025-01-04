@@ -1,6 +1,6 @@
 C = {
   Globals = {
-    copilot = false,
+    copilot = true,
     autoformat = true,
     completion = true, -- cmp
     diagnostics = true,
@@ -71,7 +71,7 @@ C = {
         Package = ' ',
         Property = ' ',
         Reference = ' ',
-        Snippet = ' ',
+        Snippet = '  ',
         String = ' ',
         Struct = '󰆼 ',
         Supermaven = ' ',
