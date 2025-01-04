@@ -13,7 +13,7 @@ return {
             timeout_ms = 5000,
             lsp_fallback = true,
             filter = function(client)
-              return vim.g.autoformat and client.name ~= 'tsserver'
+              return Globals.autoformat and client.name ~= 'tsserver'
             end,
           }
         end,

@@ -1,4 +1,3 @@
-require 'c.core.globals'
 require 'c.core.config'
 
 require('lazy').setup({
@@ -34,4 +33,4 @@ require('lazy').setup({
   },
 })
 
-require('c.functions').set_colorscheme(vim.g.colorscheme_1)
+require('c.functions').set_colorscheme(UI.colorscheme_1)

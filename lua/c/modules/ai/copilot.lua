@@ -1,7 +1,7 @@
 return {
   {
     'zbirenbaum/copilot.lua',
-    enabled = vim.g.copilot,
+    enabled = Globals.copilot,
     event = 'VeryLazy',
     opts = {
       filetypes = {

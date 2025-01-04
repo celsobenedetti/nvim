@@ -1,22 +1,18 @@
--- ---
---
--- Global variables
---
--- ---
-
-vim.g.autoformat = true
-vim.g.copilot = true
-vim.g.completion = true -- cmp
-vim.g.diagnostics = true
-
-vim.g.colorscheme_1 = 'default'
-vim.g.colorscheme_2 = 'rose-pine'
-vim.g.colorscheme_3 = 'gruvbox'
-vim.g.colorscheme_4 = 'github_dark_high_contrast'
-
 Globals = {
+  copilot = true,
+  autoformat = true,
+  completion = true, -- cmp
+  diagnostics = true,
+
   --- Path to the directory where md files for GPT chats are stored.
   gpt_chats_path = os.getenv 'NOTES' .. '/.local/chats',
+}
+
+UI = {
+  colorscheme_1 = 'default',
+  colorscheme_2 = 'rose-pine',
+  colorscheme_3 = 'gruvbox',
+  colorscheme_4 = 'github_dark_high_contrast',
 }
 
 -- iterate over all global variables

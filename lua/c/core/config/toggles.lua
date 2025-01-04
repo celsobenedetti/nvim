@@ -1,7 +1,7 @@
 --- toggles
 
-local copilot = vim.g.copilot
-local completion = vim.g.completion
+local copilot = Globals.copilot
+local completion = Globals.completion
 local diagnostics = vim.g.diagnostics
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
 
@@ -13,8 +13,8 @@ local toggles = {
 
   -- toggle autoformat
   format = function()
-    vim.g.autoformat = not vim.g.autoformat
-    print('Autoformat: ' .. tostring(vim.g.autoformat))
+    Globals.autoformat = not Globals.autoformat
+    print('Autoformat: ' .. tostring(Globals.autoformat))
   end,
 
   -- toggle copilot
@@ -58,7 +58,7 @@ local toggles = {
   -- toggle LSP diagnostics
   diagnostics = function()
     if diagnostics then
-      vim.diagnostic.disable()
+      vim.diagnostic.enable(false)
       print(OFF .. 'Dianostics')
     else
       vim.diagnostic.enable()
@@ -107,3 +107,4 @@ map('n', '<leader>ud', toggles.diagnostics, { desc = 'Toggle diagnostics' })
 
 map('n', '<leader>us', toggles.option { option = 'spell' }, { desc = 'Toggle Spelling' })
 map('n', '<leader>tC', toggles.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle conceal' })
+require 'c.core.config.lazy'
