@@ -70,11 +70,27 @@ return {
       scroll = { enabled = false }, -- smooth scroll
       statuscolumn = { enabled = true }, -- pretty status coluikn
       words = { enabled = true },
-      zen = { enabled = true },
+      zen = {
+        win = {
+          style = {
+            enter = true,
+            fixbuf = false,
+            minimal = false,
+            width = 120,
+            height = 0,
+            backdrop = { transparent = true, blend = 10 },
+            keys = { q = false },
+            zindex = 40,
+            wo = {
+              winhighlight = 'NormalFloat:Normal',
+            },
+          },
+        },
+      },
     },
     keys = {
       -- stylua: ignore start
-      { '<leader>n', function() Snacks.notifier.show_history() end, desc = 'Snacks: Notification History', },
+      { '<leader>noh', function() Snacks.notifier.show_history() end, desc = 'Snacks: Notification History', },
       { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Snacks: Rename File', },
       { '<leader>gB', function() Snacks.gitbrowse() end, desc = 'Snacks: Git Browse', mode = { 'n', 'v' }, },
       { '<leader>gf', function() Snacks.lazygit.log_file() end, desc = 'Snacks: Lazygit Current File History', },
