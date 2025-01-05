@@ -14,7 +14,7 @@ return {
       { '<leader>ch', ':ObsidianToggleCheckbox<CR>' },
     },
     cond = function()
-      local path = vim.fn.expand '%:p:h'
+      local path = vim.fn.expand '%:p'
       local is_notes = string.match(path, 'notes')
       local is_templates = string.match(path, 'templates')
       local is_gpt_chat = string.match(path, C.Globals.gpt_chats_path)
