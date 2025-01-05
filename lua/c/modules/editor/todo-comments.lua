@@ -8,8 +8,8 @@ return {
       'folke/trouble.nvim',
     },
     keys = {
-      { '<leader>to', ':TodoTelescope<CR>' },
-      { '<leader>tO', ':TodoTrouble<CR>' },
+      { '<leader>tt', ':TodoTelescope<CR>' },
+      { '<leader>tT', ':TodoTrouble<CR>' },
     },
 
     opts = {
@@ -24,13 +24,6 @@ return {
           -- signs = false, -- configure signs for some keywords individually
         },
 
-        -- ERR: = { icon = ' ', color = 'error' },
-        -- TODO: = { icon = ' ', color = 'info' },
-        -- HACK: = { icon = ' ', color = 'warning' },
-        -- WARN: = { icon = ' ', color = 'warning', alt = { 'WARNING', 'XXX' } },
-        -- PERF: = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
-        -- NOTE: = { icon = ' ', color = 'hint', alt = { 'INFO' } },
-        -- TEST: = { icon = '⏲ ', color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
         TODO = { icon = ' ', color = 'info' },
         ERR = { icon = ' ', color = 'error' },
         HACK = { icon = ' ', color = 'warning' },

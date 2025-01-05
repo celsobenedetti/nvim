@@ -19,7 +19,7 @@ return {
         desc = 'Neotest run file',
       },
       {
-        '<leader>tt',
+        '<leader>te',
         function()
           require('neotest').run.run()
         end,
