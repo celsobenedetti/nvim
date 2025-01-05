@@ -9,6 +9,12 @@ vim.api.nvim_create_user_command('Is', function(args)
   require('c.functions.issues').open_issue(args.args)
 end, { nargs = 1 })
 
+-- Monkeytype
+vim.api.nvim_create_user_command('Mt', function()
+  vim.ui.open 'https://monkeytype.com'
+end, { nargs = 0 })
+
+
 -- Convenient support for typos when saving file
 -- stylua: ignore
 local write_buffer = function() vim.cmd 'wa' end
