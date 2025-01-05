@@ -1,3 +1,8 @@
+--- @param pattern string
+local function filter_pattern(pattern)
+  return { filter = { find = pattern }, opts = { skip = true } }
+end
+
 return {
   {
     'folke/noice.nvim',
@@ -24,6 +29,9 @@ return {
           },
           view = 'mini',
         },
+
+        -- Suppress certain messages
+        filter_pattern 'PLACEHOLDER',
       },
       presets = {
         bottom_search = true,
