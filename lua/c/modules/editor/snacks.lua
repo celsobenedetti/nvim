@@ -99,8 +99,8 @@ return {
       { '<leader>un', function() Snacks.notifier.hide() end, desc = 'Snacks: Dismiss All Notifications', },
       { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'Snacks: Next Reference', mode = { 'n', 't' }, },
       { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'Snacks: Prev Reference', mode = { 'n', 't' }, },
-      { '<leader>z', function() Snacks.zen() end, desc = 'Toggle Zen Mode', },
-      { '<leader>Z', function() Snacks.zen.zoom() end, desc = 'Toggle Zoom', },
+      { '<leader>Z', function() Snacks.zen() end, desc = 'Toggle Zen Mode', },
+      -- { '<leader>Z', function() Snacks.zen.zoom() end, desc = 'Toggle Zoom', },
       -- stylua: ignore end
     },
   },
