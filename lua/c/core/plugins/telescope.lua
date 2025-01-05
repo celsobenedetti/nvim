@@ -84,7 +84,7 @@ return {
         builtin.grep_string { search = cleaned_selection }
       end, { desc = 'Telescope [S]earch current selection' })
       -- map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
-      map('n', '<leader>sb', builtin.git_branches, { desc = 'Telescope [S]earch [B]ranches' })
+      map('n', '<leader>gitb', builtin.git_branches, { desc = 'Telescope [S]earch [B]ranches' })
       map('n', '<leader><leader>', builtin.buffers, { desc = 'Telescope [S]earch [B]ranches' })
       map('n', '<leader>sH', '<cmd>Telescope highlights<cr>', { desc = 'Search Highlight Groups' })
 
@@ -100,6 +100,8 @@ return {
 
       map('n', '<leader>sc', require('telescope.builtin').commands, { desc = 'Telescope search commands' })
       map('n', '<leader>sC', require('telescope.builtin').command_history, { desc = 'Telescope search command history' })
+
+      -- NOTE: make better use of this
       map('n', '<leader>gs', ':Telescope git_status<CR>', { desc = 'Telescope: [G]it Telescope [S]Status' })
 
       -- Also possible to pass additional configuration options.

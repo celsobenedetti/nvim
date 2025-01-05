@@ -32,6 +32,7 @@ return {
 
         -- Suppress notifications containing the following patterns
         filter_pattern "in function '__index'", -- some md error when moving files
+        filter_pattern 'method textDocument/documentHighlight is not supported by any of the servers registered for the current buffer ', -- likely a LSP thing, encoundered on JSON file
       },
       presets = {
         bottom_search = true,
