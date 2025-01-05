@@ -6,14 +6,14 @@ M.is_next = function()
 end
 
 M.is_deno = function()
-  local root = vim.fs.root(0, '.git')
+  local root = vim.fs.root(0, 'deno.json')
   local is_next = M.is_next()
 
   if not root then
     return false
   end
 
-  return not is_next and vim.fn.filereadable(root .. '/deno.json') ~= 0
+  return not is_next
 end
 
 M.is_tailwind = function()
