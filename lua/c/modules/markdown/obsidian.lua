@@ -15,9 +15,10 @@ return {
     },
     cond = function()
       local path = vim.fn.expand '%:p'
-      local is_notes = string.match(path, 'notes')
-      local is_templates = string.match(path, 'templates')
-      local is_gpt_chat = string.match(path, C.Globals.gpt_chats_path)
+
+      local is_notes = path:find 'notes'
+      local is_templates = path:find 'templates'
+      local is_gpt_chat = path:find(C.Globals.gpt_chats_path)
 
       return is_notes and not is_templates and not is_gpt_chat
     end,
