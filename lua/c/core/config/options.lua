@@ -15,6 +15,10 @@ vim.opt.number = true -- Make line numbers default
 vim.opt.relativenumber = true
 vim.opt.conceallevel = 2
 
+-- Lines of context config
+-- Used to determine the min number of lines above/below the cursor, and thus when to trigger scrolling
+vim.opt.scrolloff = 20
+
 vim.opt.mouse = 'a' -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.showmode = false -- Don't show the mode, since it's already in status line
 
@@ -38,7 +42,6 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 vim.opt.inccommand = 'split' -- Preview substitutions live, as you type!
 vim.opt.cursorline = true -- Show which line your cursor is on
-vim.opt.scrolloff = 10 -- Minimal number of screen lines to keep above and below the cursor.
 
 -- fold
 
@@ -78,7 +81,7 @@ vim.opt.number = true -- Print line number
 vim.opt.pumblend = 10 -- Popup blend
 vim.opt.pumheight = 10 -- Maximum number of entries in a popup
 vim.opt.relativenumber = true -- Relative line numbers
-vim.opt.scrolloff = 4 -- Lines of context
+
 vim.opt.sessionoptions = { 'buffers', 'curdir', 'tabpages', 'winsize', 'help', 'globals', 'skiprtp', 'folds' }
 vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
@@ -104,7 +107,7 @@ vim.opt.swapfile = false
 
 vim.opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 vim.opt.wildmode = 'longest:full,full' -- Command-line completion mode
-vim.opt.winminwidth = 5 -- Minimum window width
+vim.opt.winminwidth = 20 -- Minimum window width
 vim.opt.wrap = false -- Disable line wrap
 vim.opt.fillchars = {
   foldopen = '',
