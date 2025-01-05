@@ -18,7 +18,7 @@ return {
 
       local is_notes = path:find 'notes'
       local is_templates = path:find 'templates'
-      local is_gpt_chat = path:find(C.Globals.gpt_chats_path)
+      local is_gpt_chat = path:find(C.global.gpt_chats_path)
 
       return is_notes and not is_templates and not is_gpt_chat
     end,

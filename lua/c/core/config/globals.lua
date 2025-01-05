@@ -1,5 +1,5 @@
 C = {
-  Globals = {
+  global = {
     copilot = true,
     autoformat = true,
     completion = true, -- cmp
@@ -17,9 +17,9 @@ C = {
 C.CWD = require 'c.lib.utils.cwd'
 
 -- iterate over all global variables
-for key, value in pairs(C.Globals) do
+for key, value in pairs(C.global) do
   if value == nil or value == '' then
-    C.Globals.key = ''
+    C.global.key = ''
     print('WARN: global variable not set:', key)
   end
 end

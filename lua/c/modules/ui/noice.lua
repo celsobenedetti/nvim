@@ -7,7 +7,7 @@ return {
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
-    lazy = C.Globals.performance,
+    lazy = C.global.performance,
     opts = {
       lsp = {
         signature = { auto_open = false },
