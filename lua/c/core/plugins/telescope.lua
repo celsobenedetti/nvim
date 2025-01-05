@@ -14,6 +14,7 @@ return {
     },
     config = function()
       local ignore_patterns = {
+        '.git',
         'node_modules',
         'pnpm-lock.yaml',
       }

@@ -73,5 +73,23 @@ return {
     },
   },
 
+  lazy = {
+    icons = {
+      cmd = '⌘',
+      config = '🛠',
+      event = '📅',
+      ft = '📂',
+      init = '⚙',
+      keys = '🗝',
+      plugin = '🔌',
+      runtime = '💻',
+      require = '🌙',
+      source = '📄',
+      start = '🚀',
+      task = '📌',
+      lazy = '💤 ',
+    },
+  },
+
   set_colorscheme = require('c.lib.utils.set_colorscheme').run,
 }

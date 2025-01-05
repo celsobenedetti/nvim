@@ -16,7 +16,7 @@ return {
       end
     end,
     opts = function()
-      -- PERF: we don't need this lualine require madness 🤷
+      -- LazyVim: we don't need this lualine require madness 🤷
       local lualine_require = require 'lualine_require'
       lualine_require.require = require
       local root = vim.fs.root(0, '.git') --[[@as string]]

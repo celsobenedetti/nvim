@@ -4,26 +4,21 @@ return {
   cmd = 'Neotree',
   keys = {
     {
-      '<leader>fe',
+      '<leader>e',
       function()
         require('neo-tree.command').execute { toggle = true }
       end,
       desc = 'Explorer NeoTree (Root Dir)',
     },
     {
-      '<leader>fE',
+      '<leader>E',
       function()
         require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd() }
       end,
       desc = 'Explorer NeoTree (cwd)',
     },
-    {
-      '<leader>ge',
-      function()
-        require('neo-tree.command').execute { source = 'git_status', toggle = true }
-      end,
-      desc = 'Git Explorer',
-    },
+
+    -- NOTE: (neotree) Buffer Explorer: Maybe this is useful
     {
       '<leader>be',
       function()

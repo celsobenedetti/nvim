@@ -13,23 +13,7 @@ require('lazy').setup({
   { import = 'c.modules.typescript' },
   { import = 'c.modules.markdown' },
 }, {
-  ui = {
-    icons = {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
-  },
+  ui = C.UI.lazy,
 })
 
 C.UI.set_colorscheme(C.UI.colorscheme_1)

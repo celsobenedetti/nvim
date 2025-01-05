@@ -1,14 +1,13 @@
 C = {
   global = {
     copilot = true,
-    autoformat = true,
+    autoformat = true, -- fmt
     completion = true, -- cmp
     diagnostics = true,
     performance = false, -- disable heavy plugins
     hardtime = false,
 
-    --- Path to the directory where md files for GPT chats are stored.
-    gpt_chats_path = os.getenv 'NOTES' .. '/.local/chats',
+    notes_path = os.getenv 'NOTES',
   },
 
   UI = require 'c.core.config.ui',
@@ -16,10 +15,13 @@ C = {
 
 C.CWD = require 'c.lib.utils.cwd'
 
--- iterate over all global variables
+-- iterate and validate all global variables
 for key, value in pairs(C.global) do
   if value == nil or value == '' then
     C.global.key = ''
-    print('WARN: global variable not set:', key)
+    print('WARNING: global variable not set:', key)
   end
 end
+
+C.global.notes_path = C.global.notes_path or ''
+C.global.gpt_chats_path = C.global.notes_path .. './local/chats' -- target directory for GPT chats.md files
