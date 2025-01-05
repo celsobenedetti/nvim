@@ -1,0 +1,7 @@
+{
+  "return": {
+    "prefix": "re",
+    "body": ["return {$0}"],
+    "description": "return {}"
+  }
+}

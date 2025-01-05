@@ -17,6 +17,18 @@
           "go"
         ],
         "path": "./snippets/go.json"
+      },
+      {
+        "language": [
+          "lua"
+        ],
+        "path": "./snippets/lua.json"
+      },
+      {
+        "language": [
+          "markdown"
+        ],
+        "path": "./snippets/markdown.json"
       }
     ]
   }
