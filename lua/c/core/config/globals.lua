@@ -4,7 +4,7 @@ C = {
     autoformat = true,
     completion = true, -- cmp
     diagnostics = true,
-    performance = false,
+    performance = false, -- disable heavy plugins
     hardtime = false,
 
     --- Path to the directory where md files for GPT chats are stored.

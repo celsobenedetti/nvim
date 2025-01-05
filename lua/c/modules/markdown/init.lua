@@ -32,7 +32,7 @@ return {
       require('markview').setup {
         checkboxes = presets.checkboxes.nerd,
         headings = presets.headings.slanted,
-        horizontal_rules = presets.horizontal_rules.thin,
+        -- horizontal_rules = presets.horizontal_rules.thin,
         block_quotes = {
           enable = true,
 

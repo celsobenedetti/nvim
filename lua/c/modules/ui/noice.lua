@@ -30,8 +30,8 @@ return {
           view = 'mini',
         },
 
-        -- Suppress certain messages
-        filter_pattern 'PLACEHOLDER',
+        -- Suppress notifications containing the following patterns
+        filter_pattern "in function '__index'", -- some md error when moving files
       },
       presets = {
         bottom_search = true,
