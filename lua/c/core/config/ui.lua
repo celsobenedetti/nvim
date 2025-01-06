@@ -91,5 +91,12 @@ return {
     },
   },
 
+  position = {
+    center = {
+      row = '50%',
+      col = '50%',
+    },
+  },
+
   set_colorscheme = require('c.lib.utils.set_colorscheme').run,
 }
