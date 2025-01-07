@@ -1,10 +1,13 @@
--- ----
--- This file contains the global options that are set in Neovim.
---
---
--- For global variables see globals.lua
---
--- ----
+local M = {
+  copilot = true,
+  autoformat = true, -- fmt
+  completion = true, -- cmp
+  diagnostics = true,
+  performance = false, -- disable optional/heavy plugins
+  hardtime = false,
+
+  notes_path = os.getenv 'NOTES',
+}
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -122,3 +125,5 @@ vim.opt.fillchars = {
 if vim.fn.has 'nvim-0.10' == 1 then
   vim.opt.smoothscroll = true
 end
+
+return M

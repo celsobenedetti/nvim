@@ -3,13 +3,13 @@ return {
   lazy = true,
   cmd = 'Neotree',
   keys = {
-    {
-      '<leader>e',
-      function()
-        require('neo-tree.command').execute { toggle = true }
-      end,
-      desc = 'Explorer NeoTree (Root Dir)',
-    },
+    -- {
+    --   '<leader>e',
+    --   function()
+    --     require('neo-tree.command').execute { toggle = true }
+    --   end,
+    --   desc = 'Explorer NeoTree (Root Dir)',
+    -- },
     {
       '<leader>E',
       function()
@@ -50,6 +50,7 @@ return {
     })
   end,
   opts = {
+    position = 'right',
     sources = { 'filesystem', 'buffers', 'git_status' },
     open_files_do_not_replace_types = { 'terminal', 'Trouble', 'trouble', 'qf', 'Outline' },
     filesystem = {

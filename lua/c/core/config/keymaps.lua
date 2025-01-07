@@ -46,7 +46,7 @@ map({ 'v', 'n' }, '<leader>I', function()
   require('c.functions.issues').open_selected_issue()
 end, { desc = 'Open Jira Issue in current selection' })
 
-map({ 'v' }, '<leader>G', function()
+map({ 'v' }, '<leader>gs', function()
   require('c.functions.google').google_search()()
 end, { desc = 'Search current selected string with google' })
 

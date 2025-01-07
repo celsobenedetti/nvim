@@ -2,6 +2,7 @@ return {
   {
     'folke/which-key.nvim',
     event = 'VeryLazy',
+    lazy = C.global.performance,
     opts = {
 
       -- your configuration comes here

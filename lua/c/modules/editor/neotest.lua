@@ -1,3 +1,21 @@
+local function get_cwd()
+  local path = vim.fn.expand '%:p' --[[@as string]]
+  local cwd = vim.fn.getcwd()
+  if cwd:find 'chatbot' then
+    if path:find 'packages/conversation' then
+      return cwd .. '/packages/conversation'
+    end
+
+    if path:find 'nestjs' then
+      if cwd:find 'nestjs' then
+        return cwd
+      end
+      return cwd .. '/nestjs'
+    end
+  end
+  return cwd
+end
+
 return {
 
   {
@@ -30,34 +48,30 @@ return {
         function()
           require('neotest').run.run { strategy = 'dap' }
         end,
-        desc = 'Neotest run nearest',
+        desc = 'Neotest debug test',
       },
       { '<leader>ts', ':Neotest summary<CR>', desc = 'Neotest summary' },
     },
     cmd = { 'Neotest' },
     config = function()
       require('neotest').setup {
+        discovery = {
+          enabled = false,
+        },
         adapters = {
           require 'neotest-jest' {
             jestCommand = 'pnpm test --',
-            jestConfigFile = 'jest.config.js',
-            env = { CI = true },
-            cwd = function(path)
-              local cwd = vim.fn.getcwd()
-              if cwd:find 'chatbot' then
-                if path:find 'packages/conversation' then
-                  return cwd .. '/packages/conversation'
-                end
-
-                if path:find 'nestjs' then
-                  if cwd:find 'nestjs' then
-                    return cwd
-                  end
-                  return cwd .. '/nestjs'
-                end
-              end
-              return cwd
+            jestConfigFile = function()
+              local cwd = get_cwd()
+              return cwd .. '/jest.config.js'
             end,
+            env = { CI = true },
+            cwd = function(_)
+              return get_cwd()
+            end,
+            -- is_test_file = function(path)
+            --   return path:find 'spec.ts' or path:find 'test.ts'
+            -- end,
           },
         },
       }
