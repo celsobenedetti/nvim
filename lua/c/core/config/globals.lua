@@ -1,6 +1,5 @@
 C = {
   global = require 'c.core.config.options',
-
   UI = require 'c.core.config.ui',
 }
 
