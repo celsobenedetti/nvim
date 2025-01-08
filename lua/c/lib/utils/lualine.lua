@@ -101,13 +101,24 @@ end
 function M.pretty_path()
   local root = vim.fs.root(0, '.git') --[[@as string]]
   local full_path = vim.fn.expand '%:p' --[[@as string]]
-  local path = full_path:gsub(root .. '/', '')
-  if #path < 45 then
-    -- remove the root from the path
-    return path:gsub(root .. '/', '')
-  end
+
+  local path = full_path:gsub(root .. '/', '') -- remove the root from the path
 
   local p = vim.fn.split(path, '/') -- Path Parts
+  local current_file = '%#CursorLineNr#' .. p[#p] -- https://github.com/nvim-lualine/lualine.nvim/issues/337#issuecomment-919902020
+
+  if #p == 1 then
+    return current_file
+  end
+
+  if #path < 50 then
+    local result = ''
+    for i = 1, #p - 1 do
+      result = result .. p[i] .. '/'
+    end
+    return result .. current_file
+  end
+
   local D = '/' -- Delimiter
   local E = D .. C.UI.icons.chars.ellipsis .. D -- Elipsis
 
@@ -118,12 +129,12 @@ function M.pretty_path()
     end
   end
 
-  if #p > 5 then
-    return string.sub(p[1], 1, 4) .. E .. p[dominant_index] .. E .. p[#p - 1] .. D .. p[#p]
+  if #path < 100 then
+    return p[1] .. D .. p[dominant_index] .. E .. p[#p - 1] .. D .. current_file
   end
 
-  if #p > 3 then
-    return p[1] .. D .. p[dominant_index] .. E .. p[#p - 1] .. D .. p[#p]
+  if #p > 5 then
+    return string.sub(p[1], 1, 4) .. E .. p[dominant_index] .. E .. p[#p - 1] .. D .. current_file
   end
 
   return path

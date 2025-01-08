@@ -53,7 +53,10 @@ return {
               separator = '',
               padding = { left = 1, right = 0 },
             },
-            Lualine.pretty_path,
+            {
+              color = 'Comment',
+              Lualine.pretty_path,
+            },
           },
           lualine_x = {
             -- stylua: ignore
