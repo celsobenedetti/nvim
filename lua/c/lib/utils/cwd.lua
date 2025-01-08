@@ -21,4 +21,9 @@ M.is_tailwind = function()
   return not not root
 end
 
+M.is_work = function()
+  local path = vim.fn.expand '%:p'
+  return path:find 'chatbot'
+end
+
 return M

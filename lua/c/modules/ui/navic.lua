@@ -29,13 +29,18 @@ return {
     'nvim-lualine/lualine.nvim',
     optional = true,
     opts = function(_, opts)
-      if not vim.g.trouble_lualine then
-        table.insert(opts.sections.lualine_c, {
-          'navic',
-          -- nil or 'static' seem to work here
-          color_correction = nil,
-        })
+      local root = vim.fs.root(0, '.git') --[[@as string]]
+      local full_path = vim.fn.expand '%:p' --[[@as string]]
+      local path = full_path:gsub(root .. '/', '')
+      if #path > 45 then
+        return
       end
+
+      table.insert(opts.sections.lualine_c, {
+        'navic',
+        -- nil or 'static' seem to work here
+        color_correction = nil,
+      })
     end,
   },
 }

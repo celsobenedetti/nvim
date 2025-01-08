@@ -71,6 +71,9 @@ return {
       Value = ' ',
       Variable = '󰀫 ',
     },
+    chars = {
+      ellipsis = '…',
+    },
   },
 
   lazy = {

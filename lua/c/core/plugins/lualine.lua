@@ -1,7 +1,6 @@
 local Lualine = require 'c.lib.utils.lualine'
 
 return {
-
   {
     'nvim-lualine/lualine.nvim',
     event = 'VeryLazy',
@@ -54,13 +53,7 @@ return {
               separator = '',
               padding = { left = 1, right = 0 },
             },
-            {
-              function()
-                local path = vim.fn.expand '%:p' --[[@as string]]
-                -- remove the root from the path
-                return path:gsub(root .. '/', '')
-              end,
-            },
+            Lualine.pretty_path,
           },
           lualine_x = {
             -- stylua: ignore

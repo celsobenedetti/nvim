@@ -1,5 +1,5 @@
 --- @param pattern string
-local function filter_pattern(pattern)
+local function filter(pattern)
   return { filter = { find = pattern }, opts = { skip = true } }
 end
 
@@ -18,7 +18,18 @@ return {
         },
       },
       routes = {
+        -- Suppress notifications containing the following patterns
+        filter "in function '__index'", -- some md error when moving files
+        filter 'method textDocument/documentHighlight is not supported by any of the servers registered for the current buffer ', -- likely a LSP thing, encoundered on JSON file
+        filter 'Error executing lua Keyboard interrupt', -- Looks like a bufferline thing
+        filter 'Error executing vim.schedule lua callback', -- Neotest error
+        filter 'airbnb', -- BRO PLEASE STOP 😭
+
+        -- avante jank
+        filter 'Error executing lua callback: deserialize error: missing field',
+
         {
+
           filter = {
             event = 'msg_show',
             any = {
@@ -29,16 +40,6 @@ return {
           },
           view = 'mini',
         },
-
-        -- Suppress notifications containing the following patterns
-        filter_pattern "in function '__index'", -- some md error when moving files
-        filter_pattern 'method textDocument/documentHighlight is not supported by any of the servers registered for the current buffer ', -- likely a LSP thing, encoundered on JSON file
-        filter_pattern 'Error executing lua Keyboard interrupt', -- Looks like a bufferline thing
-        filter_pattern 'Error executing vim.schedule lua callback', -- Neotest error
-        filter_pattern 'Failed to load config "airbnb-base"', -- BRO PLEASE STOP
-
-        -- avante jank
-        filter_pattern 'Error executing lua callback: deserialize error: missing field',
       },
       presets = {
         bottom_search = true,
