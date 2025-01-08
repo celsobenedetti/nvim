@@ -32,7 +32,8 @@ return {
       local root = vim.fs.root(0, '.git') --[[@as string]]
       local full_path = vim.fn.expand '%:p' --[[@as string]]
       local path = full_path:gsub(root .. '/', '')
-      if #path > 45 then
+      if vim.api.nvim_win_get_width(0) / 2 < #path then
+        -- navic won't fit well in lualine
         return
       end
 
