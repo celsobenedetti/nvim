@@ -1,17 +1,17 @@
-require 'c.core.config'
+require 'core.config'
 
 require('lazy').setup({
-  { import = 'c.core.plugins' },
+  { import = 'core.plugins' },
 
-  { import = 'c.modules.ui' },
-  { import = 'c.modules.editor' },
+  { import = 'modules.ui' },
+  { import = 'modules.editor' },
 
-  { import = 'c.modules.ai' },
-  { import = 'c.modules.dap' },
-  { import = 'c.modules.trouble' },
+  { import = 'modules.ai' },
+  { import = 'modules.dap' },
+  { import = 'modules.trouble' },
 
-  { import = 'c.modules.typescript' },
-  { import = 'c.modules.markdown' },
+  { import = 'modules.typescript' },
+  { import = 'modules.markdown' },
 }, {
   ui = C.UI.lazy,
 })

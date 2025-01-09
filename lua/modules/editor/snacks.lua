@@ -1,4 +1,4 @@
-local config = require 'c.modules.editor.config.snacks-config'
+local config = require 'modules.editor.config.snacks-config'
 
 return {
   {

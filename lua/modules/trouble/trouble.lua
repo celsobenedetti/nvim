@@ -5,7 +5,7 @@ return {
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require('trouble').setup()
-      require 'c.modules.trouble.autocmds.delete_entry'
+      require 'modules.trouble.autocmds.delete_entry'
     end,
 
     keys = {

@@ -43,11 +43,11 @@ map('v', '<leader>T', function()
 end, { desc = 'Run current line as bash command' })
 
 map({ 'v', 'n' }, '<leader>I', function()
-  require('c.functions.issues').open_selected_issue()
+  require('functions.issues').open_selected_issue()
 end, { desc = 'Open Jira Issue in current selection' })
 
 map({ 'v' }, '<leader>gs', function()
-  require('c.functions.google').google_search()()
+  require('functions.google').google_search()()
 end, { desc = 'Search current selected string with google' })
 
 -- get current line to variable
@@ -59,7 +59,7 @@ map('n', '<leader>V', function()
   vim.api.nvim_feedkeys(Keys(':lua ' .. line .. '<CR>'), 'n', true)
 end, { desc = 'Run current line as vim command' })
 
-local track_position_before_relative_jump = require 'c.functions.relative_jump'
+local track_position_before_relative_jump = require 'functions.relative_jump'
 map('n', 'k', track_position_before_relative_jump.up)
 map('n', 'j', track_position_before_relative_jump.down)
 
@@ -79,7 +79,7 @@ map('n', '<leader><C-Space>', function()
   vim.cmd('e ' .. notes_dir .. '/' .. today .. '.md')
 end, { desc = 'Open todays note' })
 
-local surround_map = require('c.functions.surround').surround_map
+local surround_map = require('functions.surround').surround_map
 surround_map({ '(', ')' }, '(')
 surround_map({ '[', ']' }, '[')
 surround_map({ '"' }, '"')

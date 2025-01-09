@@ -108,7 +108,7 @@ return {
 
       local filetype = vim.api.nvim_get_option_value('filetype', {})
       if filetype == 'typescript' or filetype == 'javascript' then
-        require 'c.modules.typescript.dap.setup'()
+        require 'modules.typescript.dap.setup'()
         return
       end
 

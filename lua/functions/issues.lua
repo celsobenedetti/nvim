@@ -1,4 +1,4 @@
-local get_visual_selection = require 'c.functions.utils.get_visual_selection'
+local get_visual_selection = require 'functions.utils.get_visual_selection'
 
 local jira = 'https://ocelotbot.atlassian.net/browse/'
 local linear = 'https://linear.app/celsobenedetti/issue/'

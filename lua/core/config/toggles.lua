@@ -107,4 +107,4 @@ map('n', '<leader>ud', toggles.diagnostics, { desc = 'Toggle diagnostics' })
 
 map('n', '<leader>us', toggles.option { option = 'spell' }, { desc = 'Toggle Spelling' })
 map('n', '<leader>tC', toggles.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle conceal' })
-require 'c.core.config.lazy'
+require 'core.config.lazy'

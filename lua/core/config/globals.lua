@@ -1,9 +1,9 @@
 C = {
-  global = require 'c.core.config.options',
-  UI = require 'c.core.config.ui',
+  global = require 'core.config.options',
+  UI = require 'core.config.ui',
 }
 
-C.CWD = require 'c.lib.utils.cwd'
+C.CWD = require 'lib.utils.cwd'
 
 C.lsp = {
   ---@param on_attach fun(client:vim.lsp.Client, buffer)

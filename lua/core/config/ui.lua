@@ -101,5 +101,5 @@ return {
     },
   },
 
-  set_colorscheme = require('c.lib.utils.set_colorscheme').run,
+  set_colorscheme = require('lib.utils.set_colorscheme').run,
 }

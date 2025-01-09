@@ -76,7 +76,7 @@ return {
       map('n', '<leader>st', builtin.builtin, { desc = 'Telescope [S]earch [S]elect Telescope' })
       map('n', '<leader>sw', builtin.grep_string, { desc = 'Telescope [S]earch current [W]ord' })
       map('v', '<leader>sw', function()
-        local selection = require 'c.functions.utils.get_visual_selection'()
+        local selection = require 'functions.utils.get_visual_selection'()
         if not selection then
           return
         end
@@ -120,7 +120,7 @@ return {
 
       ------------- Custom functions ----------------------
 
-      local functions = require 'c.functions.telescope'
+      local functions = require 'functions.telescope'
 
       map('n', '<leader>mv', functions.move_note, { desc = 'Move file of current buffer to dir' })
       map('n', '<leader>dot', functions.dotfiles, { desc = 'Search Dotfiles' })
