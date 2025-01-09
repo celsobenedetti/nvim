@@ -1,7 +1,7 @@
 --- toggles
 
-local copilot = C.global.copilot
-local completion = C.global.completion
+local copilot = C.opt.copilot
+local completion = C.opt.completion
 local diagnostics = vim.g.diagnostics
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
 
@@ -13,8 +13,8 @@ local toggles = {
 
   -- toggle autoformat
   format = function()
-    C.global.autoformat = not C.global.autoformat
-    print('Autoformat: ' .. tostring(C.global.autoformat))
+    C.opt.autoformat = not C.opt.autoformat
+    print('Autoformat: ' .. tostring(C.opt.autoformat))
   end,
 
   -- toggle copilot

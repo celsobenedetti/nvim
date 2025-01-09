@@ -32,7 +32,7 @@ return {
       'hrsh7th/cmp-path',
       {
         'zbirenbaum/copilot-cmp',
-        enabled = C.global.copilot,
+        enabled = C.opt.copilot,
         config = function()
           require('copilot_cmp').setup()
         end,
@@ -110,7 +110,7 @@ return {
       }
       map('i', '<C-Space>', cmp.mapping.complete, { desc = 'cmp: Trigger Completion' })
 
-      cmp.setup.buffer { enabled = C.global.completion }
+      cmp.setup.buffer { enabled = C.opt.completion }
     end,
   },
 }

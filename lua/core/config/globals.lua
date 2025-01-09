@@ -1,10 +1,16 @@
+--- Global table
 C = {
-  global = require 'core.config.options',
+  --- Global options
+  opt = require 'core.config.options',
+
+  --- Global UI config
   UI = require 'core.config.ui',
 }
 
+--- Global CWD utils
 C.CWD = require 'lib.utils.cwd'
 
+--- Global LSP utils
 C.lsp = {
   ---@param on_attach fun(client:vim.lsp.Client, buffer)
   ---@param name? string
@@ -22,12 +28,12 @@ C.lsp = {
 }
 
 -- iterate and validate all global variables
-for key, value in pairs(C.global) do
+for key, value in pairs(C.opt) do
   if value == nil or value == '' then
-    C.global.key = ''
+    C.opt.key = ''
     print('WARN global variable not set:', key)
   end
 end
 
-C.global.notes_path = C.global.notes_path or ''
-C.global.gpt_chats_path = C.global.notes_path .. './local/chats' -- target directory for GPT chats.md files
+C.opt.notes_path = C.opt.notes_path or ''
+C.opt.gpt_chats_path = C.opt.notes_path .. './local/chats' -- target directory for GPT chats.md files

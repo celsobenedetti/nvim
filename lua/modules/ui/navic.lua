@@ -3,7 +3,7 @@ return {
     'SmiteshP/nvim-navic',
     lazy = true,
     init = function()
-      if C.global.performance then
+      if C.opt.performance then
         return
       end
 

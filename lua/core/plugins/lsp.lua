@@ -71,7 +71,7 @@ return {
       { 'j-hui/fidget.nvim', opts = {} }, -- Useful status updates for LSP.
       {
         'ray-x/lsp_signature.nvim',
-        lazy = C.global.performance,
+        lazy = C.opt.performance,
         event = 'VeryLazy',
         opts = {},
         config = function(_, opts)

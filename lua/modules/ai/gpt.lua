@@ -13,7 +13,7 @@ return {
       },
     },
     config = function(opts)
-      opts.chat_dir = C.global.gpt_chats_path
+      opts.chat_dir = C.opt.gpt_chats_path
       require('gp').setup(opts)
     end,
   },

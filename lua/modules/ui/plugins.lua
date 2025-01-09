@@ -1,6 +1,6 @@
 return {
 
-  { 'levouh/tint.nvim', opts = true, lazy = C.global.performance }, -- Slightly tint unfocused pane
+  { 'levouh/tint.nvim', opts = true, lazy = C.opt.performance }, -- Slightly tint unfocused pane
   {
     'folke/twilight.nvim',
     lazy = true,
@@ -16,7 +16,7 @@ return {
   {
     -- HEX/RGB Colorizer plugin
     'echasnovski/mini.hipatterns',
-    lazy = C.global.performance,
+    lazy = C.opt.performance,
     ft = {
       'toml',
       'lua',

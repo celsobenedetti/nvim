@@ -1,7 +1,7 @@
 return {
   {
     'zbirenbaum/copilot.lua',
-    enabled = C.global.copilot,
+    enabled = C.opt.copilot,
     event = 'VeryLazy',
     opts = {
       filetypes = {
