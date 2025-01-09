@@ -1,4 +1,4 @@
-return {
+local M = {
   colorscheme_1 = 'default',
   colorscheme_2 = 'rose-pine',
   colorscheme_3 = 'gruvbox',
@@ -15,6 +15,7 @@ return {
     darkgray = '#0B0C11',
     lightgray = '#303340',
     inactivegray = '#303340',
+    comment = '#2c2e33',
   },
 
   icons = {
@@ -103,3 +104,18 @@ return {
 
   set_colorscheme = require('lib.utils.set_colorscheme').run,
 }
+
+---@type table<string, vim.api.keyset.highlight>
+local groups = {
+  -- Winbar styling.
+  WinBar = { fg = M.colors.fg, bg = M.colors.transparent_black },
+  WinBarNC = { bg = M.colors.transparent_black },
+  WinBarDir = { fg = M.colors.bright_magenta, bg = M.colors.transparent_black, italic = true },
+  WinBarSeparator = { fg = M.colors.green, bg = M.colors.transparent_black },
+}
+
+for group, opts in pairs(groups) do
+  vim.api.nvim_set_hl(0, group, opts)
+end
+
+return M
