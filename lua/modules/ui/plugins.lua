@@ -1,11 +1,14 @@
 return {
   {
-    import = 'lib.plugins.winbar.setup',
-    dependencies = {
-      'SmiteshP/nvim-navic',
-      'nvim-web-devicons',
-    },
-    enabled = C.opt.winbar and not C.opt.performance,
+    'Bekaboo/dropbar.nvim',
+    lazy = C.opt.performance,
+    dependencies = { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    config = function()
+      local dropbar_api = require 'dropbar.api'
+      vim.keymap.set('n', '<Leader>;', dropbar_api.pick, { desc = 'Pick symbols in winbar' })
+      vim.keymap.set('n', '[;', dropbar_api.goto_context_start, { desc = 'Go to start of current context' })
+      vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' })
+    end,
   },
 
   { 'levouh/tint.nvim', opts = true, lazy = C.opt.performance }, -- Slightly tint unfocused pane
