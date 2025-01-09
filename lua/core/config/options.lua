@@ -5,6 +5,7 @@ local M = {
   diagnostics = true,
   performance = false, -- disable optional/heavy plugins
   hardtime = false,
+  winbar = true,
 
   notes_path = os.getenv 'NOTES',
 }

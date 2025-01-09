@@ -1,4 +1,12 @@
 return {
+  {
+    import = 'lib.plugins.winbar.setup',
+    dependencies = {
+      'SmiteshP/nvim-navic',
+      'nvim-web-devicons',
+    },
+    enabled = C.opt.winbar and not C.opt.performance,
+  },
 
   { 'levouh/tint.nvim', opts = true, lazy = C.opt.performance }, -- Slightly tint unfocused pane
   {

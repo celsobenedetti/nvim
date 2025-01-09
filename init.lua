@@ -3,8 +3,8 @@ require 'core.config'
 require('lazy').setup({
   { import = 'core.plugins' },
 
-  { import = 'modules.ui' },
   { import = 'modules.editor' },
+  { import = 'modules.ui', enabled = not C.opt.performance },
 
   { import = 'modules.ai' },
   { import = 'modules.dap' },
