@@ -22,6 +22,8 @@ return {
 
       vim.o.laststatus = vim.g.lualine_laststatus
 
+      vim.api.nvim_set_hl(0, 'LualineCurrentFile', { bg = C.UI.colors.black, fg = C.UI.colors.white, bold = true })
+
       local opts = {
         options = {
           theme = Lualine.theme,
@@ -54,7 +56,7 @@ return {
               padding = { left = 1, right = 0 },
             },
             {
-              color = 'Comment',
+              color = 'BufferLineTruncMarker',
               Lualine.pretty_path,
             },
           },

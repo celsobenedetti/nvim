@@ -99,28 +99,34 @@ function M.add_cmp_source(name)
 end
 
 function M.pretty_path()
+  -- FIX: what about non git repos?
   local root = vim.fs.root(0, '.git') --[[@as string]]
   local full_path = vim.fn.expand '%:p' --[[@as string]]
+
+  local D = '/' -- Delimiter
+  local E = C.UI.icons.chars.ellipsis -- Elipsis
 
   local path = full_path:gsub(root .. '/', '') -- remove the root from the path
 
   local p = vim.fn.split(path, '/') -- Path Parts
-  local current_file = '%#CursorLineNr#' .. p[#p] -- https://github.com/nvim-lualine/lualine.nvim/issues/337#issuecomment-919902020
+  local highlight = 'LualineCurrentFile'
+  local current_file = '%#' .. highlight .. '#' .. p[#p] -- https://github.com/nvim-lualine/lualine.nvim/issues/337#issuecomment-919902020
 
   if #p == 1 then
     return current_file
   end
 
+  if #p > 4 and #path > 50 then
+    p[1] = string.sub(p[1], 1, 1) .. E
+  end
+
   if #path < 50 then
     local result = ''
     for i = 1, #p - 1 do
-      result = result .. p[i] .. '/'
+      result = result .. p[i] .. D
     end
     return result .. current_file
   end
-
-  local D = '/' -- Delimiter
-  local E = D .. C.UI.icons.chars.ellipsis .. D -- Elipsis
 
   local dominant_index = 2
   if C.CWD.is_work() then
@@ -130,11 +136,11 @@ function M.pretty_path()
   end
 
   if #path < 100 then
-    return p[1] .. D .. p[dominant_index] .. E .. p[#p - 1] .. D .. current_file
+    return p[1] .. D .. p[dominant_index] .. D .. E .. D .. p[#p - 1] .. D .. current_file
   end
 
   if #p > 5 then
-    return string.sub(p[1], 1, 4) .. E .. p[dominant_index] .. E .. p[#p - 1] .. D .. current_file
+    return string.sub(p[1], 1, 4) .. D .. E .. D .. p[dominant_index] .. D .. E .. D .. p[#p - 1] .. D .. current_file
   end
 
   return path

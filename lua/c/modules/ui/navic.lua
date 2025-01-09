@@ -25,6 +25,7 @@ return {
     end,
   },
 
+  -- TODO:  add either this or lualine to top
   {
     'nvim-lualine/lualine.nvim',
     optional = true,
@@ -41,6 +42,7 @@ return {
         'navic',
         -- nil or 'static' seem to work here
         color_correction = nil,
+        color = 'BufferLineTruncMarker',
       })
     end,
   },
