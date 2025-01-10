@@ -33,6 +33,7 @@ return {
           toml = { 'taplo' },
           typescript = { js_formatter },
           typescriptreact = { js_formatter },
+          yaml = { 'yq' },
           zsh = { 'shfmt' },
         },
         formatters = {
