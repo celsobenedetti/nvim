@@ -99,8 +99,7 @@ function M.add_cmp_source(name)
 end
 
 function M.pretty_path()
-  -- FIX: what about non git repos?
-  local root = vim.fs.root(0, '.git') --[[@as string]]
+  local root = vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
   local full_path = vim.fn.expand '%:p' --[[@as string]]
 
   local D = '/' -- Delimiter

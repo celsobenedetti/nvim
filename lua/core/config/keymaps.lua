@@ -1,5 +1,4 @@
 map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy UI' })
-
 map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 
 -- new file
@@ -24,6 +23,9 @@ map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to r
 
 -- Commands
 map('n', '<leader>C', ':Clip<CR>', { desc = 'Copy file path to clipboard' })
+
+-- TODO: 1. Extract global utils for spliting wincow <C-v>
+-- TODO: 2. Extract global utils for running command inside lua function
 map('n', '<leader>N', ':Note<CR>', { desc = 'Run bash on current line' })
 
 map('n', '<leader>B', function()

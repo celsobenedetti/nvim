@@ -2,20 +2,16 @@ return {
 
   { -- Autoformat
     'stevearc/conform.nvim',
-    opts = function()
+    config = function()
       local js_formatter = C.CWD.is_deno() and 'deno' or 'prettierd'
-
-      return {
+      require('conform').setup {
         log_level = vim.log.levels.WARN,
         notify_on_error = false,
         format_on_save = function()
-          return {
-            timeout_ms = 5000,
-            lsp_fallback = true,
-            filter = function(client)
-              return C.opt.autoformat and client.name ~= 'tsserver'
-            end,
-          }
+          if not C.opt.autoformat then
+            return
+          end
+          return { timeout_ms = 500, lsp_format = 'fallback' }
         end,
         formatters_by_ft = {
           bash = { 'shfmt' },

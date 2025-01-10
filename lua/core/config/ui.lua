@@ -107,11 +107,7 @@ local M = {
 
 ---@type table<string, vim.api.keyset.highlight>
 local groups = {
-  -- Winbar styling.
-  WinBar = { fg = M.colors.fg, bg = M.colors.transparent_black },
-  WinBarNC = { bg = M.colors.transparent_black },
-  WinBarDir = { fg = M.colors.bright_magenta, bg = M.colors.transparent_black, italic = true },
-  WinBarSeparator = { fg = M.colors.green, bg = M.colors.transparent_black },
+  LualineCurrentFile = { bg = M.colors.black, fg = M.colors.white, bold = true },
 }
 
 for group, opts in pairs(groups) do
