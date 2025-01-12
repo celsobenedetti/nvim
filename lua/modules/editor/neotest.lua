@@ -37,7 +37,7 @@ return {
         desc = 'Neotest run file',
       },
       {
-        '<leader>te',
+        '<leader>tn',
         function()
           require('neotest').run.run()
         end,
@@ -50,7 +50,7 @@ return {
         end,
         desc = 'Neotest debug test',
       },
-      { '<leader>ts', ':Neotest summary<CR>', desc = 'Neotest summary' },
+      { '<leader>nts', ':Neotest summary<CR>', desc = 'Neotest summary' },
     },
     cmd = { 'Neotest' },
     config = function()

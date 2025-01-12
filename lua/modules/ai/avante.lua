@@ -5,7 +5,7 @@ return {
     lazy = true,
     keys = {
       {
-        '<leader>av',
+        '<leader>A',
         ':AvanteToggle<CR>',
         desc = 'Avante GenAI Prompt',
       },

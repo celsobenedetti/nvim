@@ -29,13 +29,6 @@ return {
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
-      {
-        'zbirenbaum/copilot-cmp',
-        enabled = C.opt.copilot,
-        config = function()
-          require('copilot_cmp').setup()
-        end,
-      },
     },
     opts = function()
       -- See `:help cmp`
@@ -103,7 +96,7 @@ return {
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'copilot' },
-          { name = 'supermaven' },
+          -- { name = 'supermaven' },
           { name = 'dictionary', keyword_length = 2 },
         },
       }

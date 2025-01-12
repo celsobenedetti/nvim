@@ -1,5 +1,4 @@
 return {
-  -- TODO: check out https://github.com/CopilotC-Nvim/CopilotChat.nvim
   {
     'robitx/gp.nvim',
     cmd = {

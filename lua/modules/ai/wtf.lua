@@ -12,7 +12,7 @@ return {
         function()
           require('wtf').ai()
         end,
-        desc = 'Debug diagnostic with AI',
+        desc = 'Debug diagnostic with GPT',
       },
       {
         mode = { 'n' },

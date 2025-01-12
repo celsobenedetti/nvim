@@ -1,6 +1,6 @@
 require 'core.config'
 
-  require('lazy').setup({
+require('lazy').setup({
   { import = 'core.plugins' },
 
   { import = 'modules.editor' },

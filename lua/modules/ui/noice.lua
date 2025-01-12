@@ -26,6 +26,7 @@ return {
         filter 'airbnb', -- BRO PLEASE STOP 😭
 
         -- avante jank
+        filter 'Error detected while processing', -- some autocmd
         filter 'Error executing lua callback: deserialize error: missing field',
 
         {

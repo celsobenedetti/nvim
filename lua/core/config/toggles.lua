@@ -9,7 +9,7 @@ local OFF = '❌ Disabled '
 local ON = '✅ Enabled '
 
 --- Functions for each toggle
-local toggles = {
+local M = {
 
   -- toggle autoformat
   format = function()
@@ -19,16 +19,20 @@ local toggles = {
 
   -- toggle copilot
   copilot = function()
+    if copilot then
+      vim.api.nvim_command 'Copilot disable'
+      print(OFF .. 'Copilot')
+    else
+      vim.api.nvim_command 'Copilot enable'
+      print(ON .. 'Copilot')
+    end
+    copilot = not copilot
+  end,
+
+  -- toggle copilot
+  supermaven = function()
     require('supermaven-nvim.api').toggle()
     print(C.UI.icons.kinds.Supermaven .. ' toggled Supermaven')
-    -- if copilot then
-    --   vim.api.nvim_command 'Copilot disable'
-    --   print(OFF .. 'Copilot')
-    -- else
-    --   vim.api.nvim_command 'Copilot enable'
-    --   print(ON .. 'Copilot')
-    -- end
-    copilot = not copilot
   end,
 
   -- completion
@@ -102,11 +106,12 @@ local toggles = {
   end,
 }
 
-map('n', '<leader>uf', toggles.format, { desc = 'Toggle auto format (global)' })
-map('n', '<leader>uc', toggles.completion, { desc = 'Toggle completion' })
-map('n', '<leader>uC', toggles.copilot, { desc = 'Toggle copilot' })
-map('n', '<leader>ud', toggles.diagnostics, { desc = 'Toggle diagnostics' })
+map('n', '<leader>uf', M.format, { desc = 'Toggle auto format (global)' })
+map('n', '<leader>uc', M.completion, { desc = 'Toggle completion' })
+map('n', '<leader>ts', M.supermaven, { desc = 'Toggle Supermaven' })
+map('n', '<leader>ud', M.diagnostics, { desc = 'Toggle diagnostics' })
 
-map('n', '<leader>us', toggles.option { option = 'spell' }, { desc = 'Toggle Spelling' })
-map('n', '<leader>tC', toggles.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle conceal' })
-require 'core.config.lazy'
+map('n', '<leader>us', M.option { option = 'spell' }, { desc = 'Toggle Spelling' })
+map('n', '<leader>tC', M.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle conceal' })
+
+return M

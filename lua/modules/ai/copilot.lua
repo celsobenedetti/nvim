@@ -1,15 +1,24 @@
+-- TODO:  Supermaven feels better suited, but found lots of issues
 return {
   {
     'zbirenbaum/copilot.lua',
     lazy = not C.opt.copilot,
-    event = 'VeryLazy',
+    keys = {
+      { '<leader>tc', require('core.config.toggles').copilot, { desc = 'Toggle copilot' } },
+    },
     opts = {
-      filetypes = {
-        yaml = true,
-        json = true,
-      },
       suggestion = { enabled = false },
       panel = { enabled = false },
+    },
+
+    dependencies = {
+      {
+        'zbirenbaum/copilot-cmp',
+        lazy = not C.opt.copilot,
+        config = function()
+          require('copilot_cmp').setup()
+        end,
+      },
     },
   },
 }
