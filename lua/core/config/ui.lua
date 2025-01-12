@@ -105,13 +105,4 @@ local M = {
   set_colorscheme = require('lib.utils.set_colorscheme').run,
 }
 
----@type table<string, vim.api.keyset.highlight>
-local groups = {
-  LualineCurrentFile = { bg = M.colors.black, fg = M.colors.white, bold = true },
-}
-
-for group, opts in pairs(groups) do
-  vim.api.nvim_set_hl(0, group, opts)
-end
-
 return M

@@ -1,5 +1,5 @@
 local M = {
-  copilot = true,
+  copilot = false,
   autoformat = true, -- fmt
   completion = true, -- cmp
   diagnostics = true,

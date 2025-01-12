@@ -11,9 +11,16 @@ return {
     --   desc = 'Explorer NeoTree (Root Dir)',
     -- },
     {
-      '<leader>E',
+      '<leader>fe',
       function()
-        require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd() }
+        require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd(), position = 'left' }
+      end,
+      desc = 'Explorer NeoTree (cwd)',
+    },
+    {
+      '<leader>fE',
+      function()
+        require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd(), position = 'right' }
       end,
       desc = 'Explorer NeoTree (cwd)',
     },
@@ -50,13 +57,43 @@ return {
     })
   end,
   opts = {
-    position = 'right',
     sources = { 'filesystem', 'buffers', 'git_status' },
     open_files_do_not_replace_types = { 'terminal', 'Trouble', 'trouble', 'qf', 'Outline' },
     filesystem = {
       bind_to_cwd = false,
       follow_current_file = { enabled = true },
       use_libuv_file_watcher = true,
+      components = {
+        harpoon_index = function(config, node, _)
+          local harpoon_list = require('harpoon'):list()
+          local path = node:get_id()
+          local harpoon_key = vim.uv.cwd()
+
+          for i, item in ipairs(harpoon_list.items) do
+            local value = item.value
+            if string.sub(item.value, 1, 1) ~= '/' then
+              value = harpoon_key .. '/' .. item.value
+            end
+
+            if value == path then
+              return {
+                text = string.format(' 󰛢 ⥤ %d', i), -- <-- Add your favorite harpoon like arrow here
+                highlight = config.highlight or 'NeoTreeDirectoryIcon',
+              }
+            end
+          end
+          return {}
+        end,
+      },
+      renderers = {
+        file = {
+          { 'icon' },
+          { 'name', use_git_status_colors = true },
+          { 'harpoon_index' }, --> This is what actually adds the Harpoon component in where you want it
+          { 'diagnostics' },
+          { 'git_status', highlight = 'NeoTreeDimText' },
+        },
+      },
     },
     window = {
       mappings = {

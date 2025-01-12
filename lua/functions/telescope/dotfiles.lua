@@ -14,7 +14,13 @@ M.run = function()
       '~/.dotfiles',
     },
     hidden = true,
-    find_command = { 'rg', '--files', '--hidden', '-g', '!.git' },
+    find_command = {
+      'fd',
+      '.',
+      '~/.dotfiles',
+      '--type=file',
+      '--hidden',
+    },
   }
 end
 

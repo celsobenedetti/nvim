@@ -54,7 +54,8 @@ return {
               padding = { left = 1, right = 0 },
             },
             {
-              color = 'BufferLineTruncMarker',
+              -- TODO: fix hg config
+              color = { bg = C.UI.colors.black, fg = C.UI.colors.comment },
               Lualine.pretty_path,
             },
           },
