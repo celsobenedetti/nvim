@@ -100,49 +100,28 @@ end
 
 function M.pretty_path()
   local root = vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
-  local full_path = vim.fn.expand '%:p' --[[@as string]]
+  local path = vim.fn.expand '%:p' --[[@as string]]
 
   local D = '/' -- Delimiter
-  local E = C.UI.icons.chars.ellipsis -- Elipsis
 
-  local path = full_path:gsub(root .. '/', '') -- remove the root from the path
+  local root_parts = vim.fn.split(root, '/') -- root Parts
+  local path_parts = vim.fn.split(path, '/') -- Path Parts
 
-  local p = vim.fn.split(path, '/') -- Path Parts
+  -- TODO: refactor UI config into directory
+  -- TODO: fix hg config
+  vim.api.nvim_set_hl(0, 'LualineCurrentFile', { bg = C.UI.colors.black, fg = C.UI.colors.white, bold = true })
   local highlight = 'LualineCurrentFile'
-  local current_file = '%#' .. highlight .. '#' .. p[#p] -- https://github.com/nvim-lualine/lualine.nvim/issues/337#issuecomment-919902020
+  local current_file = '%#' .. highlight .. '#' .. path_parts[#path_parts] -- https://github.com/nvim-lualine/lualine.nvim/issues/337#issuecomment-919902020
 
-  if #p == 1 then
+  if #path_parts == 1 then
     return current_file
   end
 
-  if #p > 4 and #path > 50 then
-    p[1] = string.sub(p[1], 1, 1) .. E
+  local result = ''
+  for i = #root_parts + 1, #path_parts - 1 do
+    result = result .. path_parts[i] .. D
   end
-
-  if #path < 50 then
-    local result = ''
-    for i = 1, #p - 1 do
-      result = result .. p[i] .. D
-    end
-    return result .. current_file
-  end
-
-  local dominant_index = 2
-  if C.CWD.is_work() then
-    if path:find 'nestjs' then
-      dominant_index = 3
-    end
-  end
-
-  if #path < 100 then
-    return p[1] .. D .. p[dominant_index] .. D .. E .. D .. p[#p - 1] .. D .. current_file
-  end
-
-  if #p > 5 then
-    return string.sub(p[1], 1, 4) .. D .. E .. D .. p[dominant_index] .. D .. E .. D .. p[#p - 1] .. D .. current_file
-  end
-
-  return path
+  return result .. current_file
 end
 
 return M
