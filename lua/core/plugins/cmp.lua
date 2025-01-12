@@ -1,5 +1,4 @@
 return {
-
   {
     'L3MON4D3/LuaSnip',
     build = 'make install_jsregexp',
@@ -45,7 +44,6 @@ return {
       luasnip.config.setup {}
 
       cmp.setup {
-
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -105,6 +103,7 @@ return {
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'copilot' },
+          { name = 'supermaven' },
           { name = 'dictionary', keyword_length = 2 },
         },
       }

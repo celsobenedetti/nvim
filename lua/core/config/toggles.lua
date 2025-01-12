@@ -19,13 +19,15 @@ local toggles = {
 
   -- toggle copilot
   copilot = function()
-    if copilot then
-      vim.api.nvim_command 'Copilot disable'
-      print(OFF .. 'Copilot')
-    else
-      vim.api.nvim_command 'Copilot enable'
-      print(ON .. 'Copilot')
-    end
+    require('supermaven-nvim.api').toggle()
+    print(C.UI.icons.kinds.Supermaven .. ' toggled Supermaven')
+    -- if copilot then
+    --   vim.api.nvim_command 'Copilot disable'
+    --   print(OFF .. 'Copilot')
+    -- else
+    --   vim.api.nvim_command 'Copilot enable'
+    --   print(ON .. 'Copilot')
+    -- end
     copilot = not copilot
   end,
 

@@ -1,5 +1,7 @@
 local M = {
   copilot = false,
+  supermaven = true,
+
   autoformat = true, -- fmt
   completion = true, -- cmp
   diagnostics = true,
