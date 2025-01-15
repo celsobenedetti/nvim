@@ -48,6 +48,7 @@ return {
       { '<leader>gg', function() Snacks.lazygit() end, desc = 'Snacks: Lazygit', },
       { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
       { '<leader>un', function() Snacks.notifier.hide() end, desc = 'Snacks: Dismiss All Notifications', },
+      { '<leader>uw', function() Snacks.toggle.option("wrap", {name = "Wrap"}):map("<leader>uw") end, desc = 'Snacks: Toggle wrap', },
       { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'Snacks: Next Reference', mode = { 'n', 't' }, },
       { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'Snacks: Prev Reference', mode = { 'n', 't' }, },
       { '<leader>Z', function() Snacks.zen() end, desc = 'Toggle Zen Mode', },

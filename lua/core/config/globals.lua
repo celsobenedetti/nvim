@@ -27,6 +27,10 @@ C.lsp = {
   end,
 }
 
+C.utils = {
+  get_visual_selection = require 'functions.utils.get_visual_selection',
+}
+
 -- iterate and validate all global variables
 for key, value in pairs(C.opt) do
   if value == nil or value == '' then

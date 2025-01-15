@@ -25,6 +25,9 @@ return {
         'stylua', -- Lua formatter
         'tailwindcss-language-server', -- Tailwindcss language server
         'taplo', -- TOML language server / toolkit
+        'terraformls', -- Terraform Language Server.
+        'tflint', -- A Pluggable Terraform Linter.
+        'trivy', -- Find vulnerabilities, misconfigurations, secrets, SBOM in containers, Kubernetes, code repositories, clouds and more.
         'typescript-language-server', -- TS language server
         'vale_ls', -- Markdown linter with LSP providers
         -- 'vtsls', -- VSCode TS language server

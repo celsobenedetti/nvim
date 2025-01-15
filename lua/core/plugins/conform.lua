@@ -29,7 +29,7 @@ return {
           toml = { 'taplo' },
           typescript = { js_formatter },
           typescriptreact = { js_formatter },
-          yaml = { 'yq' },
+          yaml = { 'prettierd' },
           zsh = { 'shfmt' },
         },
         formatters = {

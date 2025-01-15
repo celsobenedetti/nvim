@@ -6,6 +6,7 @@ local getServerConfigs = function()
     graphql = {},
     pyright = {},
     tailwindcss = {},
+    terraformls = {},
     tsserver = {},
     -- vtsls = {},
 

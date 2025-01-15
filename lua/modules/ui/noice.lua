@@ -24,6 +24,7 @@ return {
         filter 'Error executing lua Keyboard interrupt', -- Looks like a bufferline thing
         filter 'Error executing vim.schedule lua callback', -- Neotest error
         filter 'airbnb', -- BRO PLEASE STOP 😭
+        filter 'textDocument/diagnostic failed with message', -- eslint bs
 
         -- avante jank
         filter 'Error detected while processing', -- some autocmd

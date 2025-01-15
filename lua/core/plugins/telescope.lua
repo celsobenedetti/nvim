@@ -14,7 +14,7 @@ return {
     },
     config = function()
       local ignore_patterns = {
-        '.git',
+        '^.git/',
         'node_modules',
         'pnpm-lock.yaml',
       }
@@ -24,7 +24,7 @@ return {
         ignore_patterns = vim.list_extend(ignore_patterns, {
           'drupal',
           'python',
-          'terraform',
+          -- 'terraform',
           -- 'nestjs',
           'packages/conversation/public/static',
           'public/static',

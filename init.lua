@@ -4,6 +4,7 @@ require('lazy').setup({
   { import = 'core.plugins' },
 
   { import = 'modules.editor' },
+  { import = 'modules.git' },
   { import = 'modules.ui', enabled = not C.opt.performance },
 
   { import = 'modules.ai' },
