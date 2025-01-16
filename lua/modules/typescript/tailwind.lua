@@ -11,7 +11,7 @@ return {
     },
     opts = {}, -- your configuration
     lazy = function()
-      return not C.CWD.is_tailwind()
+      return not C.cwd.is_tailwind()
     end,
   },
 }

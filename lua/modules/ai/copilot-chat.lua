@@ -1,4 +1,4 @@
--- TODO: This is an experiment. Probably not needed tbh
+-- WIP: This is an experiment. Probably not needed tbh
 return {
   {
     'CopilotC-Nvim/CopilotChat.nvim',
@@ -14,9 +14,9 @@ return {
     -- See Commands section for default commands if you want to lazy load on them
     --
     keys = {
-      { '<leader>cct', ':CopilotChatToggle', desc = 'CopilotChat - toggle' },
+      { '<leader>cct', ':CopilotChatToggle<CR>', desc = 'CopilotChat - toggle' },
       {
-        '<leader>ccq',
+        '<leader>cc',
         function()
           local input = vim.fn.input 'Quick Chat: '
           if input ~= '' then
@@ -26,7 +26,7 @@ return {
         desc = 'CopilotChat - Quick chat',
       },
       {
-        '<leader>ccp',
+        '<leader>cp',
         function()
           local actions = require 'CopilotChat.actions'
           require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())

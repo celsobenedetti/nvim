@@ -14,7 +14,7 @@ require('lazy').setup({
   { import = 'modules.typescript' },
   { import = 'modules.markdown' },
 }, {
-  ui = C.UI.lazy,
+  ui = C.ui.lazy,
 })
 
-C.UI.set_colorscheme(C.UI.colorscheme_1)
+C.ui.set_colorscheme(C.ui.colorscheme_1)

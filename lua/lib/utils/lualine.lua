@@ -2,34 +2,34 @@ local M = {}
 
 M.theme = {
   normal = {
-    a = { bg = C.UI.colors.gray, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
+    a = { bg = C.ui.colors.gray, fg = C.ui.colors.black, gui = 'bold' },
+    b = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
+    c = { bg = C.ui.colors.darkgray, fg = C.ui.colors.gray },
   },
   insert = {
-    a = { bg = C.UI.colors.blue, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
+    a = { bg = C.ui.colors.blue, fg = C.ui.colors.black, gui = 'bold' },
+    b = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
+    c = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
   },
   visual = {
-    a = { bg = C.UI.colors.yellow, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.inactivegray, fg = C.UI.colors.black },
+    a = { bg = C.ui.colors.yellow, fg = C.ui.colors.black, gui = 'bold' },
+    b = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
+    c = { bg = C.ui.colors.inactivegray, fg = C.ui.colors.black },
   },
   replace = {
-    a = { bg = C.UI.colors.red, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.black, fg = C.UI.colors.white },
+    a = { bg = C.ui.colors.red, fg = C.ui.colors.black, gui = 'bold' },
+    b = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
+    c = { bg = C.ui.colors.black, fg = C.ui.colors.white },
   },
   command = {
-    a = { bg = C.UI.colors.green, fg = C.UI.colors.black, gui = 'bold' },
-    b = { bg = C.UI.colors.lightgray, fg = C.UI.colors.white },
-    c = { bg = C.UI.colors.inactivegray, fg = C.UI.colors.black },
+    a = { bg = C.ui.colors.green, fg = C.ui.colors.black, gui = 'bold' },
+    b = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
+    c = { bg = C.ui.colors.inactivegray, fg = C.ui.colors.black },
   },
   inactive = {
-    a = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray, gui = 'bold' },
-    b = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
-    c = { bg = C.UI.colors.darkgray, fg = C.UI.colors.gray },
+    a = { bg = C.ui.colors.darkgray, fg = C.ui.colors.gray, gui = 'bold' },
+    b = { bg = C.ui.colors.darkgray, fg = C.ui.colors.gray },
+    c = { bg = C.ui.colors.darkgray, fg = C.ui.colors.gray },
   },
 }
 
@@ -64,7 +64,7 @@ end
 ---@param name string
 ---@param icon? string
 function M.cmp_source(name, icon)
-  icon = icon or C.UI.icons.kinds[name:sub(1, 1):upper() .. name:sub(2)]
+  icon = icon or C.ui.icons.kinds[name:sub(1, 1):upper() .. name:sub(2)]
   local started = false
   return M.status(icon, function()
     if not package.loaded['cmp'] then
@@ -110,7 +110,7 @@ function M.pretty_path()
   -- TODO: refactor UI config into directory
   -- TODO: fix hg config
   -- TODO: implement highlighter function util
-  vim.api.nvim_set_hl(0, 'LualineCurrentFile', { bg = C.UI.colors.black, fg = C.UI.colors.white, bold = true })
+  vim.api.nvim_set_hl(0, 'LualineCurrentFile', { bg = C.ui.colors.black, fg = C.ui.colors.white, bold = true })
   local highlight = 'LualineCurrentFile'
   local current_file = '%#' .. highlight .. '#' .. path_parts[#path_parts] -- https://github.com/nvim-lualine/lualine.nvim/issues/337#issuecomment-919902020
 

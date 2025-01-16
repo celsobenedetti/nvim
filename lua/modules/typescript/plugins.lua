@@ -5,7 +5,7 @@ return {
   {
     'pmizio/typescript-tools.nvim',
     lazy = function()
-      return C.CWD.is_deno()
+      return C.cwd.is_deno()
     end,
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},

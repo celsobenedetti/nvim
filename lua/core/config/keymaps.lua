@@ -8,10 +8,10 @@ map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 
-map('n', '<leader>u1', ':colorscheme ' .. C.UI.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
-map('n', '<leader>u2', ':colorscheme ' .. C.UI.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })
-map('n', '<leader>u3', ':colorscheme ' .. C.UI.colorscheme_3 .. '<CR>', { desc = 'Set colorscheme 3' })
-map('n', '<leader>u4', ':colorscheme ' .. C.UI.colorscheme_4 .. '<CR>', { desc = 'Set colorscheme 4' })
+map('n', '<leader>u1', ':colorscheme ' .. C.ui.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
+map('n', '<leader>u2', ':colorscheme ' .. C.ui.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })
+map('n', '<leader>u3', ':colorscheme ' .. C.ui.colorscheme_3 .. '<CR>', { desc = 'Set colorscheme 3' })
+map('n', '<leader>u4', ':colorscheme ' .. C.ui.colorscheme_4 .. '<CR>', { desc = 'Set colorscheme 4' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
@@ -23,9 +23,6 @@ map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to r
 
 -- Commands
 map('n', '<leader>C', ':Clip<CR>', { desc = 'Copy file path to clipboard' })
-
--- TODO: 1. Extract global utils for spliting wincow <C-v>
--- TODO: 2. Extract global utils for running command inside lua function
 map('n', '<leader>N', ':Note<CR>', { desc = 'Run bash on current line' })
 
 map('n', '<leader>B', function()

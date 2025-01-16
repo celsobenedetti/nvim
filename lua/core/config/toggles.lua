@@ -32,7 +32,7 @@ local M = {
   -- toggle copilot
   supermaven = function()
     require('supermaven-nvim.api').toggle()
-    print(C.UI.icons.kinds.Supermaven .. ' toggled Supermaven')
+    print(C.ui.icons.kinds.Supermaven .. ' toggled Supermaven')
   end,
 
   -- completion

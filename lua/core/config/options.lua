@@ -1,17 +1,3 @@
-local M = {
-  copilot = false,
-  supermaven = true,
-
-  autoformat = true, -- fmt
-  completion = true, -- cmp
-  diagnostics = true,
-  performance = false, -- disable optional/heavy plugins
-  hardtime = false,
-  winbar = true,
-
-  notes_path = os.getenv 'NOTES',
-}
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -128,5 +114,3 @@ vim.opt.fillchars = {
 if vim.fn.has 'nvim-0.10' == 1 then
   vim.opt.smoothscroll = true
 end
-
-return M

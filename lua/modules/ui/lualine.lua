@@ -16,8 +16,8 @@ return {
     end,
     opts = function()
       -- LazyVim: we don't need this lualine require madness 🤷
-      local lualine_require = require 'lualine_require'
-      lualine_require.require = require
+      -- local lualine_require = require 'lualine_require'
+      -- lualine_require.require = require
       local root = vim.fs.root(0, '.git') --[[@as string]]
 
       vim.o.laststatus = vim.g.lualine_laststatus
@@ -35,15 +35,15 @@ return {
             {
               function()
                 -- split 'root' strin by '/' and get the last element
-                return C.UI.icons.kinds.Folder .. root:match '([^/]+)$'
+                return C.ui.icons.kinds.Folder .. root:match '([^/]+)$'
               end,
             },
             {
               'diagnostics',
               symbols = {
-                error = C.UI.icons.diagnostics.Error,
+                error = C.ui.icons.diagnostics.Error,
 
-                hint = C.UI.icons.diagnostics.Hint,
+                hint = C.ui.icons.diagnostics.Hint,
               },
             },
 
@@ -55,7 +55,7 @@ return {
             },
             {
               -- TODO: fix hg config
-              color = { bg = C.UI.colors.black, fg = C.UI.colors.comment },
+              color = { bg = C.ui.colors.black, fg = C.ui.colors.comment },
               Lualine.pretty_path,
             },
           },
@@ -87,9 +87,9 @@ return {
             {
               'diff',
               symbols = {
-                added = C.UI.icons.git.added,
-                modified = C.UI.icons.git.modified,
-                removed = C.UI.icons.git.removed,
+                added = C.ui.icons.git.added,
+                modified = C.ui.icons.git.modified,
+                removed = C.ui.icons.git.removed,
               },
               source = function()
                 local gitsigns = vim.b.gitsigns_status_dict

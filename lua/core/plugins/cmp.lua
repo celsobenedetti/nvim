@@ -52,7 +52,7 @@ return {
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
           format = function(_, vim_item)
-            vim_item.kind = (C.UI.icons.kinds[vim_item.kind] or '') .. vim_item.kind
+            vim_item.kind = (C.ui.icons.kinds[vim_item.kind] or '') .. vim_item.kind
             return vim_item
           end,
         },

@@ -171,9 +171,9 @@ return {
       -- require('mason').setup()
 
       --- these servers should be ignored by mason-lspconfig
-      local is_next = C.CWD.is_next()
-      local is_deno = not is_next and C.CWD.is_deno()
-      local is_tailwind = C.CWD.is_tailwind()
+      local is_next = C.cwd.is_next()
+      local is_deno = not is_next and C.cwd.is_deno()
+      local is_tailwind = C.cwd.is_tailwind()
 
       local disable = {
         zk = true,
