@@ -1,14 +1,11 @@
 local get_visual_selection = require 'functions.utils.get_visual_selection'
 
-local jira = 'https://ocelotbot.atlassian.net/browse/'
-local linear = 'https://linear.app/celsobenedetti/issue/'
-
 local M = {}
 
 ---@param issue string
 M.open_issue = function(issue)
-  local is_linear = issue.match(issue, 'DEV') ~= nil
-  local url = is_linear and linear or jira
+  local is_linear = issue.match(issue, '^C-') ~= nil
+  local url = is_linear and C.url.linear_issue or C.url.jira_issue
   vim.ui.open(url .. issue)
 end
 

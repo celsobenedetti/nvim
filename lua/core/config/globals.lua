@@ -1,14 +1,17 @@
 --- Global table
 C = {
-  --- Global options
-  opt = require 'core.config.options',
+  opt = require 'core.config.options', --- Global options
+  UI = require 'core.config.ui', --- Global UI config
+  CWD = require 'lib.utils.cwd', --- Global CWD utils
 
-  --- Global UI config
-  UI = require 'core.config.ui',
+  url = {
+    linear = 'https://linear.app/celsobenedetti/team/C/cycle/active',
+    linear_issue = 'https://linear.app/celsobenedetti/issue/',
+    jira_issue = 'https://ocelotbot.atlassian.net/browse/',
+    excalidraw = 'https://excalidraw.com',
+    monkeytype = 'https://monkeytype.com',
+  },
 }
-
---- Global CWD utils
-C.CWD = require 'lib.utils.cwd'
 
 --- Global LSP utils
 C.lsp = {

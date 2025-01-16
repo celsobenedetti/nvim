@@ -11,12 +11,17 @@ end, { nargs = 1 })
 
 -- Monkeytype
 vim.api.nvim_create_user_command('Mt', function()
-  vim.ui.open 'https://monkeytype.com'
+  vim.ui.open(C.url.monkeytype)
 end, { nargs = 0 })
 
 -- Excalidraw
 vim.api.nvim_create_user_command('Ex', function()
-  vim.ui.open 'https://excalidraw.com'
+  vim.ui.open(C.url.excalidraw)
+end, { nargs = 0 })
+
+-- Linear
+vim.api.nvim_create_user_command('Li', function()
+  vim.ui.open(C.url.linear)
 end, { nargs = 0 })
 
 
