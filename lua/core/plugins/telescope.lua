@@ -43,6 +43,17 @@ return {
             },
             n = { ['<c-t>'] = trouble.open },
           },
+
+          --- @param full_path string
+          path_display = function(opts, full_path)
+            local tail = require('telescope.utils').path_tail(full_path)
+            local path = full_path:gsub(tail, '')
+            if #path == 0 then
+              return tail
+            end
+
+            return string.format('%s - %s', tail, path), { { { 1, #tail }, 'Constant' } }
+          end,
         },
         pickers = {
 
@@ -55,6 +66,7 @@ return {
           },
         },
         extensions = {
+          fzf = {},
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
@@ -95,7 +107,10 @@ return {
       end, { desc = 'Telescope [S]earch [D]iagnostics for Current Document' })
       map('n', '<leader>sD', builtin.diagnostics, { desc = 'Telescope [S]earch [D]iagnostics' })
       map('n', '<leader>sr', builtin.resume, { desc = 'Telescope [S]earch [R]esume' })
-      map('n', '<leader>sn', builtin.treesitter, { desc = 'Find Treesitter nodes' })
+      map('n', '<leader>sn', builtin.treesitter, { desc = 'Telescope Find Treesitter nodes' })
+      map('n', '<leader>sp', function()
+        builtin.find_files { cwd = vim.fs.joinpath(vim.fn.stdpath 'data', 'lazy') }
+      end, { desc = 'Telescope search app neovim plugin files ' })
 
       map('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = '[/] Fuzzily search in current buffer' })
 
