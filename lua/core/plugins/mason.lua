@@ -9,6 +9,7 @@ return {
         'deno', -- Deno is a JavaScript, TypeScript, and WebAssembly runtime with secure defaults and a great developer experience.
         'dockerls', -- Docker language server
         'eslint', -- JS/TS linter
+        'golangci-lint', -- fast Go linters runner. It runs linters in parallel, uses caching, supports yaml config
         'gofumpt', -- Strict Go formatter
         'gopls', -- Go language server
         'goimports', -- Go Imports formatter

@@ -8,6 +8,7 @@ return {
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         terraform = { 'trivy' },
+        go = { 'golangcilint' },
       }
       -- Show linters for the current buffer's file type
       vim.api.nvim_create_user_command('LintInfo', function()
