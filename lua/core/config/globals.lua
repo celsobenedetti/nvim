@@ -43,4 +43,4 @@ for key, value in pairs(C.opt) do
 end
 
 C.opt.notes_path = C.opt.notes_path or ''
-C.opt.gpt_chats_path = C.opt.notes_path .. './local/chats' -- target directory for GPT chats.md files
+C.opt.gpt_chats_path = C.opt.notes_path .. '/local/chats' -- target directory for GPT chats.md files
