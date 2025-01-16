@@ -1,4 +1,4 @@
-local Lualine = require 'lib.utils.lualine'
+local Lualine = require 'modules.ui.config.lualine'
 
 return {
   {
