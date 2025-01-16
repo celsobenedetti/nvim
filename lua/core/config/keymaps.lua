@@ -41,21 +41,14 @@ map('v', '<leader>T', function()
   vim.api.nvim_feedkeys(Keys '!title<CR>', 'n', true)
 end, { desc = 'Run current line as bash command' })
 
-map({ 'v', 'n' }, '<leader>I', function()
-  require('functions.issues').open_selected_issue()
-end, { desc = 'Open Jira Issue in current selection' })
-
-map({ 'v' }, '<leader>gs', function()
-  require('functions.google').google_search()()
-end, { desc = 'Search current selected string with google' })
-
--- get current line to variable
+--- Web keymaps
+map({ 'v', 'n' }, '<leader>I', require('lib.utils.web').open_selected_issue, { desc = 'Open Jira Issue in current selection' })
+map({ 'v' }, '<leader>gs', require('lib.utils.web').google_search, { desc = 'Search current selected string with google' })
 
 -- run current line as lua command in vim
-map('n', '<leader>V', function()
-  ---@diagnostic disable-next-line: param-type-mismatch
-  local line = vim.fn.getline '.'
-  vim.api.nvim_feedkeys(Keys(':lua ' .. line .. '<CR>'), 'n', true)
+map('n', '<leader>L', function()
+  local current_line = vim.fn.getline '.'
+  vim.api.nvim_feedkeys(Keys(':lua ' .. current_line .. '<CR>'), 'n', true)
 end, { desc = 'Run current line as vim command' })
 
 local track_position_before_relative_jump = require 'functions.relative_jump'

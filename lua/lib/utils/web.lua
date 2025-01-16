@@ -1,6 +1,9 @@
-local get_visual_selection = require 'functions.utils.get_visual_selection'
-
 local M = {}
+
+M.google_search = function()
+  local query = C.utils.get_visual_selection()
+  vim.ui.open(C.url.google_search .. query)
+end
 
 ---@param issue string
 M.open_issue = function(issue)
@@ -10,7 +13,7 @@ M.open_issue = function(issue)
 end
 
 M.open_selected_issue = function()
-  local issue = get_visual_selection()
+  local issue = C.utils.get_visual_selection()
 
   -- If there is no visual selection
   if issue == nil then

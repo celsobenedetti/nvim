@@ -4,6 +4,7 @@ local M = {
   jira_issue = 'https://ocelotbot.atlassian.net/browse/',
   excalidraw = 'https://excalidraw.com',
   monkeytype = 'https://monkeytype.com',
+  google_search = 'https://www.google.com/search?q=',
 }
 
 return M

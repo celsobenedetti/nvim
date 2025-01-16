@@ -88,7 +88,7 @@ return {
       map('n', '<leader>st', builtin.builtin, { desc = 'Telescope [S]earch [S]elect Telescope' })
       map('n', '<leader>sw', builtin.grep_string, { desc = 'Telescope [S]earch current [W]ord' })
       map('v', '<leader>sw', function()
-        local selection = require 'functions.utils.get_visual_selection'()
+        local selection = C.utils.get_visual_selection()
         if not selection then
           return
         end
