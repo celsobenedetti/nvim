@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd('VimResized', {
 -- insert mode when entering git commit
 vim.api.nvim_create_autocmd('VimEnter', {
   group = Augroup 'Git_Commit_Editor',
-  pattern = { 'COMMIT_EDITMSG' },
+  pattern = { 'COMMIT_EDITMSG', 'new_note' },
   callback = function()
     vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
   end,

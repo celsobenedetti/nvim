@@ -68,7 +68,7 @@ return {
           ['<C-p>'] = cmp.mapping.select_prev_item { select = false, accept = false }, -- Select the [p]revious item
 
           ['<C-y>'] = cmp.mapping.confirm { select = true },
-          -- ['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
           -- ['<Tab>'] = cmp.mapping.confirm { select = true },
 
           ['<C-Space>'] = cmp.mapping.complete {},

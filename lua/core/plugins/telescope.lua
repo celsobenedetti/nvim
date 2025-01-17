@@ -44,14 +44,9 @@ return {
             n = { ['<c-t>'] = trouble.open },
           },
 
-          --- @param full_path string
-          path_display = function(opts, full_path)
-            local tail = require('telescope.utils').path_tail(full_path)
-            local path = full_path:gsub(tail, '')
-            if #path == 0 then
-              return tail
-            end
-
+          --- @param path string
+          path_display = function(opts, path)
+            local tail = require('telescope.utils').path_tail(path)
             return string.format('%s - %s', tail, path), { { { 1, #tail }, 'Constant' } }
           end,
         },

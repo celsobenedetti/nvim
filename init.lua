@@ -12,6 +12,7 @@ require('lazy').setup({
   { import = 'modules.trouble' },
 
   { import = 'modules.typescript' },
+  { import = 'modules.go' },
   { import = 'modules.markdown' },
 }, {
   ui = C.ui.lazy,

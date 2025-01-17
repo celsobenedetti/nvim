@@ -11,13 +11,11 @@ local ON = '✅ Enabled '
 --- Functions for each toggle
 local M = {
 
-  -- toggle autoformat
   format = function()
     C.opt.autoformat = not C.opt.autoformat
     print('Autoformat: ' .. tostring(C.opt.autoformat))
   end,
 
-  -- toggle copilot
   copilot = function()
     if copilot then
       vim.api.nvim_command 'Copilot disable'
@@ -29,13 +27,11 @@ local M = {
     copilot = not copilot
   end,
 
-  -- toggle copilot
   supermaven = function()
     require('supermaven-nvim.api').toggle()
     print(C.ui.icons.kinds.Supermaven .. ' toggled Supermaven')
   end,
 
-  -- completion
   completion = function()
     local cmp = require 'cmp'
     local group = vim.api.nvim_create_augroup('cmp-augroup', { clear = true })
@@ -61,7 +57,6 @@ local M = {
     end
   end,
 
-  -- toggle LSP diagnostics
   diagnostics = function()
     if diagnostics then
       vim.diagnostic.enable(false)
@@ -108,9 +103,8 @@ local M = {
 
 map('n', '<leader>uf', M.format, { desc = 'Toggle auto format (global)' })
 map('n', '<leader>uc', M.completion, { desc = 'Toggle completion' })
-map('n', '<leader>ts', M.supermaven, { desc = 'Toggle Supermaven' })
+-- map('n', '<leader>ts', M.supermaven, { desc = 'Toggle Supermaven' })
 map('n', '<leader>ud', M.diagnostics, { desc = 'Toggle diagnostics' })
-
 map('n', '<leader>us', M.option { option = 'spell' }, { desc = 'Toggle Spelling' })
 map('n', '<leader>tC', M.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle conceal' })
 

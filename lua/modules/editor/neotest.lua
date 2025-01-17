@@ -17,7 +17,6 @@ local function get_cwd()
 end
 
 return {
-
   {
     'nvim-neotest/neotest',
     lazy = true,
@@ -26,7 +25,8 @@ return {
       'nvim-lua/plenary.nvim',
       'antoinemadec/FixCursorHold.nvim',
       'nvim-treesitter/nvim-treesitter',
-      'nvim-neotest/neotest-jest',
+      { 'nvim-neotest/neotest-jest', ft = 'typescript' },
+      { 'fredrikaverpil/neotest-golang', version = '*' }, -- Installation
     },
     keys = {
       {
@@ -50,7 +50,12 @@ return {
         end,
         desc = 'Neotest debug test',
       },
-      { '<leader>nts', ':Neotest summary<CR>', desc = 'Neotest summary' },
+      {
+        '<leader>to',
+        ':Neotest output-panel<CR>',
+        desc = 'Neotest output panel',
+      },
+      { '<leader>tS', ':Neotest summary<CR>', desc = 'Neotest summary' },
     },
     cmd = { 'Neotest' },
     config = function()
@@ -69,9 +74,19 @@ return {
             cwd = function(_)
               return get_cwd()
             end,
+
             -- is_test_file = function(path)
             --   return path:find 'spec.ts' or path:find 'test.ts'
             -- end,
+          },
+
+          require 'neotest-golang' {
+            go_test_args = {
+              '-v',
+              '-race',
+              '-count=1',
+              '-coverprofile=' .. vim.fn.getcwd() .. '/coverage.out',
+            },
           },
         },
       }
