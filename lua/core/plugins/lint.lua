@@ -8,7 +8,9 @@ return {
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         terraform = { 'trivy' },
-        go = { 'golangcilint' },
+        -- go = { 'golangcilint' },
+        -- TODO: should only run on .github path https://github.com/mfussenegger/nvim-lint/issues/685#issuecomment-2434755134
+        -- yaml = { 'actionlint' },
       }
       -- Show linters for the current buffer's file type
       vim.api.nvim_create_user_command('LintInfo', function()

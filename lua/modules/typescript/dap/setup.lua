@@ -22,6 +22,7 @@ return function()
         program = '${file}',
         cwd = '${workspaceFolder}',
         runtimeExecutable = 'ts-node', -- requires ts-node on $PATH
+        args = { 'setupLocalDB' },
       },
       {
         type = 'pwa-node',

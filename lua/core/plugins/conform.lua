@@ -26,6 +26,7 @@ return {
           markdown = { 'markdownlint-cli2' },
           python = { 'isort', 'black' },
           sh = { 'shfmt' },
+          sql = { 'sqlfluff' },
           toml = { 'taplo' },
           typescript = { js_formatter },
           typescriptreact = { js_formatter },

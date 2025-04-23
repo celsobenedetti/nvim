@@ -17,6 +17,7 @@ return {
         '^.git/',
         'node_modules',
         'pnpm-lock.yaml',
+        'instascan.min.js',
       }
 
       local is_work = string.match(vim.fn.getcwd(), 'chatbot')

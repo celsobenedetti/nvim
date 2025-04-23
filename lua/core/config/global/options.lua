@@ -1,6 +1,6 @@
 --- Global options
 local M = {
-  copilot = false,
+  copilot = true,
   supermaven = true,
 
   autoformat = true, -- fmt

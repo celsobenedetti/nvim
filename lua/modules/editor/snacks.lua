@@ -8,7 +8,7 @@ return {
     ---@type snacks.Config
     opts = {
       animate = { enabled = true },
-      bigfile = { enabled = true },
+      bigfile = { enabled = false },
       bufdelete = { enabled = false }, -- using moll/vim-bbye instead
       dashboard = { enabled = false },
       indent = config.indent_config, -- indent highlight animation
@@ -27,7 +27,7 @@ return {
             enter = true,
             fixbuf = false,
             minimal = false,
-            width = 150,
+            width = 0,
             height = 0,
             backdrop = { transparent = true, blend = 10 },
             keys = { q = false },

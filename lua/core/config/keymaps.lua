@@ -7,6 +7,7 @@ map('n', '<leader>re', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
+map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
 map('n', '<leader>u1', ':colorscheme ' .. C.ui.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
 map('n', '<leader>u2', ':colorscheme ' .. C.ui.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })
@@ -46,7 +47,7 @@ map({ 'v', 'n' }, '<leader>I', require('lib.utils.web').open_selected_issue, { d
 map({ 'v' }, '<leader>gs', require('lib.utils.web').google_search, { desc = 'Search current selected string with google' })
 
 -- run current line as lua command in vim
-map('n', '<leader>L', function()
+map({ 'n', 'v' }, '<leader>L', function()
   local current_line = vim.fn.getline '.'
   vim.api.nvim_feedkeys(Keys(':lua ' .. current_line .. '<CR>'), 'n', true)
 end, { desc = 'Run current line as vim command' })
