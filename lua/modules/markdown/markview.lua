@@ -125,6 +125,21 @@ return {
             },
           },
         },
+
+        markdown_inline = {
+          hyperlinks = {
+            ['atlassian.net/wiki'] = {
+              priority = 9999,
+              icon = ' ', -- confluence
+              hl = 'MarkviewPalette2Fg',
+            },
+            ['atlassian.net'] = {
+              priority = 9998,
+              icon = ' ', -- jira
+              hl = 'MarkviewPalette2Fg',
+            },
+          },
+        },
       }
     end,
     keys = { { '<leader>md', ':Markview toggle<CR>', desc = 'Toggle markview' } },
