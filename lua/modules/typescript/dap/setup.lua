@@ -40,7 +40,7 @@ return function()
       {
         type = 'pwa-node',
         request = 'attach',
-        name = 'Attach Nest ',
+        name = 'Attach 7000 ',
         port = 7000,
         processId = require('dap.utils').pick_process,
         cwd = '${workspaceFolder}',
