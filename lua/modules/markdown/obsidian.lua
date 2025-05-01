@@ -35,12 +35,12 @@ return {
       }
       opts.ui = {
         enable = false,
-        checkboxes = {
-          [' '] = { char = '󰄱', hl_group = 'ObsidianTodo' },
-          ['>'] = { char = '', hl_group = 'ObsidianRightArrow' },
-          ['~'] = { char = 'x', hl_group = 'ObsidianTilde' },
-          ['x'] = { char = '✔', hl_group = 'ObsidianDone' },
-        },
+        -- checkboxes = {
+        --   [' '] = { char = '󰄱', hl_group = 'ObsidianTodo' },
+        --   ['>'] = { char = '', hl_group = 'ObsidianRightArrow' },
+        --   ['~'] = { char = 'x', hl_group = 'ObsidianTilde' },
+        --   ['x'] = { char = '✔', hl_group = 'ObsidianDone' },
+        -- },
       }
       opts.note_id_func = function(title)
         return title

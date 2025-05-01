@@ -1,4 +1,7 @@
-local config = require 'modules.editor.config.snacks-config'
+local config = {
+  indent_config = require 'modules.editor.config.snacks-config',
+  zen = require 'modules.editor.config.zen',
+}
 
 return {
   {
@@ -21,23 +24,7 @@ return {
       scroll = { enabled = false }, -- smooth scroll
       statuscolumn = { enabled = true }, -- pretty status coluikn
       words = { enabled = true },
-      zen = {
-        win = {
-          style = {
-            enter = true,
-            fixbuf = false,
-            minimal = false,
-            width = 0,
-            height = 0,
-            backdrop = { transparent = true, blend = 10 },
-            keys = { q = false },
-            zindex = 40,
-            wo = {
-              winhighlight = 'NormalFloat:Normal',
-            },
-          },
-        },
-      },
+      zen = config.zen,
     },
     keys = {
       -- stylua: ignore start
