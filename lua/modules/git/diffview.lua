@@ -3,7 +3,7 @@ local is_diffview_open = false
 return {
   {
     'sindrets/diffview.nvim',
-    lazy = true,
+    event = 'VeryLazy',
     keys = {
       {
         '<leader>D',

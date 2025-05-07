@@ -26,10 +26,11 @@ return {
         filter 'airbnb', -- BRO PLEASE STOP 😭
         filter 'textDocument/diagnostic failed with message', -- eslint bs
         filter 'Debug Failure. False expression', -- BUG: some TS LSP issue 2025-04-02
+        filter 'Type :qa and press <Enter> to exit Nvim', --  anoying system message
 
         -- avante jank
-        filter 'Error detected while processing', -- some autocmd
-        filter 'Error executing lua callback: deserialize error: missing field',
+        -- filter 'Error detected while processing', -- some autocmd
+        -- filter 'Error executing lua callback: deserialize error: missing field',
 
         {
 
