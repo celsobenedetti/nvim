@@ -22,6 +22,5 @@ for key, value in pairs(M) do
 end
 
 M.notes_path = M.notes_path or ''
-M.gpt_chats_path = M.notes_path .. '/.local/chats' -- target directory for GPT chats.md files
 
 return M

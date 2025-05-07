@@ -14,13 +14,16 @@ return {
       { '<leader>ch', ':ObsidianToggleCheckbox<CR>' },
     },
     cond = function()
+      if C.cwd.is_llm_chats() then
+        return false
+      end
+
       local path = vim.fn.expand '%:p'
 
       local is_notes = path:find 'notes'
       local is_templates = path:find 'templates'
-      local is_gpt_chat = path:find(C.opt.gpt_chats_path)
 
-      return is_notes and not is_templates and not is_gpt_chat
+      return is_notes and not is_templates
     end,
     opts = function(_, opts)
       opts.new_notes_location = 'notes_subdir'
