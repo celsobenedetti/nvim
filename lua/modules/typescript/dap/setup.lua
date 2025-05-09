@@ -8,7 +8,8 @@ return function()
     executable = {
       command = 'node',
       args = {
-        require('mason-registry').get_package('js-debug-adapter'):get_install_path() .. '/js-debug/src/dapDebugServer.js',
+        -- require('mason-registry').get_package('js-debug-adapter'):get_install_path() .. '/js-debug/src/dapDebugServer.js',
+        '/home/celso/.local/share/nvim/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
         '${port}',
       },
     },

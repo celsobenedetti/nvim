@@ -48,6 +48,8 @@ return {
       opts.note_id_func = function(title)
         return title
       end
+
+      -- TODO: costumize frontmatter fucntion so we don't care about frontmatter for certain files
       opts.note_frontmatter_func = function(note)
         local frontmatter = {
           id = note.id,

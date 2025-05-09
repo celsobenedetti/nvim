@@ -7,7 +7,7 @@ return {
         'actionlint', -- Static checker for GitHub Actions workflow files.
         'black', -- Python formatter
         'checkmake', -- Makefile linter
-        'deno', -- Deno is a JavaScript, TypeScript, and WebAssembly runtime with secure defaults and a great developer experience.
+        -- 'deno', -- Deno is a JavaScript, TypeScript, and WebAssembly runtime with secure defaults and a great developer experience.
         'dockerls', -- Docker language server
         'docker-compose-language-server', -- A language server for Docker Compose.
         'eslint', -- JS/TS linter

@@ -26,7 +26,8 @@ return {
         filter 'airbnb', -- BRO PLEASE STOP 😭
         filter 'textDocument/diagnostic failed with message', -- eslint bs
         filter 'Debug Failure. False expression', -- BUG: some TS LSP issue 2025-04-02
-        filter 'Type :qa and press <Enter> to exit Nvim', --  anoying system message
+        filter 'to exit Nvim', --  anoying system message "press :qa to exit" bla bla
+        filter 'Attempt to delete a buffer that is in use', --  showing up when closing capture note in orgmode
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd
