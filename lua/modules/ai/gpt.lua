@@ -7,8 +7,8 @@ return {
     keys = {
       {
         '<leader>G',
-        ':GpChatNew tabnew<CR>',
-        desc = 'Open ChatGPT in new tab',
+        ':GpChatNew vsplit<CR>',
+        desc = 'Open ChatGPT in vertical split',
       },
     },
     config = function(opts)
