@@ -133,7 +133,7 @@ return {
 
       local functions = require 'functions.telescope'
 
-      map('n', '<leader>mv', functions.move_note, { desc = 'Move file of current buffer to dir' })
+      map('n', '<leader>mv', functions.move_file, { desc = 'Move file of current buffer to dir' })
       map('n', '<leader>dot', functions.dotfiles, { desc = 'Search Dotfiles' })
       map('n', '<leader>s<leader>', functions.vertical_tabs, { desc = '[Telescope] Search crrent dir with vertical tabs mapping' })
     end,
