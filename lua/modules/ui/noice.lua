@@ -28,11 +28,11 @@ return {
         filter 'Debug Failure. False expression', -- BUG: some TS LSP issue 2025-04-02
         filter 'to exit Nvim', --  anoying system message "press :qa to exit" bla bla
         filter 'Attempt to delete a buffer that is in use', --  showing up when closing capture note in orgmode
+        filter 'Error detected while processing User Autocommands for "VeryLazy":', -- showing up on notebook
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd
         -- filter 'Error executing lua callback: deserialize error: missing field',
-
         {
 
           filter = {

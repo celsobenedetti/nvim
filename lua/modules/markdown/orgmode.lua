@@ -1,7 +1,14 @@
 return {
   'nvim-orgmode/orgmode',
-  event = 'VeryLazy',
+  -- event = 'VeryLazy',
   ft = { 'org' },
+  keys = {
+    {
+      '<leader>oaa',
+      ':Org agenda a<CR>',
+      desc = 'Org agenda week',
+    },
+  },
   config = function()
     -- Setup orgmode
     require('orgmode').setup {
