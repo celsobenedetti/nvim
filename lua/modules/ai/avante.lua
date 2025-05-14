@@ -17,9 +17,12 @@ return {
     },
     version = false, -- set this if you want to always pull the latest change
     opts = {
-      provider = 'openai',
-      model = 'chatgpt-4o-latest',
+      -- provider = 'openai',
+      -- model = 'chatgpt-4o-latest',
+      provider = 'gemini',
+      model = 'gemini/gemini-2.0-flash',
     },
+
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = 'make',
     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
