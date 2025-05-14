@@ -34,3 +34,14 @@ vim.api.nvim_create_autocmd('VimEnter', {
     vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
   end,
 })
+
+-- Refresh agenda for orgfiles
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = '*.org',
+  callback = function()
+    local bufnr = vim.fn.bufnr 'orgagenda' or -1
+    if bufnr > -1 then
+      require('orgmode').agenda:redo()
+    end
+  end,
+})
