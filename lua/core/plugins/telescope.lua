@@ -11,7 +11,6 @@ return {
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
       { 'nvim-tree/nvim-web-devicons' }, -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'kiyoon/telescope-insert-path.nvim' },
     },
     config = function()
       local ignore_patterns = {
@@ -34,8 +33,8 @@ return {
       end
 
       local trouble = require 'trouble.sources.telescope'
+      local my_actions = require 'functions.telescope.actions'
 
-      local path_actions = require 'telescope_insert_path'
       require('telescope').setup {
         defaults = {
           file_ignore_patterns = ignore_patterns,
@@ -43,23 +42,10 @@ return {
             i = {
               ['<c-enter>'] = 'to_fuzzy_refine',
               ['<c-t>'] = trouble.open,
+              ['<c-l>'] = my_actions.print_filepath_to_buffer,
             },
             n = {
               ['<c-t>'] = trouble.open,
-
-              -- Telescope insert path
-              -- E.g. Type `[i`, `[I`, `[a`, `[A`, `[o`, `[O` to insert relative path and select the path in visual mode.
-              -- Other mappings work the same way with a different prefix.
-              ['['] = path_actions.insert_reltobufpath_visual,
-              [']'] = path_actions.insert_abspath_visual,
-              ['{'] = path_actions.insert_reltobufpath_insert,
-              ['}'] = path_actions.insert_abspath_insert,
-              ['-'] = path_actions.insert_reltobufpath_normal,
-              ['='] = path_actions.insert_abspath_normal,
-              -- If you want to get relative path that is relative to the cwd, use
-              -- `relpath` instead of `reltobufpath`
-              -- You can skip the location postfix if you specify that in the function name.
-              -- ["<C-o>"] = path_actions.insert_relpath_o_visual,
             },
           },
 
