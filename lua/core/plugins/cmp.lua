@@ -69,8 +69,9 @@ return {
 
           ['<C-y>'] = cmp.mapping.confirm { select = true },
           ['<CR>'] = cmp.mapping.confirm { select = true },
-          ['<Tab>'] = false,
-          ['<S-Tab>'] = false,
+
+          -- ['<Tab>'] = false,
+          -- ['<S-Tab>'] = false,
           -- ['<Tab>'] = cmp.mapping.confirm { select = true },
 
           ['<C-Space>'] = cmp.mapping.complete {},

@@ -1,6 +1,6 @@
 local getServerConfigs = function()
   return {
-    deno = {},
+    -- deno = {},
     dockerls = {},
     gopls = {},
     graphql = {},
