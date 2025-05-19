@@ -26,13 +26,16 @@ return {
         -- org_agenda_start_on_weekday = 0
         -- org_agenda_start_day = '+6d',
 
-        org_default_notes_file = '~/notes/inbox/i.org',
+        org_default_notes_file = '~/notes/inbox/refile.org',
 
         mappings = {
-          global = {
+          org = {
             -- TODO: This is broken, want to remvoe keymap
             -- BUG: This is broken, want to remvoe keymap
-            org_agenda_set_tags = false,
+            org_set_tags_command = false,
+            -- org_agenda_set_tags = '<nop>',
+            org_toggle_checkbox = '<leader><C-Space>',
+            org_insert_todo_heading_respect_content = '<leader>tod',
           },
         },
 

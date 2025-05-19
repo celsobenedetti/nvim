@@ -29,6 +29,7 @@ return {
         filter 'to exit Nvim', --  anoying system message "press :qa to exit" bla bla
         filter 'Attempt to delete a buffer that is in use', --  showing up when closing capture note in orgmode
         filter 'Error detected while processing User Autocommands for "VeryLazy":', -- showing up on notebook
+        filter "bad argument #1 to 'pairs'", -- some cmp bug 2025-05-19
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd
