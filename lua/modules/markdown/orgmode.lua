@@ -8,12 +8,34 @@ return {
         ':Org agenda a<CR>',
         desc = 'Org agenda week',
       },
+
+      {
+        '<leader>oR',
+        function()
+          require('orgmode').agenda:redo()
+        end,
+        desc = 'Reindex agenda',
+      },
     },
+
     config = function()
       -- Setup orgmode
       require('orgmode').setup {
-        org_agenda_files = '~/notes/orgfiles/**/*',
-        org_default_notes_file = '~/notes/orgfiles/refile.org',
+        org_agenda_files = { '~/notes/inbox/*', '~/notes/orgfiles/**/*' },
+        calendar_week_start_day = 0,
+        -- org_agenda_start_on_weekday = 0
+        -- org_agenda_start_day = '+6d',
+
+        org_default_notes_file = '~/notes/inbox/i.org',
+
+        mappings = {
+          global = {
+            -- TODO: This is broken, want to remvoe keymap
+            -- BUG: This is broken, want to remvoe keymap
+            org_agenda_set_tags = false,
+          },
+        },
+
         org_todo_keywords = { 'TODO', 'DONE' },
       }
 
@@ -45,8 +67,24 @@ return {
         end,
         desc = 'Telescope Orgmode refile_heading',
       },
+
+      {
+        '<leader>re',
+        function()
+          require('telescope').extensions.orgmode.refile_heading()
+        end,
+        desc = 'Telescope Orgmode refile_heading :hot:',
+      },
       {
         '<leader>tos',
+        function()
+          require('telescope').extensions.orgmode.search_headings()
+        end,
+        desc = 'Telescope Orgmode search_headings',
+      },
+
+      {
+        '<leader>os',
         function()
           require('telescope').extensions.orgmode.search_headings()
         end,
@@ -58,6 +96,14 @@ return {
           require('telescope').extensions.orgmode.insert_link()
         end,
         desc = 'Telescope Orgmode insert_link',
+      },
+
+      {
+        '<leader>ot',
+        function()
+          require('telescope').extensions.orgmode.search_headings()
+        end,
+        desc = 'Telescope Orgmode search_headings',
       },
     },
   },

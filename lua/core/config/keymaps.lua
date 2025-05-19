@@ -3,11 +3,15 @@ map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 
 -- new file
 map('n', '<leader>fn', ':enew<cr>', { desc = 'New File' })
-map('n', '<leader>re', ':e! %<cr>', { desc = 'Refresh Buffer' })
+map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
+map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
+
+-- insert mode tab
+map('i', '<tab>', '<C-V><Tab>', { desc = "'Insrt Tab" })
 
 map('n', '<leader>u1', ':colorscheme ' .. C.ui.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
 map('n', '<leader>u2', ':colorscheme ' .. C.ui.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })

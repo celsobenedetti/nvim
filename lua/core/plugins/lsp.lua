@@ -132,7 +132,7 @@ return {
           lsp_map('n', 'K', vim.lsp.buf.hover, 'Hover Documentation')
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-          lsp_map('i', '<C-i>', function()
+          lsp_map('i', '<C-i>', function() -- <Tab> keymapping
             vim.lsp.buf.signature_help()
           end, 'show signature help')
 
