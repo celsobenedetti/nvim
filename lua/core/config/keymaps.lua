@@ -2,7 +2,6 @@ map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy UI' })
 map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 
 -- new file
-map('n', '<leader>fn', ':enew<cr>', { desc = 'New File' })
 map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
@@ -69,12 +68,6 @@ map('n', 'gs', function()
   vim.api.nvim_feedkeys(Keys '<c-w>s', 'n', true)
   require('telescope.builtin').lsp_definitions { reuse_win = true }
 end, { desc = 'Split vertical and go to definition' })
-
-map('n', '<leader><C-Space>', function()
-  local today = os.date '%Y-%m-%d'
-  local notes_dir = os.getenv 'DAILY'
-  vim.cmd('e ' .. notes_dir .. '/' .. today .. '.md')
-end, { desc = 'Open todays note' })
 
 local surround_map = require('functions.surround').surround_map
 surround_map({ '(', ')' }, '(')
