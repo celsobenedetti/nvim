@@ -78,6 +78,20 @@ return {
               cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
               color = function() return Lualine.fg("Debug") end,
             },
+
+            {
+              function()
+                return '' .. _G.orgmode.statusline()
+              end,
+              cond = function()
+                return #_G.orgmode.statusline() > 0
+              end,
+              color = function()
+                return Lualine.fg 'Debug'
+              end,
+            },
+
+
             -- stylua: ignore
             {
               require("lazy.status").updates,
