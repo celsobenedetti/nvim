@@ -64,3 +64,27 @@ vim.api.nvim_create_autocmd('BufRead', {
     vim.api.nvim_feedkeys(Keys 'zM', 'n', true)
   end,
 })
+
+-- -- Code files
+local markdown_group = Augroup 'Markdown'
+local markdown = 'markdown'
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = markdown,
+  group = markdown_group,
+  callback = function()
+    vim.schedule(function()
+      vim.opt.foldmethod = 'manual'
+      local lines = vim.api.nvim_buf_get_lines(0, 1, -1, false)
+      local end_of_frontmatter = 1
+
+      for i, line in ipairs(lines) do
+        if line:match '^---' then
+          end_of_frontmatter = i + 2
+          break
+        end
+      end
+
+      vim.api.nvim_command('1,' .. end_of_frontmatter .. 'fold')
+    end)
+  end,
+})
