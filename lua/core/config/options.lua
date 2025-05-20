@@ -39,14 +39,15 @@ vim.opt.cursorline = true -- Show which line your cursor is on
 
 vim.opt.foldmethod = 'indent'
 vim.opt.foldlevel = 99
-vim.opt.fillchars = {
-  foldopen = '',
-  foldclose = '',
-  fold = ' ',
-  foldsep = ' ',
-  diff = '╱',
-  eob = ' ',
-}
+-- vim.opt.foldlevelstart = 99
+-- vim.opt.fillchars = {
+--   foldopen = '',
+--   foldclose = '',
+--   fold = ' ',
+--   foldsep = ' ',
+--   diff = '╱',
+--   eob = ' ',
+-- }
 
 -- open buffers verticaly
 vim.cmd 'autocmd FileType help wincmd L' --help
