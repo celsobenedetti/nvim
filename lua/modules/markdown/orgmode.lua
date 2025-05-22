@@ -28,6 +28,15 @@ return {
 
         org_default_notes_file = '~/notes/inbox/refile.org',
 
+        org_capture_templates = {
+          w = {
+            description = 'Work task',
+            template = '* TODO %? :work:',
+            target = '~/notes/orgfiles/work.org',
+            headline = 'inbox',
+          },
+        },
+
         mappings = {
           org = {
             -- TODO: This is broken, want to remvoe keymap
