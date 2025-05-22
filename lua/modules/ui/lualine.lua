@@ -81,10 +81,10 @@ return {
 
             {
               function()
-                return '' .. _G.orgmode.statusline()
+                return ' ' .. _G.orgmode.statusline()
               end,
               cond = function()
-                return #_G.orgmode.statusline() > 0
+                return true
               end,
               color = function()
                 return Lualine.fg 'Debug'

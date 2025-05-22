@@ -4,7 +4,7 @@ local Config = {
       enter = true,
       fixbuf = false,
       minimal = false,
-      width = 150,
+      width = 0,
       height = 0,
       backdrop = { transparent = true, blend = 10 },
       keys = { q = false },

@@ -61,7 +61,6 @@ local getServerConfigs = function()
     },
   }
 end
-
 return {
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',

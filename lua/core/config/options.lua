@@ -38,8 +38,11 @@ vim.opt.cursorline = true -- Show which line your cursor is on
 -- fold
 
 vim.opt.foldmethod = 'indent'
-vim.opt.foldlevel = 99
---
+-- vim.opt.foldlevel = 99
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 -- vim.opt.foldlevelstart = 99
 -- vim.opt.fillchars = {
 --   foldopen = '',
@@ -49,10 +52,6 @@ vim.opt.foldlevel = 99
 --   diff = '╱',
 --   eob = ' ',
 -- }
--- vim.o.foldcolumn = '1' -- '0' is not bad
--- vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
--- vim.o.foldlevelstart = 99
--- vim.o.foldenable = true
 
 -- open buffers verticaly
 vim.cmd 'autocmd FileType help wincmd L' --help
