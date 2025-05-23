@@ -4,13 +4,14 @@ return {
     event = 'VeryLazy',
     config = function()
       require('lint').linters_by_ft = {
-        bash = { 'shellcheck' },
+        bash = { 'shellcheck', 'bash' },
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         terraform = { 'trivy' },
         -- go = { 'golangcilint' },
         -- TODO: should only run on .github path https://github.com/mfussenegger/nvim-lint/issues/685#issuecomment-2434755134
         -- yaml = { 'actionlint' },
+        zsh = { 'zsh' },
       }
       -- Show linters for the current buffer's file type
       vim.api.nvim_create_user_command('LintInfo', function()

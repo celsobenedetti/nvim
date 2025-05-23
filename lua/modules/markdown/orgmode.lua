@@ -1,20 +1,28 @@
 return {
   {
-    'nvim-orgmode/orgmode', -- event = 'VeryLazy',
+    'nvim-orgmode/orgmode',
+    -- PERF: is this too slow for every day usage? ?
+    event = 'VeryLazy',
     ft = { 'org' },
     keys = {
+      -- {
+      --   '<leader>oaa',
+      --   ':Org agenda a<CR>',
+      --   desc = 'Org agenda week',
+      -- },
+      -- {
+      --   '<leader>oR',
+      --   function()
+      --     require('orgmode').agenda:redo()
+      --   end,
+      --   desc = 'Reindex agenda',
+      -- },
       {
-        '<leader>oaa',
-        ':Org agenda a<CR>',
-        desc = 'Org agenda week',
-      },
-
-      {
-        '<leader>oR',
+        '<leader>ops',
         function()
-          require('orgmode').agenda:redo()
+          vim.notify(_G.orgmode.statusline())
         end,
-        desc = 'Reindex agenda',
+        desc = 'Org print status: current active task',
       },
     },
 
@@ -62,7 +70,7 @@ return {
 
   {
     'nvim-orgmode/telescope-orgmode.nvim',
-    event = 'VeryLazy',
+    -- event = 'VeryLazy',
     dependencies = {
       'nvim-orgmode/orgmode',
       'nvim-telescope/telescope.nvim',
