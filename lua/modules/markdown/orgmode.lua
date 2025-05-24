@@ -50,6 +50,13 @@ return {
             target = '~/notes/orgfiles/life.org',
             headline = 'todo',
           },
+
+          c = {
+            description = 'quick capture',
+            template = '* %?',
+            target = '~/notes/orgfiles/refile.org',
+            -- headline = 'todo',
+          },
         },
 
         mappings = {
