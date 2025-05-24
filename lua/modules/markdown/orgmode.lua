@@ -33,8 +33,15 @@ return {
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 0
         -- org_agenda_start_day = '+6d',
+        --
+        org_agenda_custom_commands = {
+          t = {
+            description = 'today',
+            types = { { type = 'agenda', org_agenda_span = 'day' } },
+          },
+        },
 
-        org_default_notes_file = '~/notes/orgfiles/refile.org',
+        org_default_notes_file = '~/notes/inbox/refile.org',
 
         org_capture_templates = {
           w = {
@@ -43,19 +50,17 @@ return {
             target = '~/notes/orgfiles/work.org',
             headline = 'todo',
           },
-
           l = {
             description = 'Life task',
             template = '* TODO %? :life:',
             target = '~/notes/orgfiles/life.org',
-            headline = 'todo',
+            headline = 'backlog',
           },
 
           c = {
             description = 'quick capture',
             template = '* %?',
-            target = '~/notes/orgfiles/refile.org',
-            -- headline = 'todo',
+            -- target = '~/notes/inbox/refile.org',
           },
         },
 
@@ -72,6 +77,14 @@ return {
 
         org_todo_keywords = { 'TODO', 'DONE' },
       }
+
+      vim.api.nvim_create_autocmd('ColorScheme', {
+        pattern = '*',
+        callback = function()
+          vim.api.nvim_set_hl(0, '@org.agenda.todo', { fg = '#ffbcb5' })
+          vim.api.nvim_set_hl(0, '@org.agenda.done', { fg = '#aaedb7' })
+        end,
+      })
 
       -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
       -- add ~org~ to ignore_install
