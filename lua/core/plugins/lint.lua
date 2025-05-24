@@ -8,6 +8,8 @@ return {
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         terraform = { 'trivy' },
+        typescript = { 'oxlint' },
+        javascript = { 'oxlint' },
         -- go = { 'golangcilint' },
         -- TODO: should only run on .github path https://github.com/mfussenegger/nvim-lint/issues/685#issuecomment-2434755134
         -- yaml = { 'actionlint' },

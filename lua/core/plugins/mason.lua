@@ -21,6 +21,7 @@ return {
         'isort', -- Python import formatter
         'lua_ls', -- Lua language server
         'markdownlint-cli2', -- Markdown linter an formatter
+        'oxlint', -- High-performance linter for JavaScript and TypeScript written in Rust.
         'prettierd', -- JS/TS formatter
         'pyright', -- Python language server
         'shfmt', -- sh/bash/zsh formatter
