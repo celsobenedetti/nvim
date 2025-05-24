@@ -4,7 +4,7 @@ end
 
 vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   callback = function()
-    vim.cmd 'setlocal formatoptions-=cro' -- Stop comment continuation on line below
+    vim.cmd 'set formatoptions-=cro' -- Stop comment continuation on line below
   end,
   group = Augroup 'Run_on_VimEnter',
   desc = 'Run on all files',
