@@ -29,19 +29,26 @@ return {
     config = function()
       -- Setup orgmode
       require('orgmode').setup {
-        org_agenda_files = { '~/notes/inbox/*', '~/notes/orgfiles/**/*' },
+        org_agenda_files = { '~/notes/orgfiles/**/*' },
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 0
         -- org_agenda_start_day = '+6d',
 
-        org_default_notes_file = '~/notes/inbox/refile.org',
+        org_default_notes_file = '~/notes/orgfiles/refile.org',
 
         org_capture_templates = {
           w = {
             description = 'Work task',
             template = '* TODO %? :work:',
             target = '~/notes/orgfiles/work.org',
-            headline = 'inbox',
+            headline = 'todo',
+          },
+
+          l = {
+            description = 'Life task',
+            template = '* TODO %? :life:',
+            target = '~/notes/orgfiles/life.org',
+            headline = 'todo',
           },
         },
 
