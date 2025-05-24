@@ -10,7 +10,8 @@ map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
 -- insert mode tab
-map('i', '<tab>', '<C-V><Tab>', { desc = "'Insrt Tab" })
+map('i', '<tab>', '<C-V><Tab>', { desc = "'insert tab" })
+map('n', '<tab>', 'za', { desc = 'toggle fold' })
 
 map('n', '<leader>u1', ':colorscheme ' .. C.ui.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
 map('n', '<leader>u2', ':colorscheme ' .. C.ui.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })

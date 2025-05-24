@@ -29,7 +29,7 @@ return {
     config = function()
       -- Setup orgmode
       require('orgmode').setup {
-        org_agenda_files = { '~/notes/orgfiles/**/*' },
+        org_agenda_files = { '~/notes/areas/areas.org', '~/notes/orgfiles/**/*' },
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 0
         -- org_agenda_start_day = '+6d',
