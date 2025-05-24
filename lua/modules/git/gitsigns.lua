@@ -27,8 +27,12 @@ return {
         map("n", "<leader>gR", gs.reset_buffer, "Gitsigns: Reset Buffer")
         map("n", "<leader>gp", gs.preview_hunk_inline, "Gitsigns: Preview Hunk Inline")
         map("n", "<leader>gb", function() gs.blame_line({ full = true }) end, "Gitsigns: Blame Line")
-        map("n", "<leader>gd", gs.diffthis, "Gitsigns: Diff This")
-        map("n", "<leader>gD", function() gs.diffthis("~") end, "Gitsigns: Diff This ~")
+        map("n", "<leader>gtw", function() gs.toggle_word_diff() end, "Gitsigns: toggle word diff")
+        map("n", "<leader>gtl", function() gs.toggle_linehl() end, "Gitsigns: toggle line hl")
+        map("n", "<leader>gtd", function() gs.toggle_deleted() end, "Gitsigns: toggle deleted")
+
+        -- map("n", "<leader>gd", gs.diffthis, "Gitsigns: Diff This")
+        -- map("n", "<leader>gD", function() gs.diffthis("~") end, "Gitsigns: Diff This ~")
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Gitsigns: Select Hunk")
       end,
     },

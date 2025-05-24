@@ -18,6 +18,17 @@ return {
         end,
         desc = 'Toggle Diffview',
       },
+
+      {
+        '<leader>dhh',
+        ':DiffviewFileHistory<CR>',
+        desc = 'Toggle Diffview',
+      },
+      {
+        '<leader>dfh',
+        ':DiffviewFileHistory --follow %<CR>',
+        desc = 'Toggle Diffview',
+      },
     },
   },
 }
