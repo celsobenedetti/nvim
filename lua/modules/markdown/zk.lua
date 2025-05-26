@@ -54,13 +54,13 @@ return {
         vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
       end, { desc = 'rm buffer file' })
 
-      vim.keymap.set('i', '<c-b>', function()
-        vim.api.nvim_feedkeys(Keys '****<Esc>hha', 'n', true)
-      end, { desc = 'Add bold tags for insert mode in bold' })
+      -- vim.keymap.set('i', '<c-b>', function()
+      --   vim.api.nvim_feedkeys(Keys '****<Esc>hha', 'n', true)
+      -- end, { desc = 'Add bold tags for insert mode in bold' })
 
-      vim.keymap.set('i', '<c-t>', function()
-        vim.api.nvim_feedkeys(Keys '~~~~<Esc>hha', 'n', true)
-      end, { desc = 'Add Strikeghrough italic tags for insert mode in bold' })
+      -- vim.keymap.set('i', '<c-t>', function()
+      --   vim.api.nvim_feedkeys(Keys '~~~~<Esc>hha', 'n', true)
+      -- end, { desc = 'Add Strikeghrough italic tags for insert mode in bold' })
     end,
   },
 
