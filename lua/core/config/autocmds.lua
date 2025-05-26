@@ -75,15 +75,3 @@ vim.api.nvim_create_autocmd('FileType', {
     require('functions.markdown.fold_frontmatter').run()
   end,
 })
-
---- colors & highlight gruops
-vim.api.nvim_create_autocmd('ColorScheme', {
-  pattern = '*',
-  callback = function()
-    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#ffbcb5' })
-    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#aaedb7' })
-    vim.api.nvim_set_hl(0, '@org.agenda.deadline', { fg = '#ffbcb5' })
-    vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#d7dae1' })
-    vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = '#f4d88c' })
-  end,
-})

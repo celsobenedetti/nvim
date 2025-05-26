@@ -1,3 +1,16 @@
+--- colors & highlight gruops
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#ffbcb5' })
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#aaedb7' })
+    vim.api.nvim_set_hl(0, '@org.agenda.deadline', { fg = '#ffbcb5' })
+    vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#d7dae1' })
+    -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#aaedb7' })
+    vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = '#f4d88c' })
+  end,
+})
+
 return {
   {
     'nvim-orgmode/orgmode',
@@ -29,7 +42,7 @@ return {
     config = function()
       -- Setup orgmode
       require('orgmode').setup {
-        org_agenda_files = { '~/notes/areas/areas.org', '~/notes/orgfiles/**/*' },
+        org_agenda_files = { '~/notes/orgfiles/**/*', '~/notes/projects/**/*' },
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 0
         -- org_agenda_start_day = '+6d',
@@ -46,20 +59,20 @@ return {
         org_capture_templates = {
           w = {
             description = 'Work task',
-            template = '* TODO %? :work:',
+            template = '* TODO %? :work:\n  %U',
             target = '~/notes/orgfiles/work.org',
-            headline = 'todo',
+            headline = 'work todo',
           },
           l = {
             description = 'Life task',
-            template = '* TODO %? :life:',
-            target = '~/notes/orgfiles/life.org',
-            headline = 'backlog',
+            template = '* TODO %? :life:\n  %U',
+            target = '~/notes/orgfiles/areas.org',
+            headline = 'backlog life',
           },
 
           c = {
             description = 'quick capture',
-            template = '* %?',
+            template = '* %?\n  %U',
             -- target = '~/notes/inbox/refile.org',
           },
         },
