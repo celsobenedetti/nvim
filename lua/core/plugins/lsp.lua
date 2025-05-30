@@ -122,18 +122,25 @@ return {
           lsp_map('n', '[w', diagnostic_goto(false, 'WARN'), 'Prev Warning')
           lsp_map('n', 'gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
           lsp_map('n', 'gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-          lsp_map('n', 'gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+
+          -- TODO: cleanup comments about default nvim keymaps once I get used to them
+          -- not needed, default nvim keymap is gri
+          -- lsp_map('n', 'gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+
+          -- default vim gO
           lsp_map('n', '<leader>ss', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
           lsp_map('n', '<leader>sS', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-          lsp_map('n', '<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-          lsp_map('n', '<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-          lsp_map('v', '<leader>ca', vim.lsp.buf.code_action, 'LSP: [C]ode [A]ction')
+          -- lsp_map('n', '<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame') -- not needed, default nvim keymap is grn
+          -- lsp_map('n', '<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction') -- not needed, default nvim keymap is gra
+          -- lsp_map('v', '<leader>ca', vim.lsp.buf.code_action, 'LSP: [C]ode [A]ction')
           lsp_map('n', 'K', vim.lsp.buf.hover, 'Hover Documentation')
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-          lsp_map('i', '<C-i>', function() -- <Tab> keymapping
-            vim.lsp.buf.signature_help()
-          end, 'show signature help')
+
+          -- not needed, default nvim keymap is <C-s>
+          -- lsp_map('i', '<C-i>', function() -- <Tab> keymapping
+          --   vim.lsp.buf.signature_help()
+          -- end, 'show signature help')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
@@ -190,6 +197,7 @@ return {
       vim.diagnostic.config {
         virtual_text = {
           prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
+          current_line = true,
         },
         ---@diagnostic disable-next-line: assign-type-mismatch
         float = { border = 'rounded' },
