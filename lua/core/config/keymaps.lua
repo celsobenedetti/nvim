@@ -9,8 +9,7 @@ map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' 
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
--- insert mode tab
-map('i', '<tab>', '<C-V><Tab>', { desc = "'insert tab" })
+-- fold on tab
 map('n', '<tab>', 'za', { desc = 'toggle fold' })
 
 map('n', '<leader>u1', ':colorscheme ' .. C.ui.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })

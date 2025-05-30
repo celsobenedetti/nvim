@@ -22,12 +22,12 @@ return {
       {
         '<leader>dhh',
         ':DiffviewFileHistory<CR>',
-        desc = 'Toggle Diffview',
+        desc = 'diffview: toggle file history',
       },
       {
         '<leader>dfh',
         ':DiffviewFileHistory --follow %<CR>',
-        desc = 'Toggle Diffview',
+        desc = 'diffview: current file history',
       },
     },
   },

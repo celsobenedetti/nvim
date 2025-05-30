@@ -47,6 +47,19 @@ return {
     config = function()
       require('zk').setup {
         picker = 'telescope',
+        -- lsp = {
+        --   -- `config` is passed to `vim.lsp.start(config)`
+        --   config = {
+        --     name = 'zk',
+        --     cmd = { 'zk', 'lsp' },
+        --     filetypes = { 'markdown', 'org' },
+        --     -- on_attach = ...
+        --     -- etc, see `:h vim.lsp.start()`
+        --   },
+        --   auto_attach = {
+        --     enabled = true,
+        --   },
+        -- },
       }
 
       map('n', '<leader>remove', function()

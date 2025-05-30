@@ -1,6 +1,6 @@
 return {
   {
-    'epwalsh/obsidian.nvim',
+    'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
     lazy = true,
@@ -12,6 +12,7 @@ return {
       { '<leader>ol', ':ObsidianLinks<CR>' },
       { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':ObsidianToggleCheckbox<CR>' },
+      { '<leader>ofl', ':ObsidianFollowLink<CR>' },
     },
     cond = function()
       if C.cwd.is_llm_chats() then

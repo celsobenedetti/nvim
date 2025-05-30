@@ -11,6 +11,14 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   end,
 })
 
+local org_files = {
+  '~/notes/orgfiles/**/*',
+  '~/notes/inbox/refile.org',
+  '~/notes/inbox/phone_refile.org.org',
+  '~/notes/projects/**/*',
+  '~/notes/areas/**/*',
+}
+
 return {
   {
     'nvim-orgmode/orgmode',
@@ -18,31 +26,12 @@ return {
     event = 'VeryLazy',
     ft = { 'org' },
     keys = {
-      -- {
-      --   '<leader>oaa',
-      --   ':Org agenda a<CR>',
-      --   desc = 'Org agenda week',
-      -- },
-      -- {
-      --   '<leader>oR',
-      --   function()
-      --     require('orgmode').agenda:redo()
-      --   end,
-      --   desc = 'Reindex agenda',
-      -- },
-      {
-        '<leader>ops',
-        function()
-          vim.notify(_G.orgmode.statusline())
-        end,
-        desc = 'Org print status: current active task',
-      },
+      { '<leader>oim', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
     },
-
     config = function()
       -- Setup orgmode
       require('orgmode').setup {
-        org_agenda_files = { '~/notes/orgfiles/**/*', '~/notes/projects/**/*' },
+        org_agenda_files = org_files,
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 0
         -- org_agenda_start_day = '+6d',
@@ -88,7 +77,7 @@ return {
           },
         },
 
-        org_todo_keywords = { 'TODO', 'DONE' },
+        org_todo_keywords = { 'CANCELLED', 'WAITING', 'TODO', 'DONE' },
       }
 
       vim.api.nvim_create_autocmd('ColorScheme', {
@@ -166,5 +155,13 @@ return {
         desc = 'Telescope Orgmode search_headings',
       },
     },
+  },
+
+  {
+    'akinsho/org-bullets.nvim',
+    ft = { 'org' },
+    config = function()
+      require('org-bullets').setup()
+    end,
   },
 }
