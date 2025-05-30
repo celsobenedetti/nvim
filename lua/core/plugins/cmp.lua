@@ -94,6 +94,7 @@ return {
           { name = 'copilot' },
           -- { name = 'supermaven' },
           { name = 'dictionary', keyword_length = 2 },
+          { name = 'orgmode' },
         },
       }
       map('i', '<C-Space>', cmp.mapping.complete, { desc = 'cmp: Trigger Completion' })
