@@ -58,7 +58,7 @@ map('i', '.', '.<c-g>u')
 map('i', ';', ';<c-g>u')
 
 -- save file
-map({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
+map({ 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save file' })
 
 -- =================== LazyVim ===================
 
@@ -68,6 +68,9 @@ map('n', '<leader>K', '<cmd>norm! K<cr>', { desc = 'Keywordprg' })
 -- better indenting
 map('v', '<', '<gv')
 map('v', '>', '>gv')
+-- better indenting
+map('v', '<C-d>', '<gv')
+map('v', '<C-t>', '>gv')
 
 -- new file
 map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
