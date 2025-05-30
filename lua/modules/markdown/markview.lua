@@ -15,7 +15,7 @@ return {
         -- horizontal_rules = presets.horizontal_rules.thin,
         checkboxes = presets.checkboxes.nerd,
         markdown = {
-          headings = presets.headings.slanted,
+          headings = presets.headings.glow,
           horizontal_rules = {
             enable = true,
             parts = {
