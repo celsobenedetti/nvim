@@ -19,6 +19,8 @@ local org_files = {
   '~/notes/areas/**/*',
 }
 
+map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' })
+
 return {
   {
     'nvim-orgmode/orgmode',

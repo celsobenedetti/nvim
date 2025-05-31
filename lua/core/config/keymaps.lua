@@ -5,7 +5,6 @@ map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
-map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 

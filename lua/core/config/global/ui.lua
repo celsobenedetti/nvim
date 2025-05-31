@@ -4,6 +4,8 @@ local M = {
   colorscheme_3 = 'gruvbox',
   colorscheme_4 = 'github_dark_high_contrast',
 
+  background = 'light',
+
   colors = {
     black = '#0B0C11',
     white = '#d7dae1',

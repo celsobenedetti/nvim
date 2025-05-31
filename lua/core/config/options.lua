@@ -1,7 +1,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-vim.opt.background = 'dark'
+vim.opt.background = C.ui.background
 
 vim.opt.number = true -- Make line numbers default
 vim.opt.relativenumber = true

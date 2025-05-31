@@ -7,7 +7,6 @@ return {
   config = function()
     local lazy = require 'lazy'
     local alpha = require 'alpha'
-    local devicons = require 'nvim-web-devicons'
 
     local git_dashboard = require('git-dashboard-nvim').setup {
       top_padding = 0,
@@ -40,11 +39,10 @@ return {
     local function info_value()
       local total_plugins = lazy.stats().count
       local loaded_plugins = lazy.stats().loaded
-      local startuptime = lazy.stats().startuptime
       local version = vim.version()
       local nvim_version_info = ' ' .. version.major .. '.' .. version.minor .. '.' .. version.patch
 
-      return surround '' .. total_plugins .. '/' .. loaded_plugins .. ' plugins loaded in' .. startuptime .. nvim_version_info
+      return surround '' .. total_plugins .. '/' .. loaded_plugins .. ' plugins loaded' .. nvim_version_info
     end
 
     local heatmap = {
@@ -120,6 +118,8 @@ return {
         --   ":lua require('persistence').load({ last = true})<CR>",
         --   { icon = '󰦛', hl = { { 'String', 1, 2 }, { 'Normal', 3, 52 } } }
         -- ),
+        button('i', 'Orgmode index', ':e ~/notes/orgfiles/i.org<cr>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+
         button('n', 'Notes', function()
           require('functions.telescope').notes()
         end, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
@@ -146,6 +146,7 @@ return {
         { type = 'padding', val = 3 },
         heatmap,
         buttons,
+        { type = 'padding', val = 2 },
         info,
       },
     }

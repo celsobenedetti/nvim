@@ -73,7 +73,6 @@ vim.api.nvim_create_autocmd('FileType', {
   group = markdown_group,
   callback = function()
     require('functions.markdown.fold_frontmatter').run()
-
     -- nested markdown folding
     vim.cmd 'set foldexpr=NestedMarkdownFolds()'
   end,

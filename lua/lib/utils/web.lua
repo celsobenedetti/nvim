@@ -18,7 +18,7 @@ M.open_selected_issue = function()
   -- If there is no visual selection
   if issue == nil then
     vim.api.nvim_feedkeys(Keys 'yiW', 'n', true)
-    os.execute('sleep ' .. tonumber(0.5))
+    os.execute('sleep ' .. tonumber(0.5)) -- HACK: 😭
     issue = vim.fn.getreg '+'
   end
 

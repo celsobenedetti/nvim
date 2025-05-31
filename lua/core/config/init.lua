@@ -1,9 +1,9 @@
 ---@diagnostic disable: lowercase-global
 map = vim.keymap.set
 
+require 'core.config.globals'
 require 'core.config.options'
 require 'core.config.lazy'
-require 'core.config.globals'
 require 'core.config.keymaps'
 require 'core.config.sensible'
 require 'core.config.autocmds'
