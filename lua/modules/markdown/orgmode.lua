@@ -12,7 +12,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 })
 
 local org_files = {
-  '~/notes/orgfiles/**/*',
+  '~/notes/orgfiles/*',
   '~/notes/inbox/refile.org',
   '~/notes/inbox/phone_refile.org.org',
   '~/notes/projects/**/*',

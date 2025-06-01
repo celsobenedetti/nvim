@@ -42,7 +42,7 @@ return {
       local version = vim.version()
       local nvim_version_info = ' ' .. version.major .. '.' .. version.minor .. '.' .. version.patch
 
-      return surround '' .. total_plugins .. '/' .. loaded_plugins .. ' plugins loaded' .. nvim_version_info
+      return surround '' .. total_plugins .. '/' .. loaded_plugins .. ' plugins loaded ' .. nvim_version_info
     end
 
     local heatmap = {
@@ -118,12 +118,14 @@ return {
         --   ":lua require('persistence').load({ last = true})<CR>",
         --   { icon = '󰦛', hl = { { 'String', 1, 2 }, { 'Normal', 3, 52 } } }
         -- ),
-        button('i', 'Orgmode index', ':e ~/notes/orgfiles/i.org<cr>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('a', 'Agenda', ':Org agenda a<CR>', { icon = '󰃭', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('t', 'Today', ':Org agenda t<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         button('n', 'Notes', function()
           require('functions.telescope').notes()
         end, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
         button('g', 'GPT', ':GpChatNew<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('i', 'Orgmode index', ':e ~/notes/orgfiles/i.org<cr>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
         button('.', 'Dotfiles', function()
           require('functions.telescope').dotfiles()
         end, { icon = '', hl = { { 'diffLine', 1, 2 }, { 'Normal', 3, 52 } } }),
