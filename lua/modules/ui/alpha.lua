@@ -9,8 +9,8 @@ return {
     local alpha = require 'alpha'
 
     local git_dashboard = require('git-dashboard-nvim').setup {
-      top_padding = 0,
-      bottom_padding = 0,
+      top_padding = 8,
+      bottom_padding = 2,
       show_current_branch = true,
       hide_cursor = false,
       centered = false,

@@ -3,7 +3,7 @@ map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
 
 -- new file
 map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
-map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' })
+-- map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' }) -- replaced with snacks.bufdelete
 map('n', '<leader><tab>', ':tabnext<cr>', { desc = 'Next Tab' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })

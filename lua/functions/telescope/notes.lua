@@ -11,16 +11,17 @@ M.run = function()
     -- },
     -- sorting_strategy = 'ascending',
     search_dirs = {
-      '~/notes',
+      '/home/celso/notes',
     },
+    cwd = '/home/celso/notes',
     hidden = true,
-    find_command = {
-      'fd',
-      '.',
-      '~/.notes',
-      '--type=file',
-      -- '--hidden',
-    },
+    -- find_command = {
+    --   'fd',
+    --   '.',
+    --   '~/.notes',
+    --   '--type=file',
+    --   -- '--hidden',
+    -- },
   }
 end
 

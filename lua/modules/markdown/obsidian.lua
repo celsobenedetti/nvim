@@ -3,7 +3,7 @@ return {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
-    lazy = true,
+    -- lazy = true,
     ft = 'markdown',
     keys = {
       { '<leader>zk', ':ObsidianSearch<CR>' },
@@ -20,11 +20,9 @@ return {
       end
 
       local path = vim.fn.expand '%:p'
-
-      local is_notes = path:find 'notes'
       local is_templates = path:find 'templates'
 
-      return is_notes and not is_templates
+      return not is_templates
     end,
     opts = function(_, opts)
       opts.new_notes_location = 'notes_subdir'

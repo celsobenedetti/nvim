@@ -11,6 +11,7 @@ return {
   {
     'echasnovski/mini.files',
     version = '*',
+    enabled = false, -- WIP: lets try yazi.nvim instead
     lazy = true,
     config = function()
       local MiniFiles = require 'mini.files'
@@ -66,15 +67,15 @@ return {
         vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc })
       end
 
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'MiniFilesBufferCreate',
-        callback = function(args)
-          local buf_id = args.data.buf_id
-          -- Tweak keys to your liking
-          map_split(buf_id, '<C-s>', 'belowright horizontal')
-          map_split(buf_id, '<C-v>', 'belowright vertical')
-        end,
-      })
+      -- vim.api.nvim_create_autocmd('User', {
+      --   pattern = 'MiniFilesBufferCreate',
+      --   callback = function(args)
+      --     local buf_id = args.data.buf_id
+      --     -- Tweak keys to your liking
+      --     map_split(buf_id, '<C-s>', 'belowright horizontal')
+      --     map_split(buf_id, '<C-v>', 'belowright vertical')
+      --   end,
+      -- })
     end,
     keys = {
       {

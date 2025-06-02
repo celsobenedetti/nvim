@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 local org_files = {
   '~/notes/orgfiles/*',
   '~/notes/inbox/refile.org',
-  '~/notes/inbox/phone_refile.org.org',
+  '~/notes/inbox/phone_refile.org',
   '~/notes/projects/**/*',
   '~/notes/areas/**/*',
 }
@@ -35,15 +35,14 @@ return {
       require('orgmode').setup {
         org_agenda_files = org_files,
         calendar_week_start_day = 0,
-        -- org_agenda_start_on_weekday = 0
-        -- org_agenda_start_day = '+6d',
-        --
+        -- org_agenda_start_on_weekday = 7, -- start on sunday
         org_agenda_custom_commands = {
-          t = {
+          T = {
             description = 'today',
             types = { { type = 'agenda', org_agenda_span = 'day' } },
           },
         },
+        org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
         org_default_notes_file = '~/notes/inbox/refile.org',
 
@@ -70,8 +69,6 @@ return {
 
         mappings = {
           org = {
-            -- TODO: This is broken, want to remvoe keymap
-            -- BUG: This is broken, want to remvoe keymap
             org_set_tags_command = false,
             -- org_agenda_set_tags = '<nop>',
             org_toggle_checkbox = '<leader><C-Space>',
@@ -79,7 +76,12 @@ return {
           },
         },
 
-        org_todo_keywords = { 'CANCELLED', 'WAITING', 'TODO', 'DONE' },
+        org_todo_keywords = {
+          'CANCELLED',
+          'WAITING',
+          'TODO',
+          'DONE',
+        },
       }
 
       vim.api.nvim_create_autocmd('ColorScheme', {
@@ -163,7 +165,21 @@ return {
     'akinsho/org-bullets.nvim',
     ft = { 'org' },
     config = function()
-      require('org-bullets').setup()
+      require('org-bullets').setup {
+        symbols = {
+          headlines = {
+            { '○', 'MyBulletL2' },
+            { '✸', 'MyBulletL3' },
+            { '✿', 'MyBulletL4' },
+            { '◉', 'MyBulletL1' },
+          },
+          checkboxes = {
+            half = { '', '@org.checkbox.halfchecked' },
+            done = { '✓', '@org.keyword.done' },
+            todo = { ' ', '@org.keyword.todo' },
+          },
+        },
+      }
     end,
   },
 }

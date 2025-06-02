@@ -13,14 +13,15 @@ M.run = function()
     search_dirs = {
       '~/.dotfiles',
     },
+    cwd = '~/.dotfiles',
     hidden = true,
-    find_command = {
-      'fd',
-      '.',
-      '~/.dotfiles',
-      '--type=file',
-      '--hidden',
-    },
+    -- find_command = {
+    --   'fd',
+    --   '.',
+    --   '~/.dotfiles',
+    --   '--type=file',
+    --   '--hidden',
+    -- },
   }
 end
 
