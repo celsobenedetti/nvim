@@ -14,6 +14,7 @@ return {
   { lazy = true, 'drewxs/ash.nvim', priority = 1000 },
   { lazy = true, 'slugbyte/lackluster.nvim', priority = 1000 },
   {
+    lazy = false,
     'everviolet/nvim',
     name = 'evergarden',
     priority = 1000, -- Colorscheme plugin is loaded first before any other plugins
@@ -23,7 +24,6 @@ return {
         accent = 'green',
       },
       editor = {
-        transparent_background = false,
         sign = { color = 'none' },
         float = {
           color = 'mantle',

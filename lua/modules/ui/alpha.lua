@@ -103,8 +103,8 @@ return {
           },
         },
         { type = 'padding', val = 1 },
-        button('r', 'Recently used files', ':Telescope oldfiles <CR>', { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('f', 'Find File', ':Telescope find_files<CR>', { icon = '󰱼', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('r', 'recent files', ':Telescope oldfiles <CR>', { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('f', 'find file', ':Telescope find_files<CR>', { icon = '󰱼', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         -- button(
         --   'p',
@@ -118,22 +118,24 @@ return {
         --   ":lua require('persistence').load({ last = true})<CR>",
         --   { icon = '󰦛', hl = { { 'String', 1, 2 }, { 'Normal', 3, 52 } } }
         -- ),
-        button('a', 'Agenda', ':Org agenda a<CR>', { icon = '󰃭', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('t', 'Today', ':Org agenda T<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('a', 'agenda', ':Org agenda a<CR>', { icon = '󰃭', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('t', 'today', ':Org agenda T<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
-        button('n', 'Notes', function()
-          require('functions.telescope').notes()
-        end, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('g', 'GPT', ':GpChatNew<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('i', 'Orgmode index', ':e ~/notes/orgfiles/i.org<cr>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('.', 'Dotfiles', function()
-          require('functions.telescope').dotfiles()
-        end, { icon = '', hl = { { 'diffLine', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('h', 'Harpoon', function()
-          local harpoon = require 'harpoon'
-          harpoon.ui:toggle_quick_menu(harpoon:list())
-        end, { icon = '󰛢', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('q', 'Quit', ':qa<CR>', { icon = '', hl = { { 'Comment', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('g', 'gpt', ':GpChatNew<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+
+        button('y', 'yazi', function()
+          vim.cmd 'Yazi'
+        end, { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
+
+        button('o', 'github pr', function()
+          vim.cmd 'Octo pr'
+        end, { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
+
+        button('l', 'git log', function()
+          Snacks.lazygit.log()
+        end, { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
+
+        button('q', 'quit', ':qa<CR>', { icon = '', hl = { { 'Comment', 1, 2 }, { 'Normal', 3, 52 } } }),
         { type = 'padding', val = 1 },
         {
           type = 'text',

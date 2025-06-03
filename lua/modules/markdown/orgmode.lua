@@ -1,15 +1,15 @@
 --- colors & highlight gruops
-vim.api.nvim_create_autocmd('ColorScheme', {
-  pattern = '*',
-  callback = function()
-    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
-    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#90e8a1' })
-    vim.api.nvim_set_hl(0, '@org.agenda.deadline', { fg = '#f7a49c' })
-    vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#d7dae1' })
-    -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#90e8a1' })
-    vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = '#e0ca90' })
-  end,
-})
+-- vim.api.nvim_create_autocmd('ColorScheme', {
+--   pattern = '*',
+--   callback = function()
+--     vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
+--     vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#90e8a1' })
+--     vim.api.nvim_set_hl(0, '@org.agenda.deadline', { fg = '#f7a49c' })
+--     vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#d7dae1' })
+--     -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#90e8a1' })
+--     vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = '#e0ca90' })
+--   end,
+-- })
 
 local org_files = {
   '~/notes/orgfiles/*',
@@ -24,7 +24,6 @@ map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' 
 return {
   {
     'nvim-orgmode/orgmode',
-    -- PERF: is this too slow for every day usage? ?
     event = 'VeryLazy',
     ft = { 'org' },
     keys = {
@@ -73,7 +72,7 @@ return {
             -- org_agenda_set_tags = '<nop>',
             org_toggle_checkbox = '<leader><C-Space>',
             org_insert_todo_heading_respect_content = '<leader>tod',
-            org_open_at_point = false,
+            org_open_at_point = '<leader>oO',
           },
         },
 
@@ -84,14 +83,6 @@ return {
           'DONE',
         },
       }
-
-      vim.api.nvim_create_autocmd('ColorScheme', {
-        pattern = '*',
-        callback = function()
-          vim.api.nvim_set_hl(0, '@org.agenda.todo', { fg = '#ffbcb5' })
-          vim.api.nvim_set_hl(0, '@org.agenda.done', { fg = '#aaedb7' })
-        end,
-      })
 
       -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
       -- add ~org~ to ignore_install

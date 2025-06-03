@@ -6,7 +6,7 @@ local M = {
     char = '│',
     only_scope = false, -- only show indent guides of the scope
     only_current = false, -- only show indent guides in the current window
-    hl = 'SnacksIndentScope', ---@type string|string[] hl groups for indent guides
+    hl = 'SnacksIndent', ---@type string|string[] hl groups for indent guides
   },
   animate = {
     enabled = true,
@@ -23,7 +23,7 @@ local M = {
     char = '│',
     underline = false, -- underline the start of the scope
     only_current = true, -- only show scope in the current window
-    hl = 'SnacksIndent', ---@type string|string[] hl group for scopes
+    hl = 'SnacksIndentScope', ---@type string|string[] hl group for scopes
   },
   chunk = {
     enabled = false,
