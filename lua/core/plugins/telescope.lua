@@ -60,7 +60,7 @@ return {
       end
 
       local trouble = require 'trouble.sources.telescope'
-      local my_actions = require 'functions.telescope.actions'
+      local my_actions = require 'lib.functions.telescope.actions'
 
       require('telescope').setup {
         defaults = {
@@ -173,7 +173,7 @@ return {
 
       ------------- Custom functions ----------------------
 
-      local functions = require 'functions.telescope'
+      local functions = require 'lib.functions.telescope'
 
       map('n', '<leader>mv', functions.move_file, { desc = 'Move file of current buffer to dir' })
       map('n', '<leader>dot', functions.dotfiles, { desc = 'Search Dotfiles' })

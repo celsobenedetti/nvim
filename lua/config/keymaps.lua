@@ -12,11 +12,11 @@ map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
 
 map('n', '<leader>oo', function()
-  require 'functions.open_orgmode_or_obsidian_link'()
+  require 'lib.functions.open_orgmode_or_obsidian_link'()
 end, { desc = 'Open orgmode or obsidian link' })
 map('n', '<leader>ov', function()
   vim.cmd 'vsplit'
-  require 'functions.open_orgmode_or_obsidian_link'()
+  require 'lib.functions.open_orgmode_or_obsidian_link'()
 end, { desc = 'Open orgmode or obsidian link on vsplit' })
 
 -- macro
@@ -54,7 +54,7 @@ map({ 'n', 'v' }, '<leader>L', function()
   vim.api.nvim_feedkeys(Keys(':lua ' .. current_line .. '<CR>'), 'n', true)
 end, { desc = 'Run current line as vim command' })
 
-local track_position_before_relative_jump = require 'functions.relative_jump'
+local track_position_before_relative_jump = require 'lib.functions.relative_jump'
 map('n', 'k', track_position_before_relative_jump.up)
 map('n', 'j', track_position_before_relative_jump.down)
 
@@ -68,7 +68,7 @@ map('n', 'gs', function()
   require('telescope.builtin').lsp_definitions { reuse_win = true }
 end, { desc = 'Split vertical and go to definition' })
 
-local surround_map = require('functions.surround').surround_map
+local surround_map = require('lib.functions.surround').surround_map
 surround_map({ '(', ')' }, '(')
 surround_map({ '[', ']' }, '[')
 surround_map({ '"' }, '"')
