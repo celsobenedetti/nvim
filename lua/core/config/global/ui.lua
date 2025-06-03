@@ -1,10 +1,6 @@
 local M = {
-  colorscheme_1 = 'default',
-  colorscheme_2 = 'rose-pine',
-  colorscheme_3 = 'gruvbox',
-  colorscheme_4 = 'github_dark_high_contrast',
-
-  background = 'light',
+  colorscheme = 'default',
+  background = 'dark',
 
   colors = {
     black = '#0B0C11',

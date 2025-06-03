@@ -1,6 +1,3 @@
-map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy UI' })
-map('n', '<leader>ma', '<cmd>Mason<cr>', { desc = 'Mason UI' })
-
 -- new file
 map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
 -- map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' }) -- replaced with snacks.bufdelete
@@ -10,11 +7,6 @@ map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
 -- fold on tab
 map('n', '<tab>', 'za', { desc = 'toggle fold' })
-
-map('n', '<leader>u1', ':colorscheme ' .. C.ui.colorscheme_1 .. '<CR>', { desc = 'Set colorscheme 1' })
-map('n', '<leader>u2', ':colorscheme ' .. C.ui.colorscheme_2 .. '<CR>', { desc = 'Set colorscheme 2' })
-map('n', '<leader>u3', ':colorscheme ' .. C.ui.colorscheme_3 .. '<CR>', { desc = 'Set colorscheme 3' })
-map('n', '<leader>u4', ':colorscheme ' .. C.ui.colorscheme_4 .. '<CR>', { desc = 'Set colorscheme 4' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
