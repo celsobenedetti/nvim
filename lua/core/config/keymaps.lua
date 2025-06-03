@@ -11,7 +11,13 @@ map('n', '<tab>', 'za', { desc = 'toggle fold' })
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
 
-map('n', '<leader>oo', require 'functions.open_orgmode_or_obsidian_link', { desc = 'Open orgmode or obsidian link' })
+map('n', '<leader>oo', function()
+  require 'functions.open_orgmode_or_obsidian_link'()
+end, { desc = 'Open orgmode or obsidian link' })
+map('n', '<leader>ov', function()
+  vim.cmd 'vsplit'
+  require 'functions.open_orgmode_or_obsidian_link'()
+end, { desc = 'Open orgmode or obsidian link on vsplit' })
 
 -- macro
 map('v', '<leader>Q', ':norm @q<CR>', { desc = 'Execute @q macro in selected lines' })

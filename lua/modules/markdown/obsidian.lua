@@ -12,7 +12,6 @@ return {
       { '<leader>ol', ':ObsidianLinks<CR>' },
       { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':ObsidianToggleCheckbox<CR>' },
-      { '<leader>oo', ':ObsidianFollowLink<CR>' },
     },
     cond = function()
       if C.cwd.is_llm_chats() then
