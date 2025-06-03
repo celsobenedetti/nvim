@@ -55,7 +55,7 @@ return {
             },
             {
               -- TODO: fix hg config
-              color = { bg = C.ui.colors.black, fg = C.ui.colors.comment },
+              color = { bg = C.ui.colors.darkgray, fg = C.ui.colors.gray },
               Lualine.pretty_path,
             },
           },

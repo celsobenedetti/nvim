@@ -110,7 +110,7 @@ function M.pretty_path()
   -- TODO: refactor UI config into directory
   -- TODO: fix hg config
   -- TODO: implement highlighter function util
-  vim.api.nvim_set_hl(0, 'LualineCurrentFile', { bg = C.ui.colors.black, fg = C.ui.colors.white, bold = true })
+  vim.api.nvim_set_hl(0, 'LualineCurrentFile', { bg = C.ui.colors.darkgray, fg = C.ui.colors.white, bold = true })
   local highlight = 'LualineCurrentFile'
   local current_file = '%#' .. highlight .. '#' .. path_parts[#path_parts] -- https://github.com/nvim-lualine/lualine.nvim/issues/337#issuecomment-919902020
 
