@@ -2,7 +2,7 @@
 map = vim.keymap.set
 
 require 'config.globals'
-require 'config.options'
+require 'config.settings'
 require 'config.lazy'
 require 'config.keymaps'
 require 'config.sensible'

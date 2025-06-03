@@ -1,13 +1,12 @@
 --- Global options
 local M = {
   copilot = true,
-  supermaven = true,
 
   autoformat = true, -- fmt
   completion = true, -- cmp
   diagnostics = true,
   performance = false, -- disable optional/heavy plugins
-  hardtime = false,
+  hardtime = true,
   winbar = true,
 
   notes_path = os.getenv 'NOTES',
