@@ -1,4 +1,4 @@
-local colors = require 'core.config.colors'
+local colors = require 'config.colors'
 
 local M = {
   colors = colors.evergarden,

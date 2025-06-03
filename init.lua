@@ -1,4 +1,4 @@
-require 'core.config'
+require 'config'
 
 require('lazy').setup({
   { import = 'core.plugins' },

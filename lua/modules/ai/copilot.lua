@@ -4,7 +4,7 @@ return {
     'zbirenbaum/copilot.lua',
     lazy = not C.opt.copilot,
     keys = {
-      { '<leader>tc', require('core.config.toggles').copilot, { desc = 'Toggle copilot' } },
+      { '<leader>tc', require('config.toggles').copilot, { desc = 'Toggle copilot' } },
     },
     opts = {
       suggestion = { enabled = false },

@@ -1,14 +1,14 @@
 ---@diagnostic disable: lowercase-global
 map = vim.keymap.set
 
-require 'core.config.globals'
-require 'core.config.options'
-require 'core.config.lazy'
-require 'core.config.keymaps'
-require 'core.config.sensible'
-require 'core.config.autocmds'
-require 'core.config.commands'
-require 'core.config.toggles'
+require 'config.globals'
+require 'config.options'
+require 'config.lazy'
+require 'config.keymaps'
+require 'config.sensible'
+require 'config.autocmds'
+require 'config.commands'
+require 'config.toggles'
 
 -- `:help modeline`
 --
