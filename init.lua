@@ -18,4 +18,4 @@ require('lazy').setup({
   ui = C.ui.lazy,
 })
 
-C.ui.set_colorscheme(C.ui.colorscheme_1)
+C.ui.set_colorscheme(C.ui.colorscheme)

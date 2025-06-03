@@ -55,22 +55,6 @@ return {
     opts = {},
   },
 
-  {
-    lazy = true,
-    'danymat/neogen',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    opts = {
-      snippet_engine = 'luasnip',
-    },
-    keys = {
-      {
-        '<leader>an',
-        ':Neogen<CR>',
-        desc = 'Neogen annotation',
-      },
-    },
-  },
-
   -- search/replace in multiple files
   {
     lazy = true,

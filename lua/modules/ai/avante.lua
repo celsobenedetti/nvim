@@ -50,8 +50,15 @@ return {
     opts = {
       provider = 'openai',
       model = 'chatgpt-4o-latest',
-      -- provider = 'gemini',
-      -- model = 'gemini/gemini-2.0-flash',
+      -- provider = 'claude',
+      -- mode = 'agentic',
+      -- claude = {
+      --   endpoint = 'https://api.anthropic.com',
+      --   -- model = 'claude-3-5-sonnet-20241022',
+      --   model = 'claude-sonnet-4-20250514',
+      --   temperature = 0,
+      --   max_tokens = 4096,
+      -- },
       mappings = {
         ask = '<leader>aa', -- ask
         edit = '<leader>ae', -- edit
@@ -70,7 +77,7 @@ return {
       --- The below dependencies are optional,
       'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
       'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-      'zbirenbaum/copilot.lua', -- for providers='copilot'
+      -- 'zbirenbaum/copilot.lua', -- for providers='copilot'
       -- {
       --   -- Make sure to set this up properly if you have lazy=true
       --   'MeanderingProgrammer/render-markdown.nvim',

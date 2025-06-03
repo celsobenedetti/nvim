@@ -69,8 +69,8 @@ map('n', '<leader>K', '<cmd>norm! K<cr>', { desc = 'Keywordprg' })
 map('v', '<', '<gv')
 map('v', '>', '>gv')
 -- better indenting
-map('v', '<C-d>', '<gv')
-map('v', '<C-t>', '>gv')
+-- map('v', '<C-d>', '<gv')
+-- map('v', '<C-t>', '>gv')
 
 -- new file
 map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })

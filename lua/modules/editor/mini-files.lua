@@ -11,7 +11,8 @@ return {
   {
     'echasnovski/mini.files',
     version = '*',
-    enabled = false, -- WIP: lets try yazi.nvim instead
+    -- enabled = false, -- WIP: lets try yazi.nvim instead
+    -- NOTE: this is really useful for renaming files in a buffer
     lazy = true,
     config = function()
       local MiniFiles = require 'mini.files'

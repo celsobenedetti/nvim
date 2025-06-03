@@ -122,6 +122,7 @@ return {
       map('n', '<leader>ff', builtin.find_files, { desc = 'Telescope [S]earch [F]iles' })
       map('n', '<leader>fF', builtin.git_files, { desc = 'Telescope [S]earch [F]iles' })
       map('n', '<leader>st', builtin.builtin, { desc = 'Telescope [S]earch [S]elect Telescope' })
+      map('n', '<leader>tm', builtin.marks, { desc = 'Telescope Marks' })
       map('n', '<leader>sw', builtin.grep_string, { desc = 'Telescope [S]earch current [W]ord' })
       map('v', '<leader>sw', function()
         local selection = C.utils.get_visual_selection()

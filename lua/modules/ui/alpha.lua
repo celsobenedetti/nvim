@@ -119,7 +119,7 @@ return {
         --   { icon = '󰦛', hl = { { 'String', 1, 2 }, { 'Normal', 3, 52 } } }
         -- ),
         button('a', 'Agenda', ':Org agenda a<CR>', { icon = '󰃭', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('t', 'Today', ':Org agenda t<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('t', 'Today', ':Org agenda T<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         button('n', 'Notes', function()
           require('functions.telescope').notes()
@@ -129,7 +129,10 @@ return {
         button('.', 'Dotfiles', function()
           require('functions.telescope').dotfiles()
         end, { icon = '', hl = { { 'diffLine', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('m', 'Marks', ':Telescope marks <CR>', { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('h', 'Harpoon', function()
+          local harpoon = require 'harpoon'
+          harpoon.ui:toggle_quick_menu(harpoon:list())
+        end, { icon = '󰛢', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
         button('q', 'Quit', ':qa<CR>', { icon = '', hl = { { 'Comment', 1, 2 }, { 'Normal', 3, 52 } } }),
         { type = 'padding', val = 1 },
         {

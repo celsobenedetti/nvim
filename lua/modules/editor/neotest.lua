@@ -1,4 +1,5 @@
 -- TODO: do I even want neotest?
+-- the "debug" thing is kinda usefull
 if true then
   return {}
 end
