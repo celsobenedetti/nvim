@@ -11,6 +11,8 @@ map('n', '<tab>', 'za', { desc = 'toggle fold' })
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
 
+map('n', '<leader>oo', require 'functions.open_orgmode_or_obsidian_link', { desc = 'Open orgmode or obsidian link' })
+
 -- macro
 map('v', '<leader>Q', ':norm @q<CR>', { desc = 'Execute @q macro in selected lines' })
 
@@ -69,3 +71,5 @@ surround_map({ '`' }, '`')
 surround_map({ '<leader>b', '<C-b>' }, '**')
 surround_map({ '<leader>i', '<C-_>' }, '_')
 -- surround_map({ '<leader>~' }, '~~')
+--
+--

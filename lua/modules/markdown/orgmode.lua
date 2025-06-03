@@ -2,12 +2,12 @@
 vim.api.nvim_create_autocmd('ColorScheme', {
   pattern = '*',
   callback = function()
-    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#ffbcb5' })
-    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#aaedb7' })
-    vim.api.nvim_set_hl(0, '@org.agenda.deadline', { fg = '#ffbcb5' })
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#90e8a1' })
+    vim.api.nvim_set_hl(0, '@org.agenda.deadline', { fg = '#f7a49c' })
     vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#d7dae1' })
-    -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#aaedb7' })
-    vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = '#f4d88c' })
+    -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#90e8a1' })
+    vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = '#e0ca90' })
   end,
 })
 
@@ -73,6 +73,7 @@ return {
             -- org_agenda_set_tags = '<nop>',
             org_toggle_checkbox = '<leader><C-Space>',
             org_insert_todo_heading_respect_content = '<leader>tod',
+            org_open_at_point = false,
           },
         },
 

@@ -4,15 +4,15 @@ return {
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
     -- lazy = true,
-    ft = 'markdown',
+    ft = { 'markdown', 'org' },
     keys = {
       { '<leader>zk', ':ObsidianSearch<CR>' },
-      { '<leader>oo', ':ObsidianOpen<CR>' },
+      { '<leader>O', ':ObsidianOpen<CR>' },
       { '<leader>ob', ':ObsidianBacklinks<CR>' },
       { '<leader>ol', ':ObsidianLinks<CR>' },
       { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':ObsidianToggleCheckbox<CR>' },
-      { '<leader>ofl', ':ObsidianFollowLink<CR>' },
+      { '<leader>oo', ':ObsidianFollowLink<CR>' },
     },
     cond = function()
       if C.cwd.is_llm_chats() then
