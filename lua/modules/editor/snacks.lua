@@ -1,5 +1,5 @@
 local config = {
-  indent_config = require 'modules.editor.config.snacks-config',
+  indent_config = require 'modules.editor.config.snacks_indent',
   zen = require 'modules.editor.config.zen',
 }
 

@@ -1,16 +1,15 @@
-local M = {}
 ---@class snacks.indent.Config
-M.indent_config = {
+local M = {
   indent = {
     priority = 1,
     enabled = true, -- enable indent guides
     char = '│',
     only_scope = false, -- only show indent guides of the scope
     only_current = false, -- only show indent guides in the current window
-    hl = 'SnacksIndent', ---@type string|string[] hl groups for indent guides
+    hl = 'SnacksIndentScope', ---@type string|string[] hl groups for indent guides
   },
   animate = {
-    enabled = vim.fn.has 'nvim-0.10' == 1,
+    enabled = true,
     style = 'out',
     easing = 'linear',
     duration = {
@@ -24,7 +23,7 @@ M.indent_config = {
     char = '│',
     underline = false, -- underline the start of the scope
     only_current = true, -- only show scope in the current window
-    hl = 'SnacksIndentScope', ---@type string|string[] hl group for scopes
+    hl = 'SnacksIndent', ---@type string|string[] hl group for scopes
   },
   chunk = {
     enabled = false,
