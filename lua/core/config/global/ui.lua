@@ -1,8 +1,6 @@
-local M = {
-  colorscheme = 'default',
-  background = 'dark',
-
-  colors = {
+-- TODO: extract "colors.lua" to separate config file
+local colors = {
+  default_nvim = {
     black = '#0B0C11',
     white = '#d7dae1',
     red = '#ffbcb5',
@@ -15,6 +13,27 @@ local M = {
     inactivegray = '#303340',
     comment = '#2c2e33',
   },
+
+  evergarden = {
+    black = '#171C1F',
+    white = '#F8F9E8',
+    red = '#F57F82',
+    green = '#CAE0A7',
+    blue = '#B2CFED',
+    yellow = '#F5D098',
+    gray = '#58686D',
+    darkgray = '#1C2225',
+    lightgray = '#4A585C',
+    inactivegray = '#313B40',
+    comment = '#232A2E',
+  },
+}
+
+local M = {
+  colorscheme = 'evergarden',
+  colors = colors.evergarden,
+
+  background = 'dark',
 
   icons = {
     diagnostics = {
