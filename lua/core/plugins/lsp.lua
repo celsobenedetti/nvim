@@ -197,7 +197,7 @@ return {
       vim.diagnostic.config {
         virtual_text = {
           prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
-          current_line = true,
+          -- current_line = true,
         },
         ---@diagnostic disable-next-line: assign-type-mismatch
         float = { border = 'rounded' },

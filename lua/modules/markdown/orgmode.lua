@@ -11,9 +11,10 @@
 --   end,
 -- })
 
+local refile_file = '~/notes/inbox/refile.org'
 local org_files = {
+  refile_file,
   '~/notes/orgfiles/*',
-  '~/notes/inbox/refile.org',
   '~/notes/inbox/phone_refile.org',
   '~/notes/projects/**/*',
   '~/notes/areas/**/*',
@@ -43,7 +44,14 @@ return {
         },
         org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
-        org_default_notes_file = '~/notes/inbox/refile.org',
+        org_default_notes_file = refile_file,
+
+        ui = {
+          virt_cookies = {
+            enabled = true,
+            type = '/',
+          },
+        },
 
         org_capture_templates = {
           w = {
@@ -55,14 +63,11 @@ return {
           l = {
             description = 'Life task',
             template = '* TODO %? :life:\n  %U',
-            target = '~/notes/orgfiles/areas.org',
-            headline = 'backlog life',
           },
 
           c = {
             description = 'quick capture',
             template = '* %?\n  %U',
-            -- target = '~/notes/inbox/refile.org',
           },
         },
 

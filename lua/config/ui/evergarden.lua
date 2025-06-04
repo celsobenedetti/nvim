@@ -5,13 +5,23 @@ return {
   },
   overrides = {
     Folded = {
-      '#fddce3',
-      '#1D2428',
+      '#6F8788',
+      C.ui.colors.darkgray,
       style = { 'italic' },
     },
 
-    LineNrAbove = { fg = '#58686D' },
-    LineNrBelow = { fg = '#58686D' },
+    ['@markup.raw'] = { fg = '#AFDFE6' }, -- inline `code` in markdown
+
+    SpellBad = { fg = C.ui.colors.light_red, style = { 'undercurl', 'italic' } }, -- spelling mistakes
+    SpellCap = { style = {} }, -- style when a word should start with a capital letter
+
+    LineNrAbove = { fg = C.ui.colors.gray },
+    LineNrBelow = { fg = C.ui.colors.gray },
+    AvanteInlineHint = { fg = C.ui.colors.lightgray },
+    MarkviewPalette7Fg = { fg = C.ui.colors.aqua, style = { 'underline' } }, -- markview inline hint
+    MarkviewHeading1 = { fg = C.ui.colors.red, style = { 'bold' } }, -- markview heading 1
+    DiffAdd = { fg = C.ui.colors.green, bg = C.ui.colors.inactivegray }, -- markview heading 1
+    -- DiagnosticUnderlineError this one is a little aggressive. I may change it in the future
   },
   integrations = {
     cmp = true,
@@ -41,7 +51,7 @@ return {
       test = true,
       trailspace = true,
     },
-    telescope = false,
+    telescope = true,
     which_key = true,
   },
 }

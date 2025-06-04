@@ -6,7 +6,9 @@ map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
 -- fold on tab
-map('n', '<tab>', 'za', { desc = 'toggle fold' })
+-- BUG: ghostty doesn't know the difference between <TAB> and <C-i>
+map('n', '<c-i>', '<c-i>', { desc = 'toggle fold' })
+map('n', '<TAB>', 'za', { desc = 'toggle fold' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })

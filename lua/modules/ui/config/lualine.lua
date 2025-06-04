@@ -8,13 +8,13 @@ M.theme = {
   },
   insert = {
     a = { bg = C.ui.colors.blue, fg = C.ui.colors.black, gui = 'bold' },
-    b = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
-    c = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
+    b = { bg = C.ui.colors.darkgray, fg = C.ui.colors.white },
+    c = { bg = C.ui.colors.darkgray, fg = C.ui.colors.white },
   },
   visual = {
     a = { bg = C.ui.colors.yellow, fg = C.ui.colors.black, gui = 'bold' },
-    b = { bg = C.ui.colors.lightgray, fg = C.ui.colors.white },
-    c = { bg = C.ui.colors.inactivegray, fg = C.ui.colors.black },
+    b = { bg = C.ui.colors.gray, fg = C.ui.colors.white },
+    c = { bg = C.ui.colors.gray, fg = C.ui.colors.black },
   },
   replace = {
     a = { bg = C.ui.colors.red, fg = C.ui.colors.black, gui = 'bold' },

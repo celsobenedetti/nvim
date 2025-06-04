@@ -105,6 +105,10 @@ return {
         { type = 'padding', val = 1 },
         button('r', 'recent files', ':Telescope oldfiles <CR>', { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
         button('f', 'find file', ':Telescope find_files<CR>', { icon = '󰱼', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('i', 'orgmode', function()
+          vim.cmd 'chdir ~/notes'
+          vim.cmd 'e ~/notes/orgfiles/i.org'
+        end, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         -- button(
         --   'p',

@@ -16,6 +16,7 @@ return {
         'gopls', -- Go language server
         'goimports', -- Go Imports formatter
         'graphql', -- GQL Language server
+        'harper_ls', -- The Grammar Checker for Developers.
         'js-debug-adapter', -- JS/TS debugger
         'json-lsp', -- JSON LSP jsonls
         'isort', -- Python import formatter
