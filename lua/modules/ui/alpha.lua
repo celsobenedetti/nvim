@@ -105,10 +105,6 @@ return {
         { type = 'padding', val = 1 },
         button('r', 'recent files', ':Telescope oldfiles <CR>', { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
         button('f', 'find file', ':Telescope find_files<CR>', { icon = '󰱼', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('i', 'orgmode', function()
-          vim.cmd 'chdir ~/notes'
-          vim.cmd 'e ~/notes/orgfiles/i.org'
-        end, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         -- button(
         --   'p',
@@ -124,16 +120,13 @@ return {
         -- ),
         button('a', 'agenda', ':Org agenda a<CR>', { icon = '󰃭', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
         button('t', 'today', ':Org agenda T<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('o', 'org files', require('lib.functions.telescope').org_files, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         button('g', 'gpt', ':GpChatNew<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         button('y', 'yazi', function()
           vim.cmd 'Yazi'
         end, { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
-
-        button('o', 'github pr', function()
-          vim.cmd 'Octo pr'
-        end, { icon = '', hl = { { 'Function', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         button('l', 'git log', function()
           Snacks.lazygit.log()
