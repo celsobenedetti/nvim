@@ -140,7 +140,7 @@ return {
       map('n', '<leader><leader>', builtin.buffers, { desc = 'Telescope [S]earch [B]ranches' })
       map('n', '<leader>sH', '<cmd>Telescope highlights<cr>', { desc = 'Search Highlight Groups' })
 
-      map('n', '<leader>sg', builtin.live_grep, { desc = 'Telescope [S]earch by [G]rep' })
+      map('n', '<leader>rg', builtin.live_grep, { desc = 'Telescope ripgrep' })
       map('n', '<leader>sd', function()
         builtin.diagnostics { bufnr = 0 }
       end, { desc = 'Telescope [S]earch [D]iagnostics for Current Document' })

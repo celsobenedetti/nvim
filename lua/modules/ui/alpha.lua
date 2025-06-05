@@ -24,11 +24,18 @@ return {
       filled_squares = { '', '', '', '', '', '' },
       basepoints = { 'master', 'main' },
       colors = {
-        days_and_months_labels = '#88C0D0',
-        empty_square_highlight = '#6098A7',
-        filled_square_highlights = { '#002C39', '#094D5B', '#387180', '#6098A7', '#88C0D0', '#C0FAFF' },
-        branch_highlight = '#ffc3fa',
-        dashboard_title = '#88C0D0',
+        dashboard_title = C.ui.colors.pink,
+        days_and_months_labels = C.ui.colors.green,
+        empty_square_highlight = C.ui.colors.green,
+        filled_square_highlights = {
+          C.ui.colors.lime,
+          C.ui.colors.aqua,
+          C.ui.colors.skye,
+          C.ui.colors.snow,
+          C.ui.colors.purple,
+          C.ui.colors.green,
+        },
+        branch_highlight = C.ui.colors.pink,
       },
     }
 
