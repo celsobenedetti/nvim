@@ -17,7 +17,6 @@ return {
     comment = '#2c2e33',
 
     subtext = '#ADC9BC',
-    aqua = '#ADDEB9',
   },
 
   evergarden = {

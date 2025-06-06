@@ -24,7 +24,7 @@ return {
 
       local opts = {
         options = {
-          theme = Lualine.theme,
+          -- theme = Lualine.theme,
           globalstatus = vim.o.laststatus == 3,
           disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' } },
         },

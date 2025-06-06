@@ -7,7 +7,7 @@ map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
 -- fold on tab
 -- BUG: ghostty doesn't know the difference between <TAB> and <C-i>
-map('n', '<c-i>', '<c-i>', { desc = 'toggle fold' })
+-- map('n', '<c-i>', '<c-i>', { desc = 'toggle fold' })
 map('n', '<TAB>', 'za', { desc = 'toggle fold' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
@@ -70,14 +70,21 @@ map('n', 'gs', function()
   require('telescope.builtin').lsp_definitions { reuse_win = true }
 end, { desc = 'Split vertical and go to definition' })
 
-local surround_map = require('lib.functions.surround').surround_map
-surround_map({ '(', ')' }, '(')
-surround_map({ '[', ']' }, '[')
-surround_map({ '"' }, '"')
-surround_map({ "'" }, "'")
-surround_map({ '`' }, '`')
-surround_map({ '<leader>b', '<C-b>' }, '**')
-surround_map({ '<leader>i', '<C-_>' }, '_')
--- surround_map({ '<leader>~' }, '~~')
---
---
+map('n', '<leader>P', function()
+  vim.api.nvim_feedkeys(Keys 'vip', 'n', true)
+  local file_path = vim.fn.expand '%:p'
+  if file_path:find 'html' then
+    vim.api.nvim_feedkeys(Keys '!prettier --parser=html<CR>', 'n', true)
+  else
+    vim.api.nvim_feedkeys(Keys '!prettier --parser=markdown<CR>', 'n', true)
+  end
+end, { desc = 'Format current paragraph with Prettier' })
+
+map('v', '<leader>P', function()
+  local file_path = vim.fn.expand '%:p'
+  if file_path:find '.md' then
+    vim.api.nvim_feedkeys(Keys '!prettier --parser=markdown<CR>', 'n', true)
+  else
+    vim.api.nvim_feedkeys(Keys '!prettier --parser=html<CR>', 'n', true)
+  end
+end, { desc = 'Format current selection with Prettier' })

@@ -46,24 +46,25 @@ vim.api.nvim_create_autocmd('BufWritePost', {
   end,
 })
 
--- Code files
-local code_files_group = Augroup 'Code_Files'
-local code_files = {
-  '*.lua',
-  '*.go',
-  '*.sh',
-  '*.js',
-  '*.ts',
-  '*.tsx',
-  '*.md',
-}
-vim.api.nvim_create_autocmd('BufRead', {
-  pattern = code_files,
-  group = code_files_group,
-  callback = function()
-    vim.api.nvim_feedkeys(Keys 'zM', 'n', true)
-  end,
-})
+-- -- Code files
+-- local code_files_group = Augroup 'Code_Files'
+-- local code_files = {
+--   '*.lua',
+--   '*.go',
+--   '*.sh',
+--   '*.js',
+--   '*.ts',
+--   '*.tsx',
+--   '*.md',
+-- }
+-- vim.api.nvim_create_autocmd('BufRead', {
+--   pattern = code_files,
+--   group = code_files_group,
+--   callback = function()
+--     // fold
+--     vim.api.nvim_feedkeys(Keys 'zM', 'n', true)
+--   end,
+-- })
 
 -- -- Code files
 local markdown_group = Augroup 'Markdown'

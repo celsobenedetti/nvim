@@ -26,6 +26,7 @@ return {
   integrations = {
     cmp = true,
     gitsigns = true,
+    lualine = true,
     mini = {
       enable = true,
       animate = true,

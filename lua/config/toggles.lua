@@ -2,7 +2,7 @@
 
 local copilot = C.opt.copilot
 local completion = C.opt.completion
-local diagnostics = vim.g.diagnostics
+local diagnostics = C.opt.diagnostics
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
 
 local OFF = '❌ Disabled '
@@ -25,11 +25,6 @@ local M = {
       print(ON .. 'Copilot')
     end
     copilot = not copilot
-  end,
-
-  supermaven = function()
-    require('supermaven-nvim.api').toggle()
-    print(C.ui.icons.kinds.Supermaven .. ' toggled Supermaven')
   end,
 
   completion = function()

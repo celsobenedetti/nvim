@@ -7,7 +7,7 @@ return {
     ft = { 'markdown', 'org' },
     keys = {
       { '<leader>zk', ':ObsidianSearch<CR>' },
-      { '<leader>O', ':ObsidianOpen<CR>' },
+      { '<leader>oO', ':ObsidianOpen<CR>' },
       { '<leader>ob', ':ObsidianBacklinks<CR>' },
       { '<leader>ol', ':ObsidianLinks<CR>' },
       { '<leader>ot', ':ObsidianTags<CR>' },

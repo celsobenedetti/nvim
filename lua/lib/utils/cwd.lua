@@ -17,11 +17,10 @@ M.is_deno = function()
 end
 
 M.is_tailwind = function()
-  return true
-  -- local tailwind_file = not not vim.fs.root(0, 'tailwind.config.ts')
-  -- local vite_file = not not vim.fs.root(0, 'vite.config.ts')
-  --
-  -- return tailwind_file or vite_file
+  local tailwind_file = not not vim.fs.root(0, 'tailwind.config.ts')
+  local vite_file = not not vim.fs.root(0, 'vite.config.ts')
+
+  return tailwind_file or vite_file
 end
 
 M.is_work = function()

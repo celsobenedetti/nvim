@@ -12,26 +12,6 @@ return {
       { '<leader>zl', ':ZkInsertLink<CR>' },
       { '<leader>zL', ':ZkLinks<CR>' },
       -- { '<leader>ch', ':norm @c<CR>', mode = 'v' },
-      {
-        '<leader>P',
-        function()
-          vim.api.nvim_feedkeys(Keys 'vip', 'n', true)
-          local file_path = vim.fn.expand '%:p'
-          if file_path:find 'html' then
-            vim.api.nvim_feedkeys(Keys '!prettier --parser=html<CR>', 'n', true)
-          else
-            vim.api.nvim_feedkeys(Keys '!prettier --parser=markdown<CR>', 'n', true)
-          end
-        end,
-        mode = 'n',
-      },
-      {
-        '<leader>P',
-        function()
-          vim.api.nvim_feedkeys(Keys '!prettier --parser=markdown<CR>', 'n', true)
-        end,
-        mode = 'v',
-      },
     },
     dependencies = {
       {

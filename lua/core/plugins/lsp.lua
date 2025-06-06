@@ -184,6 +184,7 @@ return {
       local is_next = C.cwd.is_next()
       local is_deno = not is_next and C.cwd.is_deno()
       local is_tailwind = C.cwd.is_tailwind()
+      -- local is_markdown = vim.bo.filetype == 'markdown' or vim.bo.filetype == 'md'
 
       local disable = {
         zk = true,
@@ -197,7 +198,7 @@ return {
       vim.diagnostic.config {
         virtual_text = {
           prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
-          -- current_line = true,
+          current_line = true,
         },
         ---@diagnostic disable-next-line: assign-type-mismatch
         float = { border = 'rounded' },
