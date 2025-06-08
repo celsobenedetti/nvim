@@ -34,6 +34,7 @@ return {
       { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Snacks: Rename File', },
       { '<leader>dd', function() Snacks.bufdelete() end, desc = 'Snacks: Bufdelete', },
       { '<leader>fe', function() Snacks.explorer()  end, desc = 'Snacks: explorer', },
+      { '<leader>fE', function() Snacks.explorer.reveal()  end, desc = 'Snacks: explorer', },
       { '<leader>gB', function() Snacks.gitbrowse() end, desc = 'Snacks: Git Browse', mode = { 'n', 'v' }, },
       { '<leader>gf', function() Snacks.lazygit.log_file() end, desc = 'Snacks: Lazygit Current File History', },
       { '<leader>gg', function() Snacks.lazygit() end, desc = 'Snacks: Lazygit', },
