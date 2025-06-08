@@ -1,5 +1,6 @@
 return {
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
+
     'lewis6991/gitsigns.nvim',
     opts = {
       signs = {
@@ -30,10 +31,18 @@ return {
         map("n", "<leader>gtw", function() gs.toggle_word_diff() end, "Gitsigns: toggle word diff")
         map("n", "<leader>gtl", function() gs.toggle_linehl() end, "Gitsigns: toggle line hl")
         map("n", "<leader>gtd", function() gs.toggle_deleted() end, "Gitsigns: toggle deleted")
+        -- stylua: ignore end
+
+        -- all together "toggle inline diff"
+        map('n', '<leader>gid', function()
+          gs.toggle_word_diff()
+          gs.toggle_linehl()
+          gs.toggle_deleted()
+        end, 'Gitsigns: toggle inline diff')
 
         -- map("n", "<leader>gd", gs.diffthis, "Gitsigns: Diff This")
         -- map("n", "<leader>gD", function() gs.diffthis("~") end, "Gitsigns: Diff This ~")
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Gitsigns: Select Hunk")
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Gitsigns: Select Hunk')
       end,
     },
   },
