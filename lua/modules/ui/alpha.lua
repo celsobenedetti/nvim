@@ -1,5 +1,12 @@
+if true then
+  return {}
+end
+
+-- NOTE: the startup commands is slow, I'm disabling it
+
 return {
   'goolord/alpha-nvim',
+  enabled = false,
   dependencies = {
     'juansalvatore/git-dashboard-nvim',
   },
@@ -125,8 +132,14 @@ return {
         --   ":lua require('persistence').load({ last = true})<CR>",
         --   { icon = '󰦛', hl = { { 'String', 1, 2 }, { 'Normal', 3, 52 } } }
         -- ),
-        button('a', 'agenda', ':Org agenda a<CR>', { icon = '󰃭', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
-        button('t', 'today', ':Org agenda T<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('a', 'agenda', function()
+          vim.cmd 'e ~/notes/orgfiles/i.org'
+          vim.cmd 'Org agenda a'
+        end, { icon = '󰃭', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
+        button('t', 'today', function()
+          vim.cmd 'e ~/notes/orgfiles/i.org'
+          vim.cmd 'Org agenda T'
+        end, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
         button('o', 'org files', require('lib.functions.telescope').org_files, { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
 
         button('g', 'gpt', ':GpChatNew<CR>', { icon = '', hl = { { 'Float', 1, 2 }, { 'Normal', 3, 52 } } }),
