@@ -21,6 +21,9 @@ local org_files = {
 }
 
 map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' })
+map('n', '<leader>w', ':e ~/notes/orgfiles/week.org<cr>', { desc = 'Orgmode week file' })
+map('n', '<leader>ow', ':e ~/notes/orgfiles/week.org<cr>', { desc = 'Orgmode week file' })
+map('n', '<leader>or', ':e ~/notes/inbox/refile.org<cr>', { desc = 'Orgmode week file' })
 
 return {
   {
@@ -82,8 +85,8 @@ return {
         },
 
         org_todo_keywords = {
-          'CANCELLED',
-          'WAITING',
+          -- 'CANCELLED',
+          -- 'WAITING',
           'TODO',
           'DONE',
         },
