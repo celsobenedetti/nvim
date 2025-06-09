@@ -1,3 +1,8 @@
+if true then
+  -- NOTE: lets see if I miss octo
+  return {}
+end
+
 return {
   {
     'pwntester/octo.nvim',
