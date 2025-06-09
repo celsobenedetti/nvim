@@ -22,6 +22,7 @@ return {
     MarkviewHeading1 = { fg = C.ui.colors.red, style = { 'bold' } }, -- markview heading 1
     DiffAdd = { fg = C.ui.colors.green, bg = C.ui.colors.inactivegray }, -- markview heading 1
     -- DiagnosticUnderlineError this one is a little aggressive. I may change it in the future
+    Underlined = { style = { 'underline', 'italic' } },
   },
   integrations = {
     cmp = true,
