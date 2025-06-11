@@ -19,6 +19,7 @@ return {
       indent = config.indent_config, -- indent highlight animation
       input = { enabled = true },
       notifier = { enabled = true },
+      picker = { sources = { explorer = { auto_close = true } } },
       quickfile = { enabled = true },
       scratch = { enabled = true },
       scroll = { enabled = false }, -- smooth scroll
