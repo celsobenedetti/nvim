@@ -125,7 +125,7 @@ return {
 
           -- TODO: cleanup comments about default nvim keymaps once I get used to them
           -- not needed, default nvim keymap is gri
-          -- lsp_map('n', 'gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+          lsp_map('n', 'gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
 
           -- default vim gO
           lsp_map('n', '<leader>ss', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')

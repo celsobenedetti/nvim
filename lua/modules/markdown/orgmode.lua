@@ -77,6 +77,7 @@ return {
         mappings = {
           org = {
             org_set_tags_command = false,
+            org_refile = false,
             -- org_agenda_set_tags = '<nop>',
             org_toggle_checkbox = '<leader><C-Space>',
             org_insert_todo_heading_respect_content = '<leader>tod',

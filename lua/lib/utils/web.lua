@@ -8,7 +8,8 @@ end
 ---@param issue string
 M.open_issue = function(issue)
   local is_linear = issue.match(issue, '^C-') ~= nil
-  local url = is_linear and C.url.linear_issue or C.url.jira_issue
+  -- local url = is_linear and C.url.linear_issue or C.url.jira_issue
+  local url = C.url.jira_issue
   vim.ui.open(url .. issue)
 end
 
