@@ -1,3 +1,5 @@
+local snacks_config = require 'modules.editor.config.snacks_config'
+
 local config = {
   indent_config = require 'modules.editor.config.snacks_indent',
   zen = require 'modules.editor.config.zen',
@@ -19,7 +21,7 @@ return {
       indent = config.indent_config, -- indent highlight animation
       input = { enabled = true },
       notifier = { enabled = true },
-      picker = { sources = { explorer = { auto_close = true } } },
+      picker = snacks_config.picker, -- picker configuration
       quickfile = { enabled = true },
       scratch = { enabled = true },
       scroll = { enabled = false }, -- smooth scroll

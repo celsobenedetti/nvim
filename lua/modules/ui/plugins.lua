@@ -4,8 +4,8 @@ return {
     -- Slightly tint unfocused pane
     'levouh/tint.nvim',
     opts = {
-      tint = -65, -- Darken colors, use a positive value to brighten
-      saturation = 0.6, -- Saturation to preserve
+      -- tint = -65, -- Darken colors, use a positive value to brighten
+      -- saturation = 0.6, -- Saturation to preserve
     },
     lazy = C.opt.performance,
   },
