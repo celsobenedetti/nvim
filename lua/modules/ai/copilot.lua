@@ -1,4 +1,8 @@
 -- TODO:  Supermaven feels better suited, but found lots of issues
+
+if true then
+  return {}
+end
 return {
   {
     'zbirenbaum/copilot.lua',

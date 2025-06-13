@@ -1,6 +1,6 @@
 return {
   theme = {
-    variant = 'fall', -- 'winter'|'fall'|'spring'|'summer'
+    variant = 'winter', -- 'winter'|'fall'|'spring'|'summer'
     accent = 'green',
   },
   overrides = {
