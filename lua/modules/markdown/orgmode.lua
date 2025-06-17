@@ -20,9 +20,11 @@ local org_files = {
   '~/notes/areas/**/*',
 }
 
-map('n', '<leader>oi', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' })
+map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' })
 map('n', '<leader>ow', ':e ~/notes/orgfiles/week.org<cr>', { desc = 'Orgmode week file' })
-map('n', '<leader>or', ':e ~/notes/inbox/refile.org<cr>', { desc = 'Orgmode week file' })
+map('n', '<leader>ot', ':Org agenda T<cr>', { desc = 'Orgmode agenda today' })
+map('n', '<leader>oW', ':e ~/notes/orgfiles/work.org<cr>', { desc = 'Orgmode work file' })
+map('n', '<leader>or', ':e ~/notes/inbox/refile.org<cr>', { desc = 'Orgmode refile file' })
 
 return {
   {
@@ -60,7 +62,7 @@ return {
             description = 'Work task',
             template = '* TODO %? :work:\n  %U',
             target = '~/notes/orgfiles/work.org',
-            headline = 'work todo',
+            headline = 'work backlog',
           },
           l = {
             description = 'Life task',
@@ -85,9 +87,8 @@ return {
         },
 
         org_todo_keywords = {
-          -- 'CANCELLED',
-          -- 'WAITING',
           'TODO',
+          'WIP',
           'DONE',
         },
       }

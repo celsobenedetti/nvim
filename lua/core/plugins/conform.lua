@@ -23,7 +23,7 @@ return {
           javascriptreact = { js_formatter },
           json = { js_formatter },
           lua = { 'stylua' },
-          markdown = { 'markdownlint-cli2' },
+          -- markdown = { 'markdownlint-cli2' },
           python = { 'isort', 'black' },
           sh = { 'shfmt' },
           sql = { 'sqlfluff' },

@@ -21,7 +21,11 @@ return {
         'json-lsp', -- JSON LSP jsonls
         'isort', -- Python import formatter
         'lua_ls', -- Lua language server
+
+        -- WIP: maybe I'll replacve this
         'markdownlint-cli2', -- Markdown linter an formatter
+        'mdformat', --  CommonMark compliant Markdown formatter.
+
         'oxlint', -- High-performance linter for JavaScript and TypeScript written in Rust.
         'prettierd', -- JS/TS formatter
         'pyright', -- Python language server

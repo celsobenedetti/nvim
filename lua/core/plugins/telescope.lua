@@ -137,7 +137,7 @@ return {
         builtin.grep_string { search = cleaned_selection }
       end, { desc = 'Telescope [S]earch current selection' })
       -- map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
-      map('n', '<leader>gitb', builtin.git_branches, { desc = 'Telescope [S]earch [B]ranches' })
+      map('n', '<leader>gB', builtin.git_branches, { desc = 'Telescope [g]it [B]ranches' })
       map('n', '<leader><leader>', builtin.buffers, { desc = 'Telescope [S]earch [B]ranches' })
       map('n', '<leader>sH', '<cmd>Telescope highlights<cr>', { desc = 'Search Highlight Groups' })
 

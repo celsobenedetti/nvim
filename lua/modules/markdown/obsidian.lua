@@ -10,7 +10,7 @@ return {
       { '<leader>oO', ':ObsidianOpen<CR>' },
       { '<leader>ob', ':ObsidianBacklinks<CR>' },
       { '<leader>ol', ':ObsidianLinks<CR>' },
-      { '<leader>ot', ':ObsidianTags<CR>' },
+      -- { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':ObsidianToggleCheckbox<CR>' },
     },
     cond = function()
