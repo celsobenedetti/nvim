@@ -199,9 +199,10 @@ return {
         virtual_text = {
           prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
           current_line = true,
+          source = true,
         },
         ---@diagnostic disable-next-line: assign-type-mismatch
-        float = { border = 'rounded' },
+        float = { border = 'rounded', source = true },
       }
 
       require('mason-lspconfig').setup {
