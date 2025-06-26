@@ -1,3 +1,11 @@
+local config = {
+
+  highlights = {
+    keyword = { fg = C.ui.colors.red, style = { 'nocombine' } },
+    type = { C.ui.colors.yellow, style = { 'nocombine' } },
+  },
+}
+
 return {
   theme = {
     variant = 'winter', -- 'winter'|'fall'|'spring'|'summer'
@@ -5,10 +13,29 @@ return {
   },
   overrides = {
     Folded = {
-      '#6F8788',
-      C.ui.colors.darkgray,
-      style = { 'italic' },
+      C.ui.colors.gray,
+      C.ui.colors.black,
+      -- style = { 'italic' },
     },
+
+    Keyword = config.highlights.keyword,
+    ['@keyword'] = config.highlights.keyword,
+    ['@keyword.coroutine'] = config.highlights.keyword,
+    ['@keyword.operator'] = config.highlights.keyword,
+
+    ['@function'] = { C.ui.colors.lime, style = { 'bold' } },
+    ['@constant'] = { C.ui.colors.white, style = { 'bold' } },
+    ['@module'] = { C.ui.colors.blue, style = { 'nocombine' } },
+    -- ['@variable.member'] = { C.ui.colors.snow, style = { 'nocombine' } },
+
+    ['@variable.builtin.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
+    ['@function.builtin.go'] = { C.ui.colors.white, style = { 'nocombine' } },
+
+    ['@lsp.mod.readonly.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
+    ['@attribute.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
+
+    Type = config.highlights.type,
+    ['@type'] = config.highlights.type,
 
     ['@markup.raw'] = { fg = '#AFDFE6' }, -- inline `code` in markdown
 
@@ -20,9 +47,10 @@ return {
     AvanteInlineHint = { fg = C.ui.colors.lightgray },
     MarkviewPalette7Fg = { fg = C.ui.colors.aqua, style = { 'underline' } }, -- markview inline hint
     MarkviewHeading1 = { fg = C.ui.colors.red, style = { 'bold' } }, -- markview heading 1
-    DiffAdd = { fg = C.ui.colors.green, bg = C.ui.colors.inactivegray }, -- markview heading 1
+    DiffAdd = { fg = C.ui.colors.green, bg = C.ui.colors.comment }, -- markview heading 1
     -- DiagnosticUnderlineError this one is a little aggressive. I may change it in the future
     Underlined = { style = { 'underline', 'italic' } },
+    LspReferenceRead = { bg = C.ui.colors.gray },
   },
   integrations = {
     cmp = true,

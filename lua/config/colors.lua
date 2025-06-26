@@ -41,5 +41,6 @@ return {
     purple = '#D0BBF0',
     pink = '#F3C0E5',
     cherry = '#F6CEE5',
+    orange = '#F7A182',
   },
 }
