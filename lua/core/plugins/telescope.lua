@@ -137,7 +137,7 @@ return {
         builtin.grep_string { search = cleaned_selection }
       end, { desc = 'Telescope [S]earch current selection' })
       -- map('v', '<leader>sw', 'y<ESC>:Telescope grep_string search=<c-r>0<CR>')
-      map('n', '<leader>gB', builtin.git_branches, { desc = 'Telescope [g]it [B]ranches' })
+      -- map('n', '<leader>gB', builtin.git_branches, { desc = 'Telescope [g]it [B]ranches' })
       map('n', '<leader><leader>', builtin.buffers, { desc = 'Telescope [S]earch [B]ranches' })
       map('n', '<leader>sH', '<cmd>Telescope highlights<cr>', { desc = 'Search Highlight Groups' })
 
@@ -181,6 +181,7 @@ return {
       map('n', '<leader>dot', functions.dotfiles, { desc = 'Search Dotfiles' })
       map('n', '<leader>fn', functions.notes, { desc = 'Search Notes' })
       map('n', '<leader>fo', functions.org_files, { desc = 'Search Org files' })
+      map('n', '<leader>of', functions.org_files, { desc = 'Search Org files' })
       map('n', '<leader>s<leader>', functions.vertical_tabs, { desc = '[Telescope] Search crrent dir with vertical tabs mapping' })
     end,
   },

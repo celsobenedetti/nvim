@@ -1,7 +1,8 @@
-if true then
-  -- NOTE: lets see if I miss octo
-  return {}
-end
+-- if true then
+--   -- NOTE: 2025-06-09 lets see if I miss octo
+--   -- UPDATE 2025-06-26: I do miss the ability to edit PR descriptions in nvim
+--   return {}
+-- end
 
 return {
   {

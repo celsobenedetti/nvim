@@ -88,7 +88,7 @@ return {
 
         org_todo_keywords = {
           'TODO',
-          'WIP',
+          -- 'WIP',
           'DONE',
         },
       }
