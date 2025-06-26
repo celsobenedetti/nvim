@@ -1,6 +1,7 @@
 --- Global options
 local M = {
-  copilot = true,
+  copilot = false,
+  supermaven = true,
 
   autoformat = true, -- fmt
   completion = true, -- cmp
