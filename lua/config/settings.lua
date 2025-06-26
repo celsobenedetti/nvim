@@ -17,7 +17,8 @@ vim.opt.showmode = false -- Don't show the mode, since it's already in status li
 vim.opt.clipboard = 'unnamedplus' -- Sync clipboard between OS and Neovim.
 vim.opt.breakindent = true -- Enable break indent
 vim.opt.undofile = true -- Save undo history
-vim.opt.spelllang = { 'en' }
+vim.opt.spelllang = { 'en', 'pt' }
+vim.opt.spelloptions = { 'camel' }
 
 vim.opt.ignorecase = true -- Case-insensitive searching UNLESS \C or capital in search
 vim.opt.smartcase = true
@@ -86,7 +87,6 @@ vim.opt.sidescrolloff = 8 -- Columns of context
 vim.opt.signcolumn = 'yes' -- Always show the signcolumn, otherwise it would shift the text each time
 vim.opt.smartcase = true -- Don't ignore case with capitals
 vim.opt.smartindent = true -- Insert indents automatically
-vim.opt.spelllang = { 'en' }
 vim.opt.splitbelow = true -- Put new windows below current
 vim.opt.splitkeep = 'screen'
 vim.opt.splitright = true -- Put new windows right of current

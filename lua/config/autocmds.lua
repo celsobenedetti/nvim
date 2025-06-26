@@ -76,22 +76,5 @@ vim.api.nvim_create_autocmd('FileType', {
     require('lib.functions.markdown.fold_frontmatter').run()
     -- nested markdown folding
     vim.cmd 'set foldexpr=NestedMarkdownFolds()'
-
-    -- grab text in buffer
-    local contents = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-    local is_in_portuguese = false
-    for _, line in ipairs(contents) do
-      if line:match ' - pt' then
-        is_in_portuguese = true
-        break
-      end
-    end
-
-    if is_in_portuguese then
-      vim.defer_fn(function()
-        -- set spell checking for portuguese
-        vim.cmd 'setlocal spell spelllang=pt'
-      end, 100)
-    end
   end,
 })
