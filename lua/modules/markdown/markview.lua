@@ -65,48 +65,48 @@ return {
               },
             },
           },
-        },
 
-        list_items = {
-          enable = true,
-          wrap = true,
-          indent_size = function(buffer)
-            return 1
-          end,
-          shift_width = 1,
+          list_items = {
+            enable = true,
+            wrap = true,
+            indent_size = function(buffer)
+              return 1
+            end,
+            shift_width = 1,
 
-          marker_minus = {
-            add_padding = false,
-            conceal_on_checkboxes = true,
+            marker_minus = {
+              add_padding = false,
+              conceal_on_checkboxes = true,
 
-            text = '•',
-            hl = 'MarkviewListItemMinus',
-          },
+              text = '•',
+              hl = 'MarkviewListItemMinus',
+            },
 
-          marker_plus = {
-            add_padding = true,
-            conceal_on_checkboxes = true,
+            marker_plus = {
+              add_padding = true,
+              conceal_on_checkboxes = true,
 
-            text = '◈',
-            hl = 'MarkviewListItemPlus',
-          },
+              text = '◈',
+              hl = 'MarkviewListItemPlus',
+            },
 
-          marker_star = {
-            add_padding = true,
-            conceal_on_checkboxes = true,
+            marker_star = {
+              add_padding = true,
+              conceal_on_checkboxes = true,
 
-            text = '◇',
-            hl = 'MarkviewListItemStar',
-          },
+              text = '◇',
+              hl = 'MarkviewListItemStar',
+            },
 
-          marker_dot = {
-            add_padding = true,
-            conceal_on_checkboxes = true,
-          },
+            marker_dot = {
+              add_padding = true,
+              conceal_on_checkboxes = true,
+            },
 
-          marker_parenthesis = {
-            add_padding = true,
-            conceal_on_checkboxes = true,
+            marker_parenthesis = {
+              add_padding = true,
+              conceal_on_checkboxes = true,
+            },
           },
         },
 
