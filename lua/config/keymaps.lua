@@ -6,6 +6,10 @@ map('n', '<leader>tn', ':tabnew<cr>', { desc = 'New Tab (:tabnew)' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
+-- tabs
+map('n', '<leader>td', ':tabclose<CR>', { desc = ':tabdelete (tabclose)' })
+map('n', '<leader>tc', ':tabclose<CR>', { desc = ':tabdelete (tabclose)' })
+
 -- fold on tab
 -- BUG: ghostty doesn't know the difference between <TAB> and <C-i>
 -- map('n', '<c-i>', '<c-i>', { desc = 'toggle fold' })
