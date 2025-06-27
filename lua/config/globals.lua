@@ -4,7 +4,7 @@ C = {
   opt = require 'config.global.options', --- Global options
   ui = require 'config.ui.ui', --- UI config
 
-  lsp = require 'lib.utils.lsp', --- LSP util functions NOTE: I'm not using this anywhere, why did I add it?
+  lsp = require 'lua.lib.utils.lsp_utils', --- LSP util functions NOTE: I'm not using this anywhere, why did I add it?
   cwd = require 'lib.utils.cwd', --- CWD util functions
   utils = require 'config.global.utils', -- Misc util functions
   url = require 'config.global.urls', -- Useful URLS
