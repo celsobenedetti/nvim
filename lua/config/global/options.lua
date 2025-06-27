@@ -11,6 +11,8 @@ local M = {
   winbar = true,
 
   notes_path = os.getenv 'NOTES',
+
+  fold = true,
 }
 
 -- iterate and validate all global variables

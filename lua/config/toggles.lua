@@ -104,6 +104,10 @@ local M = {
       end
     end
   end,
+
+  fold = function()
+    vim.o.foldenable = not vim.o.foldenable
+  end,
 }
 
 map('n', '<leader>uf', M.format, { desc = 'Toggle auto format (global)' })
@@ -112,5 +116,6 @@ map('n', '<leader>ts', M.supermaven, { desc = 'Toggle Supermaven' })
 map('n', '<leader>ud', M.diagnostics, { desc = 'Toggle diagnostics' })
 map('n', '<leader>us', M.option { option = 'spell' }, { desc = 'Toggle Spelling' })
 map('n', '<leader>tC', M.option { option = 'conceallevel', silent = false, values = { 0, conceallevel } }, { desc = 'Toggle conceal' })
+map('n', '<leader>tf', M.fold, { desc = 'Toggle folds' })
 
 return M

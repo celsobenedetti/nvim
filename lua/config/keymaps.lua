@@ -10,10 +10,16 @@ map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 map('n', '<leader>td', ':tabclose<CR>', { desc = ':tabdelete (tabclose)' })
 map('n', '<leader>tc', ':tabclose<CR>', { desc = ':tabdelete (tabclose)' })
 
--- fold on tab
+-- folds
 -- BUG: ghostty doesn't know the difference between <TAB> and <C-i>
 -- map('n', '<c-i>', '<c-i>', { desc = 'toggle fold' })
 -- map('n', '<TAB>', 'za', { desc = 'toggle fold' })
+map('n', '<leader>f+', function()
+  vim.o.foldlevel = vim.o.foldlevel - 1
+end, { desc = 'increase fold level' })
+map('n', '<leader>f-', function()
+  vim.o.foldlevel = vim.o.foldlevel + 1
+end, { desc = 'decrease fold level' })
 
 map('n', '[g', ':Gitsigns prev_hunk<CR>', { desc = 'Prev git diff hunk' })
 map('n', ']g', ':Gitsigns next_hunk<CR>', { desc = 'Next git diff hunk' })
