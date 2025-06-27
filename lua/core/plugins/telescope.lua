@@ -194,7 +194,7 @@ return {
     end,
     keys = {
       {
-        '<leader>sG',
+        '<leader>rG',
         function()
           require('telescope').extensions.live_grep_args.live_grep_args()
         end,
@@ -211,7 +211,7 @@ return {
       {
         '<leader>tl',
         ':Telescope luasnip<CR>',
-        desc = 'Telescope grep with args',
+        desc = 'Telescope luasnip',
       },
     },
   },

@@ -28,8 +28,9 @@ return {
     ['@module'] = { C.ui.colors.blue, style = { 'nocombine' } },
     -- ['@variable.member'] = { C.ui.colors.snow, style = { 'nocombine' } },
 
-    ['@variable.builtin.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
     ['@function.builtin.go'] = { C.ui.colors.white, style = { 'nocombine' } },
+    ['@variable.builtin.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
+    ['@keyword.import.typescript'] = { C.ui.colors.blue, style = { 'nocombine' } },
 
     ['@lsp.mod.readonly.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
     ['@attribute.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },

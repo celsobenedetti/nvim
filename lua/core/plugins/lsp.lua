@@ -201,7 +201,7 @@ return {
       vim.diagnostic.config {
         virtual_text = {
           prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
-          current_line = true,
+          -- current_line = false,
           source = true,
         },
         ---@diagnostic disable-next-line: assign-type-mismatch
