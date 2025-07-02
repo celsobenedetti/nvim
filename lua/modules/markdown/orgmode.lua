@@ -41,7 +41,7 @@ return {
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
         org_agenda_custom_commands = {
-          T = {
+          t = {
             description = 'today',
             types = { { type = 'agenda', org_agenda_span = 'day' } },
           },

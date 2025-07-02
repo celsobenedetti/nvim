@@ -9,12 +9,13 @@ return {
     -- lazy = true,
     ft = { 'markdown', 'org' },
     keys = {
-      { '<leader>zk', ':ObsidianSearch<CR>' },
-      { '<leader>oO', ':ObsidianOpen<CR>' },
-      { '<leader>ob', ':ObsidianBacklinks<CR>' },
-      { '<leader>ol', ':ObsidianLinks<CR>' },
+      { '<leader>zk', ':Obsidian search<CR>' },
+      { '<leader>oO', ':Obsidian open<CR>' },
+      { '<leader>ob', ':Obsidian backlinks<CR>' },
+      { '<leader>ol', ':Obsidian links<CR>' },
       -- { '<leader>ot', ':ObsidianTags<CR>' },
-      { '<leader>ch', ':ObsidianToggleCheckbox<CR>' },
+      { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
+      { '<leader>zz', ':Obsidian quick_switch<CR>' },
     },
     cond = function()
       if C.cwd.is_llm_chats() then

@@ -1,3 +1,8 @@
+-- NOTE: 2025-07-02
+-- today I have green as the main accent color
+-- someday I may change it to purple
+-- ---
+--
 -- Helper function to convert hex to RGB
 local function hex_to_rgb(hex_color)
   hex_color = hex_color:gsub('#', '') -- Remove '#' if present
@@ -73,7 +78,7 @@ return {
 
     ['@function'] = { C.ui.colors.lime, style = { 'bold' } },
     ['@lsp.typemod.function.declaration.javascript'] = { C.ui.colors.lime, style = { 'bold' } },
-    ['@constant'] = { C.ui.colors.pink, style = { 'nocombine' } },
+    ['@constant'] = { C.ui.colors.pink, style = { 'bold' } },
     ['@lsp.mod.readonly.javascript'] = { C.ui.colors.white, style = { 'nocombine' } },
 
     ['@module'] = { C.ui.colors.blue, style = { 'nocombine' } },
@@ -114,7 +119,8 @@ return {
     ['@org.plan.org'] = { fg = C.ui.colors.gray },
     ['@org.headline.level1.org'] = { fg = C.ui.colors.white, style = { 'bold' } },
     ['@org.headline.level2.org'] = { fg = C.ui.colors.subtext, style = { 'bold' } },
-    ['@org.headline.level4.org'] = { fg = C.ui.colors.aqua, style = { 'bold' } },
+    ['@org.headline.level3.org'] = { fg = C.ui.colors.white, style = { 'nocombine' } },
+    ['@org.headline.level4.org'] = { fg = C.ui.colors.white, style = { 'nocombine' } },
     ['@org.timestamp.active.org'] = { fg = C.ui.colors.light_red },
     ['@org.agenda.day'] = { fg = C.ui.colors.light_red },
     ['@org.keyword.active.org'] = { fg = C.ui.colors.light_red },
@@ -123,6 +129,7 @@ return {
     ['@org.hyperlink.org'] = { fg = C.ui.colors.blue, style = { 'underline' } },
     ['@org.hyperlink.url.org'] = { style = { 'italic' } },
     ['@org.hyperlink.desc.org'] = { fg = C.ui.colors.blue, style = { 'italic' } },
+    ['@org.priority.highest.org'] = { fg = C.ui.colors.orange, style = { 'italic' } },
 
     DiagnosticUnderlineError = { fg = C.ui.colors.lightgray, style = { 'nocombine' } },
   },

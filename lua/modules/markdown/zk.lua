@@ -6,7 +6,7 @@ return {
     keys = {
       { '<leader>n', ':ZkNewFromTitleSelection<CR>', mode = 'v' },
       { '<leader>zn', ':ZkNewFromTitleSelection<CR>', mode = 'v' },
-      { '<leader>zz', ':ZkNotes<CR>' },
+      -- { '<leader>zz', ':ZkNotes<CR>' },
       { '<leader>zb', ':ZkBacklinks<CR>' },
       { '<leader>zt', ':ZkTags<CR>' },
       { '<leader>zm', ':ZkMatch<CR>', mode = 'v' },
