@@ -1,4 +1,7 @@
+local string_utils = require 'lib.utils.string'
+
 return {
+
   {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
@@ -62,6 +65,11 @@ return {
           end
         end
         return frontmatter
+      end
+
+      opts.note_path_func = function(spec)
+        local path = spec.dir / string_utils.slugify(spec.title)
+        return path:with_suffix '.md'
       end
     end,
     dependencies = {
