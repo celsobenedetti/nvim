@@ -1,4 +1,50 @@
+-- Helper function to convert hex to RGB
+local function hex_to_rgb(hex_color)
+  hex_color = hex_color:gsub('#', '') -- Remove '#' if present
+  local r = tonumber(hex_color:sub(1, 2), 16)
+  local g = tonumber(hex_color:sub(3, 4), 16)
+  local b = tonumber(hex_color:sub(5, 6), 16)
+  return r, g, b
+end
+
+-- Helper function to convert RGB to hex
+local function rgb_to_hex(r, g, b)
+  return string.format('#%02X%02X%02X', r, g, b)
+end
+
+-- lighten a hex color by a given amount
+local function lighten(hex_color, amount)
+  -- Convert hex color to RGB
+  local r, g, b = hex_to_rgb(hex_color)
+
+  -- Lighten each color channel
+  r = math.min(255, r + amount)
+  g = math.min(255, g + amount)
+  b = math.min(255, b + amount)
+
+  -- Convert back to hex
+  return rgb_to_hex(r, g, b)
+end
+
+local function darken(hex_color, amount)
+  -- Convert hex color to RGB
+  local r, g, b = hex_to_rgb(hex_color)
+
+  -- 256 is 100%
+  -- amount is the percentage of 256 to decrease by, so if 10% decrease, amount = 0.1
+  amount = math.floor(amount * 256)
+
+  -- Darken each color channel
+  r = math.max(0, r - amount)
+  g = math.max(0, g - amount)
+  b = math.max(0, b - amount)
+
+  -- Convert back to hex
+  return rgb_to_hex(r, g, b)
+end
+
 local config = {
+  -- TODO: use vim.extend_table to extend these configs
 
   highlights = {
     keyword = { fg = C.ui.colors.red, style = { 'nocombine' } },
@@ -11,6 +57,8 @@ return {
     variant = 'winter', -- 'winter'|'fall'|'spring'|'summer'
     accent = 'green',
   },
+
+  --  example for API: vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
   overrides = {
     Folded = {
       C.ui.colors.gray,
@@ -24,7 +72,10 @@ return {
     ['@keyword.operator'] = config.highlights.keyword,
 
     ['@function'] = { C.ui.colors.lime, style = { 'bold' } },
-    ['@constant'] = { C.ui.colors.white, style = { 'bold' } },
+    ['@lsp.typemod.function.declaration.javascript'] = { C.ui.colors.lime, style = { 'bold' } },
+    ['@constant'] = { C.ui.colors.pink, style = { 'nocombine' } },
+    ['@lsp.mod.readonly.javascript'] = { C.ui.colors.white, style = { 'nocombine' } },
+
     ['@module'] = { C.ui.colors.blue, style = { 'nocombine' } },
     -- ['@variable.member'] = { C.ui.colors.snow, style = { 'nocombine' } },
 
@@ -40,18 +91,40 @@ return {
 
     ['@markup.raw'] = { fg = '#AFDFE6' }, -- inline `code` in markdown
 
-    SpellBad = { fg = C.ui.colors.light_red, style = { 'undercurl', 'italic' } }, -- spelling mistakes
+    ['@markup.link.label.markdown_inline'] = { fg = C.ui.colors.blue }, -- inline `code` in markdown
+    MarkviewPalette7Fg = { fg = C.ui.colors.blue, style = { 'underline' } }, -- markview inline hint
+    SpellBad = { style = { 'italic' } }, -- spelling mistakes
     SpellCap = { style = {} }, -- style when a word should start with a capital letter
 
     LineNrAbove = { fg = C.ui.colors.gray },
     LineNrBelow = { fg = C.ui.colors.gray },
     AvanteInlineHint = { fg = C.ui.colors.lightgray },
-    MarkviewPalette7Fg = { fg = C.ui.colors.aqua, style = { 'underline' } }, -- markview inline hint
-    MarkviewHeading1 = { fg = C.ui.colors.red, style = { 'bold' } }, -- markview heading 1
+    MarkviewHeading1 = { fg = C.ui.colors.white, bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
+    ['@markup.heading.1.markdown'] = { fg = C.ui.colors.white, bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
+    MarkviewHeading2 = { fg = lighten(C.ui.colors.subtext, 0.1), bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
+    ['@markup.heading.2.markdown'] = { fg = lighten(C.ui.colors.subtext, 0.1), bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
+    MarkviewHeading3 = { fg = C.ui.colors.lightgray, bg = darken(C.ui.colors.gray, 0.4), style = { 'bold' } },
+    ['@markup.heading.3.markdown'] = { fg = C.ui.colors.lightgray, bg = darken(C.ui.colors.gray, 0.4), style = { 'bold' } },
     DiffAdd = { fg = C.ui.colors.green, bg = C.ui.colors.comment }, -- markview heading 1
-    -- DiagnosticUnderlineError this one is a little aggressive. I may change it in the future
+    DiffChange = { fg = C.ui.colors.green, bg = C.ui.colors.gray }, -- markview heading 1
     Underlined = { style = { 'underline', 'italic' } },
     LspReferenceRead = { bg = C.ui.colors.gray },
+
+    -- orgmode
+    ['@org.plan.org'] = { fg = C.ui.colors.gray },
+    ['@org.headline.level1.org'] = { fg = C.ui.colors.white, style = { 'bold' } },
+    ['@org.headline.level2.org'] = { fg = C.ui.colors.subtext, style = { 'bold' } },
+    ['@org.headline.level4.org'] = { fg = C.ui.colors.aqua, style = { 'bold' } },
+    ['@org.timestamp.active.org'] = { fg = C.ui.colors.light_red },
+    ['@org.agenda.day'] = { fg = C.ui.colors.light_red },
+    ['@org.keyword.active.org'] = { fg = C.ui.colors.light_red },
+    ['@org.keyword.todo'] = { fg = C.ui.colors.light_red },
+    ['@org.tag.org'] = { fg = C.ui.colors.purple },
+    ['@org.hyperlink.org'] = { fg = C.ui.colors.blue, style = { 'underline' } },
+    ['@org.hyperlink.url.org'] = { style = { 'italic' } },
+    ['@org.hyperlink.desc.org'] = { fg = C.ui.colors.blue, style = { 'italic' } },
+
+    DiagnosticUnderlineError = { fg = C.ui.colors.lightgray, style = { 'nocombine' } },
   },
   integrations = {
     cmp = true,

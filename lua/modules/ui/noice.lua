@@ -30,6 +30,7 @@ return {
         filter 'Attempt to delete a buffer that is in use', --  showing up when closing capture note in orgmode
         filter 'Error detected while processing User Autocommands for "VeryLazy":', -- showing up on notebook
         filter "bad argument #1 to 'pairs'", -- some cmp bug 2025-05-19
+        filter "[orgmode] No headline found with title'", -- annoying for my obsidian + orgmode setup
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd

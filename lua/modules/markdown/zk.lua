@@ -1,6 +1,7 @@
 return {
   {
-    'celsobenedetti/zk-nvim',
+    -- 'celsobenedetti/zk-nvim',
+    'zk-org/zk-nvim',
     ft = 'markdown',
     keys = {
       { '<leader>n', ':ZkNewFromTitleSelection<CR>', mode = 'v' },

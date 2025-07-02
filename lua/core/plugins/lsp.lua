@@ -178,7 +178,7 @@ return {
       --  Add any additional override configuration in the following tables. Available keys are:
       --  - cmd (table): Override the default command used to start the server
       --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
+      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.inline
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       -- require('mason').setup()
@@ -199,11 +199,11 @@ return {
       local servers = getServerConfigs()
 
       vim.diagnostic.config {
-        virtual_text = {
-          prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
-          -- current_line = false,
-          source = true,
-        },
+        -- virtual_text = {
+        --   -- prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
+        --   current_line = false,
+        -- },
+        virtual_text = false,
         ---@diagnostic disable-next-line: assign-type-mismatch
         float = { border = 'rounded', source = true },
       }

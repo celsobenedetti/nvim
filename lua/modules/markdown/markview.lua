@@ -123,6 +123,14 @@ return {
               hl = 'MarkviewPalette2Fg',
             },
           },
+
+          internal_links = {
+            enable = true,
+            default = {
+              icon = '󰂺 ',
+              hl = 'MarkviewPalette7Fg',
+            },
+          },
         },
       }
     end,

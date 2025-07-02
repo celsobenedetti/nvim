@@ -6,6 +6,9 @@ map('n', '<leader>tn', ':tabnew<cr>', { desc = 'New Tab (:tabnew)' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>on', ':only<CR>', { desc = "':only' alias" })
 
+-- map jk to escape
+map('i', 'jk', '<ESC>')
+
 -- tabs
 map('n', '<leader>td', ':tabclose<CR>', { desc = ':tabdelete (tabclose)' })
 map('n', '<leader>tc', ':tabclose<CR>', { desc = ':tabdelete (tabclose)' })
