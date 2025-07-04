@@ -66,8 +66,8 @@ return {
   --  example for API: vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
   overrides = {
     Folded = {
-      C.ui.colors.gray,
-      C.ui.colors.black,
+      C.ui.colors.lightgray,
+      darken(C.ui.colors.winter.base, 0.015),
       -- style = { 'italic' },
     },
 
@@ -78,7 +78,7 @@ return {
 
     ['@function'] = { C.ui.colors.lime, style = { 'bold' } },
     ['@lsp.typemod.function.declaration.javascript'] = { C.ui.colors.lime, style = { 'bold' } },
-    ['@constant'] = { C.ui.colors.pink, style = { 'bold' } },
+    ['@constant'] = { C.ui.colors.pink, style = { 'nocombine' } },
     ['@lsp.mod.readonly.javascript'] = { C.ui.colors.white, style = { 'nocombine' } },
 
     ['@module'] = { C.ui.colors.blue, style = { 'nocombine' } },
@@ -90,6 +90,7 @@ return {
 
     ['@lsp.mod.readonly.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
     ['@attribute.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
+    -- ['@variable.parameter.typescript'] = { C.ui.colors.white, style = { 'bold' } },
 
     Type = config.highlights.type,
     ['@type'] = config.highlights.type,
@@ -130,6 +131,11 @@ return {
     ['@org.hyperlink.url.org'] = { style = { 'italic' } },
     ['@org.hyperlink.desc.org'] = { fg = C.ui.colors.blue, style = { 'italic' } },
     ['@org.priority.highest.org'] = { fg = C.ui.colors.orange, style = { 'italic' } },
+
+    -- lua
+    -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = C.ui.colors.blue, style = { 'nocombine' } },
+    -- ['@lsp.typemod.function.defaultLibrary.lua'] = { fg = C.ui.colors.blue, style = { 'nocombine' } },
+    -- ['@function.builtin.lua'] = { fg = C.ui.colors.blue, style = { 'nocombine' } },
 
     DiagnosticUnderlineError = { fg = C.ui.colors.lightgray, style = { 'nocombine' } },
   },

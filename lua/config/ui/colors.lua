@@ -22,9 +22,11 @@ return {
   evergarden = {
     black = '#171C1F',
     white = '#F8F9E8',
-    red = '#F57F82',
+    -- red = '#F57F82',
+    red = '#E67E81',
+    -- green = '#CAE0A7',
+    green = '#AFC991',
     light_red = '#ffbcb5',
-    green = '#CAE0A7',
     blue = '#B2CFED',
     yellow = '#F5D098',
     gray = '#58686D',
@@ -42,5 +44,26 @@ return {
     pink = '#F3C0E5',
     cherry = '#F6CEE5',
     orange = '#F7A182',
+
+    winter = {
+      surface0 = '#2D393D',
+      base = '#1D2428',
+      mantle = '#191E21',
+    },
+
+    fall = {
+      text = '#F8F9E8',
+      subtext1 = '#ADC9BC',
+      subtext0 = '#96B4AA',
+      overlay2 = '#839E9A',
+      overlay1 = '#6F8788',
+      overlay0 = '#58686D',
+      surface2 = '#4A585C',
+      surface1 = '#3D494D',
+      surface0 = '#313B40',
+      base = '#232A2E',
+      mantle = '#1C2225',
+      crust = '#171C1F',
+    },
   },
 }

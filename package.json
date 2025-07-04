@@ -29,6 +29,13 @@
           "markdown"
         ],
         "path": "./snippets/markdown.json"
+      },
+      {
+        "language": [
+          "org",
+          "orgmode"
+        ],
+        "path": "./snippets/org.json"
       }
     ]
   }
