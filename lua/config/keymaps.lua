@@ -102,3 +102,8 @@ map('v', '<leader>P', function()
     vim.api.nvim_feedkeys(Keys '!prettier --parser=html<CR>', 'n', true)
   end
 end, { desc = 'Format current selection with Prettier' })
+
+map('n', '<leader>rm', function()
+  vim.api.nvim_feedkeys(Keys ':!rm %<CR>', 'n', true)
+  vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
+end, { desc = 'rm buffer file' })

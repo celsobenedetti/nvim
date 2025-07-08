@@ -111,7 +111,7 @@ return {
               vim.diagnostic.jump {
                 severity = severity,
                 count = next and 1 or -1,
-                float = false,
+                float = true,
               }
             end
           end

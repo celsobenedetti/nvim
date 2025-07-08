@@ -99,7 +99,7 @@ return {
 
     ['@markup.link.label.markdown_inline'] = { fg = C.ui.colors.blue }, -- inline `code` in markdown
     MarkviewPalette7Fg = { fg = C.ui.colors.blue, style = { 'underline' } }, -- markview inline hint
-    SpellBad = { style = { 'italic' } }, -- spelling mistakes
+    SpellBad = { style = { 'italic', 'underdotted' } }, -- spelling mistakes
     SpellCap = { style = {} }, -- style when a word should start with a capital letter
 
     LineNrAbove = { fg = C.ui.colors.gray },
