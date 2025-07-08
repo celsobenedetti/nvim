@@ -8,4 +8,5 @@ C = {
   cwd = require 'lib.utils.cwd', --- CWD util functions
   utils = require 'config.global.utils', -- Misc util functions
   url = require 'config.global.urls', -- Useful URLS
+  notes = require 'config.pkms', -- NOTES config
 }

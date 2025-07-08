@@ -1,21 +1,19 @@
-local notes = require 'config.pkms'
-
 local refile_file = '~/notes/0-inbox/refile.org'
 local org_files = {
   refile_file,
-  notes.ORGFILES .. '/*',
-  notes.INBOX .. '/phone_refile.org',
-  notes.PROJECTS .. '**/*',
-  notes.AREAS .. '**/*',
+  C.notes.ORGFILES .. '/*',
+  C.notes.INBOX .. '/phone_refile.org',
+  C.notes.PROJECTS .. '**/*',
+  C.notes.AREAS .. '**/*',
 }
 
 local function e(file)
   return ':e ' .. file .. '<cr>'
 end
 
-map('n', '<leader>i', e(notes.ORG_INDEX), { desc = 'Orgmode index' })
-map('n', '<leader>ow', e(notes.ORG_WORK), { desc = 'Orgmode work file' })
-map('n', '<leader>or', e(notes.ORG_REFILE), { desc = 'Orgmode refile file' })
+map('n', '<leader>i', e(C.notes.ORG_INDEX), { desc = 'Orgmode index' })
+map('n', '<leader>ow', e(C.notes.ORG_WORK), { desc = 'Orgmode work file' })
+map('n', '<leader>or', e(C.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 
 return {
   {
