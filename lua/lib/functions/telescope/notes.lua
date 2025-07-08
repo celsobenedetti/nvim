@@ -1,6 +1,7 @@
 local M = {}
 
 local builtin = require 'telescope.builtin'
+local pkms_config = require 'config.pkms'
 
 --- Search through ~/.dotfiles files
 M.run = function()
@@ -11,9 +12,9 @@ M.run = function()
     -- },
     -- sorting_strategy = 'ascending',
     search_dirs = {
-      '/home/celso/notes',
+      pkms_config.NOTES,
     },
-    cwd = '/home/celso/notes',
+    cwd = pkms_config.NOTES,
     hidden = true,
     -- find_command = {
     --   'fd',

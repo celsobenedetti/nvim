@@ -16,6 +16,8 @@ return {
       -- { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
       { '<leader>zz', ':Obsidian quick_switch<CR>' },
+      { '<leader>oR', ':Obsidian rename<CR>' },
+      { '<leader>n', ':Obsidian link_new<CR>', mode = 'v' },
     },
     cond = function()
       if C.cwd.is_llm_chats() then
@@ -34,7 +36,7 @@ return {
           name = 'notes',
           path = '~/notes',
           overrides = {
-            notes_subdir = 'inbox',
+            notes_subdir = '0-inbox',
           },
         },
       }

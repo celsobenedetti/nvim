@@ -1,30 +1,21 @@
---- colors & highlight gruops
--- vim.api.nvim_create_autocmd('ColorScheme', {
---   pattern = '*',
---   callback = function()
---     vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
---     vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#90e8a1' })
---     vim.api.nvim_set_hl(0, '@org.agenda.deadline', { fg = '#f7a49c' })
---     vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#d7dae1' })
---     -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = '#90e8a1' })
---     vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = '#e0ca90' })
---   end,
--- })
+local notes = require 'config.pkms'
 
-local refile_file = '~/notes/inbox/refile.org'
+local refile_file = '~/notes/0-inbox/refile.org'
 local org_files = {
   refile_file,
-  '~/notes/orgfiles/*',
-  '~/notes/inbox/phone_refile.org',
-  '~/notes/projects/**/*',
-  '~/notes/areas/**/*',
+  notes.ORGFILES .. '/*',
+  notes.INBOX .. '/phone_refile.org',
+  notes.PROJECTS .. '**/*',
+  notes.AREAS .. '**/*',
 }
 
-map('n', '<leader>i', ':e ~/notes/orgfiles/i.org<cr>', { desc = 'Orgmode index' })
-map('n', '<leader>ow', ':e ~/notes/orgfiles/week.org<cr>', { desc = 'Orgmode week file' })
-map('n', '<leader>ot', ':Org agenda T<cr>', { desc = 'Orgmode agenda today' })
-map('n', '<leader>oW', ':e ~/notes/orgfiles/work.org<cr>', { desc = 'Orgmode work file' })
-map('n', '<leader>or', ':e ~/notes/inbox/refile.org<cr>', { desc = 'Orgmode refile file' })
+local function e(file)
+  return ':e ' .. file .. '<cr>'
+end
+
+map('n', '<leader>i', e(notes.ORG_INDEX), { desc = 'Orgmode index' })
+map('n', '<leader>ow', e(notes.ORG_WORK), { desc = 'Orgmode work file' })
+map('n', '<leader>or', e(notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 
 return {
   {
@@ -61,8 +52,8 @@ return {
           w = {
             description = 'Work task',
             template = '* TODO %? :work:\n  %U',
-            target = '~/notes/orgfiles/work.org',
-            headline = 'work backlog',
+            target = '~/notes/2-areas/work/work.org',
+            headline = 'work',
           },
           l = {
             description = 'Life task',
