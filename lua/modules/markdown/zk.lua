@@ -2,6 +2,9 @@ return {
   {
     -- 'celsobenedetti/zk-nvim',
     'zk-org/zk-nvim',
+    -- WIP: update 2025-07-07 ditching this for obsidian
+    -- UPDATE 2025-07-07: I do miss the ability to create
+    enabled = false,
     ft = 'markdown',
     keys = {
       { '<leader>n', ':ZkNewFromTitleSelection<CR>', mode = 'v' },

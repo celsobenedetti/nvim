@@ -43,7 +43,7 @@ return {
         -- 'vtsls', -- VSCode TS language server
         'yaml-language-server', -- Language Server for YAML Files.
         'yq', -- yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor.
-        'zk', -- zk plain text note-taking assitant - Markdown
+        -- 'zk', -- zk plain text note-taking assitant - Markdown
       }
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
     end,
