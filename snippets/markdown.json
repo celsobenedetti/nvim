@@ -1,7 +1,7 @@
 {
-  "code block": {
-    "description": "code block",
+  "Insert code block": {
     "prefix": "cb",
-    "body": ["#+BEGIN_${1:LANG} ${2:options}", "$0", "#+END_$1"]
+    "body": ["```${1:language}", "$0", "```"],
+    "description": "Insert fenced code block"
   }
 }
