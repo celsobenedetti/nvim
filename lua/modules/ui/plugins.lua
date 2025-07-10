@@ -9,17 +9,6 @@ return {
     },
     lazy = C.opt.performance,
   },
-  {
-    'folke/twilight.nvim',
-    lazy = true,
-    config = function()
-      require('twilight').setup {
-        -- context = 20, -- amount of lines we will try to show around the current line
-      }
-    end,
-    ft = { 'markdown' },
-    keys = { { '<leader>tw', ':Twilight<CR>' } },
-  },
 
   {
     -- HEX/RGB Colorizer plugin
