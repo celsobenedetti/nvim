@@ -23,7 +23,7 @@ return {
           javascriptreact = { js_formatter },
           json = { js_formatter },
           lua = { 'stylua' },
-          -- markdown = { 'markdownlint-cli2' },
+          markdown = { 'mfmt' },
           python = { 'isort', 'black' },
           sh = { 'shfmt' },
           sql = { 'sqlfluff' },
@@ -36,6 +36,9 @@ return {
         formatters = {
           goimports = {
             prepend_args = { '-local', 'github.com/celsobenedetti/' },
+          },
+          mfmt = {
+            command = 'mfmt',
           },
         },
       }
