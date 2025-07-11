@@ -11,6 +11,7 @@ local M = {
   winbar = true,
 
   notes_path = os.getenv 'NOTES',
+  gpt_chats_path = os.getenv 'GPT_CHATS',
 
   fold = true,
 }
@@ -24,5 +25,6 @@ for key, value in pairs(M) do
 end
 
 M.notes_path = M.notes_path or ''
+M.gpt_chats_path = M.gpt_chats_path or M.notes_path .. '/.local/chats'
 
 return M
