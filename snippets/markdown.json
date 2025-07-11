@@ -8,5 +8,15 @@
     "description": "underline",
     "prefix": "u",
     "body": ["<u>$0</u>"]
+  },
+  "quote quote block": {
+    "description": "quote quote block",
+    "prefix": "q",
+    "body": ["> [!QUOTE]", "> $0"]
+  },
+  " quote block": {
+    "description": "quote block",
+    "prefix": "qb",
+    "body": ["> [!$1]", "> $2"]
   }
 }
