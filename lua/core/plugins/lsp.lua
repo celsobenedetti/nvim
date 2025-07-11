@@ -106,6 +106,8 @@ return {
 
           -- diagnostic
           local diagnostic_goto = function(next, severity)
+            -- set mark to jump list before moving to next/prev diagnostic
+            vim.api.nvim_feedkeys("m'", 'n', true)
             severity = severity and vim.diagnostic.severity[severity] or nil
             return function()
               vim.diagnostic.jump {
