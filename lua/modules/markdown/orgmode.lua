@@ -34,6 +34,10 @@ return {
             description = 'today',
             types = { { type = 'agenda', org_agenda_span = 'day' } },
           },
+          w = {
+            description = 'Work tasks',
+            types = { { type = 'tags_todo', match = 'work' } },
+          },
         },
         org_blank_before_new_entry = { heading = true, plain_list_item = false },
 

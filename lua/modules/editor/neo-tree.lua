@@ -57,94 +57,107 @@ return {
       end,
     })
   end,
-  opts = {
-    sources = { 'filesystem', 'buffers', 'git_status' },
-    open_files_do_not_replace_types = { 'terminal', 'Trouble', 'trouble', 'qf', 'Outline' },
-    filesystem = {
-      bind_to_cwd = false,
-      follow_current_file = { enabled = true },
-      use_libuv_file_watcher = true,
-      components = {
-        harpoon_index = function(config, node, _)
-          local harpoon_list = require('harpoon'):list()
-          local path = node:get_id()
-          local harpoon_key = vim.uv.cwd()
-
-          for i, item in ipairs(harpoon_list.items) do
-            local value = item.value
-            if string.sub(item.value, 1, 1) ~= '/' then
-              value = harpoon_key .. '/' .. item.value
-            end
-
-            if value == path then
-              return {
-                text = string.format(' 󰛢 ⥤ %d', i), -- <-- Add your favorite harpoon like arrow here
-                highlight = config.highlight or 'NeoTreeDirectoryIcon',
-              }
-            end
-          end
-          return {}
-        end,
-      },
-      renderers = {
-        file = {
-          { 'icon' },
-          { 'name', use_git_status_colors = true },
-          { 'harpoon_index' }, --> This is what actually adds the Harpoon component in where you want it
-          { 'diagnostics' },
-          { 'git_status', highlight = 'NeoTreeDimText' },
-        },
-      },
-    },
-    window = {
-      mappings = {
-        ['l'] = 'open',
-        ['h'] = 'close_node',
-        ['<space>'] = 'none',
-        ['Y'] = {
-          function(state)
-            local node = state.tree:get_node()
+  config = function(_, _)
+    local opts = {
+      sources = { 'filesystem', 'buffers', 'git_status' },
+      open_files_do_not_replace_types = { 'terminal', 'Trouble', 'trouble', 'qf', 'Outline' },
+      filesystem = {
+        bind_to_cwd = false,
+        follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
+        components = {
+          harpoon_index = function(config, node, _)
+            local harpoon_list = require('harpoon'):list()
             local path = node:get_id()
-            vim.fn.setreg('+', path, 'c')
-          end,
-          desc = 'Copy Path to Clipboard',
-        },
-        ['O'] = {
-          function(state)
-            require('lazy.util').open(state.tree:get_node().path, { system = true })
-          end,
-          desc = 'Open with System Application',
-        },
-        ['P'] = { 'toggle_preview', config = { use_float = false } },
-      },
-    },
-    default_component_configs = {
-      indent = {
-        with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-        expander_collapsed = '',
-        expander_expanded = '',
-        expander_highlight = 'NeoTreeExpander',
-      },
-      git_status = {
-        symbols = {
-          unstaged = '󰄱',
-          staged = '󰱒',
-        },
-      },
-    },
-  },
-  config = function(_, opts)
-    local function on_move(data)
-      Snacks.rename.on_rename_file(data.source, data.destination)
-    end
+            local harpoon_key = vim.uv.cwd()
 
-    local events = require 'neo-tree.events'
-    opts.event_handlers = opts.event_handlers or {}
-    vim.list_extend(opts.event_handlers, {
-      { event = events.FILE_MOVED, handler = on_move },
-      { event = events.FILE_RENAMED, handler = on_move },
-    })
+            for i, item in ipairs(harpoon_list.items) do
+              local value = item.value
+              if string.sub(item.value, 1, 1) ~= '/' then
+                value = harpoon_key .. '/' .. item.value
+              end
+
+              if value == path then
+                return {
+                  text = string.format(' 󰛢 ⥤ %d', i), -- <-- Add your favorite harpoon like arrow here
+                  highlight = config.highlight or 'NeoTreeDirectoryIcon',
+                }
+              end
+            end
+            return {}
+          end,
+        },
+        renderers = {
+          file = {
+            { 'icon' },
+            { 'name', use_git_status_colors = true },
+            { 'harpoon_index' }, --> This is what actually adds the Harpoon component in where you want it
+            { 'diagnostics' },
+            { 'git_status', highlight = 'NeoTreeDimText' },
+          },
+        },
+      },
+      window = {
+        position = 'current',
+        mappings = {
+          ['l'] = 'open',
+          ['h'] = 'close_node',
+          ['<space>'] = 'none',
+          ['Y'] = {
+            function(state)
+              local node = state.tree:get_node()
+              local path = node:get_id()
+              vim.fn.setreg('+', path, 'c')
+            end,
+            desc = 'Copy Path to Clipboard',
+          },
+          ['O'] = {
+            function(state)
+              require('lazy.util').open(state.tree:get_node().path, { system = true })
+            end,
+            desc = 'Open with System Application',
+          },
+          ['P'] = { 'toggle_preview', config = { use_float = false } },
+        },
+      },
+      default_component_configs = {
+        indent = {
+          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+          expander_collapsed = '',
+          expander_expanded = '',
+          expander_highlight = 'NeoTreeExpander',
+        },
+        git_status = {
+          symbols = {
+            unstaged = '󰄱',
+            staged = '󰱒',
+          },
+        },
+      },
+      -- ~/.local/share/nvim/lazy/neo-tree.nvim/lua/neo-tree/events/init.lua
+      event_handlers = {
+        {
+          event = 'neo_tree_buffer_enter',
+          handler = function(_arg)
+            vim.opt.relativenumber = true
+          end,
+        },
+        {
+          event = 'file_moved',
+          handler = function(data)
+            Snacks.rename.on_rename_file(data.source, data.destination)
+          end,
+        },
+        {
+          event = 'file_renamed',
+          handler = function(data)
+            Snacks.rename.on_rename_file(data.source, data.destination)
+          end,
+        },
+      },
+    }
     require('neo-tree').setup(opts)
+
     vim.api.nvim_create_autocmd('TermClose', {
       pattern = '*lazygit',
       callback = function()

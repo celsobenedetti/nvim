@@ -31,6 +31,7 @@ return {
         filter 'Error detected while processing User Autocommands for "VeryLazy":', -- showing up on notebook
         filter "bad argument #1 to 'pairs'", -- some cmp bug 2025-05-19
         filter "[orgmode] No headline found with title'", -- annoying for my obsidian + orgmode setup
+        filter "Can't find file", -- suppress failed "gf" messages
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd
