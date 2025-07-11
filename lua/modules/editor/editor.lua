@@ -55,19 +55,6 @@ return {
     opts = {},
   },
 
-  -- search/replace in multiple files
-  {
-    lazy = true,
-    'nvim-pack/nvim-spectre',
-    build = false,
-    cmd = 'Spectre',
-    opts = { open_cmd = 'noswapfile vnew' },
-    -- stylua: ignore
-    keys = {
-      { "<leader>sed", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
-    },
-  },
-
   -- { -- Useful plugin to show you pending keybinds.
   --   'folke/which-key.nvim',
   --   event = 'VimEnter', -- Sets the loading event to 'VimEnter'
