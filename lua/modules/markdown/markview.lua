@@ -112,6 +112,12 @@ return {
 
         markdown_inline = {
           hyperlinks = {
+
+            ['github'] = {
+              priority = 9999,
+              icon = ' ', -- github
+              hl = 'MarkviewPalette2Fg',
+            },
             ['atlassian.net/wiki'] = {
               priority = 9999,
               icon = ' ', -- confluence
@@ -120,6 +126,32 @@ return {
             ['atlassian.net'] = {
               priority = 9998,
               icon = ' ', -- jira
+              hl = 'MarkviewPalette2Fg',
+            },
+            ['awsapps'] = {
+              priority = 9998,
+              icon = '  ', -- aws
+              hl = 'MarkviewPalette2Fg',
+            },
+            ['docs.google'] = {
+              priority = 9998,
+              icon = ' 󰈙 ', -- google docs
+              hl = 'MarkviewPalette2Fg',
+            },
+            ['drive.google'] = {
+              priority = 9998,
+              icon = '  ', -- google drive
+              hl = 'MarkviewPalette2Fg',
+            },
+            ['figma'] = {
+              priority = 9998,
+              icon = ' ', -- figma
+              hl = 'MarkviewPalette2Fg',
+            },
+
+            ['cloud.mongodb'] = {
+              priority = 9998,
+              icon = ' ', -- mongo
               hl = 'MarkviewPalette2Fg',
             },
           },
