@@ -137,6 +137,7 @@ return {
       -- ~/.local/share/nvim/lazy/neo-tree.nvim/lua/neo-tree/events/init.lua
       event_handlers = {
         {
+          -- https://github.com/nvim-neo-tree/neo-tree.nvim/discussions/843#discussioncomment-7596362
           event = 'neo_tree_buffer_enter',
           handler = function(_arg)
             vim.opt.relativenumber = true

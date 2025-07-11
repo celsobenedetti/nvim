@@ -11,7 +11,7 @@ M.run = function(opts)
 
   pickers
     .new({}, {
-      prompt_title = 'Move file to directory',
+      prompt_title = 'Open directory',
       finder = finders.new_table {
         results = dirs,
       },
@@ -26,10 +26,7 @@ M.run = function(opts)
             return
           end
 
-          local original_buffer = vim.api.nvim_get_current_buf()
-          vim.cmd('silent! !mv % ' .. destination)
-          vim.cmd('e ' .. destination .. '/' .. vim.fn.expand '%:t')
-          vim.api.nvim_buf_delete(original_buffer, { force = true })
+          vim.cmd('Neotree dir=' .. destination)
         end)
         return true
       end,

@@ -178,6 +178,7 @@ return {
       local functions = require 'lib.functions.telescope'
 
       map('n', '<leader>mv', functions.move_file, { desc = 'Move file of current buffer to dir' })
+      map('n', '<leader>cd', functions.open_directory, { desc = 'Open directory' })
       map('n', '<leader>dot', functions.dotfiles, { desc = 'Search Dotfiles' })
       map('n', '<leader>fn', functions.notes, { desc = 'Search Notes' })
       map('n', '<leader>fo', functions.org_files, { desc = 'Search Org files' })
