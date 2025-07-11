@@ -1,8 +1,7 @@
 --- Custom commands
-
 local new_tmux_window = '!tmux neww '
 
-vim.api.nvim_create_user_command('Clip', '!echo % | xclip -sel clip', { desc = 'Yank current file path to clipboard' })
+vim.api.nvim_create_user_command('Clip', '!printf % | xclip -sel clip', { desc = 'Yank current file path to clipboard' })
 vim.api.nvim_create_user_command('Note', new_tmux_window .. 'note.sh', { desc = 'Create new note in new tmux window' })
 
 vim.api.nvim_create_user_command('Is', function(args)
