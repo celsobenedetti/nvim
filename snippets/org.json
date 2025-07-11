@@ -3,5 +3,10 @@
     "description": "code block",
     "prefix": "cb",
     "body": ["#+BEGIN_${1:LANG} ${2:options}", "$0", "#+END_$1"]
+  },
+  "TODO [category]": {
+    "description": "todo [category]",
+    "prefix": "t",
+    "body": ["[$1] $2"]
   }
 }
