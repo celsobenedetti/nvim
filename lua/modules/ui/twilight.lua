@@ -22,7 +22,7 @@ return {
           'table',
           'if_statement',
         },
-        exclude = {}, -- exclude these filetypes
+        exclude = { 'orgagenda' }, -- exclude these filetypes
       }
     end,
     ft = { 'markdown' },

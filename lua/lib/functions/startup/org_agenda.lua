@@ -1,7 +1,7 @@
 vim.defer_fn(function()
   vim.cmd 'Org agenda T'
-end, 50)
+end, 10)
 
 vim.defer_fn(function()
   vim.cmd 'Neotree show'
-end, 100)
+end, 200)

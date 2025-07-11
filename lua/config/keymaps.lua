@@ -17,10 +17,10 @@ map('n', '<leader>tc', ':tabclose<CR>', { desc = ':tabdelete (tabclose)' })
 -- BUG: ghostty doesn't know the difference between <TAB> and <C-i>
 -- map('n', '<c-i>', '<c-i>', { desc = 'toggle fold' })
 -- map('n', '<TAB>', 'za', { desc = 'toggle fold' })
-map('n', '<leader>f+', function()
-  vim.o.foldlevel = vim.o.foldlevel - 1
+map('n', '<leader>z-', function()
+  vim.o.foldlevel = math.max(vim.o.foldlevel - 1, 0)
 end, { desc = 'increase fold level' })
-map('n', '<leader>f-', function()
+map('n', '<leader>z+', function()
   vim.o.foldlevel = vim.o.foldlevel + 1
 end, { desc = 'decrease fold level' })
 
@@ -107,3 +107,5 @@ map('n', '<leader>rm', function()
   vim.api.nvim_feedkeys(Keys ':!rm %<CR>', 'n', true)
   vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
 end, { desc = 'rm buffer file' })
+
+map('n', '<leader>e', vim.diagnostic.open_float, { desc = 'LSP: Line Diagnostics' })

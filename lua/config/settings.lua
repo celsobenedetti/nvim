@@ -40,8 +40,8 @@ vim.opt.cursorline = true -- Show which line your cursor is on
 
 vim.opt.foldmethod = 'indent'
 vim.o.foldcolumn = '1' -- '0' is not bad
-vim.o.foldlevel = 2
-vim.o.foldlevelstart = 2
+vim.o.foldlevel = 3
+vim.o.foldlevelstart = 3
 vim.o.foldenable = C.opt.fold
 vim.opt.fillchars = {
   foldopen = '',

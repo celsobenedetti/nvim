@@ -10,7 +10,7 @@ return {
         'gw',
         mode = { 'n', 'x' },
         function()
-          require('wtf').ai()
+          require('wtf').diagnose()
         end,
         desc = 'Debug diagnostic with GPT',
       },

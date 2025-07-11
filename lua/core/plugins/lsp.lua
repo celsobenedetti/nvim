@@ -109,14 +109,13 @@ return {
             severity = severity and vim.diagnostic.severity[severity] or nil
             return function()
               vim.diagnostic.jump {
-                severity = severity,
+                -- severity = severity,
                 count = next and 1 or -1,
                 float = true,
               }
             end
           end
 
-          lsp_map('n', '<leader>e', vim.diagnostic.open_float, 'Line Diagnostics')
           lsp_map('n', ']d', diagnostic_goto(true), 'Next Diagnostic')
           lsp_map('n', '[d', diagnostic_goto(false), 'Prev Diagnostic')
           lsp_map('n', ']e', diagnostic_goto(true, 'ERROR'), 'Next Error')
@@ -199,10 +198,6 @@ return {
       local servers = getServerConfigs()
 
       vim.diagnostic.config {
-        -- virtual_text = {
-        --   -- prefix = '■ ', -- Could be '●', '▎', 'x', '■', , 
-        --   current_line = false,
-        -- },
         virtual_text = false,
         ---@diagnostic disable-next-line: assign-type-mismatch
         float = { border = 'rounded', source = true },

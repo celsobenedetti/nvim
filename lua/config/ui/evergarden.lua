@@ -75,18 +75,23 @@ return {
     ['@keyword'] = config.highlights.keyword,
     ['@keyword.coroutine'] = config.highlights.keyword,
     ['@keyword.operator'] = config.highlights.keyword,
+    ['@annotation'] = config.highlights.keyword,
 
-    ['@function'] = { C.ui.colors.lime, style = { 'bold' } },
+    ['@comment'] = { fg = C.ui.colors.gray, style = { 'italic' } },
+    ['@operator'] = { fg = C.ui.colors.lightgray, style = { 'bold' } },
+
+    ['@function'] = { C.ui.colors.green, style = { 'bold' } },
     ['@lsp.typemod.function.declaration.javascript'] = { C.ui.colors.lime, style = { 'bold' } },
-    ['@constant'] = { C.ui.colors.pink, style = { 'nocombine' } },
+    ['@constant'] = { C.ui.colors.white, style = { 'nocombine' } },
     ['@lsp.mod.readonly.javascript'] = { C.ui.colors.white, style = { 'nocombine' } },
 
     ['@module'] = { C.ui.colors.blue, style = { 'nocombine' } },
     -- ['@variable.member'] = { C.ui.colors.snow, style = { 'nocombine' } },
 
     ['@function.builtin.go'] = { C.ui.colors.white, style = { 'nocombine' } },
+    ['@type.definition.go'] = { fg = C.ui.colors.yellow, style = { 'nocombine' } },
     ['@variable.builtin.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
-    ['@keyword.import.typescript'] = { C.ui.colors.blue, style = { 'nocombine' } },
+    -- ['@keyword.import.typescript'] = { C.ui.colors.blue, style = { 'nocombine' } },
 
     ['@lsp.mod.readonly.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
     ['@attribute.typescript'] = { C.ui.colors.white, style = { 'nocombine' } },
@@ -107,10 +112,10 @@ return {
     AvanteInlineHint = { fg = C.ui.colors.lightgray },
     MarkviewHeading1 = { fg = C.ui.colors.white, bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
     ['@markup.heading.1.markdown'] = { fg = C.ui.colors.white, bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
-    MarkviewHeading2 = { fg = lighten(C.ui.colors.subtext, 0.1), bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
-    ['@markup.heading.2.markdown'] = { fg = lighten(C.ui.colors.subtext, 0.1), bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
-    MarkviewHeading3 = { fg = C.ui.colors.lightgray, bg = darken(C.ui.colors.gray, 0.4), style = { 'bold' } },
-    ['@markup.heading.3.markdown'] = { fg = C.ui.colors.lightgray, bg = darken(C.ui.colors.gray, 0.4), style = { 'bold' } },
+    -- MarkviewHeading2 = { fg = lighten(C.ui.colors.subtext, 0.1), bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
+    ['@markup.heading.2.markdown'] = { fg = lighten(C.ui.colors.blue, 0.1), bg = darken(C.ui.colors.gray, 0.3), style = { 'bold' } },
+    -- MarkviewHeading3 = { fg = C.ui.colors.lightgray, bg = darken(C.ui.colors.gray, 0.4), style = { 'bold' } },
+    -- ['@markup.heading.3.markdown'] = { fg = C.ui.colors.lightgray, bg = darken(C.ui.colors.gray, 0.4), style = { 'bold' } },
     DiffAdd = { fg = C.ui.colors.green, bg = C.ui.colors.comment }, -- markview heading 1
     DiffChange = { fg = C.ui.colors.green, bg = C.ui.colors.gray }, -- markview heading 1
     Underlined = { style = { 'underline', 'italic' } },
@@ -124,8 +129,10 @@ return {
     ['@org.headline.level4.org'] = { fg = C.ui.colors.white, style = { 'nocombine' } },
     ['@org.timestamp.active.org'] = { fg = C.ui.colors.light_red },
     ['@org.agenda.day'] = { fg = C.ui.colors.light_red },
+    -- ['@org.agenda.scheduled'] = { fg = C.ui.colors.lime },
     ['@org.keyword.active.org'] = { fg = C.ui.colors.light_red },
-    ['@org.keyword.todo'] = { fg = C.ui.colors.light_red },
+    ['@org.keyword.todo'] = { fg = C.ui.colors.red, style = { 'bold' } },
+    ['@org.keyword.done'] = { fg = C.ui.colors.green, style = { 'bold' } },
     ['@org.tag.org'] = { fg = C.ui.colors.purple },
     ['@org.hyperlink.org'] = { fg = C.ui.colors.blue, style = { 'underline' } },
     ['@org.hyperlink.url.org'] = { style = { 'italic' } },
