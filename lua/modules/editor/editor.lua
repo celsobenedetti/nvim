@@ -12,7 +12,6 @@ return {
   { 'wakatime/vim-wakatime' }, -- code time tracking goodness
   { 'tpope/vim-sleuth' }, -- Detect tabstop and shiftwidth automatically
   -- { 'moll/vim-bbye' }, -- Delete buffers without affecting window layout :Bdelete TODO: replace with snacks.bufdelete
-  { 'kylechui/nvim-surround', version = '*', config = true, vscode = true },
 
   {
     'numToStr/Comment.nvim',
