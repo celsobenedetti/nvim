@@ -1,16 +1,21 @@
-local getServerConfigs = function()
-  return {
-    -- deno = {},
-    dockerls = {},
-    gopls = {},
-    graphql = {},
-    pyright = {},
-    tailwindcss = {},
-    terraformls = {},
-    tsserver = {},
-    -- vtsls = {},
+local enabled_servers = {
+  'gopls',
+  'lua_ls',
+  'vtsls',
+  'vue_ls',
+}
 
-    lua_ls = {
+local getConfigs = function()
+  local vue_language_server_path = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
+  local vue_plugin = {
+    name = '@vue/typescript-plugin',
+    location = vue_language_server_path,
+    languages = { 'vue' },
+    configNamespace = 'typescript',
+  }
+
+  local configs = {
+    luals = {
       settings = {
         Lua = {
           runtime = { version = 'LuaJIT' },
@@ -32,6 +37,60 @@ local getServerConfigs = function()
         },
       },
     },
+
+    vue_ls = {
+      on_init = function(client)
+        client.handlers['tsserver/request'] = function(_, result, context)
+          local clients = vim.lsp.get_clients { bufnr = context.bufnr, name = 'vtsls' }
+          if #clients == 0 then
+            vim.notify('Could not find `vtsls` lsp client, `vue_ls` would not work without it.', vim.log.levels.ERROR)
+            return
+          end
+          local ts_client = clients[1]
+
+          local param = unpack(result)
+          local id, command, payload = unpack(param)
+          ts_client:exec_cmd({
+            title = 'vue_request_forward', -- You can give title anything as it's used to represent a command in the UI, `:h Client:exec_cmd`
+            command = 'typescript.tsserverRequest',
+            arguments = {
+              command,
+              payload,
+            },
+          }, { bufnr = context.bufnr }, function(_, r)
+            local response_data = { { id, r.body } }
+            ---@diagnostic disable-next-line: param-type-mismatch
+            client:notify('tsserver/response', response_data)
+          end)
+        end
+      end,
+    },
+
+    vtsls = {
+      settings = {
+        vtsls = {
+          tsserver = {
+            globalPlugins = {
+              vue_plugin,
+            },
+          },
+        },
+      },
+      filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+    },
+  }
+
+  return configs
+end
+
+local getServerConfigs = function()
+  return {
+    -- deno = {},
+    dockerls = {},
+    graphql = {},
+    pyright = {},
+    tailwindcss = {},
+    terraformls = {},
 
     jsonls = {
       on_new_config = function(new_config)
@@ -67,11 +126,9 @@ return {
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for neovim
       'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
+      -- 'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-
       { 'b0o/schemastore.nvim', lazy = true },
-
       { 'j-hui/fidget.nvim', opts = {} }, -- Useful status updates for LSP.
       {
         'ray-x/lsp_signature.nvim',
@@ -190,37 +247,28 @@ return {
       local is_tailwind = C.cwd.is_tailwind()
       -- local is_markdown = vim.bo.filetype == 'markdown' or vim.bo.filetype == 'md'
 
-      local disable = {
-        zk = true,
-        denols = not is_deno,
-        ts_ls = is_deno,
-        tailwindcss = not is_tailwind,
-      }
+      -- local disable = {
+      --   zk = true,
+      --   denols = not is_deno,
+      --   ts_ls = is_deno,
+      --   tailwindcss = not is_tailwind,
+      -- }
 
-      local servers = getServerConfigs()
+      -- local servers = getServerConfigs()
+
+      local configs = getConfigs()
+      -- nvim 0.11 or above
+      vim.lsp.config('vtsls', configs.vtsls)
+      vim.lsp.config('gopls', {})
+      vim.lsp.config('vue_ls', configs.vue_ls)
+      vim.lsp.config('lua_ls', configs.luals)
+      vim.lsp.config('tailwindcss', {})
+      vim.lsp.enable(enabled_servers)
 
       vim.diagnostic.config {
         virtual_text = false,
         ---@diagnostic disable-next-line: assign-type-mismatch
         float = { border = 'rounded', source = true },
-      }
-
-      require('mason-lspconfig').setup {
-        automatic_installation = true,
-        ensure_installed = {}, -- handled in mason.lua
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- certain features of an LSP (for example, turning off formatting for tsserver)
-            -- by the server configuration above. Useful when disabling
-
-            if not disable[server_name] then
-              server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-              require('lspconfig')[server_name].setup(server)
-            end
-          end,
-        },
       }
     end,
   },
