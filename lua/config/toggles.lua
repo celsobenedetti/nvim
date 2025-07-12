@@ -38,7 +38,7 @@ local M = {
   end,
 
   completion = function()
-    local cmp = require 'cmp'
+    local cmp = require 'lua.core.plugins.blink'
     local group = vim.api.nvim_create_augroup('cmp-augroup', { clear = true })
     local toggle_completion = function(is_enabled)
       cmp.setup.buffer { enabled = is_enabled }

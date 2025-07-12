@@ -61,14 +61,14 @@ return {
     end,
   },
 
-  {
-    'uga-rosa/cmp-dictionary',
-    ft = { 'markdown', 'gitcommit' },
-    config = function()
-      require('cmp_dictionary').setup {
-        exact_length = 2,
-        paths = { '~/.dotfiles/english.dict' },
-      }
-    end,
-  },
+  -- {
+  --   'uga-rosa/cmp-dictionary',
+  --   ft = { 'markdown', 'gitcommit' },
+  --   config = function()
+  --     require('cmp_dictionary').setup {
+  --       exact_length = 2,
+  --       paths = { '~/.dotfiles/english.dict' },
+  --     }
+  --   end,
+  -- },
 }

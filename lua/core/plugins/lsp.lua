@@ -79,7 +79,6 @@ local getConfigs = function()
       filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
     },
   }
-
   return configs
 end
 
@@ -130,28 +129,24 @@ return {
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       { 'b0o/schemastore.nvim', lazy = true },
       { 'j-hui/fidget.nvim', opts = {} }, -- Useful status updates for LSP.
-      {
-        'ray-x/lsp_signature.nvim',
-        lazy = C.opt.performance,
-        event = 'VeryLazy',
-        opts = {},
-        config = function(_, opts)
-          opts = vim.tbl_deep_extend('force', opts or {}, {
-            floating_window = false,
-            hint_enable = true,
-            hint_prefix = '',
-          })
-
-          require('lsp_signature').setup(opts)
-        end,
-      },
+      -- {
+      --   'ray-x/lsp_signature.nvim',
+      --   lazy = C.opt.performance,
+      --   event = 'VeryLazy',
+      --   opts = {},
+      --   config = function(_, opts)
+      --     opts = vim.tbl_deep_extend('force', opts or {}, {
+      --       floating_window = false,
+      --       hint_enable = true,
+      --       hint_prefix = '',
+      --     })
+      --
+      --     require('lsp_signature').setup(opts)
+      --   end,
+      -- },
     },
 
     config = function()
-      --  This function gets run when an LSP attaches to a particular buffer.
-      --    That is to say, every time a new file is opened that is associated with
-      --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
-      --    function will be executed to configure the current buffer
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
@@ -199,9 +194,9 @@ return {
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           -- not needed, default nvim keymap is <C-s>
-          -- lsp_map('i', '<C-i>', function() -- <Tab> keymapping
-          --   vim.lsp.buf.signature_help()
-          -- end, 'show signature help')
+          lsp_map('i', '<C-i>', function() -- <Tab> keymapping
+            vim.lsp.buf.signature_help()
+          end, 'show signature help')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
@@ -222,39 +217,11 @@ return {
           end
         end,
       })
-
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP Specification.
-      --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-
-      -- Enable the following language servers
-      --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-      --
-      --  Add any additional override configuration in the following tables. Available keys are:
-      --  - cmd (table): Override the default command used to start the server
-      --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.inline
-      --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      -- require('mason').setup()
-
       --- these servers should be ignored by mason-lspconfig
       local is_next = C.cwd.is_next()
       local is_deno = not is_next and C.cwd.is_deno()
       local is_tailwind = C.cwd.is_tailwind()
       -- local is_markdown = vim.bo.filetype == 'markdown' or vim.bo.filetype == 'md'
-
-      -- local disable = {
-      --   zk = true,
-      --   denols = not is_deno,
-      --   ts_ls = is_deno,
-      --   tailwindcss = not is_tailwind,
-      -- }
-
-      -- local servers = getServerConfigs()
 
       local configs = getConfigs()
       -- nvim 0.11 or above

@@ -1,4 +1,5 @@
 return {
+  { 'echasnovski/mini.icons', version = false },
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()

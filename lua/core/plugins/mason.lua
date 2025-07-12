@@ -41,7 +41,8 @@ return {
         'trivy', -- Find vulnerabilities, misconfigurations, secrets, SBOM in containers, Kubernetes, code repositories, clouds and more.
         'typescript-language-server', -- TS language server
         -- 'vale_ls', -- Markdown linter with LSP providers
-        -- 'vtsls', -- VSCode TS language server
+        'vtsls', -- VSCode TS language server
+        'vue-language-server', -- Explore high-performance tooling for Vue.
         'yaml-language-server', -- Language Server for YAML Files.
         'yq', -- yq is a portable command-line YAML, JSON, XML, CSV, TOML and properties processor.
         -- 'zk', -- zk plain text note-taking assitant - Markdown
