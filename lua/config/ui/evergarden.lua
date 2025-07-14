@@ -1,6 +1,7 @@
 -- NOTE: 2025-07-02
 -- today I have green as the main accent color
 -- someday I may change it to purple
+
 -- ---
 --
 -- Helper function to convert hex to RGB
@@ -66,8 +67,8 @@ return {
   --  example for API: vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
   overrides = {
     Folded = {
-      C.ui.colors.lightgray,
-      darken(C.ui.colors.winter.base, 0.015),
+      fg = C.ui.colors.lightgray,
+      bg = darken(C.ui.colors.winter.base, 0.05),
       -- style = { 'italic' },
     },
 
@@ -139,6 +140,7 @@ return {
     ['@org.hyperlink.desc.org'] = { fg = C.ui.colors.blue, style = { 'italic' } },
     ['@org.priority.highest.org'] = { fg = C.ui.colors.orange, style = { 'italic' } },
 
+    FlashLabel = { bg = C.ui.colors.green, fg = C.ui.colors.black },
     -- lua
     -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = C.ui.colors.blue, style = { 'nocombine' } },
     -- ['@lsp.typemod.function.defaultLibrary.lua'] = { fg = C.ui.colors.blue, style = { 'nocombine' } },

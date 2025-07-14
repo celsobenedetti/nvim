@@ -168,10 +168,7 @@ return {
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
-          -- not needed, default nvim keymap is <C-s>
-          -- lsp_map('i', '<C-i>', function() -- <Tab> keymapping
-          --   vim.lsp.buf.signature_help()
-          -- end, 'show signature help')
+          -- default nvim keymap <C-s>: vim.lsp.buf.signature_help()
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.

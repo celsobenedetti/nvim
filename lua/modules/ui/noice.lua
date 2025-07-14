@@ -88,9 +88,6 @@ return {
     },
     -- stylua: ignore
     keys = {
-      -- noh is setup in snacks.lua
-      { "<leader>noH", function() require("noice").cmd("history") end, desc = "Noice History" },
-      { "<leader>nof", function() require("noice").cmd("pick") end, desc = "Noice Picker (Telescope/FzfLua)" },
       { "<leader>cl", function() require("noice").cmd("dismiss") end, desc = "Noice: [cl]ear all notiffications (dismiss)" },
       { "S-Enter>", function() require("noice").redirect(vim.fn.getcmdline()) end, mode = "c", desc = "Redirect Cmdline" },
     },

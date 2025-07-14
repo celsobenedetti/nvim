@@ -112,7 +112,11 @@ return {
 
         markdown_inline = {
           hyperlinks = {
-
+            ['youtube'] = {
+              priority = 9999,
+              icon = ' ', -- youtube
+              hl = 'MarkviewPalette2Fg',
+            },
             ['github'] = {
               priority = 9999,
               icon = ' ', -- github
