@@ -47,8 +47,21 @@ return {
         end
       end)
 
-      local opts = {
+      map({ 'i', 's' }, '<C-h>', function()
+        if luasnip.locally_jumpable(-1) then
+          luasnip.jump(-1)
+        end
+      end)
 
+      local disable_on_filetypes = {
+        'DressingInput',
+        'minifiles',
+      }
+
+      local opts = {
+        enabled = function()
+          return not vim.tbl_contains(disable_on_filetypes, vim.bo.filetype)
+        end,
         -- signature = { enabled = true, window = { border = 'single' } },
         signature = {
           enabled = true,
@@ -74,8 +87,8 @@ return {
           -- ['<C-e>'] = { 'hide', 'fallback' },
           -- ['<CR>'] = { 'accept', 'fallback' },
           --
-          -- ['<Tab>'] = { 'snippet_forward', 'fallback' },
-          -- ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+          ['<Tab>'] = {},
+          ['<S-Tab>'] = {},
           --
           -- ['<Up>'] = { 'select_prev', 'fallback' },
           -- ['<Down>'] = { 'select_next', 'fallback' },
