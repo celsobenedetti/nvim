@@ -38,19 +38,19 @@ vim.opt.cursorline = true -- Show which line your cursor is on
 
 -- fold
 
-vim.opt.foldmethod = 'indent'
-vim.o.foldcolumn = '1' -- '0' is not bad
-vim.o.foldlevel = 3
-vim.o.foldlevelstart = 3
-vim.o.foldenable = C.opt.fold
-vim.opt.fillchars = {
-  foldopen = '',
-  foldclose = '',
-  fold = ' ',
-  foldsep = ' ',
-  diff = '╱',
-  eob = ' ',
-}
+-- vim.opt.foldmethod = 'indent'
+-- vim.o.foldcolumn = '1' -- '0' is not bad
+-- vim.o.foldlevel = 3
+-- vim.o.foldlevelstart = 3
+-- vim.o.foldenable = C.opt.fold
+-- vim.opt.fillchars = {
+--   foldopen = '',
+--   foldclose = '',
+--   fold = ' ',
+--   foldsep = ' ',
+--   diff = '╱',
+--   eob = ' ',
+-- }
 
 -- open buffers verticaly
 vim.cmd 'autocmd FileType help wincmd L' --help
