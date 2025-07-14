@@ -78,47 +78,37 @@ local getConfigs = function()
       },
       filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
     },
+
+    -- jsonls = {
+    --   on_new_config = function(new_config)
+    --     new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+    --     vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+    --   end,
+    --   settings = {
+    --     json = {
+    --       validate = { enable = true },
+    --     },
+    --   },
+    -- },
+    --
+    -- yamlls = {
+    --   settings = {
+    --     yaml = {
+    --       schemaStore = {
+    --         -- You must disable built-in schemaStore support if you want to use
+    --         -- this plugin and its advanced options like `ignore`.
+    --         enable = false,
+    --         -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+    --         url = '',
+    --       },
+    --       schemas = require('schemastore').yaml.schemas(),
+    --     },
+    --   },
+    -- },
   }
   return configs
 end
 
-local getServerConfigs = function()
-  return {
-    -- deno = {},
-    dockerls = {},
-    graphql = {},
-    pyright = {},
-    tailwindcss = {},
-    terraformls = {},
-
-    jsonls = {
-      on_new_config = function(new_config)
-        new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-        vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
-      end,
-      settings = {
-        json = {
-          validate = { enable = true },
-        },
-      },
-    },
-
-    yamlls = {
-      settings = {
-        yaml = {
-          schemaStore = {
-            -- You must disable built-in schemaStore support if you want to use
-            -- this plugin and its advanced options like `ignore`.
-            enable = false,
-            -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
-            url = '',
-          },
-          schemas = require('schemastore').yaml.schemas(),
-        },
-      },
-    },
-  }
-end
 return {
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -129,21 +119,6 @@ return {
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       { 'b0o/schemastore.nvim', lazy = true },
       { 'j-hui/fidget.nvim', opts = {} }, -- Useful status updates for LSP.
-      -- {
-      --   'ray-x/lsp_signature.nvim',
-      --   lazy = C.opt.performance,
-      --   event = 'VeryLazy',
-      --   opts = {},
-      --   config = function(_, opts)
-      --     opts = vim.tbl_deep_extend('force', opts or {}, {
-      --       floating_window = false,
-      --       hint_enable = true,
-      --       hint_prefix = '',
-      --     })
-      --
-      --     require('lsp_signature').setup(opts)
-      --   end,
-      -- },
     },
 
     config = function()
@@ -194,9 +169,9 @@ return {
           lsp_map('n', 'gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           -- not needed, default nvim keymap is <C-s>
-          lsp_map('i', '<C-i>', function() -- <Tab> keymapping
-            vim.lsp.buf.signature_help()
-          end, 'show signature help')
+          -- lsp_map('i', '<C-i>', function() -- <Tab> keymapping
+          --   vim.lsp.buf.signature_help()
+          -- end, 'show signature help')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
@@ -217,14 +192,8 @@ return {
           end
         end,
       })
-      --- these servers should be ignored by mason-lspconfig
-      local is_next = C.cwd.is_next()
-      local is_deno = not is_next and C.cwd.is_deno()
-      local is_tailwind = C.cwd.is_tailwind()
-      -- local is_markdown = vim.bo.filetype == 'markdown' or vim.bo.filetype == 'md'
 
       local configs = getConfigs()
-      -- nvim 0.11 or above
       vim.lsp.config('vtsls', configs.vtsls)
       vim.lsp.config('gopls', {})
       vim.lsp.config('vue_ls', configs.vue_ls)
@@ -234,7 +203,6 @@ return {
 
       vim.diagnostic.config {
         virtual_text = false,
-        ---@diagnostic disable-next-line: assign-type-mismatch
         float = { border = 'rounded', source = true },
       }
     end,
