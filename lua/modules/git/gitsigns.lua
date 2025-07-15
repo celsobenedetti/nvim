@@ -23,7 +23,7 @@ return {
         map("n", "[h", gs.prev_hunk, "Gitsigns: Prev Hunk")
         map("n", "<leader>gu", gs.undo_stage_hunk, "Gitsigns: Undo Stage Hunk")
         map({ "n", "v" }, "<leader>ga", ":Gitsigns stage_hunk<CR>", "Gitsigns: Stage Hunk")
-        map("n", "<leader>gA", gs.stage_buffer, "Gitsigns: Stage Buffer")
+        map("n", "<leader>gS", gs.stage_buffer, "Gitsigns: Stage Buffer")
         map({ "n", "v" }, "<leader>gr", ":Gitsigns reset_hunk<CR>", "Gitsigns: Reset Hunk")
         map("n", "<leader>gR", gs.reset_buffer, "Gitsigns: Reset Buffer")
         map("n", "<leader>gp", gs.preview_hunk_inline, "Gitsigns: Preview Hunk Inline")
