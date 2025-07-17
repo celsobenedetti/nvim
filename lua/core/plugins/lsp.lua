@@ -1,5 +1,6 @@
 local enabled_servers = {
   'gopls',
+  'tailwindcss',
   'lua_ls',
   'vtsls',
   'vue_ls',
@@ -15,28 +16,29 @@ local getConfigs = function()
   }
 
   local configs = {
-    luals = {
+    lua_ls = {
       settings = {
         Lua = {
-          runtime = { version = 'LuaJIT' },
-          workspace = {
-            checkThirdParty = false,
-            library = {
-              vim.env.VIMRUNTIME,
-              -- Depending on the usage, you might want to add additional paths here.
-              -- "${3rd}/luv/library"
-              -- "${3rd}/busted/library",
-              -- '${3rd}/luv/library',
-              -- unpack(vim.api.nvim_get_runtime_file('', true)),
-            },
-          },
           completion = {
             callSnippet = 'Replace',
           },
-          -- diagnostics = { disable = { 'missing-fields' } }, -- Toggle to supress specific warnings
         },
       },
     },
+
+    -- -- WIP: (2025-07-16): commenting this for lazydev setup
+    -- luals = {
+    --   settings = {
+    --     Lua = {
+    --       runtime = { version = 'LuaJIT' },
+    --       workspace = {
+    --         checkThirdParty = false,
+    --         library = { vim.env.VIMRUNTIME },
+    --       },
+    --       completion = { callSnippet = 'Replace' },
+    --     },
+    --   },
+    -- },
 
     vue_ls = {
       on_init = function(client)
@@ -160,7 +162,11 @@ return {
 
           -- default vim gO
           lsp_map('n', '<leader>ss', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-          lsp_map('n', '<leader>sS', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          lsp_map('n', '<leader>sS', function()
+            require('telescope.builtin').lsp_dynamic_workspace_symbols()
+          end, '[W]orkspace [S]ymbols')
+
+          map('n', 'gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, { desc = 'Open Workspace Symbols' })
           -- lsp_map('n', '<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame') -- not needed, default nvim keymap is grn
           -- lsp_map('n', '<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction') -- not needed, default nvim keymap is gra
           -- lsp_map('v', '<leader>ca', vim.lsp.buf.code_action, 'LSP: [C]ode [A]ction')
@@ -194,7 +200,7 @@ return {
       vim.lsp.config('vtsls', configs.vtsls)
       vim.lsp.config('gopls', {})
       vim.lsp.config('vue_ls', configs.vue_ls)
-      vim.lsp.config('lua_ls', configs.luals)
+      vim.lsp.config('lua_ls', configs.lua_ls)
       vim.lsp.config('tailwindcss', {})
       vim.lsp.enable(enabled_servers)
 
