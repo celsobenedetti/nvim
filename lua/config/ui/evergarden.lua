@@ -68,7 +68,7 @@ return {
   overrides = {
     Folded = {
       fg = C.ui.colors.lightgray,
-      bg = darken(C.ui.colors.winter.base, 0.05),
+      bg = C.ui.colors.winter.mantle,
       -- style = { 'italic' },
     },
 
@@ -107,6 +107,7 @@ return {
     MarkviewPalette7Fg = { fg = C.ui.colors.blue, style = { 'underline' } }, -- markview inline hint
     SpellBad = { style = { 'italic', 'underdotted' } }, -- spelling mistakes
     SpellCap = { style = {} }, -- style when a word should start with a capital letter
+    TabLineSel = { fg = C.ui.colors.green, bg = C.ui.colors.inactivegray, style = { 'bold' } },
 
     LineNrAbove = { fg = C.ui.colors.gray },
     LineNrBelow = { fg = C.ui.colors.gray },
@@ -140,7 +141,7 @@ return {
     ['@org.hyperlink.desc.org'] = { fg = C.ui.colors.blue, style = { 'italic' } },
     ['@org.priority.highest.org'] = { fg = C.ui.colors.orange, style = { 'italic' } },
 
-    FlashLabel = { bg = C.ui.colors.green, fg = C.ui.colors.black },
+    FlashLabel = { bg = C.ui.colors.lightgray, fg = C.ui.colors.black },
     -- lua
     -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = C.ui.colors.blue, style = { 'nocombine' } },
     -- ['@lsp.typemod.function.defaultLibrary.lua'] = { fg = C.ui.colors.blue, style = { 'nocombine' } },

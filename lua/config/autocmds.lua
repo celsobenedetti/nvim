@@ -69,7 +69,7 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 -- -- Code files
 local markdown_group = Augroup 'Markdown'
 local markdown = '*.md'
-vim.api.nvim_create_autocmd('BufWinEnter', {
+vim.api.nvim_create_autocmd('VimEnter', {
   pattern = markdown,
   group = markdown_group,
   callback = function()

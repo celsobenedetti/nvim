@@ -11,7 +11,8 @@ end
 return {
   { 'wakatime/vim-wakatime' }, -- code time tracking goodness
   { 'tpope/vim-sleuth' }, -- Detect tabstop and shiftwidth automatically
-  -- { 'moll/vim-bbye' }, -- Delete buffers without affecting window layout :Bdelete TODO: replace with snacks.bufdelete
+  -- { 'NMAC427/guess-indent.nvim' }, -- Detect tabstop and shiftwidth automatically
+  -- { 'Darazaki/indent-o-matic', config = true }, -- Detect tabstop and shiftwidth automatically
 
   {
     'numToStr/Comment.nvim',

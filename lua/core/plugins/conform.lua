@@ -27,6 +27,8 @@ return {
           python = { 'isort', 'black' },
           sh = { 'shfmt' },
           sql = { 'sqlfluff' },
+          -- BUG: this is cooked for now. 2025-07-14
+          -- org = { 'mfmt_org' },
           toml = { 'taplo' },
           typescript = { js_formatter },
           typescriptreact = { js_formatter },
@@ -37,9 +39,8 @@ return {
           goimports = {
             prepend_args = { '-local', 'github.com/celsobenedetti/' },
           },
-          mfmt = {
-            command = 'mfmt',
-          },
+          mfmt = { command = 'mfmt' },
+          mfmt_org = { command = 'mfmt', prepend_args = { '--parser=orgmode' } },
         },
       }
     end,

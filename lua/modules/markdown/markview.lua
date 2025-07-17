@@ -122,6 +122,12 @@ return {
               icon = ' ', -- github
               hl = 'MarkviewPalette2Fg',
             },
+            ['wikipedia'] = {
+              priority = 9999,
+              icon = '  ',
+              hl = 'MarkviewPalette2Fg',
+            },
+
             ['atlassian.net/wiki'] = {
               priority = 9999,
               icon = ' ', -- confluence
@@ -154,8 +160,15 @@ return {
             },
 
             ['cloud.mongodb'] = {
+
               priority = 9998,
               icon = ' ', -- mongo
+              hl = 'MarkviewPalette2Fg',
+            },
+
+            ['tailwindcss'] = {
+              priority = 9998,
+              icon = '󱏿 ',
               hl = 'MarkviewPalette2Fg',
             },
           },

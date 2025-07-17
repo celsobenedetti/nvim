@@ -1,4 +1,7 @@
 -- WIP: This is an experiment. Probably not needed tbh
+--
+-- update 2025-07-16: the ability "prompt actions" feature is quite neat
+-- to write context comments or explain code, however the UI for this particular plugin is not ideal
 return {
   {
     'CopilotC-Nvim/CopilotChat.nvim',
@@ -14,7 +17,7 @@ return {
     -- See Commands section for default commands if you want to lazy load on them
     --
     keys = {
-      { '<leader>cct', ':CopilotChatToggle<CR>', desc = 'CopilotChat - toggle' },
+      { '<leader>cct', ':CopilotChatToggle<CR>', desc = 'CopilotChat - toggle', mode = { 'n', 'v' } },
       {
         '<leader>cc',
         function()

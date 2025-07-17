@@ -23,7 +23,7 @@ return {
       },
       foldKeymaps = {
         setup = true, -- modifies `h` and `l`
-        hOnlyOpensOnFirstColumn = false,
+        hOnlyOpensOnFirstColumn = true,
       },
     },
 

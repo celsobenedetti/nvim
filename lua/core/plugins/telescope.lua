@@ -68,8 +68,9 @@ return {
           mappings = {
             i = {
               ['<c-enter>'] = 'to_fuzzy_refine',
-              ['<c-t>'] = trouble.open,
+              ['<c-r>'] = trouble.open,
               ['<c-l>'] = my_actions.print_filepath_to_buffer,
+              ['<c-t>'] = 'file_tab',
             },
             n = {
               ['<c-t>'] = trouble.open,

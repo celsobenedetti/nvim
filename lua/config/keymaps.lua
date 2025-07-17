@@ -53,9 +53,9 @@ map('v', '<leader>B', function()
   vim.api.nvim_feedkeys(Keys '!bash<CR>', 'n', true)
 end, { desc = 'Run current line as bash command' })
 
-map('n', '<leader>T', function()
-  vim.api.nvim_feedkeys(Keys 'V!title<CR>', 'n', true)
-end, { desc = 'Run current line as bash command' })
+-- map('n', '<leader>T', function()
+--   vim.api.nvim_feedkeys(Keys 'V!title<CR>', 'n', true)
+-- end, { desc = 'Run current line as bash command' })
 
 map('v', '<leader>T', function()
   vim.api.nvim_feedkeys(Keys '!title<CR>', 'n', true)
