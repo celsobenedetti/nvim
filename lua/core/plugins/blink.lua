@@ -40,7 +40,7 @@ return {
     config = function()
       local luasnip = require 'luasnip'
 
-      map('i', '<C-l>', function()
+      map({ 'i', 's' }, '<C-l>', function()
         if luasnip.expand_or_locally_jumpable() then
           luasnip.expand_or_jump()
           return
@@ -124,7 +124,14 @@ return {
         -- Default list of enabled providers defined so that you can extend it
         -- elsewhere in your config, without redefining it, due to `opts_extend`
         sources = {
-          default = { 'lsp', 'path', 'snippets', 'buffer', 'dictionary' },
+          default = {
+            'lsp',
+            'path',
+            'snippets',
+            'buffer',
+            'dictionary',
+            'lazydev',
+          },
           providers = {
             dictionary = {
               module = 'blink-cmp-dictionary',
@@ -138,6 +145,12 @@ return {
                   return { vim.fn.expand '~/.dotfiles/english.dict' }
                 end,
               },
+            },
+            lazydev = {
+              name = 'LazyDev',
+              module = 'lazydev.integrations.blink',
+              -- make lazydev completions top priority (see `:h blink.cmp`)
+              score_offset = 100,
             },
           },
         },
