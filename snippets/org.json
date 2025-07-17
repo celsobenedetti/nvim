@@ -6,7 +6,12 @@
   },
   "TODO [category]": {
     "description": "todo [category]",
-    "prefix": "t",
+    "prefix": "c",
     "body": ["[$1] $2"]
+  },
+  "todo bullet list": {
+    "description": "todo bullet list",
+    "prefix": "t",
+    "body": ["- [ ] $1"]
   }
 }
