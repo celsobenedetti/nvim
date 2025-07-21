@@ -10,32 +10,32 @@
           "typescript",
           "typescriptreact"
         ],
-        "path": "./snippets/typescript.json"
+        "path": "./typescript.json"
       },
       {
         "language": [
           "go"
         ],
-        "path": "./snippets/go.json"
+        "path": "./go.json"
       },
       {
         "language": [
           "lua"
         ],
-        "path": "./snippets/lua.json"
+        "path": "./lua.json"
       },
       {
         "language": [
           "markdown"
         ],
-        "path": "./snippets/markdown.json"
+        "path": "./markdown.json"
       },
       {
         "language": [
           "org",
           "orgmode"
         ],
-        "path": "./snippets/org.json"
+        "path": "./org.json"
       }
     ]
   }
