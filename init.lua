@@ -27,9 +27,10 @@ require("lazy").setup({
 
     { "wakatime/vim-wakatime" }, -- code time tracking goodness
     { import = "modules.core" },
-    { import = "modules.ui" },
-    { import = "modules.git" },
     { import = "modules.zk" },
+    { import = "modules.ui" },
+    { import = "modules.ai" },
+    { import = "modules.git" },
 
     -- disable trouble
     { "echasnovski/mini.pairs", enabled = false },
