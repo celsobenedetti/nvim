@@ -156,6 +156,9 @@ return {
         ["@org.hyperlink.desc.org"] = { fg = C.colors.blue, style = { "italic" } },
         ["@org.priority.highest.org"] = { fg = C.colors.orange, style = { "italic" } },
 
+        BlinkCmpMenu = { bg = C.colors.base },
+        BlinkCmpMenuBorder = { bg = C.colors.base, fg = C.colors.lightgray },
+
         FlashLabel = { bg = C.colors.lightgray, fg = C.colors.black },
         -- lua
         -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = C.colors.blue, style = { 'nocombine' } },

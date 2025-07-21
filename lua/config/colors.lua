@@ -21,6 +21,8 @@ local default_nvim = {
 }
 
 local evergarden = {
+  base = "#1D2428",
+
   black = "#171C1F",
   white = "#F8F9E8",
   -- red = '#F57F82',
