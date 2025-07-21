@@ -5,5 +5,6 @@ return {
   keys = {
     { "<leader>no", function() Snacks.picker.notifications() end, desc = "Notification History", },
     { "<leader>rg", function() Snacks.picker.grep() end, desc = "Grep", },
+    { "<leader>dd", function() Snacks.bufdelete() end, desc = "delete buffer", },
   },
 }
