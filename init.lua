@@ -7,7 +7,6 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.coding.neogen" },
     { import = "lazyvim.plugins.extras.dap.core" },
     { import = "lazyvim.plugins.extras.dap.nlua" },
-    { import = "lazyvim.plugins.extras.ai.supermaven" },
     { import = "lazyvim.plugins.extras.lang.git" },
     { import = "lazyvim.plugins.extras.lang.go" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
@@ -23,11 +22,13 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.editor.outline" },
     { import = "lazyvim.plugins.extras.ui.indent-blankline" },
     { import = "lazyvim.plugins.extras.ui.smear-cursor" },
+    { import = "lazyvim.plugins.extras.ui.treesitter-context" },
     { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
 
     { "wakatime/vim-wakatime" }, -- code time tracking goodness
     { import = "modules.core" },
     { import = "modules.ui" },
+    { import = "modules.git" },
     { import = "modules.zk" },
 
     -- disable trouble
