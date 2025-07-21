@@ -1,1 +1,3 @@
-C = {}
+C = {
+  colors = require("config.colors"),
+}

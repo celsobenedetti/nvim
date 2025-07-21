@@ -3,8 +3,8 @@ require("config")
 require("lazy").setup({
   spec = {
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    { import = "plugins" },
-    { import = "plugins" },
+    { import = "modules.core" },
+    { import = "modules.ui" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -34,8 +34,9 @@ require("lazy").setup({
       },
     },
   },
-  install = { colorscheme = { "default" } },
+  install = { colorscheme = { "tokyonight" } },
 })
+vim.cmd.colorscheme(C.colors.colorscheme)
 
 -- C.ui.set_colorscheme(C.ui.colorscheme)
 --
@@ -58,4 +59,6 @@ require("lazy").setup({
 -- }, {
 --  ui = C.ui.lazy,
 -- })
+--
+--
 --
