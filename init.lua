@@ -11,7 +11,6 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.git" },
     { import = "lazyvim.plugins.extras.lang.go" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
-    { import = "lazyvim.plugins.extras.lang.vue" },
     { import = "lazyvim.plugins.extras.lang.tailwind" },
     { import = "lazyvim.plugins.extras.lang.docker" },
     { import = "lazyvim.plugins.extras.lang.json" },
@@ -28,6 +27,7 @@ require("lazy").setup({
 
     { "wakatime/vim-wakatime" }, -- code time tracking goodness
     { import = "modules.core" },
+    { import = "modules.editor" },
     { import = "modules.zk" },
     { import = "modules.ui" },
     { import = "modules.ai" },
