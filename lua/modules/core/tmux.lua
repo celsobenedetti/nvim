@@ -1,3 +1,12 @@
+--- Runs cmd if not inside Luasnip snippet
+---@param cmd string
+local cmd = function(cmd)
+  return function()
+    if not require("luasnip").in_snippet() then
+      vim.cmd(cmd)
+    end
+  end
+end
 return {
   {
     "christoomey/vim-tmux-navigator",
