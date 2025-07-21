@@ -19,6 +19,14 @@ return {
         desc = "gitsigns: reset buffer",
       },
       {
+        "<leader>gr",
+        function()
+          local gs = package.loaded.gitsigns
+          gs.reset_hunk()
+        end,
+        desc = "gitsigns: reset hunk",
+      },
+      {
         "<leader>ga",
         function()
           local gs = package.loaded.gitsigns
