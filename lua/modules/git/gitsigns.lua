@@ -27,15 +27,6 @@ return {
         end,
         desc = "gitsigns: stage hunk",
       },
-
-      {
-        "<leader>gs",
-        function()
-          local gs = package.loaded.gitsigns
-          gs.reset_hunk()
-        end,
-        desc = "gitsigns: reset hunk",
-      },
       { "[g", ":Gitsigns prev_hunk<CR>", desc = "Prev git diff hunk" },
       { "]g", ":Gitsigns next_hunk<CR>", desc = "Next git diff hunk" },
     },

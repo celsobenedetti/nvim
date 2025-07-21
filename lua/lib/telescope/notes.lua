@@ -1,0 +1,24 @@
+local builtin = require("telescope.builtin")
+
+--- Search through ~/.dotfiles files
+return function()
+  builtin.find_files({
+    prompt_title = "< Notes >",
+    -- layout_config = {
+    --   prompt_position = 'top',
+    -- },
+    -- sorting_strategy = 'ascending',
+    search_dirs = {
+      C.notes.NOTES,
+    },
+    cwd = C.notes.NOTES,
+    hidden = true,
+    -- find_command = {
+    --   'fd',
+    --   '.',
+    --   '~/.notes',
+    --   '--type=file',
+    --   -- '--hidden',
+    -- },
+  })
+end
