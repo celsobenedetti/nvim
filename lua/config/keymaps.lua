@@ -3,6 +3,7 @@
 -- Add any additional keymaps here
 
 vim.keymap.del("n", "<leader>e")
+vim.keymap.del("n", "<leader>n")
 
 map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 
