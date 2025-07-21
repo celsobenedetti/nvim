@@ -19,3 +19,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.api.nvim_feedkeys(Keys("i<BS>"), "n", true)
   end,
 })
+
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+  callback = function()
+    vim.cmd("set formatoptions-=cro") -- Stop comment continuation on line below
+  end,
+  group = Augroup("Run_on_VimEnter"),
+  desc = "Run on all files",
+})
