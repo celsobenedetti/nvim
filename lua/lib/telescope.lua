@@ -1,10 +1,12 @@
+local M = {}
+
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local conf = require("telescope.config").values
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 
-return function(opts)
+M.mv_file = function(opts)
   local cwd = require("lib.cwd")
 
   pickers
@@ -34,3 +36,5 @@ return function(opts)
     })
     :find()
 end
+
+return M
