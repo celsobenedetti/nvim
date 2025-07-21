@@ -69,3 +69,5 @@ map("n", "<leader>mv", require("lib.telescope").mv_file, { desc = "Move file of 
 local jump = require("lib.jump")
 map("n", "k", jump.up)
 map("n", "j", jump.down)
+
+map({ "v" }, "<leader>gs", require("lib.web").google_search, { desc = "Search current selected string with google" })
