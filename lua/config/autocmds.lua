@@ -10,11 +10,11 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, {
   desc = 'Run on all files',
 })
 
+-- Highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = Augroup 'Highlight_on_Yank',
+  group = Augroup 'highlight_yank',
   callback = function()
-    vim.highlight.on_yank()
+    (vim.hl or vim.highlight).on_yank()
   end,
 })
 

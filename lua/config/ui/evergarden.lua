@@ -78,12 +78,15 @@ return {
     ['@keyword.operator'] = config.highlights.keyword,
     ['@annotation'] = config.highlights.keyword,
 
+    -- highlight on yank
+    IncSearch = { bg = C.ui.colors.orange, fg = C.ui.colors.black },
+
     ['@comment'] = { fg = C.ui.colors.gray, style = { 'italic' } },
     ['@operator'] = { fg = C.ui.colors.lightgray, style = { 'bold' } },
 
     ['@function'] = { C.ui.colors.green, style = { 'bold' } },
     ['@lsp.typemod.function.declaration.javascript'] = { C.ui.colors.lime, style = { 'bold' } },
-    ['@constant'] = { C.ui.colors.white, style = { 'nocombine' } },
+    ['@constant'] = { C.ui.colors.white, style = { 'italic' } },
     ['@lsp.mod.readonly.javascript'] = { C.ui.colors.white, style = { 'nocombine' } },
 
     ['@module'] = { C.ui.colors.blue, style = { 'nocombine' } },
