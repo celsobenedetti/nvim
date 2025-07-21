@@ -7,7 +7,7 @@ vim.keymap.del("n", "<leader>n")
 
 map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 
--- map('n', '<leader>dd', ':Bdelete<cr>', { desc = 'Delete Buffer' }) -- replaced with snacks.bufdelete
+map("n", "<leader>dd", ":bdelete<cr>", { desc = "Delete Buffer" }) -- replaced with snacks.bufdelete
 map("n", "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader>tn", ":tabnew<cr>", { desc = "New Tab (:tabnew)" })
 map("n", "ZQ", ":qa!<CR>", { desc = "Quit all" })
