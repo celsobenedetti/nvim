@@ -4,8 +4,12 @@ require("lazy").setup({
   spec = {
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
 
-    { import = "lazyvim.plugins.extras.coding.neogen" },
-    { import = "lazyvim.plugins.extras.coding.mini-snippets" },
+    -- { import = "lazyvim.plugins.extras.ui.indent-blankline" },
+    { import = "lazyvim.plugins.extras.ui.mini-indentscope" },
+    { import = "lazyvim.plugins.extras.ui.smear-cursor" },
+    { import = "lazyvim.plugins.extras.ui.treesitter-context" },
+    { import = "lazyvim.plugins.extras.ui.edgy" },
+
     { import = "lazyvim.plugins.extras.dap.core" },
     { import = "lazyvim.plugins.extras.dap.nlua" },
     { import = "lazyvim.plugins.extras.lang.git" },
@@ -17,16 +21,21 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.yaml" },
     { import = "lazyvim.plugins.extras.lang.toml" },
     { import = "lazyvim.plugins.extras.lang.terraform" },
+
     { import = "lazyvim.plugins.extras.formatting.prettier" },
     { import = "lazyvim.plugins.extras.linting.eslint" },
+    { import = "lazyvim.plugins.extras.coding.mini-snippets" },
+    { import = "lazyvim.plugins.extras.coding.neogen" },
+    { import = "lazyvim.plugins.extras.test.core" },
     { import = "lazyvim.plugins.extras.editor.mini-files" },
     { import = "lazyvim.plugins.extras.editor.harpoon2" },
     { import = "lazyvim.plugins.extras.editor.outline" },
-    { import = "lazyvim.plugins.extras.ui.indent-blankline" },
-    { import = "lazyvim.plugins.extras.ui.smear-cursor" },
-    { import = "lazyvim.plugins.extras.ui.treesitter-context" },
+    { import = "lazyvim.plugins.extras.editor.aerial" },
     { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
     { import = "lazyvim.plugins.extras.util.dot" },
+    { import = "lazyvim.plugins.extras.util.octo" },
+    { import = "lazyvim.plugins.extras.util.rest" },
+    { import = "lazyvim.plugins.extras.util.startuptime" },
 
     { "wakatime/vim-wakatime" }, -- code time tracking goodness
     { import = "modules.core" },
