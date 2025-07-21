@@ -18,7 +18,8 @@ map("n", "<leader>or", e(C.notes.ORG_REFILE), { desc = "Orgmode refile file" })
 return {
   {
     "nvim-orgmode/orgmode",
-    event = "VeryLazy",
+    -- event = "VeryLazy",
+    lazy = true,
     ft = { "org" },
     keys = {
       { "<leader>oim", ":Org indent_mode<CR>", desc = "Orgmode: toggle indent_mode" },
@@ -98,6 +99,7 @@ return {
 
   {
     "nvim-orgmode/telescope-orgmode.nvim",
+    lazy = true,
     -- event = 'VeryLazy',
     dependencies = {
       "nvim-orgmode/orgmode",

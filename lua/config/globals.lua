@@ -1,5 +1,7 @@
 C = {
   colors = require("config.colors"),
+
+  notes = require("config.zk"), -- NOTES config
 }
 
 Keys = function(str)

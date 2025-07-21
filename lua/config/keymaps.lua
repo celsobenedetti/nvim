@@ -4,4 +4,4 @@
 
 vim.keymap.del("n", "<leader>e")
 
-vim.keymap.set("n", "<leader>C", ":Clip<CR>", { desc = "Copy file path to clipboard" })
+map("n", "<leader>C", ":Clip<CR>", { desc = "Copy file path to clipboard" })
