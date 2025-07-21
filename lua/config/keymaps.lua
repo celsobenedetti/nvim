@@ -4,10 +4,11 @@
 
 vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<leader>n")
+vim.keymap.del("n", "<leader>tw") -- set by neotest
 
 map("n", "<leader>re", ":e! %<cr>", { desc = "Refresh Buffer" })
 
-map("n", "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
+-- map("n", "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader>tn", ":tabnew<cr>", { desc = "New Tab (:tabnew)" })
 map("n", "ZQ", ":qa!<CR>", { desc = "Quit all" })
 map("n", "<leader>on", ":only<CR>", { desc = "':only' alias" })
@@ -16,8 +17,6 @@ map("n", "<leader>C", ":Clip<CR>", { desc = "Copy file path to clipboard" })
 
 local telescope = require("lib.telescope")
 map("n", "<leader>mv", telescope.mv_file, { desc = "Move file of current buffer to dir" })
-map("n", "<leader>of", telescope.org_files, { desc = "Search Org files" })
-map("n", "<leader>fn", telescope.notes, { desc = "Search Notes" })
 
 map("n", "gv", function()
   vim.api.nvim_feedkeys(Keys("<c-w>v"), "n", true)
