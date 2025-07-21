@@ -14,9 +14,6 @@ map("n", "<leader>on", ":only<CR>", { desc = "':only' alias" })
 
 map("n", "<leader>C", ":Clip<CR>", { desc = "Copy file path to clipboard" })
 
-local telescope = require("lib.telescope")
-map("n", "<leader>mv", telescope.mv_file, { desc = "Move file of current buffer to dir" })
-
 map("n", "gv", function()
   vim.api.nvim_feedkeys(Keys("<c-w>v"), "n", true)
   Snacks.picker.lsp_definitions()
@@ -66,3 +63,9 @@ map("n", "<leader>rm", function()
 end, { desc = "rm buffer file" })
 
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "LSP: Line Diagnostics" })
+
+map("n", "<leader>mv", require("lib.telescope").mv_file, { desc = "Move file of current buffer to dir" })
+
+local jump = require("lib.jump")
+map("n", "k", jump.up)
+map("n", "j", jump.down)
