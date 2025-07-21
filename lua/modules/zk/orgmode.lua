@@ -19,11 +19,11 @@ return {
   {
     "nvim-orgmode/orgmode",
     -- event = "VeryLazy",
-    lazy = true,
     ft = { "org" },
     keys = {
       { "<leader>oim", ":Org indent_mode<CR>", desc = "Orgmode: toggle indent_mode" },
       { "<leader>T", ":Org agenda T<CR>", desc = "Org: Today agenda" },
+      { "<leader>oct", ":Org capture t<CR>", desc = "Org: Today agenda" },
     },
     config = function()
       -- Setup orgmode

@@ -125,14 +125,14 @@ return {
         LineNrAbove = { fg = C.colors.gray },
         LineNrBelow = { fg = C.colors.gray },
         AvanteInlineHint = { fg = C.colors.lightgray },
-        MarkviewHeading1 = { fg = C.colors.white, bg = darken(C.colors.gray, 0.3), style = { "bold" } },
-        ["@markup.heading.1.markdown"] = { fg = C.colors.white, bg = darken(C.colors.gray, 0.3), style = { "bold" } },
+        -- MarkviewHeading1 = { fg = C.colors.white, bg = darken(C.colors.gray, 0.3), style = { "bold" } },
+        -- ["@markup.heading.1.markdown"] = { fg = C.colors.white, bg = darken(C.colors.gray, 0.3), style = { "bold" } },
         -- MarkviewHeading2 = { fg = lighten(C.colors.subtext, 0.1), bg = darken(C.colors.gray, 0.3), style = { 'bold' } },
-        ["@markup.heading.2.markdown"] = {
-          fg = lighten(C.colors.blue, 0.1),
-          bg = darken(C.colors.gray, 0.3),
-          style = { "bold" },
-        },
+        -- ["@markup.heading.2.markdown"] = {
+        --   fg = lighten(C.colors.blue, 0.1),
+        --   bg = darken(C.colors.gray, 0.3),
+        --   style = { "bold" },
+        -- },
         -- MarkviewHeading3 = { fg = C.colors.lightgray, bg = darken(C.colors.gray, 0.4), style = { 'bold' } },
         -- ['@markup.heading.3.markdown'] = { fg = C.colors.lightgray, bg = darken(C.colors.gray, 0.4), style = { 'bold' } },
         DiffAdd = { fg = C.colors.green, bg = C.colors.comment }, -- markview heading 1

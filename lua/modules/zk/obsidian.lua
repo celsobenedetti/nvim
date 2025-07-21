@@ -27,6 +27,14 @@ return {
         end,
         desc = "Open orgmode or obsidian link",
       },
+      {
+        "<leader>ov",
+        function()
+          vim.cmd("vsplit")
+          require("lib.zk").open_orgmode_or_obsidian_link()
+        end,
+        desc = "Open orgmode or obsidian link (vertical split)",
+      },
     },
     cond = function()
       if require("lib.cwd").is_llm_chats() then
