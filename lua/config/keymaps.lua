@@ -4,7 +4,6 @@
 
 vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<leader>n")
-vim.keymap.del("n", "<leader>tw") -- set by neotest
 
 map("n", "<leader>re", ":e! %<cr>", { desc = "Refresh Buffer" })
 
