@@ -4,7 +4,7 @@ return {
   opts = function(_, opts)
     opts.scroll = vim.tbl_deep_extend("force", opts.scroll, {
       animate = {
-        duration = { step = 15, total = 75 },
+        duration = { step = 15, total = 50 },
         easing = "linear",
       },
       -- faster animation when repeating scroll after delay
