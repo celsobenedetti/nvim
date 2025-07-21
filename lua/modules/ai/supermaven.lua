@@ -1,9 +1,8 @@
 return {
-
   {
     "supermaven-inc/supermaven-nvim",
-    config = function()
-      require("supermaven-nvim").setup({})
+    opts = function(_, opts)
+      opts.disable_inline_completion = not vim.g.supermaven_inline_completion
     end,
   },
 }

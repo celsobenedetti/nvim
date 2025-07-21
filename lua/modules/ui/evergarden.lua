@@ -1,4 +1,5 @@
 -- NOTE: 2025-07-02
+
 -- today I have green as the main accent color
 -- someday I may change it to purple
 
@@ -55,6 +56,7 @@ local config = {
   highlights = {
     keyword = { fg = C.colors.red, style = { "nocombine" } },
     type = { C.colors.yellow, style = { "nocombine" } },
+    comment = { fg = C.colors.gray, style = { "italic" } },
   },
 }
 
@@ -158,12 +160,11 @@ return {
 
         BlinkCmpMenu = { bg = C.colors.base },
         BlinkCmpMenuBorder = { bg = C.colors.base, fg = C.colors.lightgray },
-
         FlashLabel = { bg = C.colors.lightgray, fg = C.colors.black },
+        SupermavenSuggestion = config.highlights.comment,
         -- lua
         -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = C.colors.blue, style = { 'nocombine' } },
         -- ['@lsp.typemod.function.defaultLibrary.lua'] = { fg = C.colors.blue, style = { 'nocombine' } },
-        -- ['@function.builtin.lua'] = { fg = C.colors.blue, style = { 'nocombine' } },
 
         DiagnosticUnderlineError = { fg = C.colors.lightgray, style = { "nocombine" } },
       },
