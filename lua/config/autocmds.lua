@@ -27,3 +27,33 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   group = Augroup("Run_on_VimEnter"),
   desc = "Run on all files",
 })
+
+local markdown_group = Augroup("Markdown")
+local markdown = "*.md"
+vim.api.nvim_create_autocmd("VimEnter", {
+  pattern = markdown,
+  group = markdown_group,
+  callback = function()
+    -- nested markdown folding
+    vim.cmd("set foldexpr=NestedMarkdownFolds()")
+
+    vim.defer_fn(function()
+      require("lib.markdown").fold_frontmatter()
+    end, 100)
+
+    vim.defer_fn(function()
+      -- fold all
+      vim.api.nvim_feedkeys(Keys("zM"), "n", true)
+
+      vim.defer_fn(function()
+        -- go do #heading1
+        vim.api.nvim_feedkeys(Keys("G"), "n", true)
+
+        vim.defer_fn(function()
+          -- unfold it
+          vim.api.nvim_feedkeys(Keys("zo"), "n", true)
+        end, 60)
+      end, 60)
+    end, 100)
+  end,
+})
