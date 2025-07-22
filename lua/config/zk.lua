@@ -12,6 +12,8 @@ local M = {
   ORG_REFILE = "",
   ORG_INDEX = "",
   ORG_WORK = "",
+
+  AI_RULES = os.getenv("AI_RULES") or "",
 }
 
 M.ORG_REFILE = M.INBOX .. "/refile.org"
