@@ -16,4 +16,8 @@ return {
     { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
     { "<leader>fF", function() Snacks.picker.git_files() end, desc = "Find Files (git-files)" },
   },
+
+  config = function()
+    Snacks.toggle.dim():map("<leader>tw")
+  end,
 }
