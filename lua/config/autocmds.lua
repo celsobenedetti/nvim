@@ -38,10 +38,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.cmd("set foldexpr=NestedMarkdownFolds()")
 
     vim.defer_fn(function()
-      require("lib.markdown").fold_frontmatter()
-    end, 100)
-
-    vim.defer_fn(function()
       -- fold all
       vim.api.nvim_feedkeys(Keys("zM"), "n", true)
 
@@ -57,3 +53,16 @@ vim.api.nvim_create_autocmd("VimEnter", {
     end, 100)
   end,
 })
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = markdown,
+  group = markdown_group,
+  callback = function()
+    vim.defer_fn(function()
+      require("lib.markdown").fold_frontmatter()
+    end, 100)
+  end,
+})
+
+-- VimEnter autocmd should fold all
+-- BufRead autocmd should fold frontmatter
