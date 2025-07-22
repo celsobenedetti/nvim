@@ -5,7 +5,7 @@
 vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<leader>n")
 
-map("n", "<leader>re", ":e! %<cr>", { desc = "Refresh Buffer" })
+map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 
 -- map("n", "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader>tn", ":tabnew<cr>", { desc = "New Tab (:tabnew)" })

@@ -22,6 +22,11 @@ return {
         refresh = "<leader>ar", -- refresh
         clear = "<leader>aC", -- clear
       },
+
+      rules = {
+        project_dir = ".avante/rules", -- relative to project root, can also be an absolute path
+        global_dir = "~/.config/ai-rules/rules/", -- absolute path
+      },
     },
 
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
