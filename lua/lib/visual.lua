@@ -59,6 +59,20 @@ local function replace_region_with_text(start, finish, new_lines)
   api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
 end
 
+M.replace = function(new_text)
+  local region, start, finish = get_visual_selection_region()
+  if not region or not start or not finish then
+    return
+  end
+  local bufnr = 0
+  local lines = api.nvim_buf_get_lines(bufnr, start[1], finish[1] + 1, false)
+  if not lines or #lines == 0 then
+    return
+  end
+  lines[1] = new_text
+  replace_region_with_text(start, finish, lines)
+end
+
 M.get_selection = function()
   local region, start, finish = get_visual_selection_region()
   if not region then
