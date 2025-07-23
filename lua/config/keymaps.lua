@@ -104,3 +104,11 @@ map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
 map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
 map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
+
+map("v", "<leader>b", function()
+  require("lib.visual").wrap("**", "**")
+end, { desc = "bold: wrap selection with **" })
+
+map("v", "<leader>i", function()
+  require("lib.visual").wrap("_", "_")
+end, { desc = "italic: wrap selection with _" })

@@ -1,6 +1,8 @@
 local M = {}
 
---- https://github.com/neovim/neovim/pull/13896--
+local api = vim.api
+
+--- https://github.com/neovim/neovim/pull/13896
 ---
 --- Get the region between two marks and the start and end positions for the region
 ---
@@ -85,6 +87,61 @@ M.get_selection = function()
     lines[#lines] = vim.fn.strpart(lines[#lines], region[finish[1]][1], region[finish[1]][2] - region[finish[1]][1])
   end
   return table.concat(lines)
+end
+
+--- wrap() the current visual selection in given string
+---@param pre string to wrap add before the selection
+---@param post string to wrap add after the selection
+M.wrap = function(pre, post)
+  local mode = api.nvim_get_mode().mode
+  if not (mode == "v" or mode == "V") then
+    return
+  end
+
+  local options = {}
+  options.adjust = function(pos1, pos2)
+    if vim.fn.visualmode() == "V" then
+      pos1[3] = 1
+      pos2[3] = 2 ^ 31 - 1
+    end
+    if pos1[2] > pos2[2] then
+      pos2[3], pos1[3] = pos1[3], pos2[3]
+      return pos2, pos1
+    elseif pos1[2] == pos2[2] and pos1[3] > pos2[3] then
+      return pos2, pos1
+    else
+      return pos1, pos2
+    end
+  end
+
+  local region, start, finish = get_marked_region("v", ".", options)
+  if not region then
+    return
+  end
+
+  local bufnr = 0
+  local lines = api.nvim_buf_get_lines(bufnr, start[1], finish[1] + 1, false)
+  if not lines or #lines == 0 then
+    return
+  end
+
+  if mode == "V" then
+    lines[1] = pre .. lines[1]
+    lines[#lines] = lines[#lines] .. post
+  else
+    local start_col = region[start[1]][1]
+    local end_col = region[finish[1]][2]
+    if start[1] == finish[1] then
+      local line = lines[1]
+      lines[1] = line:sub(1, start_col) .. pre .. line:sub(start_col + 1, end_col) .. post .. line:sub(end_col + 1)
+    else
+      lines[1] = lines[1]:sub(1, start_col) .. pre .. lines[1]:sub(start_col + 1)
+      lines[#lines] = lines[#lines]:sub(1, end_col) .. post .. lines[#lines]:sub(end_col + 1)
+    end
+  end
+
+  api.nvim_buf_set_lines(bufnr, start[1], finish[1] + 1, false, lines)
+  api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
 end
 
 return M
