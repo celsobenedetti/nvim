@@ -1,3 +1,7 @@
+--
+if true then
+  return {}
+end
 -- NOTE: 2025-07-22
 -- disabling this since there are some inconsistencies with the layouts
 -- for instance
@@ -6,7 +10,6 @@
 -- { import = "lazyvim.plugins.extras.ui.edgy" },
 return {
   "folke/edgy.nvim",
-  enabled = false,
   opts = function(_, opts)
     opts.animate = vim.tbl_deep_extend("force", opts.animate or {}, {
       enabled = true,

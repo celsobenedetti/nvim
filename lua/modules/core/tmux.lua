@@ -1,6 +1,13 @@
+local escape = function()
+  vim.api.nvim_feedkeys(Keys("<esc>"), "n", true)
+  vim.api.nvim_feedkeys(Keys("<esc>"), "n", true)
+end
+
 --- Runs cmd if not inside Luasnip snippet
 ---@param cmd string
 local cmd = function(cmd)
+  escape()
+
   return function()
     if not require("luasnip").in_snippet() then
       vim.cmd(cmd)

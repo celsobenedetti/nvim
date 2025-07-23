@@ -24,7 +24,7 @@ return {
         -- The marker should be a unique string, since signs and highlights are based
         -- on it. Furthermore, `.removeLogs()` will remove any line with it. Thus,
         -- unique emojis or strings (e.g., "[Chainsaw]") are recommended.
-        marker = "🔎",
+        marker = "### 🔎",
 
         -- Appearance of lines with the marker
         visuals = {

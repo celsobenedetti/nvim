@@ -11,14 +11,15 @@ return {
       -- vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' })
     end,
 
-    keys = {
-      {
-        "<leader>;",
-        function()
-          require("dropbar.api").pick()
-        end,
-        desc = "Pick symbols in winbar",
-      },
-    },
+    -- NOTE: 2025-07-22 this is not useful at all it seems
+    -- keys = {
+    --   {
+    --     "<leader>;",
+    --     function()
+    --       require("dropbar.api").pick()
+    --     end,
+    --     desc = "Pick symbols in winbar",
+    --   },
+    -- },
   },
 }

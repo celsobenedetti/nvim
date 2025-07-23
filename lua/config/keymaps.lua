@@ -5,10 +5,25 @@
 vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<leader>n")
 
+-- Lazyvim tab management is not to my preference
+vim.keymap.del("n", "<leader><tab>l")
+vim.keymap.del("n", "<leader><tab>o")
+vim.keymap.del("n", "<leader><tab>f")
+vim.keymap.del("n", "<leader><tab>]")
+vim.keymap.del("n", "<leader><tab><tab>")
+vim.keymap.del("n", "<leader><tab>d")
+vim.keymap.del("n", "<leader><tab>[")
+-- vim.keymap.del("n", "<Space>tn")
+
+-- this is the way:
+map({ "n", "t" }, "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
+map({ "n", "t" }, "<leader>tn", ":tabnew %<cr>", { desc = "Send buffer to new tab" })
+
 map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 
--- map("n", "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
-map("n", "<leader>tn", ":tabnew<cr>", { desc = "New Tab (:tabnew)" })
+-- let me escape insert in terminal!
+map("t", "<esc><esc>", "<C-\\><C-n>", { desc = "Escape insert mode in terminal" })
+
 map("n", "ZQ", ":qa!<CR>", { desc = "Quit all" })
 map("n", "<leader>on", ":only<CR>", { desc = "':only' alias" })
 
