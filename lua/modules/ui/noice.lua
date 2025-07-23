@@ -24,6 +24,7 @@ return {
         -- filter("bad argument #1 to 'pairs'"), -- some cmp bug 2025-05-19
         -- filter("[orgmode] No headline found with title'"), -- annoying for my obsidian + orgmode setup
         filter("Can't find file"), -- suppress failed "gf" messages
+        filter("Error indecoration provider"), -- TreeSitter error when blink renders supermaven completion
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd

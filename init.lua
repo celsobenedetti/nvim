@@ -40,6 +40,7 @@ require("lazy").setup({
 
     { "wakatime/vim-wakatime" }, -- code time tracking goodness
     { import = "modules.core" },
+    { import = "modules.lang" },
     { import = "modules.editor" },
     { import = "modules.zk" },
     { import = "modules.ui" },
@@ -79,29 +80,5 @@ require("lazy").setup({
   },
   install = { colorscheme = { "tokyonight" } },
 })
-vim.cmd.colorscheme(C.colors.colorscheme)
 
--- C.ui.set_colorscheme(C.ui.colorscheme)
---
---
--- require('lazy').setup({
---
---   { import = 'core.plugins' },
---
---   { import = 'modules.editor' },
---   { import = 'modules.git' },
---   { import = 'modules.ui', enabled = not C.opt.performance },
---
---   { import = 'modules.ai' },
---   { import = 'modules.dap' },
---   { import = 'modules.trouble' },
---
---   { import = 'modules.typescript' },
---   { import = 'modules.go' },
---   { import = 'modules.markdown' },
--- }, {
---  ui = C.ui.lazy,
--- })
---
---
---
+vim.cmd.colorscheme(C.colors.colorscheme)
