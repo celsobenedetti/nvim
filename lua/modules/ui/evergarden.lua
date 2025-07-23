@@ -109,7 +109,7 @@ return {
         BlinkCmpMenu = { bg = C.colors.base },
         BlinkCmpMenuBorder = { bg = C.colors.base, fg = C.colors.lightgray },
         FlashLabel = { bg = C.colors.orange, fg = C.colors.black },
-        FlashCurrent = { bg = C.colors.gray, fg = C.colors.black },
+        FlashCurrent = { bg = C.colors.yellow, fg = C.colors.black },
         SupermavenSuggestion = config.highlights.comment,
         -- lua
         -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = C.colors.blue, style = { 'nocombine' } },

@@ -2,7 +2,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
-      servers = { vuels = {} },
+      servers = { volar = {} },
       diagnostics = {
         virtual_text = false,
         float = { border = "rounded", source = true },
