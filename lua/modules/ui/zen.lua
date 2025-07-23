@@ -10,7 +10,7 @@ return {
       minimal = false,
       width = 120,
       height = 0,
-      backdrop = { transparent = false, blend = 40 },
+      backdrop = { transparent = false, blend = 99 },
       keys = { q = false },
       zindex = 40,
       wo = {
