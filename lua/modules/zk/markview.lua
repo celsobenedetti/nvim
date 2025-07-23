@@ -188,6 +188,11 @@ return {
               icon = " ",
               hl = "MarkviewPalette2Fg",
             },
+            ["codeberg"] = {
+              priority = 9998,
+              icon = " ",
+              hl = "MarkviewPalette2Fg",
+            },
           },
 
           internal_links = {
