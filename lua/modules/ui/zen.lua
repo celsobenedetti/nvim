@@ -20,5 +20,14 @@ return {
         snacks_main = true,
       },
     })
+
+    opts.zen = opts.zen or {}
+    opts.zen.toggles = {
+      dim = true,
+      git_signs = false,
+      mini_diff_signs = false,
+      -- diagnostics = false,
+      -- inlay_hints = false,
+    }
   end,
 }
