@@ -15,5 +15,6 @@ return {
     { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
     { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
     { "<leader>fF", function() Snacks.picker.git_files() end, desc = "Find Files (git-files)" },
+    { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
   },
 }
