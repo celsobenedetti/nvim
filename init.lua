@@ -47,7 +47,7 @@ require("lazy").setup({
     { import = "modules.ai" },
     { import = "modules.git" },
 
-    -- disable trouble
+    -- disable
     { "echasnovski/mini.pairs", enabled = false },
   },
   defaults = {
@@ -78,7 +78,7 @@ require("lazy").setup({
       },
     },
   },
-  install = { colorscheme = { "tokyonight" } },
+  install = { colorscheme = { "tokyonight", "catppuccin" } },
 })
 
 vim.cmd.colorscheme(C.colors.colorscheme)

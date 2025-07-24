@@ -13,7 +13,6 @@ vim.keymap.del("n", "<leader><tab>]")
 vim.keymap.del("n", "<leader><tab><tab>")
 vim.keymap.del("n", "<leader><tab>d")
 vim.keymap.del("n", "<leader><tab>[")
--- vim.keymap.del("n", "<Space>tn")
 
 -- this is the way:
 map({ "n", "t" }, "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
@@ -112,3 +111,5 @@ end, { desc = "bold: wrap selection with **" })
 map("v", "<leader>i", function()
   require("lib.visual").wrap("_", "_")
 end, { desc = "italic: wrap selection with _" })
+
+map("n", "<leader>t3", require("lib.term").create_3_terms, { desc = "spawn 3 terminals" })

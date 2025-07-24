@@ -1,6 +1,8 @@
 #!/usr/bin/env -S nvim -l
 -- vim: ft=lua
 
+-- https://zignar.net/2025/03/02/no-config-python-debugging-using-neovim/
+
 -- We use the "luv" Lua bindings that vim includes to spawn the debugpy process
 -- In older versions this was exposed as `vim.loop`, in newer version it is `vim.uv`
 local uv = vim.uv or vim.loop
