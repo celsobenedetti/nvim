@@ -3,7 +3,7 @@ local M = {}
 M.colorscheme = "evergarden"
 M.background = "dark"
 
-local default_nvim = {
+M.default_nvim = {
   black = "#0B0C11",
   white = "#d7dae1",
   red = "#ffbcb5",
@@ -20,7 +20,7 @@ local default_nvim = {
   subtext = "#ADC9BC",
 }
 
-local tokyonight = {
+M.tokyonight = {
   bg = "#24283b",
   bg_dark = "#1f2335",
   bg_dark1 = "#1b1e2d",
@@ -58,7 +58,7 @@ local tokyonight = {
   },
 }
 
-local evergarden = {
+M.evergarden = {
   base = "#1D2428",
 
   black = "#171C1F",
@@ -135,5 +135,4 @@ local evergarden = {
   },
 }
 
-local colorscheme = evergarden
-return vim.tbl_deep_extend("keep", M, colorscheme)
+return M

@@ -1,5 +1,10 @@
+local colors = require("config.colors")
+
 C = {
-  colors = require("config.colors"),
+  colors = vim.tbl_deep_extend("keep", colors.evergarden, {
+    colorscheme = colors.colorscheme,
+    background = colors.background,
+  }),
 
   notes = require("config.zk"), -- NOTES config
 }
