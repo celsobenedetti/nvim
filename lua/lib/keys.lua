@@ -1,0 +1,33 @@
+local M = {}
+
+--- runs first set of keys immediately
+--- runs second set of keys after delay
+---@param key1 string
+---@param key2 string
+---@param delay number | nil
+M.with_delay = function(key1, key2, delay)
+  if delay == nil then
+    delay = vim.g.animation_duration or 100
+  end
+  delay = 1.4 * delay
+
+  return function()
+    vim.api.nvim_feedkeys(Keys(key1), "n", true)
+    vim.defer_fn(function()
+      vim.cmd("normal! " .. key2)
+    end, delay)
+  end
+end
+
+M.G = function()
+  local count = vim.v.count or 1
+  if count > 1 then
+    vim.cmd(":" .. count)
+    return
+  end
+
+  local feed_keys = M.with_delay("G", "zz", 1.5 * vim.g.animation_duration)
+  feed_keys()
+end
+
+return M
