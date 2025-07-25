@@ -2,8 +2,7 @@
 return {
   {
     "OXY2DEV/markview.nvim",
-    -- lazy = false, -- Recommended
-    ft = { "markdown", "Avante" }, -- If you decide to lazy-load anyway
+    ft = { "markdown", "Avante", "codecompanion" }, -- If you decide to lazy-load anyway
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "nvim-tree/nvim-web-devicons",
@@ -13,6 +12,10 @@ return {
       require("markview").setup({
         -- horizontal_rules = presets.horizontal_rules.thin,
         checkboxes = presets.checkboxes.nerd,
+        preview = {
+          filetypes = { "markdown", "codecompanion" },
+          ignore_buftypes = {},
+        },
         markdown = {
           headings = presets.headings.glow,
           horizontal_rules = {

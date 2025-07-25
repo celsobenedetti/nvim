@@ -135,7 +135,7 @@ local function keys_with_delay(key1, key2, delay)
   if delay == nil then
     delay = vim.g.animation_duration or 100
   end
-  delay = 1.1 * delay
+  delay = 1.5 * delay
 
   return function()
     vim.api.nvim_feedkeys(Keys(key1), "n", true)

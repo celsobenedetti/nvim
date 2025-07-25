@@ -4,6 +4,7 @@ return {
     keys = {
       { "<leader>cca", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion actions", mode = { "n", "v" } },
       { "<leader>ccc", "<cmd>CodeCompanionChat<cr>", desc = "CodeCompanion chat", mode = { "n", "v" } },
+      { "<leader>cp", "<cmd>CodeCompanion<cr>", desc = "CodeCompanion prompt", mode = { "n", "v" } },
     },
     config = function()
       require("codecompanion").setup({
