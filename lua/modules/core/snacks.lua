@@ -16,5 +16,10 @@ return {
     { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
     { "<leader>fF", function() Snacks.picker.git_files() end, desc = "Find Files (git-files)" },
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
+    { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
   },
+
+  opts = function(_, opts)
+    opts.picker.exclude = vim.tbl_extend("keep", opts.picker.exclude or {}, vim.g.grep_ignore or {})
+  end,
 }
