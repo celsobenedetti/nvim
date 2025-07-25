@@ -3,8 +3,9 @@ return {
   "folke/snacks.nvim",
   opts = function(_, opts)
     opts.scroll = vim.tbl_deep_extend("force", opts.scroll, {
+      enabled = vim.g.animation,
       animate = {
-        duration = { step = 15, total = 50 },
+        duration = { step = 15, total = vim.g.animation_duration },
         easing = "linear",
       },
       -- faster animation when repeating scroll after delay

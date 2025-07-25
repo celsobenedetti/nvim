@@ -6,9 +6,12 @@
 vim.opt.spelllang = { "en", "pt" }
 vim.g.supermaven_inline_completion = true
 
+vim.g.animation = true
+vim.g.animation_duration = 50
+
 vim.g.should_center = {
-  on_G = true,
-  on_n = false,
+  on_n = true,
+  on_gg = true,
   on_ctrl_d = true,
 }
 

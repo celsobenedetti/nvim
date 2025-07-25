@@ -129,7 +129,35 @@ end, { desc = "italic: wrap selection with _" })
 
 map("n", "<leader>t3", require("lib.term").create_3_terms, { desc = "spawn 3 terminals" })
 
+--- runs first set of keys immediately
+--- runs second set of keys after delay
+---@param key1 string
+---@param key2 string
+---@param delay number | nil
+local function keys_with_delay(key1, key2, delay)
+  if delay == nil then
+    delay = vim.g.animation_duration or 100
+  end
+  delay = 1.1 * delay
+
+  return function()
+    vim.api.nvim_feedkeys(Keys(key1), "n", true)
+    vim.defer_fn(function()
+      vim.cmd("normal! " .. key2)
+    end, delay)
+  end
+end
+
 if vim.g.should_center.on_n then
-  map("n", "n", "nzz", { desc = "Center screen on next", noremap = true })
-  map("n", "N", "Nzz", { desc = "Center screen on prev", noremap = true })
+  map("n", "n", keys_with_delay("n", "zz"), { desc = "center on next", noremap = true })
+  map("n", "N", keys_with_delay("N", "zz"), { desc = "center on prev", noremap = true })
+end
+
+if vim.g.should_center.on_gg then
+  map("n", "G", keys_with_delay("G", "zz", 1.5 * vim.g.animation_duration), { desc = "center on gg", noremap = true })
+end
+
+if vim.g.should_center.on_ctrl_d then
+  map("n", "<C-d>", keys_with_delay("<C-d>", "zz"), { desc = "center on ctrl-d", noremap = true })
+  map("n", "<C-u>", keys_with_delay("<C-u>", "zz"), { desc = "center on ctrl-u", noremap = true })
 end
