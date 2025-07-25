@@ -24,12 +24,22 @@ return {
             })
           end,
         },
+
         strategies = {
-          chat = { adapter = "openai" },
+          chat = {
+            adapter = "openai",
+
+            slash_commands = {
+              ["file"] = { opts = { provider = "snacks", contains_code = true } },
+              ["buffer"] = { opts = { provider = "snacks", contains_code = true } },
+              ["help"] = { opts = { provider = "snacks", contains_code = true } },
+            },
+          },
           inline = { adapter = "openai" },
           cmd = { adapter = "openai" },
         },
         extensions = {
+          spinner = {},
           history = {
             enabled = true,
             opts = {
@@ -42,7 +52,7 @@ return {
               -- Number of days after which chats are automatically deleted (0 to disable)
               expiration_days = 0,
               -- Picker interface (auto resolved to a valid picker)
-              picker = "telescope", --- ("telescope", "snacks", "fzf-lua", or "default")
+              picker = "snacks", --- ("telescope", "snacks", "fzf-lua", or "default")
               ---Optional filter function to control which chats are shown when browsing
               chat_filter = nil, -- function(chat_data) return boolean end
               -- Customize picker keymaps (optional)
@@ -125,6 +135,7 @@ return {
 
       -- extensions
       "ravitemer/codecompanion-history.nvim",
+      "franco-ruggeri/codecompanion-spinner.nvim",
     },
   },
 }
