@@ -151,7 +151,16 @@ if vim.g.should_center.on_n then
 end
 
 if vim.g.should_center.on_gg then
-  map("n", "G", keys_with_delay("G", "zz", 1.5 * vim.g.animation_duration), { desc = "center on gg", noremap = true })
+  map("n", "G", function()
+    local count = vim.v.count or 1
+    if count > 1 then
+      vim.cmd(":" .. count)
+      return
+    end
+
+    local feed_keys = keys_with_delay("G", "zz", 1.5 * vim.g.animation_duration)
+    feed_keys()
+  end, { desc = "center on gg", noremap = true })
 end
 
 if vim.g.should_center.on_ctrl_d then
