@@ -2,7 +2,7 @@ return {
 
   {
     "yetone/avante.nvim",
-    lazy = true,
+    event = "VeryLazy",
     version = false, -- set this if you want to always pull the latest change
     opts = {
       provider = "openai",
@@ -23,10 +23,9 @@ return {
         clear = "<leader>aC", -- clear
       },
 
-      rules = {
-        project_dir = ".avante/rules", -- relative to project root, can also be an absolute path
-        global_dir = "~/.config/ai-rules/rules/", -- absolute path
-      },
+      override_prompt_dir = function()
+        return vim.fn.expand("~/.config/ai-rules/avante")
+      end,
     },
 
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
