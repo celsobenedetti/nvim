@@ -7,7 +7,8 @@ vim.opt.spelllang = { "en", "pt" }
 vim.g.supermaven_inline_completion = true
 
 vim.g.animation = true
-vim.g.animation_duration = 50
+vim.g.animation_duration = 40
+vim.g.delay = 80 -- delay used to accomodate for animations
 
 vim.g.should_center = {
   on_n = true,

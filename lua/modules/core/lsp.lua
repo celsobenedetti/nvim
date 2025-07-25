@@ -2,6 +2,12 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
+      local keys = require("lazyvim.plugins.lsp.keymaps").get()
+
+      vim.list_extend(keys, {
+        { "gr", false },
+      })
+
       opts.diagnostics.virtual_text = false
       opts.diagnostics.float = { border = "rounded", source = true }
 

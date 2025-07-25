@@ -24,6 +24,7 @@ return {
 
   opts = function(_, opts)
     opts.picker.exclude = vim.tbl_extend("keep", opts.picker.exclude or {}, vim.g.grep_ignore or {})
+    opts.terminal.enabled = false
 
     opts.picker.win = opts.picker.win or {}
     opts.picker.win.input = opts.picker.win.input or {}
@@ -35,7 +36,6 @@ return {
     })
 
     opts.picker.actions = vim.tbl_deep_extend("force", opts.picker.actions or {}, {
-
       flash = function(picker)
         require("flash").jump({
           pattern = "^",
