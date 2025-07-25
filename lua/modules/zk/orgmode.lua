@@ -1,19 +1,19 @@
 local refile_file = "~/notes/0-inbox/refile.org"
 local org_files = {
   refile_file,
-  C.notes.ORGFILES .. "/*",
-  C.notes.INBOX .. "/phone_refile.org",
-  C.notes.PROJECTS .. "**/*",
-  C.notes.AREAS .. "**/*",
+  vim.g.notes.INBOX .. "/phone_refile.org",
+  vim.g.notes.PROJECTS .. "**/*",
+  vim.g.notes.AREAS .. "**/*",
 }
 
 local function e(file)
   return ":e " .. file .. "<cr>"
 end
 
-map("n", "<leader>i", e(C.notes.ORG_INDEX), { desc = "Orgmode index" })
-map("n", "<leader>ow", e(C.notes.ORG_WORK), { desc = "Orgmode work file" })
-map("n", "<leader>or", e(C.notes.ORG_REFILE), { desc = "Orgmode refile file" })
+map("n", "<leader>i", e(vim.g.notes.ORG_INDEX), { desc = "Orgmode index" })
+map("n", "<leader>ow", e(vim.g.notes.ORG_WORK), { desc = "Orgmode work file" })
+map("n", "<leader>or", e(vim.g.notes.ORG_REFILE), { desc = "Orgmode refile file" })
+map("n", "<leader>rr", e(vim.g.notes.ORG_REFILE), { desc = "Orgmode refile file" })
 
 return {
   {

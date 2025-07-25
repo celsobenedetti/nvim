@@ -20,8 +20,12 @@ vim.g.grep_ignore = {
   "instascan.min.js",
 }
 
-vim.opt.laststatus = 3 -- avante.nvim: views can only be fully collapsed with the global statusline
-
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200
 vim.opt.swapfile = false
+
+local colors = require("config.colors")
+vim.g.colors = colors.evergarden
+vim.g.colorscheme = colors.colorscheme
+vim.g.background = colors.background
+vim.g.notes = require("config.zk") -- NOTES config

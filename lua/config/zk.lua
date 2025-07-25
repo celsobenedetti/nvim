@@ -6,19 +6,13 @@ local M = {
   RESOURCES = os.getenv("RESOURCES") or "",
   ARCHIVES = os.getenv("ARCHIVES") or "",
   DAILY = os.getenv("DAILY") or "",
-  ORGFILES = os.getenv("ORGFILES") or "",
 
-  -- set below
-  ORG_REFILE = "",
-  ORG_INDEX = "",
-  ORG_WORK = "",
+  ORG_INDEX = os.getenv("ORG_INDEX") or "",
+  ORG_REFILE = os.getenv("ORG_REFILE") or "",
+  ORG_WORK = os.getenv("ORG_WORK") or "",
 
   AI_RULES = os.getenv("AI_RULES") or "",
 }
-
-M.ORG_REFILE = M.INBOX .. "/refile.org"
-M.ORG_INDEX = M.ORGFILES .. "/i.org"
-M.ORG_WORK = M.AREAS .. "/work/work.org"
 
 for k, v in pairs(M) do
   if M[k] == "" then

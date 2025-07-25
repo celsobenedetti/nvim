@@ -80,4 +80,4 @@ require("lazy").setup({
   install = { colorscheme = { "tokyonight", "catppuccin" } },
 })
 
-vim.cmd.colorscheme(C.colors.colorscheme)
+vim.cmd.colorscheme(vim.g.colorscheme)
