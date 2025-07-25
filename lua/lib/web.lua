@@ -50,7 +50,15 @@ end
 ---@return string
 local query_from_prefix = function(query)
   query = strings.trim(query)
-  for prefix, engine in pairs(search_engines) do
+  local prefixes = {}
+  for p in pairs(search_engines) do
+    table.insert(prefixes, p)
+  end
+  table.sort(prefixes, function(a, b)
+    return #a > #b
+  end)
+  for _, prefix in ipairs(prefixes) do
+    local engine = search_engines[prefix]
     if prefix == query:sub(1, #prefix):lower() then
       query = query:sub(#prefix + 1)
       query = strings.trim(query)
