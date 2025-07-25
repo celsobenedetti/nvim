@@ -3,9 +3,39 @@ local strings = require("lib.strings")
 -- module: web.lua
 local M = {}
 
+---@param s string
+---@return boolean
+M.does_string_match_url_without_protocol = function(s)
+  if s:find("^[a-z]+://") then
+    return false
+  end
+  -- match 'label.label' or more with each label 1+ chars, only alphanum/dash, no leading/trailing dash
+  local labels = {}
+  for label in s:gmatch("([^.]+)") do
+    table.insert(labels, label)
+  end
+  if #labels < 2 then
+    return false
+  end
+  local tld = labels[#labels]
+  if not tld:match("^[a-zA-Z][a-zA-Z]+$") then
+    return false
+  end
+  for i = 1, #labels - 1 do
+    local label = labels[i]
+    if not label:match("^[a-zA-Z0-9][a-zA-Z0-9%-]*[a-zA-Z0-9]$") and not label:match("^[a-zA-Z0-9]$") then
+      return false
+    end
+    if label:find("%-%-") then
+      return false
+    end
+  end
+  return true
+end
+
 ---@type table<string, string|function>
 local search_engines = {
-  g = "https://www.google.com/search?q=",
+  ["g "] = "https://www.google.com/search?q=",
   y = "https://www.youtube.com/results?search_query=",
   gh = function(q)
     if q:find("/") then
@@ -102,11 +132,15 @@ M.get_search_url_from_query = function(s)
   end
 
   local query = query_from_prefix(s)
-  if not query or query == "" then
-    return ""
+  if query and #query > 0 then
+    return query
   end
 
-  return query
+  if M.does_string_match_url_without_protocol(s) then
+    return "https://" .. s
+  end
+
+  return ""
 end
 
 -- search gets the text from the current visual selection

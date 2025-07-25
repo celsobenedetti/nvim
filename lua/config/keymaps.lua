@@ -92,9 +92,6 @@ map("n", "j", jump.down)
 
 map("v", "gx", function()
   local s = require("lib.visual").get_selection()
-
-  -- call search with pcall
-  -- require("lib.web").search(s or "")
   local ok, _ = pcall(require("lib.web").search, s or "")
   if ok then
     return
