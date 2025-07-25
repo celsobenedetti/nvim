@@ -50,7 +50,7 @@ local search_engines = {
 local regex_redirects = {
   {
     -- github.com/owner/repo
-    "^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$",
+    "^[a-zA-Z0-9_-]+/[a-zA-Z0-9_.-]+$",
     function(s)
       return "https://github.com/" .. s
     end,
@@ -153,6 +153,7 @@ M.search = function(s)
 
   s = strings.trim(s)
   local query = M.get_search_url_from_query(s)
+
   if query == "" then
     query = (search_engines.g .. strings.urlencode(s))
   end

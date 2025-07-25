@@ -33,11 +33,16 @@ describe("web.get_search_url_from_query", function()
       input = "gitlab.com",
       expected = "https://gitlab.com",
     },
+    {
+      desc = "should match git repo",
+      input = "robitx/gp.nvim",
+      expected = "https://github.com/robitx/gp.nvim",
+    },
   }
 
   for _, case in ipairs(cases) do
     it(case.desc, function()
-      assert.equals(case.expected, web.get_search_url_from_query(case.input))
+      assert.equals(web.get_search_url_from_query(case.input), case.expected)
     end)
   end
 end)
