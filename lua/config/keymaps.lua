@@ -6,17 +6,16 @@ vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<leader>n")
 
 -- Lazyvim tab management is not to my preference
-vim.keymap.del("n", "<leader><tab>l")
-vim.keymap.del("n", "<leader><tab>o")
-vim.keymap.del("n", "<leader><tab>f")
-vim.keymap.del("n", "<leader><tab>]")
-vim.keymap.del("n", "<leader><tab><tab>")
-vim.keymap.del("n", "<leader><tab>d")
-vim.keymap.del("n", "<leader><tab>[")
-
--- this is the way:
-map({ "n", "t" }, "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
-map({ "n", "t" }, "<leader>tn", ":tabnew %<cr>", { desc = "Send buffer to new tab" })
+-- vim.keymap.del("n", "<leader><tab>l")
+-- vim.keymap.del("n", "<leader><tab>o")
+-- vim.keymap.del("n", "<leader><tab>f")
+-- vim.keymap.del("n", "<leader><tab>]")
+-- vim.keymap.del("n", "<leader><tab><tab>")
+-- vim.keymap.del("n", "<leader><tab>d")
+-- vim.keymap.del("n", "<leader><tab>[")
+-- -- this is the way:
+-- map({ "n", "t" }, "<leader><tab>", ":tabnext<cr>", { desc = "Next Tab" })
+-- map({ "n", "t" }, "<leader>tn", ":tabnew %<cr>", { desc = "Send buffer to new tab" })
 
 map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 
@@ -84,7 +83,7 @@ local jump = require("lib.jump")
 map("n", "k", jump.up)
 map("n", "j", jump.down)
 
-map({ "v" }, "<leader>gs", require("lib.web").google_search, { desc = "Search current selected string with google" })
+map("v", "gs", require("lib.web").google_search, { desc = "Search current selected string with google" })
 
 local diagnostic_goto = function(next, severity)
   severity = severity and vim.diagnostic.severity[severity] or nil
@@ -113,3 +112,17 @@ map("v", "<leader>i", function()
 end, { desc = "italic: wrap selection with _" })
 
 map("n", "<leader>t3", require("lib.term").create_3_terms, { desc = "spawn 3 terminals" })
+
+if vim.g.should_center.on_n then
+  map("n", "n", "nzz", { desc = "Center screen on next" })
+  map("n", "N", "Nzz", { desc = "Center screen on prev" })
+end
+
+if vim.g.should_center.on_ctrl_d then
+  map("n", "<C-u>", "<C-u>zz", { desc = "Center screen on up" })
+  map("n", "<C-d>", "<C-d>zz", { desc = "Center screen on down" })
+end
+
+if vim.g.should_center.on_G then
+  map("n", "G", "Gzz", { desc = "Center screen on up" })
+end
