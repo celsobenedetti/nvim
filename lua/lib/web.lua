@@ -18,10 +18,9 @@ local search_engines = {
 
 ---@type table<string, string|function>
 local regex_redirects = {
-
   {
     -- github.com/owner/repo
-    "^([^/]+)/([^/]+)$",
+    "^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$",
     function(s)
       return "https://github.com/" .. s
     end,
@@ -54,9 +53,10 @@ local query_from_prefix = function(query)
   for prefix, engine in pairs(search_engines) do
     if prefix == query:sub(1, #prefix):lower() then
       query = query:sub(#prefix + 1)
+      query = strings.trim(query)
 
       if type(engine) == "string" then
-        return engine .. query
+        return engine .. strings.urlencode(query)
       end
 
       return engine(strings.trim(query))
@@ -112,7 +112,7 @@ M.search = function(s)
   s = strings.trim(s)
   local query = M.get_search_url_from_query(s)
   if query == "" then
-    query = (search_engines.g .. s)
+    query = (search_engines.g .. strings.urlencode(s))
   end
   vim.ui.open(query)
 end
