@@ -87,6 +87,7 @@ return {
         DiffChange = { fg = C.colors.green, bg = C.colors.gray }, -- markview heading 1
         Underlined = { style = { "underline", "italic" } },
         LspReferenceRead = { bg = C.colors.gray },
+        LspReferenceText = { bg = C.colors.gray },
 
         -- orgmode
         ["@org.plan.org"] = { fg = C.colors.gray },
