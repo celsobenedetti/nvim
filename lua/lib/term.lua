@@ -24,4 +24,29 @@ M.create_3_terms = function()
   -- Optional: move back to starting window (if desired)
 end
 
+local state = {
+  buf = false,
+}
+
+-- friendly terminal on the bottom
+
+-- requirements:
+--     1. quick toggle, preserve state
+--     2. must behave like any old buffer
+--     3. can send to different tab
+--     4. once in different tab, reset "friendly term" state
+--         if toggle again,
+--
+-- references:
+--   https://www.youtube.com/watch?v=ooTcnx066Do
+--   ~/local/advent-of-nvim-tj/nvim/plugin/floaterminal.lua
+M.toggle_term = function()
+  local job_id = 0
+  job_id = vim.bo.channel
+  vim.cmd.vnew()
+  vim.cmd.term()
+  vim.cmd.wincmd("J")
+  vim.api.nvim_win_set_height(0, 5)
+end
+
 return M

@@ -4,8 +4,8 @@
 
 vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<leader>n")
-vim.keymap.del("n", "<C-/>")
-vim.keymap.del("t", "<C-/>")
+vim.keymap.del({ "n", "t" }, "<C-_>")
+vim.keymap.del({ "n", "t" }, "<C-/>")
 
 local open = require("lib.open")
 local telescope = require("lib.telescope")
@@ -44,6 +44,7 @@ map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wr
 -- stylua: ignore end
 
 map("n", "<leader>t3", term.create_3_terms, { desc = "spawn 3 terminals" })
+map("n", "<C-_>", term.toggle_term, { desc = "term: toggle friendly terminal" })
 
 if vim.g.should_center.on_n then
   map("n", "n", keys.with_delay("n", "zz"), { desc = "center on next", noremap = true })

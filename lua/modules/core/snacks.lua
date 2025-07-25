@@ -9,7 +9,6 @@ return {
     { "<leader>dot", function() Snacks.picker.files({cwd="~/.dotfiles", title = "~/.dotfiles", hidden = true, }) end, desc = "search dotfiles", },
     { "<leader>of", function() Snacks.picker.files({cwd="~/notes", title = " Org Files", ft ="org" }) end, desc = "search orgifles", },
     { "<leader>fn", function() Snacks.picker.files({cwd="~/notes", title = "All notes",  }) end, desc = "search all notes", },
-    { "<leader>sr", function() require("persistence").load() end, desc = "Restore Session" },
     { "<leader>rs", function() require("persistence").load() end, desc = "Restore Session" },
     { "<leader>qS", function() require("persistence").select() end,desc = "Select Session" },
     { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
@@ -17,14 +16,16 @@ return {
     { "<leader>fF", function() Snacks.picker.git_files() end, desc = "Find Files (git-files)" },
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
+    { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
     { "<leader>ff", LazyVim.pick("files", {
       hidden = require("lib.cwd").includes({"dotfiles" })
     }), desc = "Find Files (Root Dir)" },
+    { '<c-/>', false }
   },
 
   opts = function(_, opts)
+    opts.terminal = { enabled = false }
     opts.picker.exclude = vim.tbl_extend("keep", opts.picker.exclude or {}, vim.g.grep_ignore or {})
-    opts.terminal.enabled = false
 
     opts.picker.win = opts.picker.win or {}
     opts.picker.win.input = opts.picker.win.input or {}
