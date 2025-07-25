@@ -1,3 +1,5 @@
+map = vim.keymap.set
+
 local colors = require("config.colors")
 
 C = {
@@ -12,5 +14,3 @@ C = {
 Keys = function(str)
   return vim.api.nvim_replace_termcodes(str, false, false, true)
 end
-
-map = vim.keymap.set
