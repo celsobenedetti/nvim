@@ -28,6 +28,8 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   desc = "Run on all files",
 })
 
+-- VimEnter autocmd should fold all
+-- BufRead autocmd should fold frontmatter
 local markdown_group = Augroup("Markdown")
 local markdown = "*.md"
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -63,6 +65,3 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end, 100)
   end,
 })
-
--- VimEnter autocmd should fold all
--- BufRead autocmd should fold frontmatter
