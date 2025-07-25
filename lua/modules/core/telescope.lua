@@ -1,3 +1,9 @@
+if true then
+  -- NOTE: 2025-07-25
+  -- I don't think I need this because snacks.picker has bufdelete actions
+  return {}
+end
+
 return {
   "telescope/telescope.nvim",
   keys = {
