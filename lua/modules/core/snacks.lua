@@ -17,6 +17,9 @@ return {
     { "<leader>fF", function() Snacks.picker.git_files() end, desc = "Find Files (git-files)" },
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
+    { "<leader>ff", LazyVim.pick("files", {
+      hidden = require("lib.cwd").includes({"dotfiles" })
+    }), desc = "Find Files (Root Dir)" },
   },
 
   opts = function(_, opts)
