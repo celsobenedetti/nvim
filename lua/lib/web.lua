@@ -20,7 +20,7 @@ local search_engines = {
 local regex_redirects = {
   {
     -- github.com/owner/repo
-    "^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$",
+    "^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$",
     function(s)
       return "https://github.com/" .. s
     end,
