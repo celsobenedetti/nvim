@@ -2,6 +2,7 @@ return {
 
   "folke/snacks.nvim",
   -- stylua: ignore
+  --
   keys = {
     { "<leader>no", function() Snacks.picker.notifications() end, desc = "Notification History", },
     { "<leader>rg", function() Snacks.picker.grep() end, desc = "Grep", },
@@ -32,6 +33,7 @@ return {
     opts.picker.win.input.keys = vim.tbl_deep_extend("force", opts.picker.win.input.keys or {}, {
       ["<c-x>"] = { "bufdelete", mode = { "n", "i" } },
       ["<a-s>"] = { "flash", mode = { "n", "i" } },
+      ["<c-y>"] = { "yank", mode = { "n", "i" } },
       ["<a-q>"] = { "qflist", mode = { "n", "i" } },
       ["s"] = { "flash" },
     })
