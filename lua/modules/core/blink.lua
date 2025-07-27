@@ -1,6 +1,9 @@
 return {
   "saghen/blink.cmp",
   opts = function(_, opts)
+    opts.enabled = function()
+      return vim.bo.buftype ~= "prompt" and vim.bo.filetype ~= "DressingInput" and vim.b.completion ~= false
+    end
     opts.completion = {
       keyword = { range = "full" },
       menu = {
