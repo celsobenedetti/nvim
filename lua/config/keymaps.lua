@@ -43,7 +43,6 @@ map("v", "<leader>b", function() visual.wrap("**", "**") end, { desc = "bold: wr
 map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wrap selection with _" })
 -- stylua: ignore end
 
-map("n", "<leader>t3", term.create_3_terms, { desc = "spawn 3 terminals" })
 map("n", "<C-_>", term.toggle_term, { desc = "term: toggle friendly terminal" })
 
 if vim.g.should_center.on_n then

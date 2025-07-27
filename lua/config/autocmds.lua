@@ -1,5 +1,5 @@
 function Augroup(name)
-  return vim.api.nvim_create_augroup("Custom_Augroup_" .. name, { clear = true })
+  return vim.api.nvim_create_augroup("celso_augruop_" .. name, { clear = true })
 end
 -- Autocmds are automatically loaded on the VeryLazy event
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
