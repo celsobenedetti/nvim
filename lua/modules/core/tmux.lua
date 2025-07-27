@@ -14,12 +14,27 @@ local cmd = function(cmd)
     end
   end
 end
+
+-- disable default mappings
+vim.cmd("let g:tmux_navigator_no_mappings = 1")
+
 return {
   {
     "christoomey/vim-tmux-navigator",
     keys = {
       { "<C-h>", cmd("TmuxNavigateLeft"), desc = "Go to Left tmux pane" },
-      { "<C-j>", cmd("TmuxNavigateDown"), desc = "Go to Down tmux pane" },
+      {
+        "<C-j>",
+        function()
+          -- workaround to focus floating toggle term from ./lua/lib/term.lua
+          if vim.g.toggle_term_win then
+            vim.api.nvim_set_current_win(vim.g.toggle_term_win)
+          else
+            cmd("TmuxNavigateDown")()
+          end
+        end,
+        desc = "Go to Down tmux pane",
+      },
       { "<C-k>", cmd("TmuxNavigateUp"), desc = "Go to Up tmux pane" },
       { "<C-l>", cmd("TmuxNavigateRight"), desc = "Go to Right tmux pane" },
     },

@@ -15,14 +15,21 @@ local state = {
 -- --        can send to new tab, split, vsplit, etc
 -- --     3. when sending terminal to new tab, reset state
 --            if toggled again, fresh terminal is opened
--- --
--- -- references:
--- --   https://www.youtube.com/watch?v=ooTcnx066Do
--- --   ~/local/advent-of-nvim-tj/nvim/plugin/floaterminal.lua
+--
+-- NOTE : 2025-07-27 I decided to go for a "relative" (float) window for the terminal on the bottom
+-- this is because we can use (style = "minimal", border = "single") which look great.
+-- however this causes issues, since floating window navigation is treaky.
+-- to work around this, I added a "focus" handler for <C-j> in ./lua/modules/core/tmux.lua
+--
+--    references:
+--      https://www.youtube.com/watch?v=ooTcnx066Do
 M.toggle_term = function()
+  -- --   ~/local/advent-of-nvim-tj/nvim/plugin/floaterminal.lua
   local ok, current_buf = pcall(vim.api.nvim_win_get_buf, state.win)
   if not ok then
-    state.win = window.below(state.buf)
+    state.win = window.relative_below(state.buf)
+    -- TODO: let's create singleton, global ToggleTerm class to hold this state instead of holding state in 2 places
+    vim.g.toggle_term_win = state.win
     if not state.buf then
       vim.api.nvim_command("terminal")
     end
@@ -42,6 +49,8 @@ vim.api.nvim_create_autocmd("TabNewEntered", {
   callback = function()
     if vim.api.nvim_get_current_buf() == state.buf then
       state.buf = nil
+      state.win = nil
+      vim.g.toggle_term_win = nil
     end
   end,
 })
