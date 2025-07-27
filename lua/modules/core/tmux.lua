@@ -26,10 +26,8 @@ return {
       {
         "<C-j>",
         function()
-          -- workaround to focus floating toggle term from ./lua/lib/term.lua
-          if vim.g.toggle_term_win then
-            vim.api.nvim_set_current_win(vim.g.toggle_term_win)
-          else
+          -- workaround to focus floating toggle term from ./lua/lib/toggle_term.lua
+          if not ToggleTerm.focus() then
             cmd("TmuxNavigateDown")()
           end
         end,

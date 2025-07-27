@@ -13,7 +13,6 @@ local web = require("lib.web")
 local jump = require("lib.jump")
 local visual = require("lib.visual")
 local keys = require("lib.keys")
-local term = require("lib.term")
 
 map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 map("t", "<esc><esc>", "<C-\\><C-n>", { desc = "Escape insert mode in terminal" }) -- let me escape insert in terminal!
@@ -43,7 +42,7 @@ map("v", "<leader>b", function() visual.wrap("**", "**") end, { desc = "bold: wr
 map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wrap selection with _" })
 -- stylua: ignore end
 
-map("n", "<C-_>", term.toggle_term, { desc = "term: toggle friendly terminal" })
+map("n", "<C-_>", ToggleTerm.toggle, { desc = "term: toggle friendly terminal" })
 
 if vim.g.should_center.on_n then
   map("n", "n", keys.with_delay("n", "zz"), { desc = "center on next", noremap = true })

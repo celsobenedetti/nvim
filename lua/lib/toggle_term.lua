@@ -1,8 +1,6 @@
 local window = require("lib.window")
 
-local M = {}
-
-local state = {
+local M = {
   win = nil, --- @type number | nil
   buf = nil, --- @type number | nil
 }
@@ -23,23 +21,29 @@ local state = {
 --
 --    references:
 --      https://www.youtube.com/watch?v=ooTcnx066Do
-M.toggle_term = function()
+M.toggle = function()
   -- --   ~/local/advent-of-nvim-tj/nvim/plugin/floaterminal.lua
-  local ok, current_buf = pcall(vim.api.nvim_win_get_buf, state.win)
+  local ok, current_buf = pcall(vim.api.nvim_win_get_buf, M.win)
   if not ok then
-    state.win = window.relative_below(state.buf)
-    -- TODO: let's create singleton, global ToggleTerm class to hold this state instead of holding state in 2 places
-    vim.g.toggle_term_win = state.win
-    if not state.buf then
+    M.win = window.relative_below(M.buf)
+    if not M.buf then
       vim.api.nvim_command("terminal")
     end
 
     return
   end
 
-  state.buf = current_buf
-  vim.api.nvim_win_hide(state.win)
-  state.window = nil
+  M.buf = current_buf
+  vim.api.nvim_win_hide(M.win)
+  M.window = nil
+end
+
+M.focus = function()
+  if M.win then
+    pcall(vim.api.nvim_set_current_win, M.win)
+  end
+
+  return M.win
 end
 
 -- this augruop serves as a "tabpage" event handler for friendly term
@@ -47,10 +51,9 @@ end
 -- this disowns terminal, leaving it as a regular buffer
 vim.api.nvim_create_autocmd("TabNewEntered", {
   callback = function()
-    if vim.api.nvim_get_current_buf() == state.buf then
-      state.buf = nil
-      state.win = nil
-      vim.g.toggle_term_win = nil
+    if vim.api.nvim_get_current_buf() == M.buf then
+      M.buf = nil
+      M.win = nil
     end
   end,
 })
