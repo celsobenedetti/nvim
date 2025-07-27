@@ -141,7 +141,7 @@ return {
         -- You should not change this unless the plugin does not work with your configuration
         overwrite_events = nil,
       },
-      disabled_ft = {}, -- List of filetypes to disable the plugin
+      disabled_ft = { "json" }, -- List of filetypes to disable the plugin
     })
   end,
 }

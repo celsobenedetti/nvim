@@ -65,3 +65,9 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end, 100)
   end,
 })
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  callback = function()
+    vim.api.nvim_feedkeys("i", "n", true)
+  end,
+})
