@@ -11,7 +11,7 @@ local M = {}
 M.spawn_term = function(term)
   vim.cmd("tabnew")
   vim.cmd("terminal " .. term.cmd)
-  vim.api.nvim_buf_set_name(0, term.title)
+  vim.api.nvim_buf_set_name(0, term.title .. ".zsh")
 end
 
 -- read package.json and return scripts section
@@ -30,6 +30,7 @@ M.get_scripts = function()
     table.insert(scripts, {
       text = k,
       file = v,
+      cmd = v,
       preview = {
         ft = "json",
         text = vim.inspect({ script = k, cmd = v }),
@@ -57,9 +58,27 @@ M.pick_package_json_script = function()
       return { { item.text } }
     end,
     confirm = function(picker, item)
-      if item then
+      local selected = picker:selected({ fallback = true })
+
+      -- "confirmed" item will not be in the selected, unless manually selected
+      local confirmedFound = false
+
+      -- for item in selected
+      for _, i in ipairs(selected) do
+        M.spawn_term({ title = i.text, cmd = i.file })
+
+        if i.cmd == item.file then
+          confirmedFound = true
+        end
+      end
+
+      if not confirmedFound then
         M.spawn_term({ title = item.text, cmd = item.file })
       end
+
+      -- if item then
+      --   M.spawn_term({ title = item.text, cmd = item.file })
+      -- end
       picker:close()
     end,
   })
