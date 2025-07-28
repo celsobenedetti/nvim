@@ -25,6 +25,7 @@ return {
         -- filter("[orgmode] No headline found with title'"), -- annoying for my obsidian + orgmode setup
         filter("Can't find file"), -- suppress failed "gf" messages
         filter("Error indecoration provider"), -- TreeSitter error when blink renders supermaven completion
+        filter("_folding_range.lua"), -- some error likely related to origami.nvim
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd
