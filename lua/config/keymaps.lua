@@ -44,6 +44,10 @@ map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wr
 
 map("n", "<C-_>", ToggleTerm.toggle, { desc = "term: toggle friendly terminal" })
 
+vim.keymap.set("n", "<leader>pj", function()
+  require("lib.term").pick_package_json_script()
+end)
+
 if vim.g.should_center.on_n then
   map("n", "n", keys.with_delay("n", "zz"), { desc = "center on next", noremap = true })
   map("n", "N", keys.with_delay("N", "zz"), { desc = "center on prev", noremap = true })
