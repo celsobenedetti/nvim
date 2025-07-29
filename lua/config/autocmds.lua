@@ -68,6 +68,9 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
+    vim.opt.number = false
+    vim.opt.relativenumber = false
     vim.api.nvim_feedkeys("i", "n", true)
   end,
+  group = vim.api.nvim_create_augroup("custom-term-open", { clear = true }),
 })
