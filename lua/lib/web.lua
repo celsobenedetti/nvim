@@ -57,13 +57,18 @@ local regex_redirects = {
   },
   { "^lazyvim", "https://lazyvim.org" },
   { "^mt$", "https://monkeytype.com" },
+  {
+    "VA-[0-9]*",
+    function(s)
+      return vim.g.web.jira .. s
+    end,
+  },
 }
 
 ---@param query string
 ---@return string
 local redirect_from_regex = function(query)
   query = strings.trim(query)
-  query = query:lower()
   for _, pair in ipairs(regex_redirects) do
     if query:find(pair[1]) then
       local redirect = pair[2]

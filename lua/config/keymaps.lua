@@ -2,7 +2,6 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
-vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<leader>n")
 vim.keymap.del({ "n", "t" }, "<C-_>")
 vim.keymap.del({ "n", "t" }, "<C-/>")
@@ -21,8 +20,8 @@ map("n", "<leader>C", ":Clip<CR>", { desc = "Copy file path to clipboard" })
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "LSP: Line Diagnostics" })
 map("n", "<leader>mv", telescope.mv_file, { desc = "Move file of current buffer to dir" })
 
-map("v", "gx", open.enhanced_open, { desc = "Search current selected string with google" })
-map("v", "gs", open.enhanced_open, { desc = "Search current selected string with google" })
+map("v", "gx", open.omni_open, { desc = "Search current selected string with google" })
+map("v", "gs", open.omni_open, { desc = "Search current selected string with google" })
 
 map("n", "k", jump.up)
 map("n", "j", jump.down)

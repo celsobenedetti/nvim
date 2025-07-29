@@ -21,6 +21,10 @@ vim.g.grep_ignore = {
   "instascan.min.js",
 }
 
+vim.g.web = {
+  jira = os.getenv("WORK_JIRA") or "",
+}
+
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200
 vim.opt.swapfile = false

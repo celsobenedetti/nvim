@@ -1,12 +1,14 @@
 local web = require("lib.web")
 
+vim.g.web = {
+  jira = "https://myjira.atlassian.net/browse/",
+}
+
 describe("web.get_search_url_from_query", function()
   local cases = {
     { desc = "GitHub repo shortcut (owner/repo)", input = "owner/repo", expected = "https://github.com/owner/repo" },
-    { desc = "lazyvim (case insensitive)", input = "lazyvim", expected = "https://lazyvim.org" },
-    { desc = "lazyvim (mixed case)", input = "LaZyVim", expected = "https://lazyvim.org" },
+    { desc = "lazyvim", input = "lazyvim", expected = "https://lazyvim.org" },
     { desc = "monkeytype prefix", input = "mt", expected = "https://monkeytype.com" },
-    { desc = "monkeytype prefix with spaces", input = " MT ", expected = "https://monkeytype.com" },
     {
       desc = "YouTube search prefix",
       input = "y piano tutorials",
@@ -37,6 +39,11 @@ describe("web.get_search_url_from_query", function()
       desc = "should match git repo",
       input = "robitx/gp.nvim",
       expected = "https://github.com/robitx/gp.nvim",
+    },
+    {
+      desc = "should open jira ticket",
+      input = "VA-1234",
+      expected = vim.g.web.jira .. "VA-1234",
     },
   }
 
