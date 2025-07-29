@@ -17,7 +17,6 @@ map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 map("t", "<esc><esc>", "<C-\\><C-n>", { desc = "Escape insert mode in terminal" }) -- let me escape insert in terminal!
 map("n", "ZQ", ":qa!<CR>", { desc = "Quit all" })
 map("n", "<leader>C", ":Clip<CR>", { desc = "Copy file path to clipboard" })
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "LSP: Line Diagnostics" })
 map("n", "<leader>mv", telescope.mv_file, { desc = "Move file of current buffer to dir" })
 
 map("v", "gx", open.omni_open, { desc = "Search current selected string with google" })
