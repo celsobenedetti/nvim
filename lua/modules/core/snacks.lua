@@ -17,6 +17,9 @@ return {
     { "<leader>fF", function() Snacks.picker.git_files() end, desc = "Find Files (git-files)" },
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
+    { '<leader>fe', function() Snacks.explorer.open({hidden = true}) end, desc = 'Snacks: explorer', },
+    { '<leader>en', function() Snacks.explorer.open({cwd = "~/notes"}) end, desc = 'Snacks: explorer notes', },
+
     { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
     { "<leader>ff", LazyVim.pick("files", {
       hidden = require("lib.cwd").includes({"dotfiles" })
