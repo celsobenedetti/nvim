@@ -65,7 +65,7 @@ M.evergarden = {
   white = "#F8F9E8",
   -- red = '#F57F82',
   red = "#E67E81",
-  -- green = '#CAE0A7',
+  light_green = "#CAE0A7",
   green = "#AFC991",
   light_red = "#ffbcb5",
   blue = "#B2CFED",
@@ -108,8 +108,8 @@ M.evergarden = {
   },
 
   summer = {
-    red = "#C0696B",
     orange = "#C1866B",
+    red = "#C0696B",
     yellow = "#BC9C6B",
     lime = "#A7AF70",
     green = "#91AC75",

@@ -50,6 +50,9 @@ return {
             enabled = true,
             type = "/",
           },
+          -- folds = {
+          --   colored = false,
+          -- },
         },
 
         org_capture_templates = {
@@ -158,25 +161,25 @@ return {
     },
   },
 
-  {
-    "akinsho/org-bullets.nvim",
-    ft = { "org" },
-    config = function()
-      require("org-bullets").setup({
-        symbols = {
-          headlines = {
-            { "○", "MyBulletL2" },
-            { "✸", "MyBulletL3" },
-            { "✿", "MyBulletL4" },
-            { "◉", "MyBulletL1" },
-          },
-          checkboxes = {
-            half = { "", "@org.checkbox.halfchecked" },
-            done = { "✓", "@org.keyword.done" },
-            todo = { " ", "@org.keyword.todo" },
-          },
-        },
-      })
-    end,
-  },
+  -- {
+  --   "akinsho/org-bullets.nvim",
+  --   ft = { "org" },
+  --   config = function()
+  --     require("org-bullets").setup({
+  --       symbols = {
+  --         headlines = {
+  --           { "○", "MyBulletL2" },
+  --           { "✸", "MyBulletL3" },
+  --           { "✿", "MyBulletL4" },
+  --           { "◉", "MyBulletL1" },
+  --         },
+  --         checkboxes = {
+  --           half = { "", "@org.checkbox.halfchecked" },
+  --           done = { "✓", "@org.keyword.done" },
+  --           todo = { " ", "@org.keyword.todo" },
+  --         },
+  --       },
+  --     })
+  --   end,
+  -- },
 }

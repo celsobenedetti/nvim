@@ -2,8 +2,6 @@ return {
 
   "folke/snacks.nvim",
   opts = function(_, opts)
-    Snacks.toggle.dim():map("<leader>tw")
-
     Snacks.config.style("zen", {
       enter = true,
       fixbuf = false,
@@ -15,6 +13,8 @@ return {
       zindex = 40,
       wo = {
         winhighlight = "NormalFloat:Normal",
+        number = false,
+        relativenumber = false,
       },
       w = {
         snacks_main = true,
@@ -22,10 +22,21 @@ return {
     })
 
     opts.zen = opts.zen or {}
+    opts.zen.on_close = function()
+      Snacks.indent.enable()
+    end
+    opts.zen.on_open = function()
+      Snacks.indent.disable()
+    end
+
     opts.zen.toggles = {
       dim = true,
       git_signs = false,
-      mini_diff_signs = false,
+      snacks_main = true,
+      snacks_indent = true,
+      snacks = {
+        indent = true,
+      },
       -- diagnostics = false,
       -- inlay_hints = false,
     }

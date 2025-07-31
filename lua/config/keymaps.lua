@@ -3,6 +3,7 @@
 -- Add any additional keymaps here
 
 vim.keymap.del("n", "<leader>n")
+vim.keymap.del("n", "<leader>e")
 vim.keymap.del({ "n", "t" }, "<C-_>")
 vim.keymap.del({ "n", "t" }, "<C-/>")
 
@@ -12,12 +13,19 @@ local web = require("lib.web")
 local jump = require("lib.jump")
 local visual = require("lib.visual")
 local keys = require("lib.keys")
+local toggle = require("lib.toggle")
 
+map("x", "p", '"_dP', { desc = "Paste without losing register" }) --hold on to register when pasting and replace text
 map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
 map("t", "<esc><esc>", "<C-\\><C-n>", { desc = "Escape insert mode in terminal" }) -- let me escape insert in terminal!
 map("n", "ZQ", ":qa!<CR>", { desc = "Quit all" })
 map("n", "<leader>C", ":Clip<CR>", { desc = "Copy file path to clipboard" })
 map("n", "<leader>mv", telescope.mv_file, { desc = "Move file of current buffer to dir" })
+map("n", "<leader>tc", toggle.completion, { desc = "toggle: completion" })
+
+-- map("n", "<leader>dim", function()
+--   Snacks.dim.enable({ scope = { max_size = 1 } })
+-- end, { desc = "Mega dim" })
 
 map("v", "gx", open.omni_open, { desc = "Search current selected string with google" })
 map("v", "gs", open.omni_open, { desc = "Search current selected string with google" })
@@ -40,9 +48,9 @@ map("v", "<leader>b", function() visual.wrap("**", "**") end, { desc = "bold: wr
 map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wrap selection with _" })
 -- stylua: ignore end
 
-map("n", "<C-_>", ToggleTerm.toggle, { desc = "term: toggle friendly terminal" })
+map({ "n", "v", "t" }, "<C-_>", ToggleTerm.toggle, { desc = "term: toggle friendly terminal" })
 
-vim.keymap.set("n", "<leader>pj", function()
+map("n", "<leader>pj", function()
   require("lib.term").pick_package_json_script()
 end)
 
