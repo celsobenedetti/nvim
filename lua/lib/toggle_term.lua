@@ -21,11 +21,17 @@ local M = {
 --
 --    references:
 --      https://www.youtube.com/watch?v=ooTcnx066Do
+--      ~/local/advent-of-nvim-tj/nvim/plugin/floaterminal.lua
 M.toggle = function()
-  -- --   ~/local/advent-of-nvim-tj/nvim/plugin/floaterminal.lua
   local ok, current_buf = pcall(vim.api.nvim_win_get_buf, M.win)
+
   if not ok then
-    M.win = window.relative_below(M.buf)
+    if vim.g.toggle_term_relative then
+      M.win = window.relative_below(M.buf)
+    else
+      M.win = window.below(M.buf)
+    end
+
     if not M.buf then
       vim.api.nvim_command("terminal")
     end
@@ -40,9 +46,9 @@ end
 
 M.focus = function()
   if M.win then
-    pcall(vim.api.nvim_set_current_win, M.win)
+    local ok, _ = pcall(vim.api.nvim_set_current_win, M.win)
+    return ok
   end
-
   return M.win
 end
 
