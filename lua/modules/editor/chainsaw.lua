@@ -4,7 +4,7 @@ return {
     lazy = true,
     keys = {
       {
-        "<leader>l",
+        "<leader>ll",
         function()
           require("chainsaw").variableLog()
         end,

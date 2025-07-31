@@ -19,7 +19,7 @@ return {
         desc = "Harpoon File",
       },
       {
-        "<leader>H",
+        "mm",
         function()
           local harpoon = require("harpoon")
           harpoon.ui:toggle_quick_menu(harpoon:list())
@@ -31,7 +31,7 @@ return {
     local maps = { "a", "s", "d", "f", "g" }
     for i, v in ipairs(maps) do
       table.insert(keys, {
-        "h" .. v,
+        "m" .. v,
         function()
           require("harpoon"):list():select(i)
         end,

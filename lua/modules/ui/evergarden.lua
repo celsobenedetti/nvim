@@ -1,10 +1,14 @@
+local rgb = require("lib.rgb")
+local c = vim.g.colors -- colors
+
 local config = {
+
   -- TODO: use vim.extend_table to extend these configs
 
   highlights = {
-    keyword = { fg = vim.g.colors.red, style = { "nocombine" } },
-    type = { vim.g.colors.yellow, style = { "nocombine" } },
-    comment = { fg = vim.g.colors.gray, style = { "italic" } },
+    keyword = { fg = c.red, style = { "nocombine" } },
+    type = { c.yellow, style = { "nocombine" } },
+    comment = { fg = c.gray, style = { "italic" } },
   },
 }
 
@@ -25,8 +29,8 @@ return {
       --  example for API: vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = '#f7a49c' })
       overrides = {
         Folded = {
-          fg = vim.g.colors.lightgray,
-          bg = vim.g.colors.winter.mantle,
+          fg = c.lightgray,
+          bg = c.winter.mantle,
           -- style = { 'italic' },
         },
 
@@ -36,87 +40,87 @@ return {
         ["@keyword.operator"] = config.highlights.keyword,
         ["@annotation"] = config.highlights.keyword,
 
-        -- highlight on yank
-        IncSearch = { bg = vim.g.colors.orange, fg = vim.g.colors.black },
+        IncSearch = { bg = c.orange, fg = c.black }, -- highlight on yank
+        WinSeparator = { fg = c.gray },
 
-        ["@comment"] = { fg = vim.g.colors.gray, style = { "italic" } },
-        ["@operator"] = { fg = vim.g.colors.lightgray, style = { "bold" } },
+        ["@comment"] = { fg = c.gray, style = { "italic" } },
+        ["@operator"] = { fg = c.lightgray, style = { "bold" } },
 
-        ["@function"] = { vim.g.colors.green, style = { "bold" } },
-        ["@lsp.typemod.function.declaration.javascript"] = { vim.g.colors.lime, style = { "bold" } },
-        ["@constant"] = { vim.g.colors.white, style = { "italic" } },
-        ["@lsp.mod.readonly.javascript"] = { vim.g.colors.white, style = { "nocombine" } },
+        ["@function"] = { c.green, style = { "bold" } },
+        ["@lsp.typemod.function.declaration.javascript"] = { c.lime, style = { "bold" } },
+        ["@constant"] = { c.white, style = { "italic" } },
+        ["@lsp.mod.readonly.javascript"] = { c.white, style = { "nocombine" } },
 
-        ["@module"] = { vim.g.colors.blue, style = { "nocombine" } },
-        -- ['@variable.member'] = { vim.g.colors.snow, style = { 'nocombine' } },
+        ["@module"] = { c.blue, style = { "nocombine" } },
+        -- ['@variable.member'] = { colors.snow, style = { 'nocombine' } },
 
-        ["@function.builtin.go"] = { vim.g.colors.white, style = { "nocombine" } },
-        ["@type.definition.go"] = { fg = vim.g.colors.yellow, style = { "nocombine" } },
-        ["@variable.builtin.typescript"] = { vim.g.colors.white, style = { "nocombine" } },
-        -- ['@keyword.import.typescript'] = { vim.g.colors.blue, style = { 'nocombine' } },
+        ["@function.builtin.go"] = { c.white, style = { "nocombine" } },
+        ["@type.definition.go"] = { fg = c.yellow, style = { "nocombine" } },
+        ["@variable.builtin.typescript"] = { c.white, style = { "nocombine" } },
+        -- ['@keyword.import.typescript'] = { colors.blue, style = { 'nocombine' } },
 
-        ["@lsp.mod.readonly.typescript"] = { vim.g.colors.white, style = { "nocombine" } },
-        ["@attribute.typescript"] = { vim.g.colors.white, style = { "nocombine" } },
-        -- ['@variable.parameter.typescript'] = { vim.g.colors.white, style = { 'bold' } },
+        ["@lsp.mod.readonly.typescript"] = { c.white, style = { "nocombine" } },
+        ["@attribute.typescript"] = { c.white, style = { "nocombine" } },
+        -- ['@variable.parameter.typescript'] = { colors.white, style = { 'bold' } },
 
         Type = config.highlights.type,
         ["@type"] = config.highlights.type,
 
         ["@markup.raw"] = { fg = "#AFDFE6" }, -- inline `code` in markdown
 
-        ["@markup.link.label.markdown_inline"] = { fg = vim.g.colors.blue }, -- inline `code` in markdown
-        MarkviewPalette7Fg = { fg = vim.g.colors.blue, style = { "underline" } }, -- markview inline hint
+        ["@markup.link.label.markdown_inline"] = { fg = c.blue }, -- inline `code` in markdown
+        MarkviewPalette7Fg = { fg = c.blue, style = { "underline" } }, -- markview inline hint
         SpellBad = { style = { "italic", "underdotted" } }, -- spelling mistakes
         SpellCap = { style = {} }, -- style when a word should start with a capital letter
-        TabLineSel = { fg = vim.g.colors.green, bg = vim.g.colors.inactivegray, style = { "bold" } },
+        TabLineSel = { fg = c.green, bg = c.inactivegray, style = { "bold" } },
 
-        LineNrAbove = { fg = vim.g.colors.gray },
-        LineNrBelow = { fg = vim.g.colors.gray },
-        AvanteInlineHint = { fg = vim.g.colors.lightgray },
-        -- MarkviewHeading1 = { fg = vim.g.colors.white, bg = darken(vim.g.colors.gray, 0.3), style = { "bold" } },
-        -- ["@markup.heading.1.markdown"] = { fg = vim.g.colors.white, bg = darken(vim.g.colors.gray, 0.3), style = { "bold" } },
-        -- MarkviewHeading2 = { fg = lighten(vim.g.colors.subtext, 0.1), bg = darken(vim.g.colors.gray, 0.3), style = { 'bold' } },
+        LineNrAbove = { fg = c.gray },
+        LineNrBelow = { fg = c.gray },
+        AvanteInlineHint = { fg = c.lightgray },
+        -- MarkviewHeading1 = { fg = colors.white, bg = darken(colors.gray, 0.3), style = { "bold" } },
+        -- ["@markup.heading.1.markdown"] = { fg = colors.white, bg = darken(colors.gray, 0.3), style = { "bold" } },
+        -- MarkviewHeading2 = { fg = lighten(colors.subtext, 0.1), bg = darken(colors.gray, 0.3), style = { 'bold' } },
         -- ["@markup.heading.2.markdown"] = {
-        --   fg = lighten(vim.g.colors.blue, 0.1),
-        --   bg = darken(vim.g.colors.gray, 0.3),
+        --   fg = lighten(colors.blue, 0.1),
+        --   bg = darken(colors.gray, 0.3),
         --   style = { "bold" },
         -- },
-        -- MarkviewHeading3 = { fg = vim.g.colors.lightgray, bg = darken(vim.g.colors.gray, 0.4), style = { 'bold' } },
-        -- ['@markup.heading.3.markdown'] = { fg = vim.g.colors.lightgray, bg = darken(vim.g.colors.gray, 0.4), style = { 'bold' } },
-        DiffAdd = { fg = vim.g.colors.green, bg = vim.g.colors.comment }, -- markview heading 1
-        DiffChange = { fg = vim.g.colors.green, bg = vim.g.colors.gray }, -- markview heading 1
+        -- MarkviewHeading3 = { fg = colors.lightgray, bg = darken(colors.gray, 0.4), style = { 'bold' } },
+        -- ['@markup.heading.3.markdown'] = { fg = colors.lightgray, bg = darken(colors.gray, 0.4), style = { 'bold' } },
+        DiffAdd = { fg = c.green, bg = c.comment }, -- markview heading 1
+        DiffChange = { fg = c.green, bg = c.gray }, -- markview heading 1
         Underlined = { style = { "underline", "italic" } },
-        LspReferenceRead = { bg = vim.g.colors.gray },
-        LspReferenceText = { bg = vim.g.colors.gray },
+        LspReferenceRead = { bg = c.gray },
+        LspReferenceText = { bg = c.gray },
 
         -- orgmode
-        ["@org.plan.org"] = { fg = vim.g.colors.gray },
-        ["@org.headline.level1.org"] = { fg = vim.g.colors.white, style = { "bold" } },
-        ["@org.headline.level2.org"] = { fg = vim.g.colors.subtext, style = { "bold" } },
-        ["@org.headline.level3.org"] = { fg = vim.g.colors.white, style = { "nocombine" } },
-        ["@org.headline.level4.org"] = { fg = vim.g.colors.white, style = { "nocombine" } },
-        ["@org.timestamp.active.org"] = { fg = vim.g.colors.light_red },
-        ["@org.agenda.day"] = { fg = vim.g.colors.light_red },
-        -- ['@org.agenda.scheduled'] = { fg = vim.g.colors.lime },
-        ["@org.keyword.active.org"] = { fg = vim.g.colors.light_red },
-        ["@org.keyword.todo"] = { fg = vim.g.colors.red, style = { "bold" } },
-        ["@org.keyword.done"] = { fg = vim.g.colors.green, style = { "bold" } },
-        ["@org.tag.org"] = { fg = vim.g.colors.purple },
-        ["@org.hyperlink.org"] = { fg = vim.g.colors.blue, style = { "underline" } },
+        ["@org.plan.org"] = { fg = c.gray },
+        ["@org.headline.level1.org"] = { fg = c.white, style = { "bold" } },
+        ["@org.headline.level2.org"] = { fg = c.subtext, style = { "bold" } },
+        ["@org.headline.level3.org"] = { fg = c.white, style = { "nocombine" } },
+        ["@org.headline.level4.org"] = { fg = c.white, style = { "nocombine" } },
+        ["@org.timestamp.active.org"] = { fg = c.light_red },
+        ["@org.agenda.day"] = { fg = c.light_red },
+        -- ['@org.agenda.scheduled'] = { fg = colors.lime },
+        ["@org.keyword.active.org"] = { fg = c.light_red },
+        ["@org.keyword.todo"] = { fg = c.red, style = { "bold" } },
+        ["@org.keyword.done"] = { fg = c.green, style = { "bold" } },
+        ["@org.tag.org"] = { fg = c.purple },
+        ["@org.hyperlink.org"] = { fg = c.blue, style = { "underline" } },
         ["@org.hyperlink.url.org"] = { style = { "italic" } },
-        ["@org.hyperlink.desc.org"] = { fg = vim.g.colors.blue, style = { "italic" } },
-        ["@org.priority.highest.org"] = { fg = vim.g.colors.orange, style = { "italic" } },
+        ["@org.hyperlink.desc.org"] = { fg = c.blue, style = { "italic" } },
+        ["@org.priority.highest.org"] = { fg = c.orange, style = { "italic" } },
 
-        BlinkCmpMenu = { bg = vim.g.colors.base },
-        BlinkCmpMenuBorder = { bg = vim.g.colors.base, fg = vim.g.colors.lightgray },
-        FlashLabel = { bg = vim.g.colors.orange, fg = vim.g.colors.black },
-        FlashCurrent = { bg = vim.g.colors.yellow, fg = vim.g.colors.black },
+        BlinkCmpMenu = { bg = c.base },
+        BlinkCmpMenuBorder = { bg = c.base, fg = c.lightgray },
+        FlashLabel = { bg = c.orange, fg = c.black },
+        FlashCurrent = { bg = c.yellow, fg = c.black },
         SupermavenSuggestion = config.highlights.comment,
         -- lua
-        -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = vim.g.colors.blue, style = { 'nocombine' } },
-        -- ['@lsp.typemod.function.defaultLibrary.lua'] = { fg = vim.g.colors.blue, style = { 'nocombine' } },
+        -- ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = colors.blue, style = { 'nocombine' } },
+        -- ['@lsp.typemod.function.defaultLibrary.lua'] = { fg = colors.blue, style = { 'nocombine' } },
 
-        DiagnosticUnderlineError = { fg = vim.g.colors.lightgray, style = { "nocombine" } },
+        DiagnosticUnderlineError = { fg = c.lightgray, style = { "nocombine" } },
       },
       integrations = {
         cmp = true,
