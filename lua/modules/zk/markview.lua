@@ -186,9 +186,14 @@ return {
               icon = " ",
               hl = "MarkviewPalette2Fg",
             },
-            ["file:"] = {
+            -- ["file:"] = {
+            --   priority = 9998,
+            --   icon = " ",
+            --   hl = "MarkviewPalette2Fg",
+            -- },
+            [".org"] = {
               priority = 9998,
-              icon = " ",
+              icon = " ",
               hl = "MarkviewPalette2Fg",
             },
             ["codeberg"] = {
