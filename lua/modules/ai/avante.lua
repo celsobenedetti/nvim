@@ -4,17 +4,24 @@ vim.opt.laststatus = 3
 return {
   {
     "yetone/avante.nvim",
-    event = "VeryLazy",
+    lazy = true,
     version = false, -- set this if you want to always pull the latest change
+    keys = {
+
+      { "<leader>aa", "AvanteAsk", desc = "AvanteAsk" },
+      { "<leader>ae", "AvanteEdit", desc = "AvanteEdit" },
+      { "<leader>ar", "AvanteRefresh", desc = "AvanteRefresh" },
+      { "<leader>aC", "AvanteClear", desc = "AvanteClear" },
+    },
     opts = {
       provider = "openai",
       model = "chatgpt-4o-latest",
-      mappings = {
-        ask = "<leader>aa", -- ask
-        edit = "<leader>ae", -- edit
-        refresh = "<leader>ar", -- refresh
-        clear = "<leader>aC", -- clear
-      },
+      -- mappings = {
+      --   ask = "<leader>aa", -- ask
+      --   edit = "<leader>ae", -- edit
+      --   refresh = "<leader>ar", -- refresh
+      --   clear = "<leader>aC", -- clear
+      -- },
 
       override_prompt_dir = function()
         return vim.fn.expand("~/.config/ai-rules/avante")

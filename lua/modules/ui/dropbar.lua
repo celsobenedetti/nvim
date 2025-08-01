@@ -2,24 +2,35 @@ return {
   {
     "Bekaboo/dropbar.nvim",
     event = "VeryLazy",
-    config = function()
-      local config = require("dropbar.configs")
-      config.opts.icons.kinds.dir_icon = function()
-        return "", "Comment"
-      end
-      -- vim.keymap.set('n', '[;', dropbar_api.goto_context_start, { desc = 'Go to start of current context' })
-      -- vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' })
-    end,
 
-    -- NOTE: 2025-07-22 this is not useful at all it seems
-    -- keys = {
-    --   {
-    --     "<leader>;",
-    --     function()
-    --       require("dropbar.api").pick()
-    --     end,
-    --     desc = "Pick symbols in winbar",
-    --   },
-    -- },
+    opts = {
+
+      bar = {
+        sources = function(buf, _)
+          local sources = require("dropbar.sources")
+          local utils = require("dropbar.utils")
+          if vim.bo[buf].ft == "markdown" then
+            return {}
+          end
+          if vim.bo[buf].buftype == "terminal" then
+            return { sources.terminal }
+          end
+          return {
+            sources.path,
+            -- utils.source.fallback({
+            -- sources.lsp,
+            -- sources.treesitter,
+            -- }),
+          }
+        end,
+      },
+    },
+
+    -- config = function()
+    --   local config = require("dropbar.configs")
+    --   config.opts.icons.kinds.dir_icon = function()
+    --     return "", "Comment"
+    --   end
+    -- end,
   },
 }

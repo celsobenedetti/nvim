@@ -2,8 +2,7 @@ require("config")
 
 require("lazy").setup({
   spec = {
-    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    { import = "lazyvim.plugins.extras.ui.mini-indentscope" },
+    { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = "default" } },
     { import = "lazyvim.plugins.extras.ui.smear-cursor" },
     { import = "lazyvim.plugins.extras.ui.treesitter-context" },
     { import = "lazyvim.plugins.extras.lang.git" },
@@ -45,6 +44,9 @@ require("lazy").setup({
 
     -- disable
     { "echasnovski/mini.pairs", enabled = false },
+
+    -- lazyload
+    { "b0o/SchemaStore.nvim", lazy = true, ft = { "json", "yaml", "toml" } },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -74,7 +76,7 @@ require("lazy").setup({
       },
     },
   },
-  install = { colorscheme = { "tokyonight", "catppuccin" } },
+  install = { colorscheme = { "catppuccin", "tokyonight" } },
 })
 
 vim.cmd.colorscheme(vim.g.colorscheme)
