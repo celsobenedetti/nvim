@@ -45,6 +45,11 @@ describe("web.get_search_url_from_query", function()
       input = "VA-1234",
       expected = vim.g.web.jira .. "VA-1234",
     },
+    {
+      desc = "should open github repo",
+      input = "github.com/mitchellh/cli",
+      expected = "https://github.com/mitchellh/cli",
+    },
   }
 
   for _, case in ipairs(cases) do

@@ -49,10 +49,17 @@ local search_engines = {
 ---@type table<string, string|function>
 local regex_redirects = {
   {
-    -- github.com/owner/repo
+    -- github: owner/repo
     "^[a-zA-Z0-9_-]+/[a-zA-Z0-9_.-]+$",
     function(s)
       return "https://github.com/" .. s
+    end,
+  },
+  {
+    -- github: github.com/owner/repo
+    "^github.com/[a-zA-Z0-9_-]+/[a-zA-Z0-9_.-]+$",
+    function(s)
+      return "https://" .. s
     end,
   },
   { "^lazyvim", "https://lazyvim.org" },
