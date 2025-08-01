@@ -14,6 +14,7 @@ local jump = require("lib.jump")
 local visual = require("lib.visual")
 local keys = require("lib.keys")
 local toggle = require("lib.toggle")
+local runner = require("lib.runner")
 
 map("x", "p", '"_dP', { desc = "Paste without losing register" }) --hold on to register when pasting and replace text
 map("n", "<leader>R", ":e! %<cr>", { desc = "Refresh Buffer" })
@@ -50,9 +51,8 @@ map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wr
 
 map({ "n", "v", "t" }, "<C-_>", ToggleTerm.toggle, { desc = "term: toggle friendly terminal" })
 
-map("n", "<leader>pj", function()
-  require("lib.runner").pick_package_json_script()
-end)
+map("n", "<leader>pj", runner.run_package_json_script, { desc = "run package.json scripts" })
+map("n", "<leader>ju", runner.run_justfile_target, { desc = "run justfile targets" })
 
 if vim.g.should_center.on_n then
   map("n", "n", keys.with_delay("n", "zz"), { desc = "center on next", noremap = true })

@@ -8,9 +8,13 @@ M.trim = function(s)
   return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
+M.collapse_whitespace = function(s)
+  return (s:gsub("%s+", " "))
+end
+
 M.slugify = function(text)
   local s = text:lower()
-  s = s:gsub("%s+", " ")
+  s = M.collapse_whitespace(s)
   s = s:gsub("[^a-z0-9%-%.]+", "-")
   s = s:gsub("^-+", "") -- remove leading hyphens
   s = s:gsub("-+$", "") -- remove trailing hyphens
