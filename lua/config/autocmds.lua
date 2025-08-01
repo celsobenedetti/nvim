@@ -72,3 +72,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
   end,
   group = vim.api.nvim_create_augroup("custom-term-open", { clear = true }),
 })
+
+if os.getenv("IS_ZEN") == "true" then
+  require("lib.startup.zen")
+end

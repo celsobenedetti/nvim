@@ -11,6 +11,7 @@ return {
       backdrop = { transparent = false, blend = 99 },
       keys = { q = false },
       zindex = 40,
+
       wo = {
         winhighlight = "NormalFloat:Normal",
         number = false,
@@ -18,6 +19,7 @@ return {
       },
       w = {
         snacks_main = true,
+        lualine = false,
       },
     })
 
@@ -28,6 +30,11 @@ return {
     opts.zen.on_open = function()
       Snacks.indent.disable()
     end
+
+    opts.zen.show = {
+      statusline = false, -- This hides the statusline (including lualine)
+      tabline = false, -- This also hides the tabline
+    }
 
     opts.zen.toggles = {
       dim = true,
