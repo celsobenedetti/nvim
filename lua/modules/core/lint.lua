@@ -7,7 +7,7 @@ return {
         bash = { "shellcheck", "bash" },
         sh = { "shellcheck" },
         make = { "checkmake" },
-        -- terraform = { "trivy" },
+        go = { "golangcilint" },
         -- typescript = { "oxlint" },
         -- javascript = { "oxlint" },
         -- zsh = { "zsh" },
