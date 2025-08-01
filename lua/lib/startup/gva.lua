@@ -1,4 +1,4 @@
-local term = require("lib.term")
+local term = require("lib.runner")
 
 ---@type term.TabTerm[]
 local commands = {

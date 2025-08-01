@@ -51,7 +51,7 @@ map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wr
 map({ "n", "v", "t" }, "<C-_>", ToggleTerm.toggle, { desc = "term: toggle friendly terminal" })
 
 map("n", "<leader>pj", function()
-  require("lib.term").pick_package_json_script()
+  require("lib.runner").pick_package_json_script()
 end)
 
 if vim.g.should_center.on_n then
