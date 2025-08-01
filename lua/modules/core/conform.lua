@@ -4,6 +4,8 @@ return {
     opts.formatters_by_ft = vim.tbl_deep_extend("force", opts.formatters_by_ft or {}, {
       markdown = { "mfmt" },
       org = { "mfmt_org" },
+      javascript = { "prettierd" },
+      typescript = { "prettierd" },
     })
 
     opts.formatters = vim.tbl_deep_extend("force", opts.formatters or {}, {
