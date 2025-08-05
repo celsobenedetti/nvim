@@ -69,7 +69,11 @@ vim.api.nvim_create_autocmd('BufEnter', {
   end,
 })
 
-vim.api.nvim_create_autocmd({ 'TermOpen', 'BufWinEnter', 'WinEnter' }, {
+vim.api.nvim_create_autocmd({
+  'TermOpen',
+  'BufWinEnter',
+  -- 'WinEnter' this one is too agressive. We want to preserve the cursor position whenever entering a terminal buffer. we may be scrolled up looking at logs, etc.
+}, {
   desc = 'Always insert mode when entering a terminal',
   pattern = 'term://*',
   callback = function()
