@@ -3,10 +3,11 @@
 --   /home/celso/local/lazyvim/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
-vim.opt.spelllang = { "en", "pt" }
+vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
 vim.g.supermaven_inline_completion = true
-vim.g.animation = true
+
+vim.g.snacks_animate = true
 vim.g.animation_duration = 40
 vim.g.delay = 80 -- delay used to accomodate for animations
 
@@ -20,12 +21,12 @@ vim.g.should_center = {
 }
 
 vim.g.grep_ignore = {
-  "pnpm-lock.yaml",
-  "instascan.min.js",
+  'pnpm-lock.yaml',
+  'instascan.min.js',
 }
 
 vim.g.web = {
-  jira = os.getenv("WORK_JIRA") or "",
+  jira = os.getenv 'WORK_JIRA' or '',
 }
 
 vim.g.below_split_height = 0.5
@@ -34,8 +35,8 @@ vim.g.below_split_height = 0.5
 vim.opt.updatetime = 200
 vim.opt.swapfile = false
 
-local colors = require("config.colors")
+local colors = require 'config.colors'
 vim.g.colors = colors.evergarden
 vim.g.colorscheme = colors.colorscheme
 vim.g.background = colors.background
-vim.g.notes = require("config.zk") -- NOTES config
+vim.g.notes = require 'config.zk' -- NOTES config

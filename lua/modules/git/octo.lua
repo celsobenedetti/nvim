@@ -1,8 +1,9 @@
 return {
   {
-    "pwntester/octo.nvim",
+    'pwntester/octo.nvim',
     keys = {
-      { "<leader>gr", false },
+      { '<leader>gr', false },
+      { '<leader>gS', false },
     },
   },
 }
