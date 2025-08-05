@@ -1,8 +1,8 @@
 return {
 
-  "folke/snacks.nvim",
+  'folke/snacks.nvim',
   opts = function(_, opts)
-    Snacks.config.style("zen", {
+    Snacks.config.style('zen', {
       enter = true,
       fixbuf = false,
       minimal = false,
@@ -13,7 +13,7 @@ return {
       zindex = 40,
 
       wo = {
-        winhighlight = "NormalFloat:Normal",
+        winhighlight = 'NormalFloat:Normal',
         number = false,
         relativenumber = false,
       },
