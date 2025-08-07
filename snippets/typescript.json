@@ -1,16 +1,35 @@
 {
   "console.log": {
     "prefix": "cl",
-    "body": ["console.log($0)"],
+    "body": [
+      "console.log(\"🦎 ###\", \"$1\", $2)"
+    ],
     "description": "console.log"
   },
+  "log.log": {
+    "prefix": "l",
+    "body": [
+      "log(\"🦎 ###\", \"$1\", $2)"
+    ],
+    "description": "log"
+  },
   "jsdoc": {
-    "prefix": ["jsd", "jsdoc"],
-    "body": ["/**", "* $0", "*/"],
+    "prefix": [
+      "jsd",
+      "jsdoc"
+    ],
+    "body": [
+      "/**",
+      "* $0",
+      "*/"
+    ],
     "description": "jsdoc"
   },
   "Function Statementesa": {
-    "prefix": ["fu", "fn"],
+    "prefix": [
+      "fu",
+      "fn"
+    ],
     "body": [
       "function ${1:name}(${2:params}:${3:type}): (${4:type}) {",
       "\t$0",
@@ -26,10 +45,11 @@
     "prefix": "af",
     "body": "(${1:arguments}) => ${2:statement}"
   },
-
   "className": {
     "prefix": "cn",
-    "body": ["className='$0'"],
+    "body": [
+      "className='$0'"
+    ],
     "description": "CSS className"
   }
 }
