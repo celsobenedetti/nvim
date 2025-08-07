@@ -1,5 +1,9 @@
-local window = require("lib.window")
+local window = require 'lib.window'
 
+---@deprecated
+-- NOTE: 2025-08-07 I'm ditching this toggle term approach.
+-- it is pretty interesting, but not perfect either.
+-- I'm setling for LazyVim toggleterm for friendly term, and overseer.nvim for other processes.
 local M = {
   win = nil, --- @type number | nil
   buf = nil, --- @type number | nil
@@ -33,7 +37,7 @@ M.toggle = function()
     end
 
     if not M.buf then
-      vim.api.nvim_command("terminal")
+      vim.api.nvim_command 'terminal'
     end
 
     return
@@ -55,7 +59,7 @@ end
 -- this augruop serves as a "tabpage" event handler for friendly term
 -- when we send the friendly term to a new tab, reset the state
 -- this disowns terminal, leaving it as a regular buffer
-vim.api.nvim_create_autocmd("TabNewEntered", {
+vim.api.nvim_create_autocmd('TabNewEntered', {
   callback = function()
     if vim.api.nvim_get_current_buf() == M.buf then
       M.buf = nil
