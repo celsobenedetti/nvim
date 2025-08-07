@@ -1,24 +1,24 @@
 return {
   {
-    "olimorris/codecompanion.nvim",
+    'olimorris/codecompanion.nvim',
     keys = {
-      { "<leader>cca", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion actions", mode = { "n", "v" } },
-      { "<leader>ccc", "<cmd>CodeCompanionChat<cr>", desc = "CodeCompanion chat", mode = { "n", "v" } },
-      { "<leader>cp", "<cmd>CodeCompanion<cr>", desc = "CodeCompanion prompt", mode = { "n", "v" } },
+      { '<leader>cca', '<cmd>CodeCompanionActions<cr>', desc = 'CodeCompanion actions', mode = { 'n', 'v' } },
+      { '<leader>ccc', '<cmd>CodeCompanionChat<cr>', desc = 'CodeCompanion chat', mode = { 'n', 'v' } },
+      { '<leader>cp', '<cmd>CodeCompanion<cr>', desc = 'CodeCompanion prompt', mode = { 'n', 'v' } },
     },
     config = function()
-      require("codecompanion").setup({
+      require('codecompanion').setup {
         opts = {
           system_prompt = function(opts)
-            return require("lib.ai").the_engineer()
+            return require('lib.ai').the_engineer()
           end,
         },
         adapters = {
           openai = function()
-            return require("codecompanion.adapters").extend("openai", {
+            return require('codecompanion.adapters').extend('openai', {
               schema = {
                 model = {
-                  default = "gpt-4.1",
+                  default = 'gpt-4.1',
                 },
               },
             })
@@ -27,16 +27,16 @@ return {
 
         strategies = {
           chat = {
-            adapter = "openai",
+            adapter = 'openai',
 
             slash_commands = {
-              ["file"] = { opts = { provider = "snacks", contains_code = true } },
-              ["buffer"] = { opts = { provider = "snacks", contains_code = true } },
-              ["help"] = { opts = { provider = "snacks", contains_code = true } },
+              ['file'] = { opts = { provider = 'snacks', contains_code = true } },
+              ['buffer'] = { opts = { provider = 'snacks', contains_code = true } },
+              ['help'] = { opts = { provider = 'snacks', contains_code = true } },
             },
           },
-          inline = { adapter = "openai" },
-          cmd = { adapter = "openai" },
+          inline = { adapter = 'openai' },
+          cmd = { adapter = 'openai' },
         },
         extensions = {
           spinner = {},
@@ -44,22 +44,23 @@ return {
             enabled = true,
             opts = {
               -- Keymap to open history from chat buffer (default: gh)
-              keymap = "gh",
+              keymap = 'gh',
               -- Keymap to save the current chat manually (when auto_save is disabled)
-              save_chat_keymap = "sc",
+              save_chat_keymap = 'sc',
               -- Save all chats by default (disable to save only manually using 'sc')
               auto_save = true,
               -- Number of days after which chats are automatically deleted (0 to disable)
               expiration_days = 0,
               -- Picker interface (auto resolved to a valid picker)
-              picker = "snacks", --- ("telescope", "snacks", "fzf-lua", or "default")
+              picker = 'snacks', --- ("telescope", "snacks", "fzf-lua", or "default")
               ---Optional filter function to control which chats are shown when browsing
               chat_filter = nil, -- function(chat_data) return boolean end
               -- Customize picker keymaps (optional)
               picker_keymaps = {
-                rename = { n = "r", i = "<M-r>" },
-                delete = { n = "d", i = "<M-d>" },
-                duplicate = { n = "<C-y>", i = "<C-y>" },
+
+                rename = { n = 'r', i = '<M-r>' },
+                delete = { n = 'd', i = '<M-d>' },
+                duplicate = { n = '<C-y>', i = '<C-y>' },
               },
               ---Automatically generate titles for new chats
               auto_generate_title = true,
@@ -83,16 +84,16 @@ return {
               ---When chat is cleared with `gx` delete the chat from history
               delete_on_clearing_chat = false,
               ---Directory path to save the chats
-              dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
+              dir_to_save = vim.fn.stdpath 'data' .. '/codecompanion-history',
               ---Enable detailed logging for history extension
               enable_logging = false,
 
               -- Summary system
               summary = {
                 -- Keymap to generate summary for current chat (default: "gcs")
-                create_summary_keymap = "gcs",
+                create_summary_keymap = 'gcs',
                 -- Keymap to browse summaries (default: "gbs")
-                browse_summaries_keymap = "gbs",
+                browse_summaries_keymap = 'gbs',
 
                 generation_opts = {
                   adapter = nil, -- defaults to current chat adapter
@@ -110,7 +111,7 @@ return {
                 -- Automatically index summaries when they are generated
                 auto_create_memories_on_summary_generation = true,
                 -- Path to the VectorCode executable
-                vectorcode_exe = "vectorcode",
+                vectorcode_exe = 'vectorcode',
                 -- Tool configuration
                 tool_opts = {
                   -- Default number of memories to retrieve
@@ -125,17 +126,17 @@ return {
             },
           },
         },
-      })
+      }
     end,
 
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      'nvim-lua/plenary.nvim',
 
-      "nvim-treesitter/nvim-treesitter",
+      'nvim-treesitter/nvim-treesitter',
 
       -- extensions
-      "ravitemer/codecompanion-history.nvim",
-      "franco-ruggeri/codecompanion-spinner.nvim",
+      'ravitemer/codecompanion-history.nvim',
+      'franco-ruggeri/codecompanion-spinner.nvim',
     },
   },
 }

@@ -3,7 +3,7 @@ return {
   'folke/snacks.nvim',
   -- stylua: ignore start
   keys = {
-    { '<c-/>', false },
+    -- { '<c-/>', false },
     { "<leader>no", function() Snacks.picker.notifications() end, desc = "Notification History", },
     { "<leader>rg", function() Snacks.picker.grep() end, desc = "Grep", },
     { "<leader>dd", function() Snacks.bufdelete() end, desc = "delete buffer", },
@@ -21,6 +21,8 @@ return {
     { '<leader>fE', function() Snacks.explorer.open() end, desc = 'Snacks: explorer (default)', },
     { '<leader>en', function() Snacks.explorer.open({cwd = "~/notes"}) end, desc = 'Snacks: explorer notes', },
     { "<leader>ff", function () LazyVim.pick("files", { hidden = require("lib.cwd").includes({"dotfiles" }) }) end, desc = "Find Files (Root Dir)" },
+    { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
+    { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
     { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
   },
   -- stylua: ignore end

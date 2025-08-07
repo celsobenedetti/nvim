@@ -7,33 +7,35 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
-function Augroup(name)
+local autocmd = vim.api.nvim_create_autocmd
+
+local function augroup(name)
   return vim.api.nvim_create_augroup('celso_augroup_' .. name, { clear = true })
 end
 
 -- insert mode when entering git commit
-vim.api.nvim_create_autocmd('VimEnter', {
+autocmd('VimEnter', {
   desc = 'Insert mode when entering git commit',
-  group = Augroup 'Git_Commit_Editor',
+  group = augroup 'Git_Commit_Editor',
   pattern = { 'COMMIT_EDITMSG', 'new_note' },
   callback = function()
     vim.api.nvim_feedkeys(Keys 'i<BS>', 'n', true)
   end,
 })
 
-vim.api.nvim_create_autocmd({ 'VimEnter' }, {
+autocmd({ 'VimEnter' }, {
   desc = 'Run on all files',
   callback = function()
     vim.cmd 'set formatoptions-=cro' -- Stop comment continuation on line below
   end,
-  group = Augroup 'Run_on_VimEnter',
+  group = augroup 'Run_on_VimEnter',
 })
 
 -- VimEnter autocmd should fold all
 -- BufRead autocmd should fold frontmatter
-local markdown_group = Augroup 'Markdown'
+local markdown_group = augroup 'Markdown'
 local markdown = '*.md'
-vim.api.nvim_create_autocmd('VimEnter', {
+autocmd('VimEnter', {
   desc = 'Fold all headings when entering markdown files',
   pattern = markdown,
   group = markdown_group,
@@ -58,7 +60,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
   end,
 })
 
-vim.api.nvim_create_autocmd('BufEnter', {
+autocmd('BufEnter', {
   desc = 'Fold frontmatter when entering markdown file',
   pattern = markdown,
   group = markdown_group,
@@ -69,7 +71,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
   end,
 })
 
-vim.api.nvim_create_autocmd({
+autocmd({
   'TermOpen',
   'BufWinEnter',
   -- 'WinEnter' this one is too agressive. We want to preserve the cursor position whenever entering a terminal buffer. we may be scrolled up looking at logs, etc.
@@ -79,7 +81,7 @@ vim.api.nvim_create_autocmd({
   callback = function()
     vim.cmd 'startinsert'
   end,
-  group = Augroup 'term-enter',
+  group = augroup 'term-enter',
 })
 
 if os.getenv 'IS_ZEN' == 'true' then

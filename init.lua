@@ -1,52 +1,53 @@
-require("config")
+require 'config.lazy'
+require 'config.globals'
 
-require("lazy").setup({
+require('lazy').setup {
   spec = {
-    { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = "default" } },
-    { import = "lazyvim.plugins.extras.ui.smear-cursor" },
-    { import = "lazyvim.plugins.extras.ui.treesitter-context" },
-    { import = "lazyvim.plugins.extras.lang.git" },
-    { import = "lazyvim.plugins.extras.lang.go" },
-    { import = "lazyvim.plugins.extras.lang.typescript" },
-    { import = "lazyvim.plugins.extras.lang.tailwind" },
-    { import = "lazyvim.plugins.extras.lang.docker" },
-    { import = "lazyvim.plugins.extras.lang.json" },
-    { import = "lazyvim.plugins.extras.lang.yaml" },
-    { import = "lazyvim.plugins.extras.lang.toml" },
-    { import = "lazyvim.plugins.extras.lang.terraform" },
+    { 'LazyVim/LazyVim', import = 'lazyvim.plugins', opts = { colorscheme = 'default' } },
+    { import = 'lazyvim.plugins.extras.ui.smear-cursor' },
+    { import = 'lazyvim.plugins.extras.ui.treesitter-context' },
+    { import = 'lazyvim.plugins.extras.lang.git' },
+    { import = 'lazyvim.plugins.extras.lang.go' },
+    { import = 'lazyvim.plugins.extras.lang.typescript' },
+    { import = 'lazyvim.plugins.extras.lang.tailwind' },
+    { import = 'lazyvim.plugins.extras.lang.docker' },
+    { import = 'lazyvim.plugins.extras.lang.json' },
+    { import = 'lazyvim.plugins.extras.lang.yaml' },
+    { import = 'lazyvim.plugins.extras.lang.toml' },
+    { import = 'lazyvim.plugins.extras.lang.terraform' },
 
-    { import = "lazyvim.plugins.extras.coding.blink" },
-    { import = "lazyvim.plugins.extras.coding.neogen" },
-    { import = "lazyvim.plugins.extras.coding.luasnip" },
-    { import = "lazyvim.plugins.extras.dap.core" },
-    { import = "lazyvim.plugins.extras.dap.nlua" },
-    { import = "lazyvim.plugins.extras.test.core" },
-    { import = "lazyvim.plugins.extras.ai.supermaven" },
+    { import = 'lazyvim.plugins.extras.coding.blink' },
+    { import = 'lazyvim.plugins.extras.coding.neogen' },
+    { import = 'lazyvim.plugins.extras.coding.luasnip' },
+    { import = 'lazyvim.plugins.extras.dap.core' },
+    { import = 'lazyvim.plugins.extras.dap.nlua' },
+    { import = 'lazyvim.plugins.extras.test.core' },
+    { import = 'lazyvim.plugins.extras.ai.supermaven' },
 
     -- { import = "lazyvim.plugins.extras.formatting.prettier" },
-    { import = "lazyvim.plugins.extras.linting.eslint" },
-    { import = "lazyvim.plugins.extras.editor.dial" },
-    { import = "lazyvim.plugins.extras.editor.outline" },
-    { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
-    { import = "lazyvim.plugins.extras.util.dot" },
-    { import = "lazyvim.plugins.extras.util.octo" },
-    { import = "lazyvim.plugins.extras.util.rest" },
-    { import = "lazyvim.plugins.extras.util.startuptime" },
+    { import = 'lazyvim.plugins.extras.linting.eslint' },
+    { import = 'lazyvim.plugins.extras.editor.dial' },
+    { import = 'lazyvim.plugins.extras.editor.outline' },
+    { import = 'lazyvim.plugins.extras.util.mini-hipatterns' },
+    { import = 'lazyvim.plugins.extras.util.dot' },
+    { import = 'lazyvim.plugins.extras.util.octo' },
+    { import = 'lazyvim.plugins.extras.util.rest' },
+    { import = 'lazyvim.plugins.extras.util.startuptime' },
 
-    { "wakatime/vim-wakatime" }, -- code time tracking goodness
-    { import = "modules.core" },
-    { import = "modules.lang" },
-    { import = "modules.editor" },
-    { import = "modules.zk" },
-    { import = "modules.ui" },
-    { import = "modules.ai" },
-    { import = "modules.git" },
+    { 'wakatime/vim-wakatime' }, -- code time tracking goodness
+    { import = 'modules.core' },
+    { import = 'modules.lang' },
+    { import = 'modules.editor' },
+    { import = 'modules.zk' },
+    { import = 'modules.ui' },
+    { import = 'modules.ai' },
+    { import = 'modules.git' },
 
     -- disable
-    { "echasnovski/mini.pairs", enabled = false },
+    { 'echasnovski/mini.pairs', enabled = false },
 
     -- lazyload
-    { "b0o/SchemaStore.nvim", lazy = true, ft = { "json", "yaml", "toml" } },
+    { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -65,18 +66,21 @@ require("lazy").setup({
     rtp = {
       -- disable some rtp plugins
       disabled_plugins = {
-        "gzip",
+        'gzip',
         -- "matchit",
         -- "matchparen",
         -- "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
       },
     },
   },
-  install = { colorscheme = { "catppuccin", "tokyonight" } },
-})
+  install = { colorscheme = { 'catppuccin', 'tokyonight' } },
+}
+
+require 'config.commands'
+require 'config.sensible'
 
 vim.cmd.colorscheme(vim.g.colorscheme)
