@@ -1,12 +1,24 @@
-local term = require("lib.runner")
+---@module lib.startup.gva
+---this starts the GVA servers with overseer
+---
+vim.g.lualine = false
 
----@type term.TabTerm[]
-local commands = {
-  { title = "tsc", cmd = "tsc -w" },
-  { title = "rspack", cmd = "npm run rspack" },
-  { title = "devserver", cmd = "pnpm run devserver" },
+--- delays
+local delay = {
+  100,
+  400,
+  500,
 }
 
-for _, v in ipairs(commands) do
-  term.spawn_term(v)
-end
+vim.defer_fn(function()
+  vim.cmd 'OverseerLoadBundle gva'
+end, delay[1])
+
+vim.defer_fn(function()
+  vim.cmd 'OverseerToggle'
+end, delay[2])
+
+vim.defer_fn(function()
+  vim.cmd 'wincmd k'
+  vim.cmd 'wincmd q'
+end, delay[3])

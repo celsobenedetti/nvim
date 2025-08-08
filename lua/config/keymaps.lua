@@ -58,8 +58,6 @@ map("v", "<leader>b", function() visual.wrap("**", "**") end, { desc = "bold: wr
 map("v", "<leader>i", function() visual.wrap("_", "_") end, { desc = "italic: wrap selection with _" })
 -- stylua: ignore end
 
--- map({ 'n', 'v', 't' }, '<C-_>', ToggleTerm.toggle, { desc = 'term: toggle friendly terminal' })
-
 map('n', '<leader>pj', runner.run_package_json_script, { desc = 'run package.json scripts' })
 map('n', '<leader>ju', runner.run_justfile_target, { desc = 'run justfile targets' })
 

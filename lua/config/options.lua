@@ -5,14 +5,13 @@
 
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
+vim.g.lualine = false
 vim.g.supermaven_inline_completion = true
+vim.g.lazyvim_check_order = false
 
 vim.g.snacks_animate = true
 vim.g.animation_duration = 40
 vim.g.delay = 80 -- delay used to accomodate for animations
-
---  whether the toggle term will open as a regular split or a relative "floating" window
-vim.g.toggle_term_relative = false
 
 vim.g.should_center = {
   on_n = true,

@@ -8,7 +8,7 @@ M.the_engineer = function()
     return 'Something went wrong with setup, simply reply with: "TheEngineer has failed to load!", and to no further actions'
   end
 
-  return file:read("*all")
+  return file:read '*all'
 end
 
 return M
