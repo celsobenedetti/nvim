@@ -59,7 +59,7 @@ M.tokyonight = {
 }
 
 M.evergarden = {
-  base = '#1D2428',
+  bg = '#232A2E',
 
   black = '#171C1F',
   white = '#F8F9E8',

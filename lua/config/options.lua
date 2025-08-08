@@ -5,7 +5,7 @@
 
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
-vim.g.lualine = false
+vim.g.lualine = true
 vim.g.supermaven_inline_completion = true
 vim.g.lazyvim_check_order = false
 
@@ -33,9 +33,3 @@ vim.g.below_split_height = 0.5
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200
 vim.opt.swapfile = false
-
-local colors = require 'config.colors'
-vim.g.colors = colors.evergarden
-vim.g.colorscheme = colors.colorscheme
-vim.g.background = colors.background
-vim.g.notes = require 'config.zk' -- NOTES config
