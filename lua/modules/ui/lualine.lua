@@ -104,8 +104,12 @@ return {
           end,
         },
       },
-      extensions = { 'neo-tree', 'lazy', 'fzf' },
+      extensions = { 'lazy' },
     }
+
+    if vim.g.performance then
+      return opts
+    end
 
     -- do not add trouble symbols if aerial is enabled
     -- And allow it to be overriden for some buffer types (see autocmds)

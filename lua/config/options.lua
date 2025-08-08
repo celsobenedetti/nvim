@@ -6,6 +6,7 @@
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
 vim.g.lualine = true
+vim.g.performance = false
 vim.g.supermaven_inline_completion = true
 vim.g.lazyvim_check_order = false
 
