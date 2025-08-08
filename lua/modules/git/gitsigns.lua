@@ -1,48 +1,48 @@
 return {
   {
-    "lewis6991/gitsigns.nvim",
+    'lewis6991/gitsigns.nvim',
     keys = {
       {
-        "<leader>gA",
+        '<leader>gA',
         function()
           local gs = package.loaded.gitsigns
           gs.stage_buffer()
         end,
-        desc = "gitsigns: stage buffer",
+        desc = 'gitsigns: stage buffer',
       },
       {
-        "<leader>gR",
+        '<leader>gR',
         function()
           local gs = package.loaded.gitsigns
           gs.reset_buffer()
         end,
-        desc = "gitsigns: reset buffer",
+        desc = 'gitsigns: reset buffer',
       },
       {
-        "<leader>gr",
+        '<leader>gr',
         function()
           local gs = package.loaded.gitsigns
           gs.reset_hunk()
         end,
-        desc = "gitsigns: reset hunk",
+        desc = 'gitsigns: reset hunk',
       },
       {
-        "<leader>ga",
+        '<leader>ga',
         function()
           local gs = package.loaded.gitsigns
           gs.stage_hunk()
         end,
-        desc = "gitsigns: stage hunk",
+        desc = 'gitsigns: stage hunk',
       },
-      { "[g", ":Gitsigns prev_hunk<CR>", desc = "Prev git diff hunk" },
-      { "]g", ":Gitsigns next_hunk<CR>", desc = "Next git diff hunk" },
+      { '[g', ':Gitsigns prev_hunk<CR>', desc = 'Prev git diff hunk' },
+      { ']g', ':Gitsigns next_hunk<CR>', desc = 'Next git diff hunk' },
 
-      map("n", "<leader>gid", function()
+      map('n', '<leader>gid', function()
         local gs = package.loaded.gitsigns
         gs.toggle_word_diff()
         gs.toggle_linehl()
         gs.toggle_deleted()
-      end, { desc = "Gitsigns: toggle inline diff" }),
+      end, { desc = 'Gitsigns: toggle inline diff' }),
     },
   },
 }

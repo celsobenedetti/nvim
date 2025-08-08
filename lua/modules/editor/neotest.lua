@@ -1,6 +1,6 @@
 return {
-  "nvim-neotest/neotest",
+  'nvim-neotest/neotest',
   keys = {
-    { "<leader>tw", false },
+    { '<leader>tw', false },
   },
 }

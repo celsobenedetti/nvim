@@ -1,38 +1,38 @@
 return {
-  "telescope/telescope.nvim",
+  'telescope/telescope.nvim',
   keys = {
     {
-      "<leader>s<space>",
+      '<leader>s<space>',
       function()
-        require("telescope.builtin").buffers({
+        require('telescope.builtin').buffers {
           layout_config = {
-            prompt_position = "top",
+            prompt_position = 'top',
           },
-          sorting_strategy = "ascending",
-        })
+          sorting_strategy = 'ascending',
+        }
       end,
-      desc = "Telescope: buffers",
+      desc = 'Telescope: buffers',
     },
     {
-      "<leader>tn",
+      '<leader>tn',
       function()
-        require("telescope.builtin").treesitter({
+        require('telescope.builtin').treesitter {
           layout_config = {
-            prompt_position = "top",
+            prompt_position = 'top',
           },
-          sorting_strategy = "ascending",
-        })
+          sorting_strategy = 'ascending',
+        }
       end,
-      desc = "Telescope: buffers",
+      desc = 'Telescope: buffers',
     },
   },
   opts = function(_, opts)
     -- table extend way
-    opts.pickers = vim.tbl_deep_extend("force", opts.pickers or {}, {
+    opts.pickers = vim.tbl_deep_extend('force', opts.pickers or {}, {
       buffers = {
         mappings = {
           i = {
-            ["<C-d>"] = require("telescope.actions").delete_buffer,
+            ['<C-d>'] = require('telescope.actions').delete_buffer,
           },
         },
       },

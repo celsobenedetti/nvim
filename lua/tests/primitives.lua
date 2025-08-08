@@ -10,8 +10,8 @@ local function run_tests(suite)
       -- print("✔  " .. case.title)
       passed = passed + 1
     else
-      print("✖  " .. case.title)
-      print("    " .. err)
+      print('✖  ' .. case.title)
+      print('    ' .. err)
       failed = failed + 1
     end
   end
@@ -38,7 +38,7 @@ assert = {}
 
 function assert.equals(a, b)
   if a ~= b then
-    error(("Expected %s but got %s"):format(tostring(b), tostring(a)), 2)
+    error(('Expected %s but got %s'):format(tostring(b), tostring(a)), 2)
   end
 end
 
@@ -47,7 +47,7 @@ function assert.same(a, b)
     if type(x) ~= type(y) then
       return false
     end
-    if type(x) ~= "table" then
+    if type(x) ~= 'table' then
       return x == y
     end
     for k, v in pairs(x) do
@@ -63,38 +63,38 @@ function assert.same(a, b)
     return true
   end
   if not cmp(a, b) then
-    error("Tables not same", 2)
+    error('Tables not same', 2)
   end
 end
 
 function assert.is_nil(a)
   if a ~= nil then
-    error(("Expected nil but got %s"):format(tostring(a)), 2)
+    error(('Expected nil but got %s'):format(tostring(a)), 2)
   end
 end
 
 function assert.is_true(a)
   if a ~= true then
-    error(("Expected true but got %s"):format(tostring(a)), 2)
+    error(('Expected true but got %s'):format(tostring(a)), 2)
   end
 end
 
 function assert.is_false(a)
   if a ~= false then
-    error(("Expected false but got %s"):format(tostring(a)), 2)
+    error(('Expected false but got %s'):format(tostring(a)), 2)
   end
 end
 
 function run_all_tests()
   local total_passed, total_failed = 0, 0
   for _, suite in ipairs(all_suites) do
-    print("Suite: " .. suite.title)
+    print('Suite: ' .. suite.title)
     local passed, failed = run_tests(suite)
     total_passed = total_passed + passed
     total_failed = total_failed + failed
-    print("")
+    print ''
   end
-  print(("Summary: %d passed, %d failed"):format(total_passed, total_failed))
+  print(('Summary: %d passed, %d failed'):format(total_passed, total_failed))
 end
 
 return {

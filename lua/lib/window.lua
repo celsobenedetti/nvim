@@ -5,14 +5,14 @@ local M = {}
 ---@return number - the window id
 M.below = function(buffer)
   local buf = buffer or vim.api.nvim_create_buf(false, true)
-  local columns = vim.api.nvim_get_option_value("columns", {})
-  local lines = vim.api.nvim_get_option_value("lines", {})
+  local columns = vim.api.nvim_get_option_value('columns', {})
+  local lines = vim.api.nvim_get_option_value('lines', {})
   local win_height = math.max(8, math.floor(lines * vim.g.below_split_height))
   local win = vim.api.nvim_open_win(buf, true, {
-    split = "below",
+    split = 'below',
     width = columns,
     height = win_height,
-    style = "minimal",
+    style = 'minimal',
   })
 
   return win
@@ -29,17 +29,17 @@ end
 M.relative_below = function(buffer, opts)
   local buf = buffer or vim.api.nvim_create_buf(false, true)
   local api = vim.api
-  local columns = vim.api.nvim_get_option_value("columns", {})
-  local lines = vim.api.nvim_get_option_value("lines", {})
+  local columns = vim.api.nvim_get_option_value('columns', {})
+  local lines = vim.api.nvim_get_option_value('lines', {})
   local win_height = math.max(8, math.floor(lines * vim.g.below_split_height))
   local win_opts = {
-    relative = "editor",
+    relative = 'editor',
     row = lines - win_height,
     col = 0,
     width = columns,
     height = win_height,
-    style = "minimal",
-    border = "single",
+    style = 'minimal',
+    border = 'single',
   }
 
   local ok, win = pcall(api.nvim_open_win, buf, true, win_opts)

@@ -1,59 +1,59 @@
-local strings = require("lib.strings")
+local strings = require 'lib.strings'
 
 return {
 
   {
-    "obsidian-nvim/obsidian.nvim",
-    version = "*", -- recommended, use latest release instead of latest commit
+    'obsidian-nvim/obsidian.nvim',
+    version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
     -- lazy = true,
-    ft = { "markdown", "org" },
+    ft = { 'markdown', 'org' },
     keys = {
-      { "<leader>zk", ":Obsidian search<CR>" },
-      { "<leader>oO", ":Obsidian open<CR>" },
-      { "<leader>ob", ":Obsidian backlinks<CR>" },
-      { "<leader>ol", ":Obsidian links<CR>" },
+      { '<leader>zk', ':Obsidian search<CR>' },
+      { '<leader>oO', ':Obsidian open<CR>' },
+      { '<leader>ob', ':Obsidian backlinks<CR>' },
+      { '<leader>ol', ':Obsidian links<CR>' },
       -- { '<leader>ot', ':ObsidianTags<CR>' },
-      { "<leader>ch", ":Obsidian toggleCheckbox<CR>" },
-      { "<leader>zz", ":Obsidian quick_switch<CR>" },
-      { "<leader>oR", ":Obsidian rename<CR>" },
+      { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
+      { '<leader>zz', ':Obsidian quick_switch<CR>' },
+      { '<leader>oR', ':Obsidian rename<CR>' },
 
-      { "<leader>n", ":Obsidian link_new<CR>", mode = "v" },
+      { '<leader>n', ':Obsidian link_new<CR>', mode = 'v' },
 
       {
-        "<leader>oo",
+        '<leader>oo',
         function()
-          require("lib.zk").open_orgmode_or_obsidian_link()
+          require('lib.zk').open_orgmode_or_obsidian_link()
         end,
-        desc = "Open orgmode or obsidian link",
+        desc = 'Open orgmode or obsidian link',
       },
       {
-        "<leader>ov",
+        '<leader>ov',
         function()
-          vim.cmd("vsplit")
-          require("lib.zk").open_orgmode_or_obsidian_link()
+          vim.cmd 'vsplit'
+          require('lib.zk').open_orgmode_or_obsidian_link()
         end,
-        desc = "Open orgmode or obsidian link (vertical split)",
+        desc = 'Open orgmode or obsidian link (vertical split)',
       },
     },
     cond = function()
-      if require("lib.cwd").is_llm_chats() then
+      if require('lib.cwd').is_llm_chats() then
         return false
       end
 
-      local path = vim.fn.expand("%:p")
-      local is_templates = path:find("templates")
+      local path = vim.fn.expand '%:p'
+      local is_templates = path:find 'templates'
 
       return not is_templates
     end,
     opts = function(_, opts)
-      opts.new_notes_location = "notes_subdir"
+      opts.new_notes_location = 'notes_subdir'
       opts.workspaces = {
         {
-          name = "notes",
-          path = "~/notes",
+          name = 'notes',
+          path = '~/notes',
           overrides = {
-            notes_subdir = "0-inbox",
+            notes_subdir = '0-inbox',
           },
         },
       }
@@ -81,20 +81,20 @@ return {
 
       opts.picker = {
         -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
-        name = "snacks.pick",
+        name = 'snacks.pick',
         -- Optional, configure key mappings for the picker. These are the defaults.
         -- Not all pickers support all mappings.
         note_mappings = {
           -- Create a new note from your query.
-          new = "<C-x>",
+          new = '<C-x>',
           -- Insert a link to the selected note.
-          insert_link = "<C-l>",
+          insert_link = '<C-l>',
         },
         tag_mappings = {
           -- Add tag(s) to current note.
-          tag_note = "<C-x>",
+          tag_note = '<C-x>',
           -- Insert a tag at the current location.
-          insert_tag = "<C-l>",
+          insert_tag = '<C-l>',
         },
       }
 
@@ -117,11 +117,11 @@ return {
 
       opts.note_path_func = function(spec)
         local path = spec.dir / strings.slugify(spec.title)
-        return path:with_suffix(".md")
+        return path:with_suffix '.md'
       end
     end,
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      'nvim-lua/plenary.nvim',
     },
   },
 }

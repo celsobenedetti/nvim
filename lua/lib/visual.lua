@@ -4,12 +4,12 @@ local api = vim.api
 
 local function get_visual_selection_region()
   local mode = api.nvim_get_mode().mode
-  if mode ~= "v" and mode ~= "V" then
+  if mode ~= 'v' and mode ~= 'V' then
     return
   end
   local options = {}
   options.adjust = function(pos1, pos2)
-    if vim.fn.visualmode() == "V" then
+    if vim.fn.visualmode() == 'V' then
       pos1[3] = 1
       pos2[3] = 2 ^ 31 - 1
     end
@@ -24,9 +24,9 @@ local function get_visual_selection_region()
   end
   local bufnr = 0
   local regtype = vim.fn.visualmode()
-  local selection = vim.o.selection ~= "exclusive"
-  local pos1 = vim.fn.getpos("v")
-  local pos2 = vim.fn.getpos(".")
+  local selection = vim.o.selection ~= 'exclusive'
+  local pos1 = vim.fn.getpos 'v'
+  local pos2 = vim.fn.getpos '.'
   pos1, pos2 = options.adjust(pos1, pos2)
   local start = { pos1[2] - 1, pos1[3] - 1 + pos1[4] }
   local finish = { pos2[2] - 1, pos2[3] - 1 + pos2[4] }
@@ -56,7 +56,7 @@ end
 local function replace_region_with_text(start, finish, new_lines)
   local bufnr = 0
   api.nvim_buf_set_lines(bufnr, start[1], finish[1] + 1, false, new_lines)
-  api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+  api.nvim_feedkeys(api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
 end
 
 M.replace = function(new_text)
@@ -92,7 +92,7 @@ M.wrap = function(pre, post)
     return
   end
 
-  if mode == "V" then
+  if mode == 'V' then
     lines[1] = pre .. lines[1]
     lines[#lines] = lines[#lines] .. post
   else

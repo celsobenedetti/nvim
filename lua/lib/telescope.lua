@@ -1,20 +1,20 @@
 local M = {}
 
 M.mv_file = function(opts)
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
-  local conf = require("telescope.config").values
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
+  local pickers = require 'telescope.pickers'
+  local finders = require 'telescope.finders'
+  local conf = require('telescope.config').values
+  local actions = require 'telescope.actions'
+  local action_state = require 'telescope.actions.state'
 
-  local cwd = require("lib.cwd")
+  local cwd = require 'lib.cwd'
 
   pickers
     .new({}, {
-      prompt_title = "Move file to directory",
-      finder = finders.new_table({
+      prompt_title = 'Move file to directory',
+      finder = finders.new_table {
         results = cwd.directories(),
-      }),
+      },
       sorter = conf.generic_sorter(opts),
       attach_mappings = function(prompt_bufnr, _)
         actions.select_default:replace(function()
@@ -27,8 +27,8 @@ M.mv_file = function(opts)
           end
 
           local original_buffer = vim.api.nvim_get_current_buf()
-          vim.cmd("silent! !mv % " .. destination)
-          vim.cmd("e " .. destination .. "/" .. vim.fn.expand("%:t"))
+          vim.cmd('silent! !mv % ' .. destination)
+          vim.cmd('e ' .. destination .. '/' .. vim.fn.expand '%:t')
           vim.api.nvim_buf_delete(original_buffer, { force = true })
         end)
         return true

@@ -15,47 +15,47 @@ local opts = {
   detached = true,
 
   -- lua sets a global `arg` variable to the arguments of the script you run
-  args = { "--listen", "localhost:1234", "--wait-for-client", arg[1] },
+  args = { '--listen', 'localhost:1234', '--wait-for-client', arg[1] },
 }
 
 local handle, piderr
 local function on_exit(code)
-  print("exit " .. code)
+  print('exit ' .. code)
   handle:close()
   handle = nil
 end
 
-handle, piderr = uv.spawn("debugpy", opts, on_exit)
+handle, piderr = uv.spawn('debugpy', opts, on_exit)
 if not handle then
   print(piderr)
   return
 end
 
 -- We get the path to the socket
-local parent = assert(os.getenv("NVIM"), "debugpy-run only works if $NVIM is set")
+local parent = assert(os.getenv 'NVIM', 'debugpy-run only works if $NVIM is set')
 
 -- And connect to it
-local conn = vim.fn.sockconnect("pipe", parent, { rpc = true })
+local conn = vim.fn.sockconnect('pipe', parent, { rpc = true })
 
 -- And start a new debug session via `dap.run()`
-vim.fn.rpcrequest(conn, "nvim_exec_lua", [[require("dap").run(...)]], {
+vim.fn.rpcrequest(conn, 'nvim_exec_lua', [[require("dap").run(...)]], {
   {
-    name = "debugpy-run", -- An arbitrary name
+    name = 'debugpy-run', -- An arbitrary name
 
     -- This refers to the dap.adapters.debugpy definition created by nvim-dap-python
-    type = "debugpy",
+    type = 'debugpy',
 
     -- This tells nvim-dap to connect to the debugpy instance listening on 1234
     -- See:
     -- - https://github.com/microsoft/debugpy/wiki/Command-Line-Reference
     -- - https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
-    request = "attach",
+    request = 'attach',
     connect = {
-      host = "127.0.0.1",
+      host = '127.0.0.1',
       port = 1234,
     },
-    purpose = { "debug-in-terminal" },
-    pythonArgs = { "-Xfrozen_modules=off" },
+    purpose = { 'debug-in-terminal' },
+    pythonArgs = { '-Xfrozen_modules=off' },
   },
 })
 

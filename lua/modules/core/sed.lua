@@ -1,21 +1,21 @@
 return {
-  "MagicDuck/grug-far.nvim",
+  'MagicDuck/grug-far.nvim',
   keys = {
-    { "<leader>sr", false },
+    { '<leader>sr', false },
     {
-      "<leader>sed",
+      '<leader>sed',
       function()
-        local grug = require("grug-far")
-        local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
-        grug.open({
+        local grug = require 'grug-far'
+        local ext = vim.bo.buftype == '' and vim.fn.expand '%:e'
+        grug.open {
           transient = true,
           prefills = {
-            filesFilter = ext and ext ~= "" and "*." .. ext or nil,
+            filesFilter = ext and ext ~= '' and '*.' .. ext or nil,
           },
-        })
+        }
       end,
-      mode = { "n", "v" },
-      desc = "sed: Search and Replace",
+      mode = { 'n', 'v' },
+      desc = 'sed: Search and Replace',
     },
   },
 }

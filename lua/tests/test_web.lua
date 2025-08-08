@@ -1,54 +1,54 @@
-local web = require("lib.web")
+local web = require 'lib.web'
 
 vim.g.web = {
-  jira = "https://myjira.atlassian.net/browse/",
+  jira = 'https://myjira.atlassian.net/browse/',
 }
 
-describe("web.get_search_url_from_query", function()
+describe('web.get_search_url_from_query', function()
   local cases = {
-    { desc = "GitHub repo shortcut (owner/repo)", input = "owner/repo", expected = "https://github.com/owner/repo" },
-    { desc = "lazyvim", input = "lazyvim", expected = "https://lazyvim.org" },
-    { desc = "monkeytype prefix", input = "mt", expected = "https://monkeytype.com" },
+    { desc = 'GitHub repo shortcut (owner/repo)', input = 'owner/repo', expected = 'https://github.com/owner/repo' },
+    { desc = 'lazyvim', input = 'lazyvim', expected = 'https://lazyvim.org' },
+    { desc = 'monkeytype prefix', input = 'mt', expected = 'https://monkeytype.com' },
     {
-      desc = "YouTube search prefix",
-      input = "y piano tutorials",
-      expected = "https://www.youtube.com/results?search_query=piano+tutorials",
+      desc = 'YouTube search prefix',
+      input = 'y piano tutorials',
+      expected = 'https://www.youtube.com/results?search_query=piano+tutorials',
     },
     {
-      desc = "GitHub search prefix",
-      input = "gh neovim",
-      expected = "https://github.com/search?q=neovim&type=repositories",
+      desc = 'GitHub search prefix',
+      input = 'gh neovim',
+      expected = 'https://github.com/search?q=neovim&type=repositories',
     },
     {
-      desc = "GitHub direct repo access",
-      input = "gh nvim-lua/plenary.nvim",
-      expected = "https://github.com/nvim-lua/plenary.nvim",
+      desc = 'GitHub direct repo access',
+      input = 'gh nvim-lua/plenary.nvim',
+      expected = 'https://github.com/nvim-lua/plenary.nvim',
     },
-    { desc = "unknown prefix returns empty string", input = "unknownprefix search", expected = "" },
+    { desc = 'unknown prefix returns empty string', input = 'unknownprefix search', expected = '' },
     {
-      desc = "Google search fallback and trimming",
-      input = "  g hello ",
-      expected = "https://www.google.com/search?q=hello",
-    },
-    {
-      desc = "Should not mistake g{url} for google",
-      input = "gitlab.com",
-      expected = "https://gitlab.com",
+      desc = 'Google search fallback and trimming',
+      input = '  g hello ',
+      expected = 'https://www.google.com/search?q=hello',
     },
     {
-      desc = "should match git repo",
-      input = "robitx/gp.nvim",
-      expected = "https://github.com/robitx/gp.nvim",
+      desc = 'Should not mistake g{url} for google',
+      input = 'gitlab.com',
+      expected = 'https://gitlab.com',
     },
     {
-      desc = "should open jira ticket",
-      input = "VA-1234",
-      expected = vim.g.web.jira .. "VA-1234",
+      desc = 'should match git repo',
+      input = 'robitx/gp.nvim',
+      expected = 'https://github.com/robitx/gp.nvim',
     },
     {
-      desc = "should open github repo",
-      input = "github.com/mitchellh/cli",
-      expected = "https://github.com/mitchellh/cli",
+      desc = 'should open jira ticket',
+      input = 'VA-1234',
+      expected = vim.g.web.jira .. 'VA-1234',
+    },
+    {
+      desc = 'should open github repo',
+      input = 'github.com/mitchellh/cli',
+      expected = 'https://github.com/mitchellh/cli',
     },
   }
 
@@ -59,27 +59,27 @@ describe("web.get_search_url_from_query", function()
   end
 end)
 
-describe("does_string_match_url_without_protocol", function()
+describe('does_string_match_url_without_protocol', function()
   local cases = {
-    { "opencode.ai", true },
-    { "google.ai", true },
-    { "lazyvim.org", true },
-    { "foo.bar.baz.com", true },
-    { "1-2-3.example.net", true },
-    { "http://google.com", false },
-    { "https://opencode.ai", false },
-    { "ftp://ftpserver.com", false },
-    { "google.1a", false },
-    { "google.", false },
-    { ".ai", false },
-    { "8.8.8.8", false },
-    { "localhost", false },
-    { "-badhost.com", false },
-    { "test_domain.ai", false },
+    { 'opencode.ai', true },
+    { 'google.ai', true },
+    { 'lazyvim.org', true },
+    { 'foo.bar.baz.com', true },
+    { '1-2-3.example.net', true },
+    { 'http://google.com', false },
+    { 'https://opencode.ai', false },
+    { 'ftp://ftpserver.com', false },
+    { 'google.1a', false },
+    { 'google.', false },
+    { '.ai', false },
+    { '8.8.8.8', false },
+    { 'localhost', false },
+    { '-badhost.com', false },
+    { 'test_domain.ai', false },
   }
 
   for _, c in ipairs(cases) do
-    it(("matches %q → %s"):format(c[1], tostring(c[2])), function()
+    it(('matches %q → %s'):format(c[1], tostring(c[2])), function()
       assert.equals(web.does_string_match_url_without_protocol(c[1]), c[2])
     end)
   end

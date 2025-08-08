@@ -5,7 +5,7 @@ end
 
 return {
   {
-    "folke/noice.nvim",
+    'folke/noice.nvim',
     opts = function(_, opts)
       opts.routes = vim.list_extend(opts.routes or {}, {
         -- Suppress notifications containing the following patterns
@@ -23,9 +23,9 @@ return {
         -- filter('Error detected while processing User Autocommands for "VeryLazy":'), -- showing up on notebook
         -- filter("bad argument #1 to 'pairs'"), -- some cmp bug 2025-05-19
         -- filter("[orgmode] No headline found with title'"), -- annoying for my obsidian + orgmode setup
-        filter("Can't find file"), -- suppress failed "gf" messages
-        filter("Error indecoration provider"), -- TreeSitter error when blink renders supermaven completion
-        filter("_folding_range.lua"), -- some error likely related to origami.nvim
+        filter "Can't find file", -- suppress failed "gf" messages
+        filter 'Error indecoration provider', -- TreeSitter error when blink renders supermaven completion
+        filter '_folding_range.lua', -- some error likely related to origami.nvim
 
         -- avante jank
         -- filter 'Error detected while processing', -- some autocmd

@@ -1,33 +1,33 @@
 return {
-  "rachartier/tiny-inline-diagnostic.nvim",
-  event = "VeryLazy", -- Or `LspAttach`
+  'rachartier/tiny-inline-diagnostic.nvim',
+  event = 'VeryLazy', -- Or `LspAttach`
   priority = 1000, -- needs to be loaded in first
   config = function()
     -- Default configuration
-    require("tiny-inline-diagnostic").setup({
+    require('tiny-inline-diagnostic').setup {
       -- Style preset for diagnostic messages
       -- Available options:
       -- "modern", "classic", "minimal", "powerline",
       -- "ghost", "simple", "nonerdfont", "amongus"
-      preset = "modern",
+      preset = 'modern',
 
       transparent_bg = false, -- Set the background of the diagnostic to transparent
       transparent_cursorline = false, -- Set the background of the cursorline to transparent (only one the first diagnostic)
 
       hi = {
-        error = "DiagnosticError", -- Highlight group for error messages
-        warn = "DiagnosticWarn", -- Highlight group for warning messages
-        info = "DiagnosticInfo", -- Highlight group for informational messages
-        hint = "DiagnosticHint", -- Highlight group for hint or suggestion messages
-        arrow = "NonText", -- Highlight group for diagnostic arrows
+        error = 'DiagnosticError', -- Highlight group for error messages
+        warn = 'DiagnosticWarn', -- Highlight group for warning messages
+        info = 'DiagnosticInfo', -- Highlight group for informational messages
+        hint = 'DiagnosticHint', -- Highlight group for hint or suggestion messages
+        arrow = 'NonText', -- Highlight group for diagnostic arrows
 
         -- Background color for diagnostics
         -- Can be a highlight group or a hexadecimal color (#RRGGBB)
-        background = "CursorLine",
+        background = 'CursorLine',
 
         -- Color blending option for the diagnostic background
         -- Use "None" or a hexadecimal color (#RRGGBB) to blend with another color
-        mixing_color = "None",
+        mixing_color = 'None',
       },
 
       options = {
@@ -96,7 +96,7 @@ return {
           -- "wrap" - Split long messages into multiple lines
           -- "none" - Do not truncate messages
           -- "oneline" - Keep the message on a single line, even if it's long
-          mode = "wrap",
+          mode = 'wrap',
 
           -- Trigger wrapping to occur this many characters earlier when mode == "wrap".
           -- Increase this value appropriately if you notice that the last few characters
@@ -116,7 +116,7 @@ return {
         -- Custom format function for diagnostic messages
         -- Example:
         format = function(diagnostic)
-          return diagnostic.source .. ": " .. diagnostic.message
+          return diagnostic.source .. ': ' .. diagnostic.message
         end,
 
         virt_texts = {
@@ -141,7 +141,7 @@ return {
         -- You should not change this unless the plugin does not work with your configuration
         overwrite_events = nil,
       },
-      disabled_ft = { "json" }, -- List of filetypes to disable the plugin
-    })
+      disabled_ft = { 'json' }, -- List of filetypes to disable the plugin
+    }
   end,
 }

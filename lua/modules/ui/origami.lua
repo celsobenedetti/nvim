@@ -1,7 +1,7 @@
 return {
   {
-    "chrisgrieser/nvim-origami",
-    event = "VeryLazy",
+    'chrisgrieser/nvim-origami',
+    event = 'VeryLazy',
     opts = {
       -- default settings
       useLspFoldsWithTreesitterFallback = true, -- required for `autoFold`
@@ -10,15 +10,15 @@ return {
         enabled = true,
         padding = 3,
         lineCount = {
-          template = "%d lines", -- `%d` is replaced with the number of folded lines
-          hlgroup = "Comment",
+          template = '%d lines', -- `%d` is replaced with the number of folded lines
+          hlgroup = 'Comment',
         },
         diagnosticsCount = true, -- uses hlgroups and icons from `vim.diagnostic.config().signs`
         gitsignsCount = true, -- requires `gitsigns.nvim`
       },
       autoFold = {
         enabled = true,
-        kinds = { "comment", "imports" }, ---@type lsp.FoldingRangeKind[]
+        kinds = { 'comment', 'imports' }, ---@type lsp.FoldingRangeKind[]
       },
       foldKeymaps = {
         setup = true, -- modifies `h` and `l`

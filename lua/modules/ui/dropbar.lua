@@ -1,18 +1,18 @@
 return {
   {
-    "Bekaboo/dropbar.nvim",
-    event = "VeryLazy",
+    'Bekaboo/dropbar.nvim',
+    event = 'VeryLazy',
 
     opts = {
 
       bar = {
         sources = function(buf, _)
-          local sources = require("dropbar.sources")
-          local utils = require("dropbar.utils")
-          if vim.bo[buf].ft == "markdown" then
+          local sources = require 'dropbar.sources'
+          local utils = require 'dropbar.utils'
+          if vim.bo[buf].ft == 'markdown' then
             return {}
           end
-          if vim.bo[buf].buftype == "terminal" then
+          if vim.bo[buf].buftype == 'terminal' then
             return { sources.terminal }
           end
           return {

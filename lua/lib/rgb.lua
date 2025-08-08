@@ -2,7 +2,7 @@ local M = {}
 
 -- Helper function to convert hex to RGB
 local function hex_to_rgb(hex_color)
-  hex_color = hex_color:gsub("#", "") -- Remove '#' if present
+  hex_color = hex_color:gsub('#', '') -- Remove '#' if present
   local r = tonumber(hex_color:sub(1, 2), 16)
   local g = tonumber(hex_color:sub(3, 4), 16)
   local b = tonumber(hex_color:sub(5, 6), 16)
@@ -11,7 +11,7 @@ end
 
 -- Helper function to convert RGB to hex
 local function rgb_to_hex(r, g, b)
-  return string.format("#%02X%02X%02X", r, g, b)
+  return string.format('#%02X%02X%02X', r, g, b)
 end
 
 -- lighten a hex color by a given amount

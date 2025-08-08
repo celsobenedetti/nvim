@@ -9,9 +9,9 @@ end
 --  can't move windows, like help
 -- { import = "lazyvim.plugins.extras.ui.edgy" },
 return {
-  "folke/edgy.nvim",
+  'folke/edgy.nvim',
   opts = function(_, opts)
-    opts.animate = vim.tbl_deep_extend("force", opts.animate or {}, {
+    opts.animate = vim.tbl_deep_extend('force', opts.animate or {}, {
       enabled = true,
       duration = 25,
       fps = 120, -- frames per second
