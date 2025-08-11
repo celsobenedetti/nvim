@@ -87,3 +87,5 @@ autocmd({
 if os.getenv 'IS_ZEN' == 'true' then
   require 'lib.startup.zen'
 end
+
+require('lib.macro_notify').setup()

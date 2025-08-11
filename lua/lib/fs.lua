@@ -6,9 +6,11 @@ M.mv_file = function()
   --- @type snacks.picker.finder.Item[]
   local snack_items = {}
   for _, dir in ipairs(cwd.directories()) do
+    dir = dir .. '/' -- remove trailing slash
     table.insert(snack_items, {
       text = dir,
       file = dir,
+      dir = dir,
       cmd = dir,
       desc = dir,
       preview = 'preview',
