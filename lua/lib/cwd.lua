@@ -22,10 +22,10 @@ M.includes = function(strings)
   return false
 end
 
-local fd = '!fd . --type=directory --hidden -E .hugo/ -E .git/ -E .pnpm/ -E .obsidian '
+--- @return string[]
 M.directories = function()
-  local cwd = M.cwd()
-  local fd_result = vim.api.nvim_exec2(fd .. cwd, { output = true })
+  local fd = '!fd . --type=directory'
+  local fd_result = vim.api.nvim_exec2(fd, { output = true })
 
   local dirs = vim.split(fd_result.output, '\n')
   dirs = vim.tbl_filter(function(item)

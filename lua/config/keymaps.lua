@@ -8,7 +8,6 @@ vim.keymap.del('n', '<leader>e')
 -- vim.keymap.del({ 'n', 't' }, '<C-/>')
 
 local open = require 'lib.open'
-local telescope = require 'lib.telescope'
 local web = require 'lib.web'
 local jump = require 'lib.jump'
 local visual = require 'lib.visual'
@@ -27,7 +26,7 @@ map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('t', '<esc><esc>', '<C-\\><C-n>', { desc = 'Escape insert mode in terminal' }) -- let me escape insert in terminal!
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>C', ':Clip<CR>', { desc = 'Copy file path to clipboard' })
-map('n', '<leader>mv', telescope.mv_file, { desc = 'Move file of current buffer to dir' })
+map('n', '<leader>mv', require('lib.fs').mv_file, { desc = 'Move file of current buffer to dir' })
 map('n', '<leader>tc', toggle.completion, { desc = 'toggle: completion' })
 map('n', '<leader><tab><tab>', ':tabnext<CR>', { desc = 'tab: next' })
 map('n', '<leader><tab>n', ':tabnew<CR>', { desc = 'tab: new' })
