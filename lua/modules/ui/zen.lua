@@ -25,10 +25,10 @@ return {
 
     opts.zen = opts.zen or {}
     opts.zen.on_close = function()
-      Snacks.indent.enable()
+      -- Snacks.indent.enable()
     end
     opts.zen.on_open = function()
-      Snacks.indent.disable()
+      -- Snacks.indent.disable()
     end
 
     opts.zen.show = {

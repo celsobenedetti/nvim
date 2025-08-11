@@ -1,10 +1,7 @@
-local rgb = require 'lib.rgb'
 local c = vim.g.colors -- colors
 
 local config = {
-
   -- TODO: use vim.extend_table to extend these configs
-
   highlights = {
     keyword = { fg = c.red, style = { 'nocombine' } },
     type = { c.yellow, style = { 'nocombine' } },

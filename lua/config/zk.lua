@@ -11,7 +11,7 @@ local M = {
   ORG_REFILE = os.getenv 'ORG_REFILE' or '',
   ORG_WORK = os.getenv 'ORG_WORK' or '',
 
-  -- AI_RULES = os.getenv 'AI_RULES' or '',
+  AI_RULES = os.getenv 'AI_RULES' or '',
 }
 
 for k, v in pairs(M) do

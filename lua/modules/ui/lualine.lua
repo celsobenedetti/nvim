@@ -1,5 +1,5 @@
 return {
-  'nvim-nualine/lualine.nvim',
+  'nvim-lualine/lualine.nvim',
   event = 'VeryLazy',
   init = function()
     vim.g.lualine_laststatus = vim.o.laststatus
@@ -23,9 +23,9 @@ return {
       options = {
         theme = {
           normal = {
-            a = { bg = vim.g.colors.bg, fg = vim.g.colors.subtext },
-            b = { bg = vim.g.colors.bg, fg = vim.g.colors.subtext },
-            c = { bg = vim.g.colors.bg, fg = vim.g.colors.subtext },
+            a = { bg = vim.g.colors.darkgray, fg = vim.g.colors.subtext },
+            b = { bg = vim.g.colors.darkgray, fg = vim.g.colors.subtext },
+            c = { bg = vim.g.colors.darkgray, fg = vim.g.colors.subtext },
           },
         },
         globalstatus = vim.o.laststatus == 3,

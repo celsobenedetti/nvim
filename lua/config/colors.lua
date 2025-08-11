@@ -3,7 +3,7 @@ local M = {}
 M.colorscheme = 'evergarden'
 M.background = 'dark'
 
-M.default_nvim = {
+M.neovim_default = {
   black = '#0B0C11',
   white = '#d7dae1',
   red = '#ffbcb5',
@@ -18,6 +18,8 @@ M.default_nvim = {
   comment = '#2c2e33',
 
   subtext = '#ADC9BC',
+
+  bg = '#24283b',
 }
 
 M.tokyonight = {
@@ -69,6 +71,8 @@ M.evergarden = {
   green = '#AFC991',
   light_red = '#ffbcb5',
   blue = '#B2CFED',
+
+  sand = '#c4a16c',
   yellow = '#F5D098',
   gray = '#58686D',
   darkgray = '#1C2225',
