@@ -30,6 +30,13 @@ map('n', '<leader>mv', require('lib.fs').mv_file, { desc = 'Move file of current
 map('n', '<leader>tc', toggle.completion, { desc = 'toggle: completion' })
 map('n', '<leader><tab><tab>', ':tabnext<CR>', { desc = 'tab: next' })
 map('n', '<leader><tab>n', ':tabnew<CR>', { desc = 'tab: new' })
+map('n', 'dd', function()
+  if vim.bo.filetype == 'qf' then
+    require('lib.quickfix').remove_item()
+    return
+  end
+  vim.cmd 'normal! dd'
+end, { desc = 'tab: new' })
 
 -- map("n", "<leader>dim", function()
 --   Snacks.dim.enable({ scope = { max_size = 1 } })
