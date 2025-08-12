@@ -48,6 +48,8 @@ require('lazy').setup {
 
     -- lazyload
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
+
+    { import = 'lib.plugins.performance' },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.

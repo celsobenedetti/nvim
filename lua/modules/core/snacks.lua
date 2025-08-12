@@ -1,8 +1,8 @@
 return {
 
   'folke/snacks.nvim',
-  -- stylua: ignore start
   keys = {
+    -- stylua: ignore start
     -- { '<c-/>', false },
     { "<leader>no", function() Snacks.picker.notifications() end, desc = "Notification History", },
     { "<leader>rg", function() Snacks.picker.grep() end, desc = "Grep", },
@@ -25,10 +25,10 @@ return {
     { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
     { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
   },
-  -- stylua: ignore end
 
   opts = function(_, opts)
     opts.terminal = { enabled = false }
+    opts.dashboard = { enabled = false }
     opts.picker.exclude = vim.tbl_extend('keep', opts.picker.exclude or {}, vim.g.grep_ignore or {})
 
     opts.picker.win = opts.picker.win or {}

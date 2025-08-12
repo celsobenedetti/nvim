@@ -58,6 +58,14 @@ return {
         },
       }
 
+      opts.attachments = {
+        img_folder = vim.g.notes.ARCHIVES .. '/assets/imgs',
+        img_name_func = function()
+          return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
+        end,
+        confirm_img_paste = true,
+      }
+
       opts.completion = {
         -- Enables completion using nvim_cmp
         nvim_cmp = false,

@@ -3,7 +3,7 @@ return {
   'folke/snacks.nvim',
   opts = function(_, opts)
     opts.scroll = vim.tbl_deep_extend('force', opts.scroll, {
-      enabled = vim.g.snacks_animate,
+      enabled = not vim.g.performance and vim.g.snacks_animate,
       animate = {
         duration = { step = 15, total = vim.g.animation_duration },
         easing = 'linear',

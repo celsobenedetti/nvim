@@ -27,7 +27,7 @@ return {
       overrides = {
         Folded = {
           fg = c.lightgray,
-          bg = c.winter.mantle,
+          bg = c.darkgray,
           -- style = { 'italic' },
         },
 

@@ -7,11 +7,10 @@ return {
     lazy = true,
     version = false, -- set this if you want to always pull the latest change
     keys = {
-
-      { '<leader>aa', 'AvanteAsk', desc = 'AvanteAsk' },
-      { '<leader>ae', 'AvanteEdit', desc = 'AvanteEdit' },
-      { '<leader>ar', 'AvanteRefresh', desc = 'AvanteRefresh' },
-      { '<leader>aC', 'AvanteClear', desc = 'AvanteClear' },
+      { '<leader>aa', ':AvanteAsk<CR>', desc = 'AvanteAsk', mode = { 'n', 'v' } },
+      { '<leader>ae', ':AvanteEdit<CR>', desc = 'AvanteEdit', mode = { 'n', 'v' } },
+      { '<leader>ar', ':AvanteRefresh<CR>', desc = 'AvanteRefresh' },
+      { '<leader>aC', ':AvanteClear<CR>', desc = 'AvanteClear' },
     },
     opts = {
       provider = 'openai',

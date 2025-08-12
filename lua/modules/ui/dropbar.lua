@@ -17,10 +17,10 @@ return {
           end
           return {
             sources.path,
-            -- utils.source.fallback({
-            -- sources.lsp,
-            -- sources.treesitter,
-            -- }),
+            utils.source.fallback {
+              sources.lsp,
+              -- sources.treesitter,
+            },
           }
         end,
       },

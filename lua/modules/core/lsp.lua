@@ -4,6 +4,10 @@ return {
     opts = function(_, opts)
       local keys = require('lazyvim.plugins.lsp.keymaps').get()
 
+      if vim.g.performance then
+        opts.inlay_hints = { enabled = false }
+      end
+
       vim.list_extend(keys, {
         { 'gr', false },
       })

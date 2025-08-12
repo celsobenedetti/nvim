@@ -6,9 +6,15 @@
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
 vim.g.lualine = true
-vim.g.performance = false
+vim.g.performance = vim.g.performance or false
 vim.g.supermaven_inline_completion = true
 vim.g.lazyvim_check_order = false
+
+vim.g.ai = {
+  models = {
+    gpt = 'gpt-4o',
+  },
+}
 
 vim.g.snacks_animate = true
 vim.g.animation_duration = 40

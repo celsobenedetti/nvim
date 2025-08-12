@@ -24,6 +24,7 @@ return {
       { '<leader>oim', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
       { '<leader>T', ':Org agenda T<CR>', desc = 'Org: Today agenda' },
       { '<leader>oct', ':Org capture t<CR>', desc = 'Org: Today agenda' },
+      { '<leader>ocw', ':Org capture w<CR>', desc = 'Org: Today agenda' },
     },
     config = function()
       -- Setup orgmode
