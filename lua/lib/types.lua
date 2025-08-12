@@ -1,0 +1,12 @@
+---@class obsidian.ABC
+---@field init function an init function which essentially calls 'setmetatable({}, mt)'.
+---@field as_tbl function get a raw table with only the instance's fields
+---@field mt table the metatable
+---
+---@class obsidian.Path : obsidian.ABC
+---
+---@field filename string The underlying filename as a string.
+---@field name string|? The final path component, if any.
+---@field suffix string|? The final extension of the path, if any.
+---@field suffixes string[] A list of all of the path's extensions.
+---@field stem string|? The final path component, without its suffix.

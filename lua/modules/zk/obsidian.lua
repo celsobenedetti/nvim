@@ -1,4 +1,5 @@
 local strings = require 'lib.strings'
+local visual = require 'lib.visual'
 
 return {
 
@@ -13,12 +14,36 @@ return {
       { '<leader>oO', ':Obsidian open<CR>' },
       { '<leader>ob', ':Obsidian backlinks<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
-      -- { '<leader>ot', ':ObsidianTags<CR>' },
+      { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
       { '<leader>zz', ':Obsidian quick_switch<CR>' },
       { '<leader>oR', ':Obsidian rename<CR>' },
 
-      { '<leader>n', ':Obsidian link_new<CR>', mode = 'v' },
+      {
+        '<leader>n',
+        function()
+          local text = visual.get_selection()
+          if not text or #text == 0 then
+            return
+          end
+
+          local title = strings.trim(text)
+          print(title, text)
+
+          local obsidian = require 'obsidian'
+
+          local id = strings.slugify(text)
+          -- local path = vim.g.noes.INBOX .. '/' .. id .. '.md'
+          local note = obsidian.Note.create {
+            id = id,
+            title = title,
+          }
+          note:save()
+
+          visual.replace('[[' .. id .. '|' .. title .. ']]')
+        end,
+        mode = 'v',
+      },
 
       {
         '<leader>oo',
@@ -51,7 +76,7 @@ return {
       opts.workspaces = {
         {
           name = 'notes',
-          path = '~/notes',
+          path = vim.g.notes.NOTES,
           overrides = {
             notes_subdir = '0-inbox',
           },
@@ -83,8 +108,19 @@ return {
         --   ["x"] = { char = "✔", hl_group = "ObsidianDone" },
         -- },
       }
-      opts.note_id_func = function(title)
-        return title
+
+      --- @param title string|?
+      --- @param path obsidian.Path|?
+      opts.note_id_func = function(title, path)
+        if title ~= nil then
+          return title
+        end
+
+        if path ~= nil then
+          return path.stem or path.name or path.filename
+        end
+
+        return nil
       end
 
       opts.picker = {
@@ -123,8 +159,11 @@ return {
         return frontmatter
       end
 
+      ---@param spec { id: string, dir: obsidian.Path, title: string|? }
+      ---@return string|obsidian.Path The full path to the new note.
       opts.note_path_func = function(spec)
-        local path = spec.dir / strings.slugify(spec.title)
+        local f = spec.title or spec.id
+        local path = spec.dir / strings.slugify(f)
         return path:with_suffix '.md'
       end
     end,
