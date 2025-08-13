@@ -44,6 +44,7 @@ require('lazy').setup {
 
     -- disable
     { 'echasnovski/mini.pairs', enabled = false },
+    { 'stevearc/dressing.nvim', enabled = false },
 
     -- lazyload
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },

@@ -1,5 +1,9 @@
 local performance_mode = vim.g.performance
 
+if not performance_mode then
+  return {}
+end
+
 -- disable non critical plugins
 local plugins = {
   'folke/noice.nvim',
@@ -16,6 +20,7 @@ local plugins = {
   'chrisgrieser/nvim-origami',
   'rachartier/tiny-inline-diagnostic.nvim',
   'stevearc/dressing.nvim',
+  'wakatime/vim-wakatime',
 }
 
 local M = {}

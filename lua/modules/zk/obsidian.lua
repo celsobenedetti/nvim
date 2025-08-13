@@ -86,7 +86,7 @@ return {
       }
 
       opts.attachments = {
-        img_folder = vim.g.notes.ARCHIVES .. '/assets/imgs',
+        img_folder = 'archives/assets/imgs',
         img_name_func = function()
           return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
         end,
@@ -151,8 +151,12 @@ return {
           aliases = note.aliases,
           title = note.title,
           date = note.date,
-          tags = note.tags,
         }
+
+        if note.tags ~= nil and not vim.tbl_isempty(note.tags) then
+          frontmatter.tags = note.tags
+        end
+
         if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
           for k, v in pairs(note.metadata) do
             frontmatter[k] = v

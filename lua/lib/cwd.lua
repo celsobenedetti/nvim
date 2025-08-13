@@ -1,10 +1,5 @@
 local M = {}
 
-M.is_llm_chats = function()
-  local path = vim.fn.expand '%:p'
-  return path:find '.local/chats'
-end
-
 --- returns true if any dirs in cwd match the path
 ---@param paths string[]
 ---@return boolean
@@ -22,18 +17,6 @@ end
 ---@return string
 M.cwd = function()
   return vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
-end
-
----@param strings table<string>
----@return boolean
-M.includes = function(strings)
-  local cwd = M.cwd()
-  for _, s in ipairs(strings) do
-    if cwd:find(s) then
-      return true
-    end
-  end
-  return false
 end
 
 --- @return string[]
