@@ -22,7 +22,18 @@ return {
   {
     'christoomey/vim-tmux-navigator',
     keys = {
-      { '<C-h>', cmd 'TmuxNavigateLeft', desc = 'Go to Left tmux pane' },
+      {
+        '<C-h>',
+        function()
+          if Snacks.zen.win and Snacks.zen.win.close then
+            vim.cmd '!tmux select-pane -t 0'
+            return
+          end
+
+          return cmd 'TmuxNavigateLeft'
+        end,
+        desc = 'Go to Left tmux pane',
+      },
       { '<C-j>', cmd 'TmuxNavigateDown', desc = 'Go to Down tmux pane' },
       { '<C-k>', cmd 'TmuxNavigateUp', desc = 'Go to Up tmux pane' },
       { '<C-l>', cmd 'TmuxNavigateRight', desc = 'Go to Right tmux pane' },

@@ -3,7 +3,6 @@ local M = {
   INBOX = os.getenv 'INBOX' or '',
   PROJECTS = os.getenv 'PROJECTS' or '',
   AREAS = os.getenv 'AREAS' or '',
-  RESOURCES = os.getenv 'RESOURCES' or '',
   ARCHIVES = os.getenv 'ARCHIVES' or '',
   DAILY = os.getenv 'DAILY' or '',
 

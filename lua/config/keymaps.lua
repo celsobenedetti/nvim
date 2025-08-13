@@ -16,12 +16,12 @@ local toggle = require 'lib.toggle'
 local runner = require 'lib.runner'
 
 map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
--- map('x', 'ZZ', function()
---   if Snacks.zen.win and Snacks.zen.win.close then
---     -- ZZ
---     vim.cmd ''
---   end
--- end, { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
+map('n', 'ZZ', function()
+  if Snacks.zen.win and Snacks.zen.win.close then
+    vim.cmd 'x'
+  end
+  vim.cmd 'x'
+end, { desc = 'ZZ' })
 map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('t', '<esc><esc>', '<C-\\><C-n>', { desc = 'Escape insert mode in terminal' }) -- let me escape insert in terminal!
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
