@@ -37,7 +37,7 @@ return {
     }
 
     opts.zen.toggles = {
-      dim = true,
+      dim = false,
       git_signs = false,
       snacks_main = true,
       snacks_indent = true,

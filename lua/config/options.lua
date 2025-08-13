@@ -7,6 +7,7 @@ vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
 vim.g.lualine = true
 vim.g.performance = vim.g.performance or false
+vim.g.scroll = false and not vim.g.performance
 vim.g.supermaven_inline_completion = true
 vim.g.lazyvim_check_order = false
 
@@ -16,7 +17,7 @@ vim.g.ai = {
   },
 }
 
-vim.g.snacks_animate = true
+vim.g.snacks_animate = false
 vim.g.animation_duration = 40
 vim.g.delay = 80 -- delay used to accomodate for animations
 

@@ -26,21 +26,23 @@ return {
           if not text or #text == 0 then
             return
           end
-
-          local title = strings.trim(text)
-          print(title, text)
-
           local obsidian = require 'obsidian'
 
+          local title = strings.trim(text)
           local id = strings.slugify(text)
-          -- local path = vim.g.noes.INBOX .. '/' .. id .. '.md'
-          local note = obsidian.Note.create {
-            id = id,
-            title = title,
-          }
-          note:save()
+          obsidian.Note
+            .create({
+              id = id,
+              title = title,
+            })
+            :save()
 
-          visual.replace('[[' .. id .. '|' .. title .. ']]')
+          if vim.bo.filetype == 'markdown' then
+            -- we only want to add use the title syntax in markdown file, otherwise we want to just add the id
+            visual.replace('[[' .. id .. '|' .. title .. ']]')
+          else
+            visual.replace('[[' .. id .. ']]')
+          end
         end,
         mode = 'v',
       },

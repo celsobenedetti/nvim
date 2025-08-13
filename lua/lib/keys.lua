@@ -8,6 +8,12 @@ local M = {}
 
 M.with_delay = function(key1, key2, delay)
   return function()
+    if not vim.g.snacks_animate then
+      vim.api.nvim_feedkeys(Keys(key1), 'n', true)
+      vim.cmd('normal! ' .. key2)
+      return
+    end
+
     vim.api.nvim_feedkeys(Keys(key1), 'n', true)
     vim.defer_fn(function()
       vim.cmd('normal! ' .. key2)

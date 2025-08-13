@@ -71,18 +71,18 @@ autocmd('BufEnter', {
   end,
 })
 
-autocmd({
-  'TermOpen',
-  'BufWinEnter',
-  -- 'WinEnter' this one is too agressive. We want to preserve the cursor position whenever entering a terminal buffer. we may be scrolled up looking at logs, etc.
-}, {
-  desc = 'Always insert mode when entering a terminal',
-  pattern = 'term://*',
-  callback = function()
-    vim.cmd 'startinsert'
-  end,
-  group = augroup 'term-enter',
-})
+-- autocmd({
+--   'TermOpen',
+--   'BufWinEnter',
+--   -- 'WinEnter' this one is too agressive. We want to preserve the cursor position whenever entering a terminal buffer. we may be scrolled up looking at logs, etc.
+-- }, {
+--   desc = 'Always insert mode when entering a terminal',
+--   pattern = 'term://*',
+--   callback = function()
+--     vim.cmd 'startinsert'
+--   end,
+--   group = augroup 'term-enter',
+-- })
 
 if os.getenv 'IS_ZEN' == 'true' then
   require 'lib.startup.zen'
