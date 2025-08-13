@@ -60,8 +60,8 @@ return {
           w = {
             description = 'Work task',
             template = '* TODO %? :work:\n  %U',
-            target = '~/notes/2-areas/work/work.org',
-            headline = 'work',
+            target = vim.g.notes.ORG_WORK,
+            headline = 'work todo',
           },
           l = {
             description = 'Life task',
@@ -183,4 +183,21 @@ return {
   --     })
   --   end,
   -- },
+
+  {
+    'saghen/blink.cmp',
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      opts.sources.per_filetype = vim.tbl_extend('force', opts.sources.per_filetype or {}, {
+        org = { 'orgmode' },
+      })
+      opts.sources.providers = vim.tbl_extend('force', opts.sources.providers or {}, {
+        orgmode = {
+          name = 'Orgmode',
+          module = 'orgmode.org.autocompletion.blink',
+          fallbacks = { 'buffer' },
+        },
+      })
+    end,
+  },
 }
