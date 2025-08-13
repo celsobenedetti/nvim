@@ -5,6 +5,20 @@ M.is_llm_chats = function()
   return path:find '.local/chats'
 end
 
+--- returns true if any dirs in cwd match the path
+---@param paths string[]
+---@return boolean
+M.is_path = function(paths)
+  local file_dir = vim.fn.expand '%:p'
+  for _, path in ipairs(paths) do
+    if file_dir:find(path) then
+      return true
+    end
+  end
+
+  return false
+end
+
 ---@return string
 M.cwd = function()
   return vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]

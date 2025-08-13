@@ -64,7 +64,7 @@ return {
       },
     },
     cond = function()
-      if require('lib.cwd').is_llm_chats() then
+      if require('lib.cwd').is_path { 'journals' } then
         return false
       end
 
