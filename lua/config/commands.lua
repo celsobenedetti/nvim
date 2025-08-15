@@ -1,7 +1,10 @@
 local command = vim.api.nvim_create_user_command
 local new_tmux_window = '!tmux neww '
 
-command('Clip', '!printf % | xclip -sel clip', { desc = 'Yank current file path to clipboard' })
+command('Clip', function()
+  local file = vim.fn.expand '%:p'
+  vim.cmd("!echo -n '" .. file .. "' | xclip -selection clipboard")
+end, { desc = 'Yank current file path to clipboard' })
 command('Note', new_tmux_window .. 'note.sh', { desc = 'Create new note in new tmux window' })
 
 local write_buffer = function()
