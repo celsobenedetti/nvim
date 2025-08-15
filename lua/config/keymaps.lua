@@ -4,6 +4,7 @@
 
 vim.keymap.del('n', '<leader>n')
 vim.keymap.del('n', '<leader>e')
+-- vim.keymap.del('n', '<leader>uz')
 -- vim.keymap.del({ 'n', 't' }, '<C-_>')
 -- vim.keymap.del({ 'n', 't' }, '<C-/>')
 
@@ -68,8 +69,8 @@ map('n', '<leader>pj', runner.run_package_json_script, { desc = 'run package.jso
 map('n', '<leader>ju', runner.run_justfile_target, { desc = 'run justfile targets' })
 
 if vim.g.should_center.on_n then
-  map('n', 'n', keys.with_delay('n', 'zz'), { desc = 'center on next', noremap = true })
-  map('n', 'N', keys.with_delay('N', 'zz'), { desc = 'center on prev', noremap = true })
+  map('n', 'n', 'nzz', { desc = 'center on next', noremap = true })
+  map('n', 'N', 'Nzz', { desc = 'center on prev', noremap = true })
 end
 
 if vim.g.should_center.on_gg then
@@ -77,8 +78,8 @@ if vim.g.should_center.on_gg then
 end
 
 if vim.g.should_center.on_ctrl_d then
-  map('n', '<C-d>', keys.with_delay('<C-d>', 'zz'), { desc = 'center on ctrl-d', noremap = true })
-  map('n', '<C-u>', keys.with_delay('<C-u>', 'zz'), { desc = 'center on ctrl-u', noremap = true })
+  map('n', '<C-d>', '<C-d>zz', { desc = 'center on ctrl-d', noremap = true })
+  map('n', '<C-u>', '<C-u>zz', { desc = 'center on ctrl-u', noremap = true })
 end
 
 map('n', 'gv', function()
@@ -137,3 +138,18 @@ map('c', '<C-A>', '<Home>', { desc = '<Home>' })
 -- map('c', '<C-B>', '<Left>', { desc = '<Left>' })
 map('c', '<Esc>h', '<S-Left>', { desc = '<S-Left>' })
 map('c', '<Esc>l', '<S-Right>', { desc = '<S-Right>' })
+
+map('n', 'gb', function()
+  Snacks.picker.git_log_line()
+end, { desc = 'Git Blame Line' })
+map({ 'n', 'x' }, 'gB', function()
+  Snacks.gitbrowse()
+end, { desc = 'Git Browse (open)' })
+map({ 'n', 'x' }, 'gY', function()
+  Snacks.gitbrowse {
+    open = function(url)
+      vim.fn.setreg('+', url)
+    end,
+    notify = false,
+  }
+end, { desc = 'Git Browse (copy)' })
