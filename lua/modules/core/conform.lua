@@ -1,5 +1,10 @@
+local cwd = require 'lib.cwd'
+
 return {
   'stevearc/conform.nvim',
+  enabled = function()
+    return not cwd.is_path { 'lazy' }
+  end,
   opts = function(_, opts)
     opts.formatters_by_ft = vim.tbl_deep_extend('force', opts.formatters_by_ft or {}, {
       markdown = { 'mfmt' },
