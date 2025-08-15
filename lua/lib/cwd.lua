@@ -19,6 +19,13 @@ M.cwd = function()
   return vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
 end
 
+--- returns true if the file is found in cwd
+---@param file string
+---@return string?
+M.find_file = function(file)
+  return vim.fs.root(0, file)
+end
+
 --- @return string[]
 M.directories = function()
   local fd = '!fd . --type=directory'
