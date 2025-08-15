@@ -31,6 +31,15 @@ return {
         end,
         desc = 'DAP: Step Out',
       },
+      -- TODO: figure out how to use this
+      {
+        '<leader>dl',
+        function()
+          require('osv').launch { port = 8086 }
+        end,
+        desc = 'DAP: One step for vimkind launch',
+      },
+      { '<leader>ds', false },
     },
   },
 

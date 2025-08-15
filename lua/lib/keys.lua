@@ -5,7 +5,6 @@ local M = {}
 ---@param key1 string
 ---@param key2 string
 ---@param delay number | nil
-
 M.with_delay = function(key1, key2, delay)
   return function()
     if not vim.g.snacks_animate then

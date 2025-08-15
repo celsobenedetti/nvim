@@ -1,6 +1,16 @@
 return {
 
   'folke/snacks.nvim',
+
+  keys = {
+    {
+      '<leader>uz',
+      function()
+        Snacks.zen()
+      end,
+      desc = 'toggle Zen',
+    },
+  },
   opts = function(_, opts)
     Snacks.config.style('zen', {
       enter = true,
@@ -25,10 +35,10 @@ return {
 
     opts.zen = opts.zen or {}
     opts.zen.on_close = function()
-      -- Snacks.indent.enable()
+      require('twilight').toggle()
     end
     opts.zen.on_open = function()
-      -- Snacks.indent.disable()
+      require('twilight').toggle()
     end
 
     opts.zen.show = {

@@ -29,8 +29,7 @@ return {
             vim.cmd '!tmux select-pane -t 0'
             return
           end
-
-          return cmd 'TmuxNavigateLeft'
+          cmd 'TmuxNavigateLeft'()
         end,
         desc = 'Go to Left tmux pane',
       },
