@@ -66,13 +66,13 @@ local regex_redirects = {
   { '^mt$', 'https://monkeytype.com' },
   -- TODO: support table of strings so can reuse same function with different patterns
   {
-    'VA-[0-9]*',
+    '^%s*VA-[0-9]*',
     function(s)
       return vim.g.web.jira .. s
     end,
   },
   {
-    'va-[0-9]*',
+    '^%s*va-[0-9]*',
     function(s)
       return vim.g.web.jira .. s
     end,
