@@ -2,10 +2,8 @@ return {
   {
     'Bekaboo/dropbar.nvim',
     event = 'VeryLazy',
-
-    opts = {
-
-      bar = {
+    opts = function(_, opts)
+      opts.bar = {
         sources = function(buf, _)
           local sources = require 'dropbar.sources'
           local utils = require 'dropbar.utils'
@@ -23,14 +21,20 @@ return {
             },
           }
         end,
-      },
-    },
+      }
 
-    -- config = function()
-    --   local config = require("dropbar.configs")
-    --   config.opts.icons.kinds.dir_icon = function()
-    --     return "", "Comment"
-    --   end
-    -- end,
+      opts.icons = {
+        kinds = {
+          symbols = {
+            Folder = '',
+          },
+        },
+        ui = {
+          bar = {
+            separator = '  ',
+          },
+        },
+      }
+    end,
   },
 }
