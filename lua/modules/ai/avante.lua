@@ -8,6 +8,7 @@ return {
     version = false, -- set this if you want to always pull the latest change
     keys = {
       { '<leader>aa', ':AvanteAsk<CR>', desc = 'AvanteAsk', mode = { 'n', 'v' } },
+      { '<leader>an', ':AvanteChatNew<CR>', desc = 'AvanteChatNew', mode = { 'n', 'v' } },
       { '<leader>ae', ':AvanteEdit<CR>', desc = 'AvanteEdit', mode = { 'n', 'v' } },
       { '<leader>ar', ':AvanteRefresh<CR>', desc = 'AvanteRefresh' },
       { '<leader>aC', ':AvanteClear<CR>', desc = 'AvanteClear' },

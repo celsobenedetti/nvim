@@ -45,6 +45,12 @@ return {
         },
       },
     },
+
+    config = function(_, opts)
+      local overseer = require 'overseer'
+      overseer.setup(opts)
+      overseer.register_template(require 'lib.overseer.edge-server')
+    end,
     -- stylua: ignore
     keys = {
       { "<leader>OR", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },

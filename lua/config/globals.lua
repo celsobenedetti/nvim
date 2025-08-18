@@ -13,3 +13,4 @@ vim.g.colors = colors.evergarden
 vim.g.colorscheme = colors.colorscheme
 vim.g.background = colors.background
 vim.g.notes = require 'config.zk' -- NOTES config
+vim.g.dirs = require 'config.dirs' -- NOTES config
