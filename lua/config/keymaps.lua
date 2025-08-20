@@ -17,12 +17,31 @@ local toggle = require 'lib.toggle'
 local runner = require 'lib.runner'
 
 map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
+
 map('n', 'ZZ', function()
   if Snacks.zen.win and Snacks.zen.win.close then
     vim.cmd 'x'
   end
   vim.cmd 'x'
 end, { desc = 'ZZ' })
+
+-- omnienter
+-- if on markdown file: go to definition
+-- if on org file: open link
+map('n', '<CR>', function()
+  if vim.bo.filetype == 'markdown' then
+    Snacks.picker.lsp_definitions() -- vim.cmd 'ObsidianFollowLink'
+    return
+  end
+  if vim.bo.filetype == 'org' then
+    require('lib.zk').open_orgmode_or_obsidian_link()
+    return
+  end
+
+  -- gf go to file
+  vim.api.nvim_feedkeys(Keys 'gf', 'n', true)
+end, { desc = 'Enter: omnienter behavior (<CR>)', remap = false })
+
 map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
 map('t', '<esc><esc>', '<C-\\><C-n>', { desc = 'Escape insert mode in terminal' }) -- let me escape insert in terminal!
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
