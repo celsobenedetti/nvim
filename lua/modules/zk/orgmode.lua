@@ -67,7 +67,6 @@ return {
             description = 'Life task',
             template = '* TODO %? :life:\n  %U',
           },
-
           c = {
             description = 'quick capture',
             template = '* %?\n  %U',
@@ -75,8 +74,12 @@ return {
         },
 
         mappings = {
+          agenda = {
+            org_agenda_switch_to = false,
+            org_agenda_goto = '<CR>',
+          },
           org = {
-            org_set_tags_command = false,
+            org_set_tags_command = nil,
             -- org_refile = false,
             -- org_agenda_set_tags = '<nop>',
             org_toggle_checkbox = '<leader><C-Space>',
