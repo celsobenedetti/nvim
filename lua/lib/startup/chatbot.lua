@@ -1,23 +1,22 @@
----@module lib.startup.chatbot
----this starts the chatbot servers with overseer
----
+---@module startup starts the GVA servers with overseer
 
---- delays
-local delay = {
-  100,
-  400,
-  500,
-}
-
-vim.defer_fn(function()
-  vim.cmd 'OverseerLoadBundle chatbot'
-end, delay[1])
-
-vim.defer_fn(function()
-  vim.cmd 'OverseerToggle'
-end, delay[2])
-
-vim.defer_fn(function()
-  vim.cmd 'wincmd k'
-  vim.cmd 'wincmd q'
-end, delay[3])
+require('lib.overseer.run_tasks').startup(
+  --- @type task[]
+  {
+    { name = 'conversation', cmd = 'pnpm', args = { 'dev:debug' }, cwd = 'packages/conversation' },
+    { name = 'admin', cmd = 'pnpm', args = { 'dev' }, cwd = 'packages/admin' },
+    { name = 'ngrok', cmd = 'ngrok', args = { 'http', '--domain=adfs-test-celso.ngrok.io', '4747' } },
+    {
+      name = 'drupal_health',
+      cmd = 'docker',
+      args = {
+        'exec',
+        '-it',
+        'GetAnswers_php',
+        'bash',
+        '-c',
+        ' composer install; drush updb -y; drush cr; drush cim -y; drush core:cron;',
+      },
+    },
+  }
+)

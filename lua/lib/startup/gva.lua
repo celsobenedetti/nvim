@@ -1,24 +1,8 @@
----@module lib.startup.gva
----this starts the GVA servers with overseer
----
-vim.g.lualine = false
+---@module startup starts the GVA servers with overseer
 
---- delays
-local delay = {
-  100,
-  400,
-  500,
+require('lib.overseer.run_tasks').startup {
+  { name = 'tsc', cmd = 'tsc', args = { '-w' } },
+  { name = 'rspack', cmd = 'pnpm', args = { 'run', 'rspack' } },
+  { name = 'ms', cmd = 'npm', args = { 'run', 'ms', 'integrations' } },
+  { name = 'dev:debug', cmd = 'pnpm', args = { 'run', 'devserver:debug' } },
 }
-
-vim.defer_fn(function()
-  vim.cmd 'OverseerLoadBundle gva'
-end, delay[1])
-
-vim.defer_fn(function()
-  vim.cmd 'OverseerToggle'
-end, delay[2])
-
-vim.defer_fn(function()
-  vim.cmd 'wincmd k'
-  vim.cmd 'wincmd q'
-end, delay[3])
