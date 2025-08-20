@@ -3,6 +3,7 @@ local cwd = require 'lib.cwd'
 return {
   'stevearc/conform.nvim',
   enabled = function()
+    -- avoid formatting files in lazy.nvim managed repos
     return not cwd.is_path { 'lazy' }
   end,
   opts = function(_, opts)
