@@ -14,6 +14,8 @@ return {
       { '<leader>oO', ':Obsidian open<CR>' },
       { '<leader>ob', ':Obsidian backlinks<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
+      { '<leader>zb', ':zk backlinks (obsidian)<CR>' },
+      { '<leader>zl', ':zk links (obsidian)<CR>' },
       { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
       { '<leader>zz', ':Obsidian quick_switch<CR>' },
