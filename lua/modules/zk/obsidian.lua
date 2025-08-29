@@ -11,6 +11,7 @@ return {
     ft = { 'markdown', 'org' },
     keys = {
       { '<leader>zk', ':Obsidian search<CR>' },
+      { '<leader>zz', ':Obsidian search<CR>' },
       { '<leader>oO', ':Obsidian open<CR>' },
       { '<leader>ob', ':Obsidian backlinks<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
@@ -18,7 +19,7 @@ return {
       { '<leader>zl', ':zk links (obsidian)<CR>' },
       { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
-      { '<leader>zz', ':Obsidian quick_switch<CR>' },
+      { '<leader>zZ', ':Obsidian quick_switch<CR>' },
       { '<leader>oR', ':Obsidian rename<CR>' },
 
       {

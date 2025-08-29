@@ -9,10 +9,12 @@ return {
   opts = function(_, opts)
     opts.formatters_by_ft = vim.tbl_deep_extend('force', opts.formatters_by_ft or {}, {
       markdown = { 'mfmt' },
-      gitcommit = { 'mfmt' },
       org = { 'mfmt_org' },
+      gitcommit = { 'mfmt' },
+
       javascript = { 'prettierd' },
       typescript = { 'prettierd' },
+      odin = { 'odinfmt' },
     })
 
     opts.formatters = vim.tbl_deep_extend('force', opts.formatters or {}, {

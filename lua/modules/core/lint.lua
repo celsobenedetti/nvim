@@ -8,8 +8,9 @@ return {
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         go = { 'golangcilint' },
-        -- typescript = { "oxlint" },
-        -- javascript = { "oxlint" },
+        typescript = { 'oxlint' },
+        javascript = { 'oxlint' },
+        vue = { 'oxlint' },
         -- zsh = { "zsh" },
       })
 
@@ -24,19 +25,5 @@ return {
         end
       end, {})
     end,
-  },
-
-  {
-
-    'mason-org/mason.nvim',
-    opts = {
-      ensure_installed = {
-        'shellcheck',
-        'shfmt',
-        'checkmake',
-        'trivy',
-        'oxlint',
-      },
-    },
   },
 }

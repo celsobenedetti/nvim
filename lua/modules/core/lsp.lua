@@ -15,6 +15,8 @@ return {
       opts.diagnostics.virtual_text = false
       opts.diagnostics.float = { border = 'rounded', source = true }
 
+      opts.servers.ols = {}
+
       opts.servers.vtsls.settings.typescript.tsserver =
         vim.tbl_deep_extend('force', opts.servers.vtsls.settings.typescript.tsserver or {}, {
           maxTsServerMemory = 8192,

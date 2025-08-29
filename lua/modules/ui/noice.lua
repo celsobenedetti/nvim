@@ -11,7 +11,7 @@ return {
         -- Suppress notifications containing the following patterns
         -- filter "Can't find file", -- suppress failed "gf" messages
         -- filter 'Error indecoration provider', -- TreeSitter error when blink renders supermaven completion
-        -- filter '_folding_range.lua', -- some error likely related to origami.nvim
+        -- filter "Can't find file", -- hacky supress for omnienter
       })
 
       opts.presets = opts.presets or {}

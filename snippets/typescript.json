@@ -2,7 +2,7 @@
   "console.log": {
     "prefix": "cl",
     "body": [
-      "console.log(\"🦎 ###\", \"$1\", $2)"
+      "console.log(\"🦎 ### $1\", $2)"
     ],
     "description": "console.log"
   },

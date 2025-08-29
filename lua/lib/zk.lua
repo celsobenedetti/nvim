@@ -8,7 +8,8 @@ M.open_orgmode_or_obsidian_link = function()
   vim.cmd 'ObsidianFollowLink'
 
   -- gf go to file
-  vim.api.nvim_feedkeys(Keys 'gf', 'n', true)
+  -- TODO: figure something out instead of dumbly "gf"
+  -- vim.api.nvim_feedkeys(Keys 'gf', 'n', true)
 end
 
 return M
