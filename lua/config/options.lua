@@ -41,3 +41,6 @@ vim.g.below_split_height = 0.5
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200
 vim.opt.swapfile = false
+
+vim.opt.tabstop = 4 -- Number of spaces tabs count for
+vim.opt.shiftwidth = 2 -- Size of an indent - this seems to affect conform
