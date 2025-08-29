@@ -38,8 +38,7 @@ map('n', '<CR>', function()
     return
   end
 
-  -- gf go to file
-  vim.api.nvim_feedkeys(Keys 'gf', 'n', true)
+  vim.api.nvim_feedkeys(Keys '<CR>', 'n', true)
 end, { desc = 'Enter: omnienter behavior (<CR>)', remap = false })
 
 map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
