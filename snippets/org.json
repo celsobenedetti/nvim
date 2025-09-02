@@ -1,17 +1,25 @@
 {
-  "code block": {
-    "description": "code block",
-    "prefix": "cb",
-    "body": ["#+BEGIN_${1:LANG} ${2:options}", "$0", "#+END_$1"]
-  },
-  "TODO [category]": {
-    "description": "todo [category]",
-    "prefix": "c",
-    "body": ["[$1] $2"]
-  },
-  "todo bullet list": {
-    "description": "todo bullet list",
-    "prefix": "t",
-    "body": ["- [ ] $1"]
-  }
+    "code block": {
+        "description": "code block",
+        "prefix": "cb",
+        "body": [
+            "#+BEGIN_${1:LANG} ${2:options}",
+            "$0",
+            "#+END_$1"
+        ]
+    },
+    "TODO [category]": {
+        "description": "todo [category]",
+        "prefix": "c",
+        "body": [
+            "[$1] $2"
+        ]
+    },
+    "todo bullet list": {
+        "description": "todo bullet list",
+        "prefix": "t",
+        "body": [
+            "- [ ] $1"
+        ]
+    }
 }

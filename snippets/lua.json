@@ -1,18 +1,18 @@
 {
-  "return": {
-    "prefix": "re",
-    "body": [
-      "return {$0}"
-    ],
-    "description": "return {}"
-  },
-  "module": {
-    "prefix": "m",
-    "body": [
-      "local M = {}\n",
-      "$1\n",
-      "return M"
-    ],
-    "description": "module"
-  }
+    "return": {
+        "prefix": "re",
+        "body": [
+            "return {$0}"
+        ],
+        "description": "return {}"
+    },
+    "module": {
+        "prefix": "m",
+        "body": [
+            "local M = {}\n",
+            "$1\n",
+            "return M"
+        ],
+        "description": "module"
+    }
 }
