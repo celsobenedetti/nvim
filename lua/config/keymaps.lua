@@ -57,6 +57,9 @@ map('n', 'dd', function()
   vim.cmd 'normal! dd'
 end, { desc = 'tab: new' })
 
+map('n', '<leader>cO', ':!git checkout --our %<CR>', { desc = 'git checkout --our <file>' })
+map('n', '<leader>cT', ':!git checkout --their %<CR>', { desc = 'git checkout --their <file>' })
+
 -- map("n", "<leader>dim", function()
 --   Snacks.dim.enable({ scope = { max_size = 1 } })
 -- end, { desc = "Mega dim" })
