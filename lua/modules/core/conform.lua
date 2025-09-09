@@ -12,8 +12,9 @@ return {
       org = { 'mfmt_org' },
       gitcommit = { 'mfmt' },
 
-      javascript = { 'prettierd' },
-      typescript = { 'prettierd' },
+      json = { 'prettierd' },
+      javascript = { 'prettier' },
+      typescript = { 'prettier' },
       odin = { 'odinfmt' },
     })
 
@@ -22,6 +23,11 @@ return {
       shfmt = { prepend_args = { '--indent', '4' } },
       mfmt = { command = 'mfmt' },
       mfmt_org = { command = 'mfmt', prepend_args = { '--parser=orgmode' } },
+      prettierd = {
+        env = {
+          PRETTIERD_LOCAL_PRETTIER_ONLY = 'true',
+        },
+      },
     })
   end,
 }

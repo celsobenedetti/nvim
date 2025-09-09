@@ -8,6 +8,7 @@ end
 return {
   {
     'akinsho/bufferline.nvim',
+    enabled = vim.g.bufferline,
     keys = {
       { '<leader>1', go_to_buffer(1), desc = 'bufferline: go to buffer 1' },
       { '<leader>2', go_to_buffer(2), desc = 'bufferline: go to buffer 2' },

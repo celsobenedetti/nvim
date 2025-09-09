@@ -2,6 +2,7 @@ return {
   {
     'Bekaboo/dropbar.nvim',
     event = 'VeryLazy',
+    enabled = vim.g.dropbar,
     opts = function(_, opts)
       opts.bar = {
         sources = function(buf, _)

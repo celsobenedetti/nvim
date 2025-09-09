@@ -6,6 +6,9 @@
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
 vim.g.lualine = true
+vim.g.bufferline = false
+vim.g.dropbar = true
+vim.g.smear_cursor = true
 vim.g.performance = vim.g.performance or false
 vim.g.snacks_animate = false
 vim.g.scroll = false and not vim.g.performance
@@ -23,7 +26,7 @@ vim.g.delay = 80 -- delay used to accomodate for animations
 
 vim.g.should_center = {
   on_n = true,
-  on_gg = true,
+  on_gg = false,
   on_ctrl_d = true,
 }
 
@@ -43,4 +46,4 @@ vim.opt.updatetime = 200
 vim.opt.swapfile = false
 
 vim.opt.tabstop = 4 -- Number of spaces tabs count for
-vim.opt.shiftwidth = 2 -- Size of an indent - this seems to affect conform
+vim.opt.shiftwidth = 4 -- Size of an indent - this seems to affect conform

@@ -151,6 +151,11 @@ return {
               icon = ' 󰈙 ', -- google docs
               hl = 'MarkviewPalette2Fg',
             },
+            ['play.google.com'] = {
+              priority = 9998,
+              icon = ' ', -- google docs
+              hl = 'MarkviewPalette2Fg',
+            },
             ['drive.google'] = {
               priority = 9998,
               icon = '  ', -- google drive

@@ -11,5 +11,6 @@ local fast = {
 
 return {
   'sphamba/smear-cursor.nvim',
+  enabled = vim.g.smear_cursor,
   opts = {},
 }
