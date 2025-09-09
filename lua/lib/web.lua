@@ -181,7 +181,7 @@ M.search = function(s)
   local query = M.get_search_url_from_query(s)
 
   if query == '' then
-    query = (search_engines.g .. strings.urlencode(s))
+    query = (search_engines['g '] .. strings.urlencode(s))
   end
   vim.ui.open(query)
 end
