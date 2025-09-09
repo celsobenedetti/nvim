@@ -48,8 +48,11 @@ return {
 
     config = function(_, opts)
       local overseer = require 'overseer'
+      local edge_server = require 'lib.overseer.edge-server'
+
       overseer.setup(opts)
-      overseer.register_template(require 'lib.overseer.edge-server')
+      overseer.register_template(edge_server.test)
+      overseer.register_template(edge_server.lint)
     end,
     -- stylua: ignore
     keys = {
