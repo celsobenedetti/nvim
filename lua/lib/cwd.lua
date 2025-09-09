@@ -1,4 +1,5 @@
 local M = {}
+local home = os.getenv 'HOME' or '/home/celso'
 
 --- returns true if any dirs in cwd match the path
 ---@param paths string[]
@@ -17,6 +18,14 @@ end
 ---@return string
 M.cwd = function()
   return vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
+end
+
+M.current_file = function()
+  local cwd = M.cwd()
+  local file = vim.fn.expand '%'
+  file = file:gsub(cwd .. '/', '')
+  file = file:gsub(home, '~')
+  return file:gsub('%./', '')
 end
 
 --- returns true if the file is found in cwd
