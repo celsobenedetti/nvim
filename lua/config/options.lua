@@ -14,6 +14,7 @@ vim.g.snacks_animate = false
 vim.g.scroll = false and not vim.g.performance
 vim.g.supermaven_inline_completion = true
 vim.g.lazyvim_check_order = false
+vim.g.lazyvim_eslint_auto_format = false
 
 vim.g.ai = {
   models = {

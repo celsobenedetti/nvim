@@ -14,7 +14,8 @@ return {
 
       json = { 'prettierd' },
       javascript = { 'prettier' },
-      typescript = { 'prettier' },
+      typescript = { 'prettier', lsp_format = 'never' },
+      typescriptreact = { 'prettier', lsp_format = 'never' },
       odin = { 'odinfmt' },
     })
 
