@@ -25,5 +25,10 @@ return {
       },
       documentation = { auto_show = true, window = { border = 'single' } },
     }
+
+    opts.cmdline = {
+      keymap = { preset = 'inherit' },
+      completion = { menu = { auto_show = true } },
+    }
   end,
 }
