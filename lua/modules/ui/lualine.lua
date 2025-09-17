@@ -34,8 +34,29 @@ return {
         disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' } },
       },
       sections = {
-        lualine_a = { 'branch' },
-        lualine_b = {
+        lualine_a = {
+
+          LazyVim.lualine.root_dir(),
+          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } },
+          {
+            cwd.current_file,
+          },
+        },
+        lualine_b = {},
+
+        lualine_c = {
+          {
+            'diagnostics',
+            symbols = {
+              error = icons.diagnostics.Error,
+              warn = icons.diagnostics.Warn,
+              info = icons.diagnostics.Info,
+              hint = icons.diagnostics.Hint,
+            },
+          },
+        },
+        lualine_x = {
+
           {
             'diff',
             symbols = {
@@ -54,25 +75,6 @@ return {
               end
             end,
           },
-        },
-
-        lualine_c = {
-          LazyVim.lualine.root_dir(),
-          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } },
-          {
-            cwd.current_file,
-          },
-          {
-            'diagnostics',
-            symbols = {
-              error = icons.diagnostics.Error,
-              warn = icons.diagnostics.Warn,
-              info = icons.diagnostics.Info,
-              hint = icons.diagnostics.Hint,
-            },
-          },
-        },
-        lualine_x = {
 
           Snacks.profiler.status(),
             -- stylua: ignore
@@ -105,9 +107,8 @@ return {
           -- { 'location', padding = { left = 0, right = 1 } },
         },
         lualine_z = {
-          -- function()
-          --   return ' ' .. os.date '%R'
-          -- end,
+          --
+          'branch',
         },
       },
       extensions = { 'lazy' },
@@ -117,9 +118,7 @@ return {
       return opts
     end
 
-    -- do not add trouble symbols if aerial is enabled
-    -- And allow it to be overriden for some buffer types (see autocmds)
-    if vim.g.trouble_lualine and LazyVim.has 'trouble.nvim' then
+    if vim.g.lualine.lsp and LazyVim.has 'trouble.nvim' then
       local trouble = require 'trouble'
       local symbols = trouble.statusline {
         mode = 'symbols',
