@@ -1,4 +1,5 @@
 local cwd = require 'lib.cwd'
+local strings = require 'lib.strings'
 
 local M = {}
 
@@ -28,8 +29,14 @@ M.mv_file = function()
       end
 
       local original_buffer = vim.api.nvim_get_current_buf()
-      vim.cmd('silent! !mv % ' .. destination)
-      vim.cmd('e ' .. destination .. '/' .. vim.fn.expand '%:t')
+
+      destination = strings.shellescape(destination)
+      local current_file = strings.shellescape(vim.fn.expand '%')
+
+      vim.cmd('silent! !mv ' .. current_file .. ' ' .. destination)
+      local new_file = strings.shellescape((vim.fn.expand '%:t'))
+
+      vim.cmd('e ' .. destination .. '/' .. new_file)
       vim.api.nvim_buf_delete(original_buffer, { force = true })
     end,
   }

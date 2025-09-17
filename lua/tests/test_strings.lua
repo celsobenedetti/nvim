@@ -62,3 +62,16 @@ describe('strings.urlencode', function()
     end)
   end
 end)
+
+describe('strings.shellescape', function()
+  local cases = {
+    { input = 'hello world!', expected = 'hello\\ world!', desc = 'does not escape special characters' },
+    { input = 'a b', expected = 'a\\ b', desc = 'escapes spaces' },
+    { input = 'a/b', expected = 'a/b', desc = 'does not escape slashes' },
+  }
+  for _, tcase in ipairs(cases) do
+    it(tcase.desc, function()
+      assert.equals(tcase.expected, strings.shellescape(tcase.input))
+    end)
+  end
+end)

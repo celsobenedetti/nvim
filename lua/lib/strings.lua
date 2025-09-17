@@ -36,4 +36,14 @@ M.urlencode = function(s)
   return result
 end
 
+M.shellescape = function(s)
+  s = s:gsub(' ', '\\ ')
+
+  if s:sub(-1) == '/' then
+    s = s:sub(1, -2)
+  end
+
+  return s
+end
+
 return M
