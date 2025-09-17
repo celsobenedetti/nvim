@@ -5,16 +5,25 @@
 
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
+vim.g.performance = vim.g.performance or false
+
+vim.g.noice = false
 vim.g.lualine = true
 vim.g.bufferline = false
 vim.g.dropbar = true
 vim.g.smear_cursor = true
-vim.g.performance = vim.g.performance or false
 vim.g.snacks_animate = false
+
 vim.g.scroll = false and not vim.g.performance
 vim.g.supermaven_inline_completion = true
+
 vim.g.lazyvim_check_order = false
 vim.g.lazyvim_eslint_auto_format = false
+vim.g.trouble_lualine = false
+
+vim.g.lualine = {
+  lsp = false,
+}
 
 vim.g.ai = {
   models = {
