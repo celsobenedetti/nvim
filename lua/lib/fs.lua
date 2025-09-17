@@ -42,4 +42,9 @@ M.mv_file = function()
   }
 end
 
+M.rm = function()
+  os.remove(vim.fn.expand '%')
+  vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
+end
+
 return M
