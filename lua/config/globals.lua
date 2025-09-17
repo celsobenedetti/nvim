@@ -8,9 +8,7 @@ Keys = function(str)
   return vim.api.nvim_replace_termcodes(str, false, false, true)
 end
 
-local colors = require 'config.colors'
-vim.g.colors = colors.evergarden
-vim.g.colorscheme = colors.colorscheme
-vim.g.background = colors.background
+vim.g.colors = require 'config.colors'
+
 vim.g.notes = require 'config.zk' -- NOTES config
 vim.g.dirs = require 'config.dirs' -- NOTES config

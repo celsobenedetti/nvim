@@ -1,9 +1,8 @@
+vim.g.colorscheme = 'evergarden'
+
 local M = {}
 
-M.colorscheme = 'evergarden'
-M.background = 'dark'
-
-M.neovim_default = {
+M.default = {
   black = '#0B0C11',
   white = '#d7dae1',
   red = '#ffbcb5',
@@ -13,7 +12,7 @@ M.neovim_default = {
   yellow = '#f4d88c',
   gray = '#d7dae1',
   darkgray = '#0B0C11',
-  lightgray = '#303340',
+  lightgray = '#d7dae1',
   inactivegray = '#303340',
   comment = '#2c2e33',
 
@@ -139,4 +138,17 @@ M.evergarden = {
   },
 }
 
-return M
+local gtk_theme = vim.fn.system 'gsettings get org.gnome.desktop.interface color-scheme'
+
+vim.g.background = gtk_theme:find 'dark' and 'dark' or 'light'
+vim.cmd('set background=' .. vim.g.background)
+if vim.g.background == 'light' then
+  vim.g.colorscheme = 'default'
+end
+
+local colors = M[vim.g.colorscheme]
+
+colors.bg2 = vim.g.background == 'dark' and colors.darkgray or colors.lightgray
+colors.subtext = vim.g.background == 'dark' and colors.subtext or colors.black
+
+return colors
