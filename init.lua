@@ -42,14 +42,11 @@ require('lazy').setup {
     { import = 'modules.ai' },
     { import = 'modules.git' },
 
-    -- disable
-    { 'echasnovski/mini.pairs', enabled = false },
-    { 'stevearc/dressing.nvim', enabled = false },
-
     -- lazyload
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
 
     { import = 'lib.plugins.performance' },
+    { import = 'lib.plugins.disable' },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.

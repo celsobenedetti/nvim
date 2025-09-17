@@ -2,9 +2,8 @@
 local plugins = {
   'folke/noice.nvim',
   'akinsho/bufferline.nvim',
-  'folke/persistence.nvim',
   'stevearc/dressing.nvim',
-  'echasnovski/mini.pairs',
+  'nvim-mini/mini.pairs',
 }
 
 local M = {}

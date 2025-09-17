@@ -6,6 +6,7 @@ end
 return {
   {
     'folke/noice.nvim',
+    enabled = vim.g.noice,
     opts = function(_, opts)
       opts.routes = vim.list_extend(opts.routes or {}, {
         -- Suppress notifications containing the following patterns

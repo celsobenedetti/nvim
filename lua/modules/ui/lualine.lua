@@ -25,9 +25,9 @@ return {
       options = {
         theme = {
           normal = {
-            a = { bg = vim.g.colors.darkgray, fg = vim.g.colors.subtext },
-            b = { bg = vim.g.colors.darkgray, fg = vim.g.colors.subtext },
-            c = { bg = vim.g.colors.darkgray, fg = vim.g.colors.subtext },
+            a = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
+            b = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
+            c = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
           },
         },
         globalstatus = vim.o.laststatus == 3,
