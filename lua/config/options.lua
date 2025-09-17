@@ -6,6 +6,7 @@
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
 vim.g.performance = vim.g.performance or false
+vim.o.winborder = 'rounded'
 
 vim.g.noice = false
 vim.g.lualine = true
