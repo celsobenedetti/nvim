@@ -13,7 +13,7 @@ return {
       { '<leader>zk', ':Obsidian search<CR>' },
       { '<leader>zz', ':Obsidian search<CR>' },
       { '<leader>oO', ':Obsidian open<CR>' },
-      { '<leader>ob', ':Obsidian backlinks<CR>' },
+      { '<leader>ob', ':ObsidianBacklinks<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
       { '<leader>zb', ':zk backlinks (obsidian)<CR>' },
       { '<leader>zl', ':zk links (obsidian)<CR>' },
