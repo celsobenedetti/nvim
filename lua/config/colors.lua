@@ -1,4 +1,5 @@
 vim.g.colorscheme = 'evergarden'
+local background = 'dark'
 
 local M = {}
 
@@ -139,14 +140,14 @@ M.evergarden = {
 }
 
 local gtk_theme = vim.fn.system 'gsettings get org.gnome.desktop.interface color-scheme'
-
 vim.g.background = gtk_theme:find 'dark' and 'dark' or 'light'
+vim.g.background = background
 vim.cmd('set background=' .. vim.g.background)
 if vim.g.background == 'light' then
   vim.g.colorscheme = 'default'
 end
 
-local colors = M[vim.g.colorscheme]
+local colors = M[vim.g.colorscheme] or M.evergarden
 
 colors.bg2 = vim.g.background == 'dark' and colors.darkgray or colors.lightgray
 colors.subtext = vim.g.background == 'dark' and colors.subtext or colors.black

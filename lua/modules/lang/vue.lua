@@ -1,9 +1,7 @@
-local cwd = require 'lib.cwd'
-
 return {
   'neovim/nvim-lspconfig',
   opts = function(_, opts)
-    if not cwd.find_file 'vite.config.ts' then
+    if not require('lib.cwd').find_file 'vite.config.ts' then
       -- not a vue project, let's dip
       return
     end
