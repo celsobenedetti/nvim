@@ -23,13 +23,13 @@ return {
 
     local opts = {
       options = {
-        theme = {
-          normal = {
-            a = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
-            b = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
-            c = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
-          },
-        },
+        -- theme = {
+        --   normal = {
+        --     a = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
+        --     b = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
+        --     c = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
+        --   },
+        -- },
         globalstatus = vim.o.laststatus == 3,
         disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' } },
       },
