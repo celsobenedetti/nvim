@@ -47,6 +47,7 @@ require('lazy').setup {
 
     { import = 'lib.plugins.performance' },
     { import = 'lib.plugins.disable' },
+    { import = 'plugins' }, --omarchy theme
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -82,4 +83,4 @@ require('lazy').setup {
 require 'config.commands'
 require 'config.sensible'
 
-vim.cmd.colorscheme(vim.g.colorscheme)
+-- vim.cmd.colorscheme(vim.g.colorscheme)
