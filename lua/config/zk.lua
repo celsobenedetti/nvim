@@ -9,6 +9,7 @@ local M = {
   ORG_INDEX = os.getenv 'ORG_INDEX' or '',
   ORG_REFILE = os.getenv 'ORG_REFILE' or '',
   ORG_WORK = os.getenv 'ORG_WORK' or '',
+  ORG_NOW = os.getenv 'ORG_NOW' or '',
 
   AI_RULES = os.getenv 'AI_RULES' or '',
 }
