@@ -34,6 +34,17 @@ return {
               ['buffer'] = { opts = { provider = 'snacks', contains_code = true } },
               ['help'] = { opts = { provider = 'snacks', contains_code = true } },
             },
+            keymaps = {
+              send = {
+                modes = { n = '<CR>', i = '<C-s>' },
+                opts = {},
+              },
+              close = {
+                modes = { n = '<C-c>', i = '<C-c>' },
+                opts = {},
+              },
+              -- Add further custom keymaps here
+            },
           },
           inline = { adapter = 'openai' },
           cmd = { adapter = 'openai' },
