@@ -12,8 +12,16 @@ end
 
 map('n', '<leader>i', e(vim.g.notes.ORG_INDEX), { desc = 'Orgmode index' })
 map('n', '<leader>ow', e(vim.g.notes.ORG_WORK), { desc = 'Orgmode work file' })
+map('n', '<leader>on', e(vim.g.notes.ORG_NOW), { desc = 'Orgmode now file' })
 map('n', '<leader>or', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
+
+-- set highlights
+vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
+vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
+vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
+vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
+vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'orange' })
 
 return {
   {
