@@ -77,10 +77,8 @@ require('lazy').setup {
       },
     },
   },
-  install = { colorscheme = { 'catppuccin', 'tokyonight' } },
 }
 
 require 'config.commands'
 require 'config.sensible'
-
--- vim.cmd.colorscheme(vim.g.colorscheme)
+require 'lib.modules.transparency'

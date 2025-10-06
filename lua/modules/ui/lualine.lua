@@ -1,7 +1,7 @@
 return {
   'nvim-lualine/lualine.nvim',
   event = 'VeryLazy',
-  enabled = vim.g.lualine,
+  enabled = vim.g.lualine.enabled,
   init = function()
     vim.g.lualine_laststatus = vim.o.laststatus
     if vim.fn.argc(-1) > 0 then
@@ -23,13 +23,13 @@ return {
 
     local opts = {
       options = {
-        -- theme = {
-        --   normal = {
-        --     a = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
-        --     b = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
-        --     c = { bg = vim.g.colors.bg2, fg = vim.g.colors.subtext },
-        --   },
-        -- },
+        theme = {
+          normal = {
+            a = { bg = 'none' },
+            b = { bg = 'none' },
+            c = { bg = 'none' },
+          },
+        },
         globalstatus = vim.o.laststatus == 3,
         disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' } },
       },
@@ -64,6 +64,7 @@ return {
               modified = icons.git.modified,
               removed = icons.git.removed,
             },
+            separator = '',
             source = function()
               local gitsigns = vim.b.gitsigns_status_dict
               if gitsigns then
@@ -103,8 +104,8 @@ return {
           -- },
         },
         lualine_y = {
-          { 'location', padding = { left = 1, right = 1 } },
-          { 'progress', padding = { left = 1, right = 1 } },
+          { 'location', padding = { left = 1, right = 1 }, separator = '' },
+          { 'progress', padding = { left = 1, right = 1 }, separator = '' },
         },
         lualine_z = {
           --

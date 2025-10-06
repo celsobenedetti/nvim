@@ -9,9 +9,8 @@ vim.g.performance = vim.g.performance or false
 vim.o.winborder = 'rounded'
 
 vim.g.noice = false
-vim.g.lualine = true
 vim.g.bufferline = false
-vim.g.dropbar = true
+vim.g.dropbar = false
 vim.g.smear_cursor = true
 vim.g.snacks_animate = false
 
@@ -23,6 +22,7 @@ vim.g.lazyvim_eslint_auto_format = false
 vim.g.trouble_lualine = false
 
 vim.g.lualine = {
+  enabled = true,
   lsp = false,
 }
 
@@ -58,3 +58,5 @@ vim.opt.swapfile = false
 
 vim.opt.tabstop = 4 -- Number of spaces tabs count for
 vim.opt.shiftwidth = 4 -- Size of an indent - this seems to affect conform
+
+vim.o.cmdheight = 0 -- Height of the command bar

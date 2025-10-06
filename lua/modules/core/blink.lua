@@ -27,12 +27,23 @@ return {
     }
 
     opts.cmdline = {
-      keymap = { preset = 'inherit' },
+      keymap = {
+        preset = 'inherit',
+        -- disable a keymap from the preset
+        ['<CR>'] = false, -- or {}
+      },
       completion = {
+        list = {
+          selection = {
+            -- crucial for typing quick commands
+            preselect = false,
+          },
+        },
         menu = {
           auto_show = function(ctx, _)
+            return true
             -- avoid completion on ":w"
-            return #ctx.line > 2
+            -- return #ctx.line > 2
           end,
         },
       },
