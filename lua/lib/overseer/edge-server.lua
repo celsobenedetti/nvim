@@ -3,34 +3,34 @@
 local M = {}
 
 M.test = {
-  name = 'gh act -j test',
+  name = 'act -j test',
   builder = function(params)
     return {
-      cmd = { 'gh' },
-      args = { 'act', '-j', 'test' },
-      name = 'gh act -j test',
+      cmd = { 'act' },
+      args = { '-j', 'test' },
+      name = 'act -j test',
       cwd = vim.g.dirs.work.edge_server,
       components = { 'default' },
     }
   end,
-  desc = 'run CI tests with gh act',
+  desc = 'run CI tests with act',
   condition = {
     dir = vim.g.dirs.work.edge_server,
   },
 }
 
 M.lint = {
-  name = 'gh act -j lint',
+  name = 'act -j lint',
   builder = function(params)
     return {
-      cmd = { 'gh' },
-      args = { 'act', '-j', 'lint' },
-      name = 'gh act -j lint',
+      cmd = { 'act' },
+      args = { '-j', 'lint' },
+      name = 'act -j lint',
       cwd = vim.g.dirs.work.edge_server,
       components = { 'default' },
     }
   end,
-  desc = 'run CI tests with gh act',
+  desc = 'run CI tests with act',
   condition = {
     dir = vim.g.dirs.work.edge_server,
   },

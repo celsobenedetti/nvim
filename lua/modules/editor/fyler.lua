@@ -6,6 +6,5 @@ return {
   opts = {},
   keys = {
     { '<leader>fy', '<cmd>Fyler<cr>', desc = 'Fyler' },
-    { '<leader>F', '<cmd>Fyler<cr>', desc = 'Fyler' },
   },
 }

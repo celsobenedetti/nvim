@@ -1,4 +1,4 @@
----@module startup starts the GVA servers with overseer
+---@module startup starts the io servers with overseer
 
 require('lib.overseer.run_tasks').startup {
   { name = 'tsc', cmd = 'tsc', args = { '-w' } },

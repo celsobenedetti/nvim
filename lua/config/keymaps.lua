@@ -18,6 +18,7 @@ local visual = require 'lib.visual'
 local web = require 'lib.web'
 
 map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
+map('n', '<C-j>', '<C-^>', { desc = 'alternate file' })
 
 map('n', 'ZZ', function()
   if Snacks.zen.win and Snacks.zen.win.close then
@@ -48,8 +49,11 @@ map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>C', ':Clip<CR>', { desc = 'Copy file path to clipboard' })
 map('n', '<leader>mv', fs.mv_file, { desc = 'Move file of current buffer to dir' })
 map('n', '<leader>tc', toggle.completion, { desc = 'toggle: completion' })
-map('n', '<leader><tab><tab>', ':tabnext<CR>', { desc = 'tab: next' })
+
+map('n', ']<tab>', ':tabnext<CR>', { desc = 'tab: next' })
+map('n', '[<tab>', ':tabprevious<CR>', { desc = 'tab: prev' })
 map('n', '<leader><tab>n', ':tabnew<CR>', { desc = 'tab: new' })
+
 map('n', 'dd', function()
   if vim.bo.filetype == 'qf' then
     require('lib.quickfix').remove_item()
