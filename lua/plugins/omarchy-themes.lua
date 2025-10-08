@@ -6,4 +6,5 @@ return {
   { 'rebelot/kanagawa.nvim', lazy = true },
   { 'ribru17/bamboo.nvim', lazy = true },
   { 'neanias/everforest-nvim', lazy = true },
+  { 'rose-pine/neovim', lazy = true },
 }
