@@ -8,6 +8,7 @@ vim.g.completion = true
 vim.g.performance = vim.g.performance or false
 vim.o.winborder = 'rounded'
 
+vim.g.transparency = true
 vim.g.noice = false
 vim.g.bufferline = false
 vim.g.dropbar = false

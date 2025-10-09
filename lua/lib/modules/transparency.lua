@@ -52,3 +52,10 @@ vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none', fg = colors.get_color('LineNr', 
 vim.api.nvim_set_hl(0, 'GitSignsAdd', { bg = 'none', fg = colors.get_color('GitSignsAdd', 'fg') })
 vim.api.nvim_set_hl(0, 'GitSignsChange', { bg = 'none', fg = colors.get_color('GitSignsChange', 'fg') })
 vim.api.nvim_set_hl(0, 'GitSignsDelete', { bg = 'none', fg = colors.get_color('GitSignsDelete', 'fg') })
+
+
+-- stylua: ignore start
+vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextHint', 'fg') })
+vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextInfo', 'fg') })
+vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextWarn', 'fg') })
+vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = 'none', fg = colors.get_color('BlinkCmpMenu', 'fg') })
