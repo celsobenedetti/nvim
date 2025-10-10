@@ -23,6 +23,8 @@ return {
 
     local opts = {
       options = {
+        component_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
         theme = {
           normal = {
             a = { bg = 'none' },
@@ -37,7 +39,7 @@ return {
         lualine_a = {
 
           LazyVim.lualine.root_dir(),
-          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } },
+          { 'filetype', icon_only = true, padding = { left = 1, right = 0 } },
           {
             cwd.current_file,
           },
@@ -64,7 +66,6 @@ return {
               modified = icons.git.modified,
               removed = icons.git.removed,
             },
-            separator = '',
             source = function()
               local gitsigns = vim.b.gitsigns_status_dict
               if gitsigns then
@@ -104,8 +105,8 @@ return {
           -- },
         },
         lualine_y = {
-          { 'location', padding = { left = 1, right = 1 }, separator = '' },
-          { 'progress', padding = { left = 1, right = 1 }, separator = '' },
+          { 'location', padding = { left = 1, right = 1 } },
+          { 'progress', padding = { left = 1, right = 1 } },
         },
         lualine_z = {
           --
