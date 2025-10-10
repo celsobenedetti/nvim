@@ -18,7 +18,6 @@ local visual = require 'lib.visual'
 local web = require 'lib.web'
 
 map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
-map('n', '<C-j>', '<C-^>', { desc = 'alternate file' })
 
 map('n', 'ZZ', function()
   if Snacks.zen.win and Snacks.zen.win.close then

@@ -82,6 +82,4 @@ require('lazy').setup {
 require 'config.commands'
 require 'config.sensible'
 
-if vim.g.transparency then
-  require 'lib.modules.transparency'
-end
+require 'lib.modules.transparency'

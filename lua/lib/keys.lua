@@ -3,6 +3,7 @@ local M = {}
 --- runs first set of keys immediately
 --- runs second set of keys after delay
 ---@param key1 string
+
 ---@param key2 string
 ---@param delay number | nil
 M.with_delay = function(key1, key2, delay)

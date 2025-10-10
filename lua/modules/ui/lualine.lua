@@ -39,7 +39,7 @@ return {
         lualine_a = {
 
           LazyVim.lualine.root_dir(),
-          { 'filetype', icon_only = true, padding = { left = 1, right = 0 } },
+          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } },
           {
             cwd.current_file,
           },
