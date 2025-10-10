@@ -1,5 +1,3 @@
----@module startup starts the GVA servers with overseer
-
 require('lib.overseer.run_tasks').startup(
   --- @type task[]
   {

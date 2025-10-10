@@ -18,8 +18,8 @@ map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file'
 
 -- -- set highlights
 -- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
--- vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
--- vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
+vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
+vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
 -- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
 -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'orange' })
 
@@ -100,10 +100,10 @@ return {
         },
 
         org_todo_keywords = {
-          'TODO', -- Tasks that are not started and not planned. They could be the backlogs or the GTD’s someday/maybe. These tasks could be converted to NEXT during a review.
-          'NEXT', -- Tasks that are not started but planned to do as soon as I can. When there is no actionable PROG (e.g., blocked), I start one of those and convert it to PROG.
-          'PROG', -- Tasks that are working in progress (open loops). I work on these tasks before starting another NEXT task to avoid too many open loops at any moment.
-          'DONE', -- 😎👍
+          'TODO(t)', -- Tasks that are not started and not planned. They could be the backlogs or the GTD’s someday/maybe. These tasks could be converted to NEXT during a review.
+          'NEXT(t)', -- Tasks that are not started but planned to do as soon as I can. When there is no actionable PROG (e.g., blocked), I start one of those and convert it to PROG.
+          'PROG(p)', -- Tasks that are working in progress (open loops). I work on these tasks before starting another NEXT task to avoid too many open loops at any moment.
+          'DONE(d)', -- 😎👍
         },
       }
 
