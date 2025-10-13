@@ -59,3 +59,9 @@ vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', { bg = 'none', fg 
 vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextInfo', 'fg') })
 vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextWarn', 'fg') })
 vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = 'none', fg = colors.get_color('BlinkCmpMenu', 'fg') })
+
+vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', { bg = 'none', fg = colors.get_color('DiagnosticSignWarn', 'fg') })
+vim.api.nvim_set_hl(0, 'DiagnosticSignHint', { bg = 'none', fg = colors.get_color('DiagnosticSignHint', 'fg') })
+vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = colors.get_color('DiagnosticSignInfo', 'fg') })
+vim.api.nvim_set_hl(0, 'DiagnosticSignError', { bg = 'none', fg = colors.get_color('DiagnosticSignError', 'fg') })
+vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = colors.get_color('DiagnosticSignOk', 'fg') })
