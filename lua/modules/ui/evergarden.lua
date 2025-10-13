@@ -52,7 +52,7 @@ local overrides = {
   --
   -- ['@markup.link.label.markdown_inline'] = { fg = c.blue }, -- inline `code` in markdown
   -- MarkviewPalette7Fg = { fg = c.blue, style = { 'underline' } }, -- markview inline hint
-  SpellBad = { fg = c.subtext, style = { 'italic', 'underdotted' } }, -- spelling mistakes
+  SpellBad = { style = { 'italic', 'underdotted' } }, -- spelling mistakes
   -- SpellCap = { style = {} }, -- style when a word should start with a capital letter
   -- TabLineSel = { fg = c.green, bg = c.inactivegray, style = { 'bold' } },
   --

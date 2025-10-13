@@ -1,11 +1,12 @@
+require 'orgmode'
 local delay = {
-  org_capture = 10,
+  capture = 10,
   delete_top_buffer = 50,
 }
 
 vim.defer_fn(function()
-  vim.cmd 'Org agenda T'
-end, delay.agenda_startup)
+  vim.cmd 'Org capture t'
+end, delay.capture)
 
 vim.defer_fn(function()
   vim.cmd 'wincmd k'

@@ -8,5 +8,4 @@ return {
   { 'neanias/everforest-nvim', lazy = true },
   { 'rose-pine/neovim', lazy = true },
   { 'ellisonleao/gruvbox.nvim', lazy = true },
-  { 'rose-pine/neovim', lazy = true },
 }

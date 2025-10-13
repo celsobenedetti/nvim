@@ -61,3 +61,4 @@ vim.opt.tabstop = 4 -- Number of spaces tabs count for
 vim.opt.shiftwidth = 4 -- Size of an indent - this seems to affect conform
 
 vim.o.cmdheight = 1 -- Height of the command bar
+vim.o.spellcapcheck = ''

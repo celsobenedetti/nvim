@@ -1,9 +1,11 @@
 local refile_file = '~/notes/0-inbox/refile.org'
 local org_files = {
   refile_file,
-  vim.g.notes.INBOX .. '/phone_refile.org',
+  vim.g.notes.NOTES .. '/i.org',
   vim.g.notes.PROJECTS .. '**/*',
+  vim.g.notes.PROJECTS .. '*',
   vim.g.notes.AREAS .. '**/*',
+  vim.g.notes.AREAS .. '*',
 }
 
 local function e(file)
