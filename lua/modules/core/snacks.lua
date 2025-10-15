@@ -23,19 +23,15 @@ return {
     { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
     { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
     { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
+    { '<leader>ff', LazyVim.pick('files', { hidden = require('lib.cwd').is_path { 'dotfiles' } }), desc = 'Find Files (Root Dir)',
     -- stylua: ignore end
-    {
-      '<leader>ff',
-      function()
-        LazyVim.pick('files', { hidden = require('lib.cwd').is_path { 'dotfiles' } })
-      end,
-      desc = 'Find Files (Root Dir)',
     },
   },
 
   opts = function(_, opts)
     opts.terminal = { enabled = false }
     opts.dashboard = { enabled = false }
+    opts.picker = opts.picker or {}
     opts.picker.exclude = vim.tbl_extend('keep', opts.picker.exclude or {}, vim.g.grep_ignore or {})
 
     opts.picker.win = opts.picker.win or {}

@@ -4,6 +4,7 @@ local plugins = {
   'akinsho/bufferline.nvim',
   'stevearc/dressing.nvim',
   'nvim-mini/mini.pairs',
+  'ibhagwan/fzf-lua',
 }
 
 local M = {}

@@ -112,10 +112,10 @@ end
 return {
 
   {
-    lazy = false,
     'everviolet/nvim',
     name = 'evergarden',
-    priority = 1000,
+    lazy = true,
+    -- priority = 1000,
     opts = {
 
       theme = {

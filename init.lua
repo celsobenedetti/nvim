@@ -27,6 +27,8 @@ require('lazy').setup {
     -- { import = "lazyvim.plugins.extras.formatting.prettier" },
     { import = 'lazyvim.plugins.extras.linting.eslint' },
     { import = 'lazyvim.plugins.extras.editor.outline' },
+    { import = 'lazyvim.plugins.extras.editor.snacks_picker' },
+
     { import = 'lazyvim.plugins.extras.util.mini-hipatterns' },
     { import = 'lazyvim.plugins.extras.util.dot' },
     { import = 'lazyvim.plugins.extras.util.octo' },
@@ -36,6 +38,7 @@ require('lazy').setup {
     { 'wakatime/vim-wakatime' }, -- code time tracking goodness
     { import = 'modules.core' },
     { import = 'modules.lang' },
+    { import = 'modules.overseer' },
     { import = 'modules.editor' },
     { import = 'modules.zk' },
     { import = 'modules.ui' },
