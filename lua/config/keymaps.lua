@@ -70,6 +70,8 @@ map('n', '<leader>cT', ':!git checkout --their %<CR>', { desc = 'git checkout --
 map('v', 'gx', open.omni_open, { desc = 'Search current selected string with google' })
 map('v', 'gs', open.omni_open, { desc = 'Search current selected string with google' })
 
+map('n', 'gx', open.gx, { desc = 'gx: open link', buffer = true })
+
 map('n', 'k', jump.up)
 map('n', 'j', jump.down)
 
