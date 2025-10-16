@@ -10,9 +10,9 @@ local colorscheme = themes[2].opts.colorscheme
 
 require('lazy').setup {
   spec = {
-    { import = 'modules.overseer' },
     colorscheme_plugin,
-    -- lazy.nvim
+    { import = 'modules.overseer' },
+    { import = 'modules.tmux' },
     {
       'folke/snacks.nvim',
       opts = {

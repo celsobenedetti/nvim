@@ -41,16 +41,14 @@ map('n', '<CR>', function()
   vim.api.nvim_feedkeys(Keys '<CR>', 'n', true)
 end, { desc = 'Enter: omnienter behavior (<CR>)', remap = false })
 
-map('n', '<leader>R', ':e! %<cr>', { desc = 'Refresh Buffer' })
-map('t', '<esc><esc>', '<C-\\><C-n>', { desc = 'Escape insert mode in terminal' }) -- let me escape insert in terminal!
+map('n', '<leader>R', function()
+  vim.cmd ':w'
+  vim.cmd ':e! %'
+end, { desc = 'write and refresh buffer' })
 map('n', 'ZQ', ':qa!<CR>', { desc = 'Quit all' })
 map('n', '<leader>C', ':Clip<CR>', { desc = 'Copy file path to clipboard' })
 map('n', '<leader>mv', fs.mv_file, { desc = 'Move file of current buffer to dir' })
 map('n', '<leader>tc', toggle.completion, { desc = 'toggle: completion' })
-
-map('n', ']<tab>', ':tabnext<CR>', { desc = 'tab: next' })
-map('n', '[<tab>', ':tabprevious<CR>', { desc = 'tab: prev' })
-map('n', '<leader><tab>n', ':tabnew<CR>', { desc = 'tab: new' })
 
 map('n', 'dd', function()
   if vim.bo.filetype == 'qf' then

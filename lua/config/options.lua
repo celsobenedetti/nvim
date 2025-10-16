@@ -12,7 +12,7 @@ vim.o.background = 'dark'
 vim.g.noice = false
 vim.g.bufferline = false
 vim.g.dropbar = false
-vim.g.smear_cursor = true
+vim.g.smear_cursor = false
 vim.g.snacks_animate = false
 
 vim.g.scroll = false and not vim.g.performance

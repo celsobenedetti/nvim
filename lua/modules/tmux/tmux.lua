@@ -9,7 +9,8 @@ local cmd = function(cmd)
   escape()
 
   return function()
-    if not require('luasnip').in_snippet() then
+    local ok, luasnip = pcall(require, 'luasnip')
+    if not ok or not luasnip.in_snippet() then
       vim.cmd(cmd)
     end
   end
