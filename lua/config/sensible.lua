@@ -6,6 +6,8 @@ map('n', 'N', "'nN'[v:searchforward].'zv'", { expr = true, desc = 'Prev search r
 map('x', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
 map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result' })
 
+map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
+
 map('t', '<esc><esc>', '<C-\\><C-n>', { desc = 'Escape insert mode in terminal' }) -- let me escape insert in terminal!
 
 map('n', ']<tab>', ':tabnext<CR>', { desc = 'tab: next' })

@@ -3,11 +3,12 @@ vim.opt.laststatus = 3
 
 return {
   {
+    enabled = false,
     'yetone/avante.nvim',
     lazy = true,
     version = false, -- set this if you want to always pull the latest change
     keys = {
-      { '<leader>aa', ':AvanteAsk<CR>', desc = 'AvanteAsk', mode = { 'n', 'v' } },
+      { '<leader>aa', ':AvanteAsk<CR>', desc = 'AvanteAsk', mode = { 'n' } },
       { '<leader>an', ':AvanteChatNew<CR>', desc = 'AvanteChatNew', mode = { 'n', 'v' } },
       { '<leader>ae', ':AvanteEdit<CR>', desc = 'AvanteEdit', mode = { 'n', 'v' } },
       { '<leader>ar', ':AvanteRefresh<CR>', desc = 'AvanteRefresh' },

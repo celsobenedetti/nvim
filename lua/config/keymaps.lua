@@ -16,8 +16,6 @@ local toggle = require 'lib.toggle'
 local visual = require 'lib.visual'
 local web = require 'lib.web'
 
-map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
-
 map('n', 'ZZ', function()
   if Snacks.zen.win and Snacks.zen.win.close then
     vim.cmd 'x'
@@ -157,8 +155,8 @@ map('n', '<leader>rm', fs.rm, { desc = 'rm buffer file' })
 map('c', '<C-A>', '<Home>', { desc = '<Home>' })
 -- map('c', '<C-F>', '<Right>', { desc = '<Right>' })
 -- map('c', '<C-B>', '<Left>', { desc = '<Left>' })
-map('c', '<Esc>h', '<S-Left>', { desc = '<S-Left>' })
-map('c', '<Esc>l', '<S-Right>', { desc = '<S-Right>' })
+-- map('c', '<Esc>h', '<S-Left>', { desc = '<S-Left>' })
+-- map('c', '<Esc>l', '<S-Right>', { desc = '<S-Right>' })
 
 map('n', 'gb', function()
   Snacks.picker.git_log_line()

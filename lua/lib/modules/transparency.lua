@@ -65,3 +65,6 @@ vim.api.nvim_set_hl(0, 'DiagnosticSignHint', { bg = 'none', fg = colors.get_colo
 vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = colors.get_color('DiagnosticSignInfo', 'fg') })
 vim.api.nvim_set_hl(0, 'DiagnosticSignError', { bg = 'none', fg = colors.get_color('DiagnosticSignError', 'fg') })
 vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = colors.get_color('DiagnosticSignOk', 'fg') })
+
+vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('TroubleNormal', 'fg') })
+vim.api.nvim_set_hl(0, 'TroubleCount', { bg = 'none', fg = colors.get_color('TroubleCount', 'fg') })
