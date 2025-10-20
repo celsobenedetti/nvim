@@ -5,6 +5,7 @@ local plugins = {
   'stevearc/dressing.nvim',
   'nvim-mini/mini.pairs',
   'ibhagwan/fzf-lua',
+  'nvim-neo-tree/neo-tree.nvim',
 }
 
 local M = {}

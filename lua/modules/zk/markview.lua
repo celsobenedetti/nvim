@@ -11,63 +11,63 @@ return {
       local presets = require 'markview.presets'
       require('markview').setup {
         -- horizontal_rules = presets.horizontal_rules.thin,
-        checkboxes = presets.checkboxes.nerd,
+        -- checkboxes = presets.checkboxes.nerd,
         preview = {
           filetypes = { 'markdown', 'codecompanion' },
-          ignore_buftypes = {},
+          ignore_buftypes = { 'nofile' },
         },
         markdown = {
-          headings = presets.headings.glow,
-          horizontal_rules = {
-            enable = true,
-            parts = {
-              {
-                type = 'repeating',
-                repeat_amount = function(buffer)
-                  local textoff = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff
-                  return math.floor((vim.o.columns - textoff - 3) / 3)
-                end,
-                text = '─',
-                hl = {
-                  'MarkviewGradient1',
-                  'MarkviewGradient2',
-                  'MarkviewGradient3',
-                  'MarkviewGradient4',
-                  'MarkviewGradient5',
-                  'MarkviewGradient6',
-                  'MarkviewGradient7',
-                  'MarkviewGradient8',
-                  'MarkviewGradient9',
-                  'MarkviewGradient10',
-                },
-                direction = 'right',
-              },
-              {
-                type = 'text',
-                text = '  ',
-                hl = 'MarkviewGradient10',
-              },
-            },
-          },
-          block_quotes = {
-            enable = true,
-            default = {
-              border = '▋',
-              hl = 'MarkviewBlockQuoteDefault',
-            },
-            callouts = {
-              {
-                match_string = 'ABSTRACT',
-                hl = 'MarkviewBlockQuoteNote',
-                preview = '󱉫 Abstract',
-                preview_hl = nil,
-                title = true,
-                icon = '󱉫 ',
-                border = '▋',
-                border_hl = nil,
-              },
-            },
-          },
+          -- headings = presets.headings.glow,
+          -- horizontal_rules = {
+          --   enable = true,
+          --   parts = {
+          --     {
+          --       type = 'repeating',
+          --       repeat_amount = function(buffer)
+          --         local textoff = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].textoff
+          --         return math.floor((vim.o.columns - textoff - 3) / 3)
+          --       end,
+          --       text = '─',
+          --       hl = {
+          --         'MarkviewGradient1',
+          --         'MarkviewGradient2',
+          --         'MarkviewGradient3',
+          --         'MarkviewGradient4',
+          --         'MarkviewGradient5',
+          --         'MarkviewGradient6',
+          --         'MarkviewGradient7',
+          --         'MarkviewGradient8',
+          --         'MarkviewGradient9',
+          --         'MarkviewGradient10',
+          --       },
+          --       direction = 'right',
+          --     },
+          --     {
+          --       type = 'text',
+          --       text = '  ',
+          --       hl = 'MarkviewGradient10',
+          --     },
+          --   },
+          -- },
+          -- block_quotes = {
+          --   enable = true,
+          --   default = {
+          --     border = '▋',
+          --     hl = 'MarkviewBlockQuoteDefault',
+          --   },
+          --   callouts = {
+          --     {
+          --       match_string = 'ABSTRACT',
+          --       hl = 'MarkviewBlockQuoteNote',
+          --       preview = '󱉫 Abstract',
+          --       preview_hl = nil,
+          --       title = true,
+          --       icon = '󱉫 ',
+          --       border = '▋',
+          --       border_hl = nil,
+          --     },
+          --   },
+          -- },
 
           list_items = {
             enable = true,

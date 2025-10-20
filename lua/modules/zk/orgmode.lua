@@ -1,7 +1,6 @@
-local refile_file = '~/notes/0-inbox/refile.org'
 local org_files = {
-  refile_file,
-  vim.g.notes.NOTES .. '/i.org',
+  vim.g.notes.ORG_INDEX,
+  vim.g.notes.ORG_REFILE,
   vim.g.notes.PROJECTS .. '**/*',
   vim.g.notes.PROJECTS .. '*',
   vim.g.notes.AREAS .. '**/*',
@@ -21,6 +20,7 @@ map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file'
 -- -- set highlights
 -- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
 vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
+vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
 vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
 -- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
 -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'orange' })
@@ -64,7 +64,7 @@ return {
         },
         org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
-        org_default_notes_file = refile_file,
+        org_default_notes_file = vim.g.notes.ORG_REFILE,
 
         ui = {
           virt_cookies = {

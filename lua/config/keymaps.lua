@@ -3,7 +3,7 @@
 -- Add any additional keymaps here
 
 vim.keymap.del('n', '<leader>n')
-vim.keymap.del('n', '<leader>e')
+-- vim.keymap.del('n', '<leader>e')
 -- vim.keymap.del({ 'n', 't' }, '<C-_>')
 -- vim.keymap.del({ 'n', 't' }, '<C-/>')
 
