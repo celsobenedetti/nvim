@@ -35,9 +35,16 @@ M.find_file = function(file)
   return vim.fs.root(0, file)
 end
 
+--- get all directories in cwd
+--- @param opts {git:boolean}
 --- @return string[]
-M.directories = function()
-  local fd = '!fd . --type=directory'
+M.directories = function(opts)
+  opts = opts or {}
+  local dir = ''
+  if opts.git then
+    dir = vim.fs.root(0, '.git') or '.'
+  end
+  local fd = string.format('!fd . %s --type=directory ', dir)
   local fd_result = vim.api.nvim_exec2(fd, { output = true })
 
   local dirs = vim.split(fd_result.output, '\n')
