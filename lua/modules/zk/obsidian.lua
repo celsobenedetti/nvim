@@ -14,10 +14,9 @@ return {
       { '<leader>zz', ':Obsidian search<CR>' },
       { '<leader>oO', ':Obsidian open<CR>' },
       { '<leader>ob', ':ObsidianBacklinks<CR>' },
+      { '<leader>od', ':Obsidian dailies<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
-      { '<leader>zb', ':zk backlinks (obsidian)<CR>' },
-      { '<leader>zl', ':zk links (obsidian)<CR>' },
-      { '<leader>ot', ':ObsidianTags<CR>' },
+      -- { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
       { '<leader>zZ', ':Obsidian quick_switch<CR>' },
       { '<leader>oR', ':Obsidian rename<CR>' },
@@ -66,16 +65,16 @@ return {
         desc = 'Open orgmode or obsidian link (vertical split)',
       },
     },
-    cond = function()
-      if require('lib.cwd').is_path { 'journals' } then
-        return false
-      end
-
-      local path = vim.fn.expand '%:p'
-      local is_templates = path:find 'templates'
-
-      return not is_templates
-    end,
+    -- cond = function()
+    --   if require('lib.cwd').is_path { 'journals' } then
+    --     return false
+    --   end
+    --
+    --   local path = vim.fn.expand '%:p'
+    --   local is_templates = path:find 'templates'
+    --
+    --   return not is_templates
+    -- end,
     opts = function(_, opts)
       opts.new_notes_location = 'notes_subdir'
       opts.workspaces = {
@@ -89,6 +88,7 @@ return {
       }
 
       opts.attachments = {
+        -- TODO: handle archive/notes vaults
         img_folder = 'archives/assets/imgs',
         img_name_func = function()
           return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
@@ -107,7 +107,8 @@ return {
       opts.ui = {
         enable = false,
         -- checkboxes = {
-        --   [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+        --   [" "] = { char = "󰄱", hl_groupth
+        --   = "ObsidianTodo" },
         --   [">"] = { char = "", hl_group = "ObsidianRightArrow" },
         --   ["~"] = { char = "x", hl_group = "ObsidianTilde" },
         --   ["x"] = { char = "✔", hl_group = "ObsidianDone" },
@@ -139,34 +140,40 @@ return {
           -- Insert a link to the selected note.
           insert_link = '<C-l>',
         },
-        tag_mappings = {
-          -- Add tag(s) to current note.
-          tag_note = '<C-x>',
-          -- Insert a tag at the current location.
-          insert_tag = '<C-l>',
-        },
+        -- tag_mappings = {
+        --   -- Add tag(s) to current note.
+        --   tag_note = '<C-x>',
+        --   -- Insert a tag at the current location.
+        --   insert_tag = '<C-l>',
+        -- },
+        -- tag_mappings = {
+        --   -- Add tag(s) to current note.
+        --   tag_note = '<C-x>',
+        --   -- Insert a tag at the current location.
+        --   insert_tag = '<C-l>',
+        -- },
       }
 
-      -- TODO: costumize frontmatter fucntion so we don't care about frontmatter for certain files
-      opts.note_frontmatter_func = function(note)
-        local frontmatter = {
-          id = note.id,
-          aliases = note.aliases,
-          title = note.title,
-          date = note.date,
-        }
-
-        if note.tags ~= nil and not vim.tbl_isempty(note.tags) then
-          frontmatter.tags = note.tags
-        end
-
-        if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-          for k, v in pairs(note.metadata) do
-            frontmatter[k] = v
-          end
-        end
-        return frontmatter
-      end
+      -- -- TODO: costumize frontmatter fucntion so we don't care about frontmatter for certain files
+      -- opts.note_frontmatter_func = function(note)
+      --   local frontmatter = {
+      --     id = note.id,
+      --     aliases = note.aliases,
+      --     title = note.title,
+      --     date = note.date,
+      --   }
+      --
+      --   if note.tags ~= nil and not vim.tbl_isempty(note.tags) then
+      --     frontmatter.tags = note.tags
+      --   end
+      --
+      --   if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
+      --     for k, v in pairs(note.metadata) do
+      --       frontmatter[k] = v
+      --     end
+      --   end
+      --   return frontmatter
+      -- end
 
       ---@param spec { id: string, dir: obsidian.Path, title: string|? }
       ---@return string|obsidian.Path The full path to the new note.

@@ -5,7 +5,7 @@
 vim.keymap.del('n', '<leader>n')
 -- vim.keymap.del('n', '<leader>e')
 -- vim.keymap.del({ 'n', 't' }, '<C-_>')
--- vim.keymap.del({ 'n', 't' }, '<C-/>')
+vim.keymap.del({ 'n', 't' }, '<C-/>')
 
 local jump = require 'lib.jump'
 local keys = require 'lib.keys'
