@@ -87,7 +87,7 @@ return {
         desc = "Sidekick Toggle CLI",
       },
       {
-        "<leader>oc",
+        "<leader>O",
         function() require("sidekick.cli").toggle({name="opencode"}) end,
         desc = "Sidekick Toggle CLI",
       },
