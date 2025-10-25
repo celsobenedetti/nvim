@@ -4,7 +4,7 @@ return {
   'stevearc/conform.nvim',
   enabled = function()
     -- avoid formatting files in lazy.nvim managed repos
-    return not cwd.is_path { 'lazy' }
+    return not cwd.matches { 'lazy' }
   end,
   opts = function(_, opts)
     opts.formatters_by_ft = vim.tbl_deep_extend('force', opts.formatters_by_ft or {}, {

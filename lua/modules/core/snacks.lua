@@ -23,7 +23,7 @@ return {
     { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
     { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
     { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
-    { '<leader>ff', LazyVim.pick('files', { hidden = require('lib.cwd').is_path { 'dotfiles' } }), desc = 'Find Files (Root Dir)',
+    { '<leader>ff', LazyVim.pick('files', { hidden = require('lib.cwd').matches { 'dotfiles' } }), desc = 'Find Files (Root Dir)',
     -- stylua: ignore end
     },
   },

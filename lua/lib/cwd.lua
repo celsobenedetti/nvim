@@ -4,7 +4,7 @@ local home = os.getenv 'HOME' or '/home/celso'
 --- returns true if any dirs in cwd match the path
 ---@param paths string[]
 ---@return boolean
-M.is_path = function(paths)
+M.matches = function(paths)
   local file_dir = vim.fn.expand '%:p'
   for _, path in ipairs(paths) do
     if file_dir:find(path) then

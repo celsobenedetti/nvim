@@ -21,7 +21,7 @@ return {
       {
         '<leader>zZ',
         function()
-          if require('lib.cwd').is_path { 'notes' } then
+          if require('lib.cwd').matches { 'notes' } then
           end
 
           vim.cmd 'Obsidian quick_switch'
@@ -74,7 +74,7 @@ return {
       },
     },
     cond = function()
-      if require('lib.cwd').is_path { 'journals' } then
+      if require('lib.cwd').matches { 'journals' } then
         return false
       end
 
