@@ -18,7 +18,15 @@ return {
       { '<leader>ol', ':Obsidian links<CR>' },
       -- { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
-      { '<leader>zZ', ':Obsidian quick_switch<CR>' },
+      {
+        '<leader>zZ',
+        function()
+          if require('lib.cwd').is_path { 'notes' } then
+          end
+
+          vim.cmd 'Obsidian quick_switch'
+        end,
+      },
       { '<leader>oR', ':Obsidian rename<CR>' },
 
       {
@@ -65,16 +73,16 @@ return {
         desc = 'Open orgmode or obsidian link (vertical split)',
       },
     },
-    -- cond = function()
-    --   if require('lib.cwd').is_path { 'journals' } then
-    --     return false
-    --   end
-    --
-    --   local path = vim.fn.expand '%:p'
-    --   local is_templates = path:find 'templates'
-    --
-    --   return not is_templates
-    -- end,
+    cond = function()
+      if require('lib.cwd').is_path { 'journals' } then
+        return false
+      end
+
+      local path = vim.fn.expand '%:p'
+      local is_templates = path:find 'templates'
+
+      return not is_templates
+    end,
     opts = function(_, opts)
       opts.new_notes_location = 'notes_subdir'
       opts.workspaces = {

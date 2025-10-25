@@ -21,7 +21,7 @@ map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file'
 -- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
 vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
 vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
-vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
+vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
 -- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
 -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'orange' })
 

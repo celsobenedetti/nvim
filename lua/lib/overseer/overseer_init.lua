@@ -4,9 +4,9 @@ vim.o.background = 'dark'
 require 'config.lazy'
 require 'config.globals'
 
-local themes = require 'plugins.theme'
-local colorscheme_plugin = themes[1]
-local colorscheme = themes[2].opts.colorscheme
+local omarchy_colorscheme = require('lib.colors').omarchy_colorscheme()
+local colorscheme = omarchy_colorscheme.colorscheme
+local colorscheme_plugin = omarchy_colorscheme.colorscheme_plugin
 
 require('lazy').setup {
   spec = {
