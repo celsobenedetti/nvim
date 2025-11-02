@@ -84,6 +84,14 @@ return {
       ['s'] = { 'flash' },
     })
 
+    opts.picker.win.list = {
+      keys = {
+        ['ZZ'] = function()
+          vim.cmd 'wqa'
+        end,
+      },
+    }
+
     opts.picker.actions = vim.tbl_deep_extend('force', opts.picker.actions or {}, {
       flash = function(picker)
         require('flash').jump {
