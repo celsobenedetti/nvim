@@ -1,10 +1,6 @@
 local org_files = {
-  vim.g.notes.ORG_INDEX,
+  vim.g.notes.ORG .. '/**/*',
   vim.g.notes.ORG_REFILE,
-  vim.g.notes.PROJECTS .. '**/*',
-  vim.g.notes.PROJECTS .. '*',
-  vim.g.notes.AREAS .. '**/*',
-  vim.g.notes.AREAS .. '*',
 }
 
 local function e(file)
@@ -13,7 +9,6 @@ end
 
 map('n', '<leader>i', e(vim.g.notes.ORG_INDEX), { desc = 'Orgmode index' })
 map('n', '<leader>ow', e(vim.g.notes.ORG_WORK), { desc = 'Orgmode work file' })
-map('n', '<leader>on', e(vim.g.notes.ORG_NOW), { desc = 'Orgmode now file' })
 map('n', '<leader>or', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 
@@ -21,9 +16,9 @@ map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file'
 -- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
 vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
 -- vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
-vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
+vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'darkgray' })
 -- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
-vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'gray' })
+-- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'gray' })
 
 return {
   {
@@ -35,7 +30,9 @@ return {
       {
         '<leader>T',
         function()
-          vim.cmd ':w'
+          if vim.fn.expand('%'):match '/' then
+            vim.cmd ':w'
+          end
           vim.cmd ':Org agenda T'
         end,
         desc = 'Org: Today agenda',
@@ -47,34 +44,57 @@ return {
       -- Setup orgmode
       require('orgmode').setup {
         org_agenda_files = org_files,
+        org_default_notes_file = vim.g.notes.ORG_REFILE,
+
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
         org_agenda_custom_commands = {
+
           T = {
             description = 'today',
             types = {
-              { type = 'agenda', org_agenda_span = 'day' },
-              org_agenda_sorting_strategy = { 'todo-state-up', 'priority-down' }, -- See all options available on org_agenda_sorting_strategy
+              {
+                type = 'agenda',
+                match = '+PRIORITY="A"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                org_agenda_span = 'day',
+                org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' }, -- See all options available on org_agenda_sorting_strategy
+              },
+            },
+          },
+          n = {
+            description = 'next',
+            types = {
+              {
+                type = 'tags_todo', -- Type can be agenda | tags | tags_todo
+                match = '-TODO="TODO"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' }, -- See all options available on org_agenda_sorting_strategy
+                -- org_agenda_overriding_header = 'High priority todos',
+                -- org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
+              },
             },
           },
           w = {
             description = 'Work tasks',
-            types = { { type = 'tags_todo', match = 'work' } },
+            types = {
+              {
+                type = 'tags_todo',
+                match = 'work',
+                org_agenda_sorting_strategy = { 'todo-state-down' }, -- See all options available on org_agenda_sorting_strategy
+              },
+            },
           },
         },
         org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
-        org_default_notes_file = vim.g.notes.ORG_REFILE,
-
-        ui = {
-          virt_cookies = {
-            enabled = true,
-            type = '/',
-          },
-          -- folds = {
-          --   colored = false,
-          -- },
-        },
+        -- ui = {
+        --   virt_cookies = {
+        --     enabled = true,
+        --     type = '/',
+        --   },
+        --   -- folds = {
+        --   --   colored = false,
+        --   -- },
+        -- },
 
         org_capture_templates = {
           w = {
@@ -100,20 +120,20 @@ return {
           },
         },
 
-        mappings = {
-          agenda = {
-            org_agenda_switch_to = false,
-            org_agenda_goto = '<CR>',
-          },
-          org = {
-            org_set_tags_command = nil,
-            -- org_refile = false,
-            -- org_agenda_set_tags = '<nop>',
-            org_toggle_checkbox = '<leader><C-Space>',
-            org_insert_todo_heading_respect_content = '<leader>tod',
-            org_open_at_point = '<leader>oO',
-          },
-        },
+        -- mappings = {
+        --   agenda = {
+        --     org_agenda_switch_to = false,
+        --     org_agenda_goto = '<CR>',
+        --   },
+        --   org = {
+        --     org_set_tags_command = nil,
+        --     -- org_refile = false,
+        --     -- org_agenda_set_tags = '<nop>',
+        --     org_toggle_checkbox = '<leader><C-Space>',
+        --     org_insert_todo_heading_respect_content = '<leader>tod',
+        --     org_open_at_point = '<leader>oO',
+        --   },
+        -- },
 
         org_todo_keywords = {
           'TODO(t)', -- Tasks that are not started and not planned. They could be the backlogs or the GTD’s someday/maybe. These tasks could be converted to NEXT during a review.
@@ -123,13 +143,6 @@ return {
           'DONE(d)', -- 😎👍
         },
       }
-
-      -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
-      -- add ~org~ to ignore_install
-      -- require('nvim-treesitter.configs').setup {
-      --   ensure_installed = 'all',
-      --   ignore_install = { 'org' },
-      -- }
     end,
   },
 
