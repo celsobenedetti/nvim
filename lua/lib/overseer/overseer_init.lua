@@ -8,9 +8,11 @@ local omarchy_colorscheme = require('lib.colors').omarchy_colorscheme()
 local colorscheme = omarchy_colorscheme.colorscheme
 local colorscheme_plugin = omarchy_colorscheme.colorscheme_plugin
 
+print(vim.inspect { omarchy_colorscheme })
+
 require('lazy').setup {
   spec = {
-    colorscheme_plugin,
+    { colorscheme_plugin },
     { import = 'modules.overseer' },
     { import = 'modules.tmux' },
     {

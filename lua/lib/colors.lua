@@ -16,7 +16,11 @@ M.omarchy_colorscheme = function()
 
   local colorscheme = themes[2].opts.colorscheme
   local colorscheme_plugin = themes[1]
-  return { colorscheme, colorscheme_plugin }
+
+  return {
+    colorscheme = colorscheme,
+    colorscheme_plugin = colorscheme_plugin,
+  }
 end
 
 return M
