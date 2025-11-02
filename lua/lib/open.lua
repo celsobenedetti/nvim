@@ -25,7 +25,7 @@ M.gx = function()
     return
   end
 
-  if url:find 'youtube.com' then
+  if url:find 'youtube.com' or url:find 'youtu.be' then
     vim.cmd('!omarchy-launch-or-focus-webapp youtube-from-nvim ' .. url)
     return
   end

@@ -40,6 +40,14 @@ return {
         desc = 'DAP: One step for vimkind launch',
       },
       { '<leader>ds', false },
+
+      {
+        '<F5>',
+        function()
+          require('dap').continue()
+        end,
+        desc = 'Run/Continue',
+      },
     },
   },
 

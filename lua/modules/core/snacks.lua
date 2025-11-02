@@ -1,3 +1,5 @@
+local exclude = { '*.org_archive' }
+
 return {
 
   'folke/snacks.nvim',
@@ -18,13 +20,16 @@ return {
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { "<leader>fE", function() Snacks.explorer({ cwd = LazyVim.root() }) end, desc = "Explorer Snacks (root dir)", },
-    { '<leader>fe', function() Snacks.explorer.open() end, desc = 'Snacks: explorer', },
+    { '<leader>fe', function() Snacks.explorer.open({ exclude = exclude, }) end, desc = 'Snacks: explorer', },
     { '<leader>en', function() Snacks.explorer.open({cwd = "~/notes"}) end, desc = 'Snacks: explorer notes', },
     { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
     { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
     { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
     { '<leader>ff', LazyVim.pick('files', { hidden = require('lib.cwd').matches { 'dotfiles' } }), desc = 'Find Files (Root Dir)',
-    -- stylua: ignore end
+
+            { "<leader>ss", function() Snacks.picker.lsp_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Symbols", has = "documentSymbol" },
+            { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Workspace Symbols", has = "workspace/symbols" },
+            -- stylua: ignore end
     },
   },
 
@@ -39,6 +44,18 @@ return {
           end)
       end
     end
+
+    opts.lazygit = {
+      theme = {
+        selectedLineBgColor = { bg = 'CursorLine' },
+      },
+      -- https://github.com/folke/snacks.nvim/issues/719
+      win = {
+        -- style = 'dashboard',
+        width = 0,
+        height = 0,
+      },
+    }
 
     opts.terminal = {
       win = {

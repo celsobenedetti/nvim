@@ -53,21 +53,20 @@ vim.api.nvim_set_hl(0, 'GitSignsAdd', { bg = 'none', fg = colors.get_color('GitS
 vim.api.nvim_set_hl(0, 'GitSignsChange', { bg = 'none', fg = colors.get_color('GitSignsChange', 'fg') })
 vim.api.nvim_set_hl(0, 'GitSignsDelete', { bg = 'none', fg = colors.get_color('GitSignsDelete', 'fg') })
 
+-- -- stylua: ignore start
+-- vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextHint', 'fg') })
+-- vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextInfo', 'fg') })
+-- vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextWarn', 'fg') })
+-- vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = 'none', fg = colors.get_color('BlinkCmpMenu', 'fg') })
 
--- stylua: ignore start
-vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextHint', 'fg') })
-vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextInfo', 'fg') })
-vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextWarn', 'fg') })
-vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = 'none', fg = colors.get_color('BlinkCmpMenu', 'fg') })
+-- vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', { bg = 'none', fg = colors.get_color('DiagnosticSignWarn', 'fg') })
+-- vim.api.nvim_set_hl(0, 'DiagnosticSignHint', { bg = 'none', fg = colors.get_color('DiagnosticSignHint', 'fg') })
+-- vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = colors.get_color('DiagnosticSignInfo', 'fg') })
+-- vim.api.nvim_set_hl(0, 'DiagnosticSignError', { bg = 'none', fg = colors.get_color('DiagnosticSignError', 'fg') })
+-- vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = colors.get_color('DiagnosticSignOk', 'fg') })
 
-vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', { bg = 'none', fg = colors.get_color('DiagnosticSignWarn', 'fg') })
-vim.api.nvim_set_hl(0, 'DiagnosticSignHint', { bg = 'none', fg = colors.get_color('DiagnosticSignHint', 'fg') })
-vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = colors.get_color('DiagnosticSignInfo', 'fg') })
-vim.api.nvim_set_hl(0, 'DiagnosticSignError', { bg = 'none', fg = colors.get_color('DiagnosticSignError', 'fg') })
-vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = colors.get_color('DiagnosticSignOk', 'fg') })
-
-vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('TroubleNormal', 'fg') })
-vim.api.nvim_set_hl(0, 'TroubleCount', { bg = 'none', fg = colors.get_color('TroubleCount', 'fg') })
-
-vim.api.nvim_set_hl(0, 'FloatShadow', { bg = 'none', fg = colors.get_color('FloatShadow', 'fg') })
-vim.api.nvim_set_hl(0, 'FloatShadowThrough', { bg = 'none', fg = colors.get_color('FloatShadowThrough', 'fg') })
+-- vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('TroubleNormal', 'fg') })
+-- vim.api.nvim_set_hl(0, 'TroubleCount', { bg = 'none', fg = colors.get_color('TroubleCount', 'fg') })
+--
+-- vim.api.nvim_set_hl(0, 'FloatShadow', { bg = 'none', fg = colors.get_color('FloatShadow', 'fg') })
+-- vim.api.nvim_set_hl(0, 'FloatShadowThrough', { bg = 'none', fg = colors.get_color('FloatShadowThrough', 'fg') })

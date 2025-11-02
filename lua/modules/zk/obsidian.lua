@@ -84,15 +84,11 @@ return {
       return not is_templates
     end,
     opts = function(_, opts)
-      opts.new_notes_location = 'notes_subdir'
+      opts.new_notes_location = vim.g.notes.INBOX
       opts.workspaces = {
-        {
-          name = 'notes',
-          path = vim.g.notes.NOTES,
-          overrides = {
-            notes_subdir = '0-inbox',
-          },
-        },
+        { name = 'notes', path = vim.g.notes.NOTES },
+        { name = 'archives', path = vim.g.notes.ARCHIVES },
+        { name = 'zk', path = vim.g.notes.ZK },
       }
 
       opts.attachments = {

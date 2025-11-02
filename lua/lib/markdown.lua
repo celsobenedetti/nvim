@@ -14,7 +14,7 @@ M.fold_frontmatter = function()
 
     for i, line in ipairs(lines) do
       if line:match '^---' then
-        end_of_frontmatter = i + 2
+        end_of_frontmatter = i + 1
         break
       end
     end

@@ -19,6 +19,7 @@ return {
       opts.servers['*'] = opts.servers['*'] or {}
       opts.servers['*'].keys = {
         { 'gr', false },
+        { 'gI', vim.lsp.buf.implementation, desc = 'Goto Implementation' },
       }
 
       opts.servers.vtsls.keys = {

@@ -1,6 +1,7 @@
 return {
   {
     'stevearc/overseer.nvim',
+    lazy = false,
     cmd = {
       'OverseerOpen',
       'OverseerClose',

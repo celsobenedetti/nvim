@@ -47,4 +47,8 @@ M.rm = function()
   vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
 end
 
+M.is_current_buffer_a_file = function()
+  return vim.fn.expand('%'):match '/'
+end
+
 return M

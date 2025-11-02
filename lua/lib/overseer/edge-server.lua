@@ -30,7 +30,7 @@ M.lint = {
       components = { 'default' },
     }
   end,
-  desc = 'run CI tests with act',
+  desc = 'run CI lint with act',
   condition = {
     dir = vim.g.dirs.work.edge_server,
   },
