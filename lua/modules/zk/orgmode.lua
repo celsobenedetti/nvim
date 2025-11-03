@@ -1,3 +1,4 @@
+-- TODO: extract org config into distinct files
 local org_files = {
   vim.g.notes.ORG .. '/**/*',
   vim.g.notes.ORG_REFILE,
@@ -24,9 +25,10 @@ return {
   {
     'nvim-orgmode/orgmode',
     -- event = "VeryLazy",
-    ft = { 'org' },
+    ft = { 'org', 'markdown' },
     keys = {
       { '<leader>oim', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
+      { '<leader>todo', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
       {
         '<leader>T',
         function()
@@ -120,20 +122,20 @@ return {
           },
         },
 
-        -- mappings = {
-        --   agenda = {
-        --     org_agenda_switch_to = false,
-        --     org_agenda_goto = '<CR>',
-        --   },
-        --   org = {
-        --     org_set_tags_command = nil,
-        --     -- org_refile = false,
-        --     -- org_agenda_set_tags = '<nop>',
-        --     org_toggle_checkbox = '<leader><C-Space>',
-        --     org_insert_todo_heading_respect_content = '<leader>tod',
-        --     org_open_at_point = '<leader>oO',
-        --   },
-        -- },
+        mappings = {
+          agenda = {
+            -- org_agenda_switch_to = false,
+            org_agenda_goto = '<CR>',
+          },
+          org = {
+            org_set_tags_command = nil,
+            -- org_refile = false,
+            -- org_agenda_set_tags = '<nop>',
+            org_toggle_checkbox = '<leader><C-Space>',
+            org_insert_todo_heading_respect_content = '<leader>tod',
+            org_open_at_point = '<leader>oO',
+          },
+        },
 
         org_todo_keywords = {
           'TODO(t)', -- Tasks that are not started and not planned. They could be the backlogs or the GTD’s someday/maybe. These tasks could be converted to NEXT during a review.

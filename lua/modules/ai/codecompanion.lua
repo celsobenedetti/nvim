@@ -95,7 +95,7 @@ return {
               ---When chat is cleared with `gx` delete the chat from history
               delete_on_clearing_chat = false,
               ---Directory path to save the chats
-              dir_to_save = vim.fn.stdpath 'data' .. '/codecompanion-history',
+              dir_to_save = vim.g.notes.ARCHIVES .. '/assets/codecompanion-history',
               ---Enable detailed logging for history extension
               enable_logging = false,
 

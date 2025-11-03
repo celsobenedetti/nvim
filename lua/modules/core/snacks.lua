@@ -20,7 +20,7 @@ return {
     { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { "<leader>fE", function() Snacks.explorer({ cwd = LazyVim.root() }) end, desc = "Explorer Snacks (root dir)", },
-    { '<leader>fe', function() Snacks.explorer.open({ exclude = exclude, }) end, desc = 'Snacks: explorer', },
+    { '<leader>fe', function() Snacks.explorer.open({ exclude = exclude, ignored = true }) end, desc = 'Snacks: explorer', },
     { '<leader>en', function() Snacks.explorer.open({cwd = "~/notes"}) end, desc = 'Snacks: explorer notes', },
     { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
     { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
@@ -84,13 +84,11 @@ return {
       ['s'] = { 'flash' },
     })
 
-    opts.picker.win.list = {
-      keys = {
-        ['ZZ'] = function()
-          vim.cmd 'wqa'
-        end,
-      },
-    }
+    opts.picker.win.list = opts.picker.win.list or {}
+    opts.picker.win.list.keys = opts.picker.win.list.keys or {}
+    opts.picker.win.list.keys['ZZ'] = function()
+      vim.cmd 'wqa'
+    end
 
     opts.picker.actions = vim.tbl_deep_extend('force', opts.picker.actions or {}, {
       flash = function(picker)

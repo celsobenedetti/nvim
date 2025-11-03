@@ -3,5 +3,6 @@ return {
   keys = {
     { '<leader>tw', false },
     { '<leader>ts', false },
+    { '<leader>to', false },
   },
 }

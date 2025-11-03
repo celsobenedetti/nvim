@@ -3,20 +3,25 @@ vim.opt.laststatus = 3
 
 return {
   {
-    enabled = false,
+    -- enabled = false,
     'yetone/avante.nvim',
     lazy = true,
     version = false, -- set this if you want to always pull the latest change
     keys = {
-      { '<leader>aa', ':AvanteAsk<CR>', desc = 'AvanteAsk', mode = { 'n' } },
+      -- { '<leader>aa', ':AvanteAsk<CR>', desc = 'AvanteAsk', mode = { 'n' } },
       { '<leader>an', ':AvanteChatNew<CR>', desc = 'AvanteChatNew', mode = { 'n', 'v' } },
-      { '<leader>ae', ':AvanteEdit<CR>', desc = 'AvanteEdit', mode = { 'n', 'v' } },
       { '<leader>ar', ':AvanteRefresh<CR>', desc = 'AvanteRefresh' },
+      { '<leader>ae', ':AvanteEdit<CR>', desc = 'AvanteEdit', mode = { 'n', 'v' } },
       { '<leader>aC', ':AvanteClear<CR>', desc = 'AvanteClear' },
     },
     opts = {
-      provider = 'openai',
-      model = 'chatgpt-4o-latest',
+      providers = {
+        ollama = {
+          model = 'gpt_20b',
+          -- is_env_set = require('avante.providers.ollama').check_endpoint_alive,
+        },
+      },
+      provider = 'ollama',
       -- mappings = {
       --   ask = "<leader>aa", -- ask
       --   edit = "<leader>ae", -- edit
@@ -24,9 +29,9 @@ return {
       --   clear = "<leader>aC", -- clear
       -- },
 
-      override_prompt_dir = function()
-        return vim.fn.expand '~/.config/ai-rules/avante'
-      end,
+      -- override_prompt_dir = function()
+      --   return vim.fn.expand '~/.config/ai-rules/avante'
+      -- end,
     },
 
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
