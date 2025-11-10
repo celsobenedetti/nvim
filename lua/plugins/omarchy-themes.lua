@@ -8,6 +8,6 @@ return {
   { 'neanias/everforest-nvim', lazy = true, enabled = true },
   { 'rose-pine/neovim', lazy = true, enabled = true, name = 'rose-pine' },
   { 'ellisonleao/gruvbox.nvim', lazy = true, enabled = true },
-  { 'flexoki-neovim', lazy = true, enabled = true },
+  { 'kepano/flexoki-neovim', lazy = true, enabled = true },
   { 'everviolet/nvim', lazy = true, enabled = true, name = 'evergarden' },
 }
