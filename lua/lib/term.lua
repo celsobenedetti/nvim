@@ -22,4 +22,18 @@ function M.terminal_send(text)
   vim.api.nvim_chan_send(first_terminal_chan, text .. '\n')
 end
 
+--- run command on current file
+---@param cmd string
+function M.run_on_buffer(cmd)
+  local file = vim.fn.expand '%:p'
+  local current_term = Snacks.terminal.get()
+  if not current_term or current_term.closed then
+    Snacks.terminal.toggle()
+  end
+
+  vim.schedule(function()
+    M.terminal_send(cmd .. file)
+  end)
+end
+
 return M
