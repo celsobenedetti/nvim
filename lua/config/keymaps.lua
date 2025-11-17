@@ -200,12 +200,15 @@ map('n', '<leader>je', function()
     return
   end
 
-  local current_term = Snacks.terminal.get()
-  if not current_term or current_term.closed then
-    Snacks.terminal.toggle()
+  term.run_on_buffer 'pnpm jest '
+end, { desc = 'run current file in jest' })
+
+map('n', '<leader>es', function()
+  local file = vim.fn.expand '%:p'
+  if not file:find '.ts' and not file:find '.js' then
+    print 'Not a TS/JS file'
+    return
   end
 
-  vim.schedule(function()
-    term.terminal_send('pnpm jest ' .. file)
-  end)
+  term.run_on_buffer 'pnpm eslint '
 end, { desc = 'run current file in jest' })
