@@ -28,7 +28,7 @@ return {
     ft = { 'org', 'markdown' },
     keys = {
       { '<leader>oim', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
-      { '<leader>todo', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
+      -- { '<leader>todo', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
       {
         '<leader>T',
         function()
@@ -59,7 +59,11 @@ return {
                 type = 'agenda',
                 match = '+PRIORITY="A"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
                 org_agenda_span = 'day',
-                org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' }, -- See all options available on org_agenda_sorting_strategy
+                org_agenda_sorting_strategy = {
+                  'time-up',
+                  'todo-state-down',
+                  'priority-down',
+                }, -- See all options available on org_agenda_sorting_strategy
               },
             },
           },

@@ -35,39 +35,12 @@ autocmd({ 'VimEnter' }, {
 -- BufRead autocmd should fold frontmatter
 local markdown_group = augroup 'Markdown'
 local markdown = '*.md'
-autocmd('VimEnter', {
-  desc = 'Fold all headings when entering markdown files',
-  pattern = markdown,
-  group = markdown_group,
-  callback = function()
-    -- nested markdown folding
-    vim.cmd 'set foldexpr=NestedMarkdownFolds()'
-
-    vim.defer_fn(function()
-      -- fold all
-      vim.api.nvim_feedkeys(Keys 'zM', 'n', true)
-
-      vim.defer_fn(function()
-        -- go do #heading1
-        vim.api.nvim_feedkeys(Keys 'G', 'n', true)
-
-        vim.defer_fn(function()
-          -- unfold it
-          vim.api.nvim_feedkeys(Keys 'zo', 'n', true)
-        end, 60)
-      end, 60)
-    end, 100)
-  end,
-})
-
 autocmd('BufEnter', {
   desc = 'Fold frontmatter when entering markdown file',
   pattern = markdown,
   group = markdown_group,
   callback = function()
-    vim.defer_fn(function()
-      require('lib.markdown').fold_frontmatter()
-    end, 100)
+    vim.schedule(require('lib.markdown').fold_frontmatter)
   end,
 })
 

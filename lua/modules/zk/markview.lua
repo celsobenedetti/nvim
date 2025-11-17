@@ -1,6 +1,7 @@
 -- https://github.com/OXY2DEV/markview.nvim
 return {
   {
+    enabled = false,
     'OXY2DEV/markview.nvim',
     ft = { 'markdown', 'Avante', 'codecompanion' }, -- If you decide to lazy-load anyway
     dependencies = {

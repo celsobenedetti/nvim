@@ -25,12 +25,10 @@ return {
     { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
     { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
     { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
-    { '<leader>ff', LazyVim.pick('files', { hidden = require('lib.cwd').matches { 'dotfiles' } }), desc = 'Find Files (Root Dir)',
-
-            { "<leader>ss", function() Snacks.picker.lsp_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Symbols", has = "documentSymbol" },
-            { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Workspace Symbols", has = "workspace/symbols" },
-            -- stylua: ignore end
-    },
+    { '<leader>ff', function () LazyVim.pick('files', { hidden = require('lib.cwd').matches { 'dotfiles' } }) end, desc = 'Find Files (Root Dir)'},
+    -- { "<leader>ss", function() Snacks.picker.lsp_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Symbols", has = "documentSymbol" },
+    -- { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Workspace Symbols", has = "workspace/symbols" },
+    -- stylua: ignore end
   },
 
   opts = function(_, opts)
