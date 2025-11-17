@@ -15,6 +15,7 @@ local fs = require 'lib.fs'
 local toggle = require 'lib.toggle'
 local visual = require 'lib.visual'
 local web = require 'lib.web'
+local term = require 'lib.term'
 
 map('n', 'ZZ', function()
   if Snacks.zen.win and Snacks.zen.win.close then
@@ -186,3 +187,25 @@ end, { desc = 'Terminal (Root Dir)' })
 map({ 'n', 't' }, '<c-_>', function()
   Snacks.terminal(nil, { cwd = LazyVim.root() })
 end, { desc = 'which_key_ignore' })
+
+map('n', '<leader>je', function()
+  local file = vim.fn.expand '%:p'
+  if
+    not file:find '.spec.ts'
+    and not file:find '.test.ts'
+    and not file:find '.spec.js'
+    and not file:find '.test.js'
+  then
+    print 'Not a TS/JS test file'
+    return
+  end
+
+  local current_term = Snacks.terminal.get()
+  if not current_term or current_term.closed then
+    Snacks.terminal.toggle()
+  end
+
+  vim.schedule(function()
+    term.terminal_send('pnpm jest ' .. file)
+  end)
+end, { desc = 'run current file in jest' })
