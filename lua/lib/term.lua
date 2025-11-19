@@ -19,7 +19,9 @@ end
 function M.terminal_send(text)
   local first_terminal_chan = get_first_terminal()
 
-  vim.api.nvim_chan_send(first_terminal_chan, text .. '\n')
+  vim.schedule(function()
+    vim.api.nvim_chan_send(first_terminal_chan, text .. '\n')
+  end)
 end
 
 --- run command on current file
