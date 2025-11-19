@@ -3,7 +3,7 @@
 local M = {}
 
 M.test = {
-  name = 'act -j test',
+  name = 'gh act -j test',
   builder = function(params)
     return {
       cmd = { 'act' },
@@ -20,7 +20,7 @@ M.test = {
 }
 
 M.lint = {
-  name = 'act -j lint',
+  name = 'gh act -j lint',
   builder = function(params)
     return {
       cmd = { 'act' },
