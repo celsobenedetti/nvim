@@ -16,6 +16,7 @@ return {
       javascript = { 'prettier' },
       typescript = { 'prettier', lsp_format = 'never' },
       typescriptreact = { 'prettier', lsp_format = 'never' },
+      vue = { 'prettier', lsp_format = 'never' },
       odin = { 'odinfmt' },
     })
 

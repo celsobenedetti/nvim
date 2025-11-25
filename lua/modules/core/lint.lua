@@ -8,9 +8,9 @@ return {
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         go = { 'golangcilint' },
-        typescript = { 'oxlint' },
-        javascript = { 'oxlint' },
-        vue = { 'oxlint' },
+        typescript = { 'oxlint', 'eslint' },
+        javascript = { 'oxlint', 'eslint' },
+        vue = { 'oxlint', 'eslint' },
         -- zsh = { "zsh" },
       })
 

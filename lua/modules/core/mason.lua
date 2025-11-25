@@ -8,6 +8,7 @@ return {
       'trivy',
       'oxlint',
       'ols',
+      'vue-language-server',
     },
   },
 }
