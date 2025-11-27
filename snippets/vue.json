@@ -1,0 +1,26 @@
+{
+    "script-setup-composition": {
+        "prefix": "ss",
+        "body": [
+            "<script setup lang=\"ts\">",
+            "\t$0",
+            "</script>"
+        ],
+        "description": "script setup vue composition api element"
+    },
+    "SFC with no style": {
+        "prefix": "sfc",
+        "body": [
+            "<script setup lang=\"ts\">",
+            "\t$0",
+            "</script>",
+            "\n",
+            "<template>",
+            "\t<div>",
+            "\t$1",
+            "\t</div>",
+            "</template>"
+        ],
+        "description": "Base for Vue File with no styles"
+    }
+}

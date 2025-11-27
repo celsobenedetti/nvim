@@ -36,6 +36,12 @@
                     "orgmode"
                 ],
                 "path": "./org.json"
+            },
+            {
+                "language": [
+                    "vue"
+                ],
+                "path": "./vue.json"
             }
         ]
     }

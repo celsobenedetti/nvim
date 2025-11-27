@@ -2,12 +2,13 @@ return {
   {
     'chrisgrieser/nvim-origami',
     event = 'VeryLazy',
+    enabled = vim.g.origami,
     opts = {
       -- default settings
       useLspFoldsWithTreesitterFallback = true, -- required for `autoFold`
       pauseFoldsOnSearch = true,
       foldtext = {
-        enabled = true,
+        enabled = false,
         padding = 3,
         lineCount = {
           template = '%d lines', -- `%d` is replaced with the number of folded lines
@@ -17,7 +18,7 @@ return {
         gitsignsCount = true, -- requires `gitsigns.nvim`
       },
       autoFold = {
-        enabled = true,
+        enabled = false,
         kinds = { 'comment', 'imports' }, ---@type lsp.FoldingRangeKind[]
       },
       foldKeymaps = {

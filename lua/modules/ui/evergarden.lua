@@ -1,5 +1,5 @@
 local c = require('config.colors').evergarden -- colors
-local should_override = false
+local should_override = true
 
 local config = {
   highlights = {

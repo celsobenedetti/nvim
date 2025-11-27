@@ -10,9 +10,7 @@ return {
     opts = function(_, opts)
       opts.routes = vim.list_extend(opts.routes or {}, {
         -- Suppress notifications containing the following patterns
-        -- filter "Can't find file", -- suppress failed "gf" messages
-        -- filter 'Error indecoration provider', -- TreeSitter error when blink renders supermaven completion
-        -- filter "Can't find file", -- hacky supress for omnienter
+        filter 'position_encoding param is required',
       })
 
       opts.presets = opts.presets or {}

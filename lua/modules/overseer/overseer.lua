@@ -19,7 +19,7 @@ return {
 
       task_list = {
         -- TODO: wtf are these numbers?
-        min_height = { 100, 0.1 },
+        -- min_height = { 100, 0.1 },
         bindings = {
           ['<C-h>'] = false,
           ['<C-j>'] = false,

@@ -3,7 +3,7 @@ vim.opt.laststatus = 3
 
 return {
   {
-    -- enabled = false,
+    enabled = false,
     'yetone/avante.nvim',
     lazy = true,
     version = false, -- set this if you want to always pull the latest change

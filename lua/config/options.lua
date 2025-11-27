@@ -7,6 +7,7 @@ vim.opt.spelllang = { 'en', 'pt' }
 vim.g.completion = true
 vim.g.performance = vim.g.performance or false
 vim.o.winborder = 'rounded'
+vim.o.relativenumber = false
 
 vim.o.background = 'dark'
 vim.g.noice = false
@@ -14,6 +15,7 @@ vim.g.bufferline = false
 vim.g.dropbar = false
 vim.g.smear_cursor = false
 vim.g.snacks_animate = false
+vim.g.origami = true
 
 vim.g.scroll = false and not vim.g.performance
 vim.g.supermaven_inline_completion = true

@@ -12,7 +12,8 @@ return {
       -- org = { 'mfmt_org' },
       -- gitcommit = { 'mfmt' },
 
-      json = { 'prettierd' },
+      css = { 'prettier' },
+      json = { 'prettier' },
       javascript = { 'prettier' },
       typescript = { 'prettier', lsp_format = 'never' },
       typescriptreact = { 'prettier', lsp_format = 'never' },

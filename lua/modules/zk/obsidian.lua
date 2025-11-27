@@ -10,23 +10,15 @@ return {
     -- lazy = true,
     ft = { 'markdown', 'org' },
     keys = {
-      { '<leader>zk', ':Obsidian search<CR>' },
-      { '<leader>zz', ':Obsidian search<CR>' },
+    -- stylua: ignore start
+      { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.notes.NOTES}) end, desc = "Grep through notes", },
+      { "<leader>zZ", function() Snacks.picker.files({cwd=vim.g.notes.NOTES, title = "notes", }) end, desc = "search notes", },
       { '<leader>oO', ':Obsidian open<CR>' },
       { '<leader>ob', ':ObsidianBacklinks<CR>' },
       { '<leader>od', ':Obsidian dailies<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
       -- { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
-      {
-        '<leader>zZ',
-        function()
-          if require('lib.cwd').matches { 'notes' } then
-          end
-
-          vim.cmd 'Obsidian quick_switch'
-        end,
-      },
       { '<leader>oR', ':Obsidian rename<CR>' },
 
       {
@@ -72,6 +64,8 @@ return {
         end,
         desc = 'Open orgmode or obsidian link (vertical split)',
       },
+
+      -- stylua: ignore end
     },
     cond = function()
       if require('lib.cwd').matches { 'journals' } then
