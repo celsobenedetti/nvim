@@ -1,26 +1,35 @@
 {
-    "script-setup-composition": {
-        "prefix": "ss",
-        "body": [
-            "<script setup lang=\"ts\">",
-            "\t$0",
-            "</script>"
-        ],
-        "description": "script setup vue composition api element"
-    },
-    "SFC with no style": {
-        "prefix": "sfc",
-        "body": [
-            "<script setup lang=\"ts\">",
-            "\t$0",
-            "</script>",
-            "\n",
-            "<template>",
-            "\t<div>",
-            "\t$1",
-            "\t</div>",
-            "</template>"
-        ],
-        "description": "Base for Vue File with no styles"
-    }
+  "script-setup-composition": {
+    "prefix": "ss",
+    "body": ["<script setup lang=\"ts\">", "\t$0", "</script>"],
+    "description": "script setup vue composition api element"
+  },
+  "SFC with no style": {
+    "prefix": "sfc",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "\t$0",
+      "</script>",
+      "\n",
+      "<template>",
+      "\t<div>",
+      "\t$1",
+      "\t</div>",
+      "</template>"
+    ],
+    "description": "Base for Vue File with no styles"
+  },
+  "console.log": {
+    "prefix": "cl",
+    "body": ["console.log(\"🦎 ||| $1\", $2)"],
+    "description": "console.log"
+  },
+
+  "sleep": {
+    "prefix": "sleep",
+    "body": [
+      "const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));"
+    ],
+    "description": "sleep utility function"
+  }
 }

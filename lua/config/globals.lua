@@ -11,5 +11,6 @@ end
 vim.g.colors = require('config.colors').default
 
 local env = require 'config.env' -- NOTES config
+vim.g.env = env
 vim.g.notes = env.notes -- NOTES config
 vim.g.dirs = require 'config.dirs' -- NOTES config

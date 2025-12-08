@@ -45,7 +45,7 @@ return {
           completion = true,
           cursorword = true,
           deps = true,
-          diff = true,
+          diff = false,
           files = true,
           hipatterns = true,
           icons = true,

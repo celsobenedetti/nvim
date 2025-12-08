@@ -1,55 +1,46 @@
 {
-    "console.log": {
-        "prefix": "cl",
-        "body": [
-            "console.log(\"🦎 ||| $1\", $2)"
-        ],
-        "description": "console.log"
-    },
-    "log.log": {
-        "prefix": "l",
-        "body": [
-            "this.logger.info(\"🦎 |||\", \"$1\", $2)"
-        ],
-        "description": "log"
-    },
-    "jsdoc": {
-        "prefix": [
-            "jsd",
-            "jsdoc"
-        ],
-        "body": [
-            "/**",
-            "* $0",
-            "*/"
-        ],
-        "description": "jsdoc"
-    },
-    "Function Statementesa": {
-        "prefix": [
-            "fu",
-            "fn"
-        ],
-        "body": [
-            "function ${1:name}(${2:params}:${3:type}): (${4:type}) {",
-            "\t$0",
-            "}"
-        ],
-        "description": "Function Statement"
-    },
-    "const arrow function assignment": {
-        "prefix": "cf",
-        "body": "const ${1:name} = (${2:arguments}) => {\n\treturn ${0}\n}"
-    },
-    "arrow function": {
-        "prefix": "af",
-        "body": "(${1:arguments}) => ${2:statement}"
-    },
-    "className": {
-        "prefix": "cn",
-        "body": [
-            "className='$0'"
-        ],
-        "description": "CSS className"
-    }
+  "console.log": {
+    "prefix": "cl",
+    "body": ["console.log(\"🦎 ||| $1\", $2)"],
+    "description": "console.log"
+  },
+  "log.log": {
+    "prefix": "l",
+    "body": ["this.logger.info(\"🦎 |||\", \"$1\", $2)"],
+    "description": "log"
+  },
+  "jsdoc": {
+    "prefix": ["jsd", "jsdoc"],
+    "body": ["/**", "* $0", "*/"],
+    "description": "jsdoc"
+  },
+  "Function Statementesa": {
+    "prefix": ["fu", "fn"],
+    "body": [
+      "function ${1:name}(${2:params}:${3:type}): (${4:type}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Function Statement"
+  },
+  "const arrow function assignment": {
+    "prefix": "cf",
+    "body": "const ${1:name} = (${2:arguments}) => {\n\treturn ${0}\n}"
+  },
+  "arrow function": {
+    "prefix": "af",
+    "body": "(${1:arguments}) => ${2:statement}"
+  },
+  "className": {
+    "prefix": "cn",
+    "body": ["className='$0'"],
+    "description": "CSS className"
+  },
+  "sleep": {
+    "prefix": "sleep",
+    "body": [
+      "const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));"
+    ],
+    "description": "sleep utility function"
+  }
 }

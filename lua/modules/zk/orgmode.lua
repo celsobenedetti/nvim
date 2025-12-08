@@ -1,3 +1,5 @@
+local highlight = true
+
 -- TODO: extract org config into distinct files
 local org_files = {
   vim.g.notes.ORG .. '/**/*',
@@ -13,13 +15,16 @@ map('n', '<leader>ow', e(vim.g.notes.ORG_WORK), { desc = 'Orgmode work file' })
 map('n', '<leader>or', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 
--- -- set highlights
--- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
-vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
--- vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
-vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'darkgray' })
--- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
--- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'gray' })
+if highlight then
+  -- -- set highlights
+  -- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
+  vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
+
+  -- vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
+  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'darkgray' })
+  -- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
+  -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'gray' })
+end
 
 return {
   {
@@ -46,10 +51,12 @@ return {
       -- Setup orgmode
       require('orgmode').setup {
         org_agenda_files = org_files,
+        org_agenda_sorting_strategy = { 'todo-state-up' },
         org_default_notes_file = vim.g.notes.ORG_REFILE,
 
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
+        --
         org_agenda_custom_commands = {
 
           T = {
@@ -89,6 +96,16 @@ return {
               },
             },
           },
+          p = {
+            description = 'Project tasks',
+            types = {
+              {
+                type = 'tags_todo',
+                match = 'project',
+                org_agenda_sorting_strategy = { 'todo-state-down', 'time-up' }, -- See all options available on org_agenda_sorting_strategy
+              },
+            },
+          },
         },
         org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
@@ -109,27 +126,12 @@ return {
             target = vim.g.notes.ORG_WORK,
             headline = 'work todo',
           },
-          p = {
-            description = 'purchase',
-            template = '* TODO buy: %? :buy:\n  %U',
-            target = vim.g.notes.ORG_PURCHASES,
-            headline = 'purchases',
-          },
-
-          l = {
-            description = 'Life task',
-            template = '* TODO %? :life:\n  %U',
-          },
-          c = {
-            description = 'quick capture',
-            template = '* %?\n  %U',
-          },
         },
 
         mappings = {
           agenda = {
             -- org_agenda_switch_to = false,
-            org_agenda_goto = '<CR>',
+            -- org_agenda_goto = '<CR>',
           },
           org = {
             org_set_tags_command = nil,

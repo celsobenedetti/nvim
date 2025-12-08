@@ -57,6 +57,7 @@ return {
       { "<leader>OR", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
       { "<leader>run", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
       { "<leader>OT", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" },
+      { "<C-]>", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" },
       { "<leader>OQ", "<cmd>OverseerQuickAction<cr>", desc = "Overseer: Action recent task" },
       { "<leader>OI", "<cmd>OverseerInfo<cr>",        desc = "Overseer: Overseer Info" },
       { "<leader>OB", "<cmd>OverseerBuild<cr>",       desc = "Overseer: Task builder" },
