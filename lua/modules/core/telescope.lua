@@ -1,5 +1,5 @@
 return {
-  'telescope/telescope.nvim',
+  'nvim-telescope/telescope.nvim',
   keys = {
     {
       '<leader>s<space>',

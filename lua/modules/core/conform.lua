@@ -1,12 +1,23 @@
 local cwd = require 'lib.cwd'
 local eslint_projects = { 'ecommerce' }
 
-return {
+  return {
   'stevearc/conform.nvim',
   enabled = function()
     -- avoid formatting files in lazy.nvim managed repos
     return not cwd.matches { 'lazy' }
   end,
+    cmd = "ConformInfo",
+    keys = {
+      {
+        "<leader>cF",
+        function()
+          require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
+        end,
+        mode = { "n", "x" },
+        desc = "Format Injected Langs",
+      },
+    },
   opts = function(_, opts)
     local use_eslint = false
     for _, project in ipairs(eslint_projects) do
@@ -22,7 +33,8 @@ return {
       -- org = { 'mfmt_org' },
       -- gitcommit = { 'mfmt' },
       --
-
+          lua = { "stylua" },
+          sh = { "shfmt" },
       css = fmt_js,
       json = fmt_js,
       javascript = fmt_js,
