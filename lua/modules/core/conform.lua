@@ -15,7 +15,7 @@ return {
         break
       end
     end
-    local fmt_js = use_eslint and { lsp_format = 'last' } or { 'prettier' }
+    local fmt_js = use_eslint and { lsp_format = 'last', async = true } or { 'prettier' }
 
     opts.formatters_by_ft = vim.tbl_deep_extend('force', opts.formatters_by_ft or {}, {
       -- markdown = { 'mfmt' },

@@ -2,6 +2,7 @@
 return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
+    keys = { { '<leader>md', ':RenderMarkdown toggle<CR>', desc = 'Toggle render markdown' } },
     opts = {
       code = {
         sign = false,

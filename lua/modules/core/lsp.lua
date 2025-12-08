@@ -12,11 +12,6 @@ return {
       opts.servers.ols = {}
       require 'config.lsp.eslint'
 
-      opts.servers.vtsls.settings.typescript.tsserver =
-        vim.tbl_deep_extend('force', opts.servers.vtsls.settings.typescript.tsserver or {}, {
-          maxTsServerMemory = 8192,
-        })
-
       opts.servers['*'] = opts.servers['*'] or {}
       opts.servers['*'].keys = {
         { 'gr', false },
@@ -62,6 +57,10 @@ return {
         },
       }
 
+      opts.servers.vtsls.settings.typescript.tsserver =
+        vim.tbl_deep_extend('force', opts.servers.vtsls.settings.typescript.tsserver or {}, {
+          maxTsServerMemory = 8192,
+        })
       opts.servers.vtsls.keys = {
         {
           'gD',
