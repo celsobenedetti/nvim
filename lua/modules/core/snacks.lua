@@ -129,6 +129,9 @@ return {
     opts.picker = opts.picker or {}
     opts.picker.exclude = vim.tbl_extend('keep', opts.picker.exclude or {}, vim.g.grep_ignore or {})
 
+    opts.notify = { enabled = true }
+    opts.notifier = { enabled = true }
+
     opts.picker.win = opts.picker.win or {}
     opts.picker.win.input = opts.picker.win.input or {}
     opts.picker.win.input.keys = vim.tbl_deep_extend('force', opts.picker.win.input.keys or {}, {
