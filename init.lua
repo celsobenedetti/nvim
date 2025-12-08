@@ -10,6 +10,7 @@ require('lazy').setup {
     { 'wakatime/vim-wakatime' }, -- code time tracking goodness
     { import = 'modules.core' },
     { import = 'modules.tmux' },
+    { import = 'modules.editor' },
     { import = 'modules.omarchy' },
 
     -- lazyload

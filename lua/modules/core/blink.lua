@@ -5,13 +5,13 @@ end
 return {
   {
     'saghen/blink.cmp',
-    build = "cargo +nightly build --release",
+    build = 'cargo +nightly build --release',
     opts = function(_, opts)
       opts.enabled = function()
         return vim.bo.buftype ~= 'prompt'
-        and vim.bo.filetype ~= 'DressingInput'
-        and vim.bo.filetype ~= 'OverseerForm'
-        and vim.g.completion
+          and vim.bo.filetype ~= 'DressingInput'
+          and vim.bo.filetype ~= 'OverseerForm'
+          and vim.g.completion
       end
       opts.completion = {
         keyword = { range = 'full' },
@@ -26,6 +26,10 @@ return {
           },
         },
         documentation = { auto_show = true, window = { border = 'single' } },
+      }
+
+      opts.snippets = {
+        preset = 'luasnip',
       }
 
       opts.cmdline = {
@@ -51,5 +55,5 @@ return {
         },
       }
     end,
-  }
+  },
 }
