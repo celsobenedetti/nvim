@@ -3,10 +3,7 @@ return {
     'mfussenegger/nvim-lint',
     event = 'VeryLazy',
     config = function(_)
-
-
-
-require('lint').linters_by_ft = {
+      require('lint').linters_by_ft = {
 
         bash = { 'shellcheck', 'bash' },
         sh = { 'shellcheck' },
@@ -16,7 +13,7 @@ require('lint').linters_by_ft = {
         javascript = { 'oxlint', 'eslint' },
         vue = { 'oxlint', 'eslint' },
         -- zsh = { "zsh" },
-}
+      }
 
       vim.api.nvim_create_user_command('LintInfo', function()
         local filetype = vim.bo.filetype

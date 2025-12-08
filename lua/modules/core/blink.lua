@@ -3,50 +3,53 @@ if vim.g.completion == nil then
 end
 
 return {
-  'saghen/blink.cmp',
-  opts = function(_, opts)
-    opts.enabled = function()
-      return vim.bo.buftype ~= 'prompt'
+  {
+    'saghen/blink.cmp',
+    build = "cargo +nightly build --release",
+    opts = function(_, opts)
+      opts.enabled = function()
+        return vim.bo.buftype ~= 'prompt'
         and vim.bo.filetype ~= 'DressingInput'
         and vim.bo.filetype ~= 'OverseerForm'
         and vim.g.completion
-    end
-    opts.completion = {
-      keyword = { range = 'full' },
-      menu = {
-        border = 'single',
-        auto_show = vim.g.completion,
-        draw = {
-          columns = {
-            { 'label', 'label_description', gap = 1 },
-            { 'kind_icon', 'kind', gap = 1 },
-          },
-        },
-      },
-      documentation = { auto_show = true, window = { border = 'single' } },
-    }
-
-    opts.cmdline = {
-      keymap = {
-        preset = 'inherit',
-        -- disable a keymap from the preset
-        ['<CR>'] = false, -- or {}
-      },
-      completion = {
-        list = {
-          selection = {
-            -- crucial for typing quick commands
-            preselect = false,
-          },
-        },
+      end
+      opts.completion = {
+        keyword = { range = 'full' },
         menu = {
-          auto_show = function(ctx, _)
-            return true
-            -- avoid completion on ":w"
-            -- return #ctx.line > 2
-          end,
+          border = 'single',
+          auto_show = vim.g.completion,
+          draw = {
+            columns = {
+              { 'label', 'label_description', gap = 1 },
+              { 'kind_icon', 'kind', gap = 1 },
+            },
+          },
         },
-      },
-    }
-  end,
+        documentation = { auto_show = true, window = { border = 'single' } },
+      }
+
+      opts.cmdline = {
+        keymap = {
+          preset = 'inherit',
+          -- disable a keymap from the preset
+          ['<CR>'] = false, -- or {}
+        },
+        completion = {
+          list = {
+            selection = {
+              -- crucial for typing quick commands
+              preselect = false,
+            },
+          },
+          menu = {
+            auto_show = function(ctx, _)
+              return true
+              -- avoid completion on ":w"
+              -- return #ctx.line > 2
+            end,
+          },
+        },
+      }
+    end,
+  }
 }

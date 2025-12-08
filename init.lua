@@ -2,8 +2,7 @@ require 'config.lazy'
 require 'config.globals'
 require 'config.options'
 require 'config.sensible'
-
-local omarchy_colorscheme = require("lib.colors").omarchy_colorscheme()
+require 'config.autocmds'
 
 require('lazy').setup {
 
@@ -11,14 +10,13 @@ require('lazy').setup {
     { 'wakatime/vim-wakatime' }, -- code time tracking goodness
     { import = 'modules.core' },
     { import = 'modules.tmux' },
+    { import = 'modules.omarchy' },
 
     -- lazyload
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
 
-
     -- { import = 'lib.plugins.performance' },
     -- { import = 'lib.plugins.disable' },
-    omarchy_colorscheme.colorscheme_plugin, 
   },
   defaults = {
     lazy = false,
@@ -45,7 +43,4 @@ require('lazy').setup {
   },
 }
 
-
-vim.cmd("colorscheme ".. omarchy_colorscheme.colorscheme)
-
-require("config.transparency")
+require 'config.transparency'

@@ -6,7 +6,6 @@ return {
       'shfmt',
       'checkmake',
       'trivy',
-      'oxlint',
       'ols',
       'vue-language-server',
     },

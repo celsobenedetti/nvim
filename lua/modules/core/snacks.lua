@@ -1,12 +1,12 @@
 local exclude = { '*.org_archive' }
-local cwd = require("lib.cwd")
+local cwd = require 'lib.cwd'
 
 return {
   'folke/snacks.nvim',
   lazy = false,
   keys = {
     -- stylua: ignore start
-    -- { '<c-/>', false },
+    { "<c-_>",function() Snacks.terminal(nil, { cwd = cwd.root() }) end,  desc = "Terminal (Root Dir)", mode = {"n","t"} },
     { "<leader>no", function() Snacks.picker.notifications() end, desc = "Notification History", },
     { "<leader>rg", function() Snacks.picker.grep() end, desc = "Grep", },
     { "<leader>dd", function() Snacks.bufdelete() end, desc = "delete buffer", },
@@ -81,7 +81,11 @@ return {
     { "<leader>uC", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
   { "<leader>ss", function() Snacks.picker.lsp_symbols({}) end, desc = "LSP Symbols",  },
   { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols({}) end, desc = "LSP Workspace Symbols", },
-  -- stylua: ignore end
+
+  { "<leader>gg", function() Snacks.lazygit( { cwd = cwd.root() }) end,  desc = "Lazygit (Root Dir)" },
+  { "<leader>gG", function() Snacks.lazygit() end,  desc = "Lazygit (cwd)" }
+,
+    -- stylua: ignore end
   },
 
   opts = function(_, opts)

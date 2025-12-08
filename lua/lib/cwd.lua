@@ -20,6 +20,8 @@ M.cwd = function()
   return vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
 end
 
+M.root = M.cwd
+
 M.current_file = function()
   local cwd = M.cwd()
   local file = vim.fn.expand '%'

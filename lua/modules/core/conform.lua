@@ -1,24 +1,24 @@
 local cwd = require 'lib.cwd'
 local eslint_projects = { 'ecommerce' }
 
-  return {
+return {
   'stevearc/conform.nvim',
+  lazy = false,
   enabled = function()
     -- avoid formatting files in lazy.nvim managed repos
     return not cwd.matches { 'lazy' }
   end,
-    cmd = "ConformInfo",
-    keys = {
-      {
-        "<leader>cF",
-        function()
-          require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
-        end,
-        mode = { "n", "x" },
-        desc = "Format Injected Langs",
-      },
+  keys = {
+    {
+      '<leader>cF',
+      function()
+        require('conform').format { formatters = { 'injected' }, timeout_ms = 3000 }
+      end,
+      mode = { 'n', 'x' },
+      desc = 'Format Injected Langs',
     },
-  opts = function(_, opts)
+  },
+  config = function()
     local use_eslint = false
     for _, project in ipairs(eslint_projects) do
       if cwd.matches { project } then
@@ -28,33 +28,39 @@ local eslint_projects = { 'ecommerce' }
     end
     local fmt_js = use_eslint and { lsp_format = 'last', async = true } or { 'prettier' }
 
-    opts.formatters_by_ft = vim.tbl_deep_extend('force', opts.formatters_by_ft or {}, {
-      -- markdown = { 'mfmt' },
-      -- org = { 'mfmt_org' },
-      -- gitcommit = { 'mfmt' },
-      --
-          lua = { "stylua" },
-          sh = { "shfmt" },
-      css = fmt_js,
-      json = fmt_js,
-      javascript = fmt_js,
-      typescript = fmt_js,
-      typescriptreact = fmt_js,
-      vue = fmt_js,
+    require('conform').setup {
+      format_on_save = {
+        lsp_format = 'fallback',
+        timeout_ms = 500,
+      },
 
-      odin = { 'odinfmt' },
-    })
+      formatters_by_ft = {
+        -- markdown = { 'mfmt' },
+        -- org = { 'mfmt_org' },
+        -- gitcommit = { 'mfmt' },
+        --
+        lua = { 'stylua' },
+        sh = { 'shfmt' },
+        css = fmt_js,
+        json = fmt_js,
+        javascript = fmt_js,
+        typescript = fmt_js,
+        typescriptreact = fmt_js,
+        vue = fmt_js,
 
-    opts.formatters = vim.tbl_deep_extend('force', opts.formatters or {}, {
-      goimports = { prepend_args = { '-local', 'github.com/celsobenedetti/' } },
-      shfmt = { prepend_args = { '--indent', '4' } },
-      -- mfmt = { command = 'mfmt' },
-      -- mfmt_org = { command = 'mfmt', prepend_args = { '--parser=orgmode' } },
-      prettierd = {
-        env = {
-          PRETTIERD_LOCAL_PRETTIER_ONLY = 'true',
+        odin = { 'odinfmt' },
+      },
+      formatters = {
+        goimports = { prepend_args = { '-local', 'github.com/celsobenedetti/' } },
+        shfmt = { prepend_args = { '--indent', '4' } },
+        -- mfmt = { command = 'mfmt' },
+        -- mfmt_org = { command = 'mfmt', prepend_args = { '--parser=orgmode' } },
+        prettierd = {
+          env = {
+            PRETTIERD_LOCAL_PRETTIER_ONLY = 'true',
+          },
         },
       },
-    })
+    }
   end,
 }

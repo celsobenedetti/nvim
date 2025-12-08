@@ -1,3 +1,5 @@
+local omarchy_colorscheme = require("lib.colors").omarchy_colorscheme()
+
 -- this is here simply to prevent these plugins from being cleaned up by LazyVim
 return {
   { 'tahayvr/matteblack.nvim', lazy = true, enabled = true },
@@ -10,4 +12,9 @@ return {
   { 'ellisonleao/gruvbox.nvim', lazy = true, enabled = true },
   { 'kepano/flexoki-neovim', lazy = true, enabled = true },
   { 'everviolet/nvim', lazy = true, enabled = true, name = 'evergarden' },
+
+vim.tbl_extend('keep', omarchy_colorscheme.colorscheme_plugin
+, {init = function()
+vim.cmd("colorscheme ".. omarchy_colorscheme.colorscheme)
+end})
 }
