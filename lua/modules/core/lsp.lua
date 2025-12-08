@@ -10,6 +10,7 @@ return {
       opts.diagnostics.float = { border = 'rounded', source = true }
 
       opts.servers.ols = {}
+      require 'config.lsp.eslint'
 
       opts.servers.vtsls.settings.typescript.tsserver =
         vim.tbl_deep_extend('force', opts.servers.vtsls.settings.typescript.tsserver or {}, {
