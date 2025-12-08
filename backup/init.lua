@@ -4,7 +4,7 @@ require 'config.globals'
 require('lazy').setup {
   spec = {
     { 'LazyVim/LazyVim', import = 'lazyvim.plugins', opts = { colorscheme = function() end } },
-    { import = 'lazyvim.plugins.extras.ui.smear-cursor' },
+    -- { import = 'lazyvim.plugins.extras.ui.smear-cursor' },
     { import = 'lazyvim.plugins.extras.ui.treesitter-context' },
     { import = 'lazyvim.plugins.extras.lang.git' },
     { import = 'lazyvim.plugins.extras.lang.go' },

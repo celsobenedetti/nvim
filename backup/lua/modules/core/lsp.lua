@@ -61,6 +61,10 @@ return {
         vim.tbl_deep_extend('force', opts.servers.vtsls.settings.typescript.tsserver or {}, {
           maxTsServerMemory = 8192,
         })
+      opts.servers.vtsls.capabilities = vim.tbl_deep_extend('force', opts.servers.vtsls.capabilities or {}, {
+        documentFormattingProvider = false,
+        documentRangeFormattingProvider = false,
+      })
       opts.servers.vtsls.keys = {
         {
           'gD',
