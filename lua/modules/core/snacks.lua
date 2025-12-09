@@ -4,6 +4,64 @@ local cwd = require 'lib.cwd'
 return {
   'folke/snacks.nvim',
   lazy = false,
+  opts = {
+    terminal = { enabled = true },
+    words = { enabled = true },
+    notify = { enabled = true },
+
+    notifier = {
+      enabled = true,
+      -- filter = function(notification) end,
+    },
+
+    lazygit = {
+      theme = { selectedLineBgColor = { bg = 'CursorLine' } },
+      win = { width = 0, height = 0 },
+    },
+
+    picker = {
+      enabled = true,
+      exclude = vim.g.grep_ignore,
+      win = {
+        input = {
+          keys = {
+            ['<c-x>'] = { 'bufdelete', mode = { 'n', 'i' } },
+            ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
+            ['<c-y>'] = { 'yank', mode = { 'n', 'i' } },
+            ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
+            ['s'] = { 'flash' },
+          },
+        },
+        list = {
+          keys = {
+            ['ZZ'] = function()
+              vim.cmd 'wqa'
+            end,
+          },
+        },
+      },
+      actions = {
+        flash = function(picker)
+          require('flash').jump {
+            pattern = '^',
+            label = { after = { 0, 0 } },
+            search = {
+              mode = 'search',
+              exclude = {
+                function(win)
+                  return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
+                end,
+              },
+            },
+            action = function(match)
+              local idx = picker.list:row2idx(match.pos[1])
+              picker.list:_move(idx, true, true)
+            end,
+          }
+        end,
+      },
+    },
+  },
   keys = {
     {
       '<c-_>',
@@ -506,131 +564,28 @@ return {
       function()
         Snacks.words.jump(vim.v.count1)
       end,
-      has = 'documentHighlight',
       desc = 'Next Reference',
-      enabled = function()
-        return Snacks.words.is_enabled()
-      end,
     },
     {
       '[[',
       function()
         Snacks.words.jump(-vim.v.count1)
       end,
-      has = 'documentHighlight',
       desc = 'Prev Reference',
-      enabled = function()
-        return Snacks.words.is_enabled()
-      end,
     },
     {
       '<a-n>',
       function()
         Snacks.words.jump(vim.v.count1, true)
       end,
-      has = 'documentHighlight',
       desc = 'Next Reference',
-      enabled = function()
-        return Snacks.words.is_enabled()
-      end,
     },
     {
       '<a-p>',
       function()
         Snacks.words.jump(-vim.v.count1, true)
       end,
-      has = 'documentHighlight',
       desc = 'Prev Reference',
-      enabled = function()
-        return Snacks.words.is_enabled()
-      end,
     },
   },
-
-  opts = function(_, opts)
-    -- Terminal Mappings
-    local function term_nav(dir)
-      ---@param self snacks.terminal
-      return function(self)
-        return self:is_floating() and '<c-' .. dir .. '>'
-          or vim.schedule(function()
-            vim.cmd.wincmd(dir)
-          end)
-      end
-    end
-
-    opts.lazygit = {
-      theme = {
-        selectedLineBgColor = { bg = 'CursorLine' },
-      },
-      -- https://github.com/folke/snacks.nvim/issues/719
-      win = {
-        -- style = 'dashboard',
-        width = 0,
-        height = 0,
-      },
-    }
-
-    -- opts.terminal = {
-    --   win = {
-    --     keys = {
-    --       nav_h = { '<C-h>', term_nav 'h', desc = 'Go to Left Window', expr = true, mode = 't' },
-    --       nav_j = { '<C-j>', term_nav 'j', desc = 'Go to Lower Window', expr = true, mode = 't' },
-    --       nav_k = { '<C-k>', term_nav 'k', desc = 'Go to Upper Window', expr = true, mode = 't' },
-    --       nav_l = { '<C-l>', term_nav 'l', desc = 'Go to Right Window', expr = true, mode = 't' },
-    --       hide_slash = { '<C-/>', 'hide', desc = 'Hide Terminal', mode = { 't', 'n' } },
-    --       hide_underscore = { '<c-_>', 'hide', desc = 'which_key_ignore', mode = { 't', 'n' } },
-    --     },
-    --   },
-    -- }
-
-    opts.dashboard = { enabled = false }
-    opts.picker = opts.picker or {}
-    opts.picker.exclude = vim.tbl_extend('keep', opts.picker.exclude or {}, vim.g.grep_ignore or {})
-
-    opts.notify = { enabled = true }
-    opts.notifier = {
-      enabled = true,
-      filter = function(notification)
-        -- check if notification.msg
-      end,
-    }
-
-    opts.picker.win = opts.picker.win or {}
-    opts.picker.win.input = opts.picker.win.input or {}
-    opts.picker.win.input.keys = vim.tbl_deep_extend('force', opts.picker.win.input.keys or {}, {
-      ['<c-x>'] = { 'bufdelete', mode = { 'n', 'i' } },
-      ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
-      ['<c-y>'] = { 'yank', mode = { 'n', 'i' } },
-      ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
-      ['s'] = { 'flash' },
-    })
-
-    opts.picker.win.list = opts.picker.win.list or {}
-    opts.picker.win.list.keys = opts.picker.win.list.keys or {}
-    opts.picker.win.list.keys['ZZ'] = function()
-      vim.cmd 'wqa'
-    end
-
-    opts.picker.actions = vim.tbl_deep_extend('force', opts.picker.actions or {}, {
-      flash = function(picker)
-        require('flash').jump {
-          pattern = '^',
-          label = { after = { 0, 0 } },
-          search = {
-            mode = 'search',
-            exclude = {
-              function(win)
-                return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
-              end,
-            },
-          },
-          action = function(match)
-            local idx = picker.list:row2idx(match.pos[1])
-            picker.list:_move(idx, true, true)
-          end,
-        }
-      end,
-    })
-  end,
 }
