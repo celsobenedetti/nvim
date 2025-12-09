@@ -1,4 +1,5 @@
 local M = {}
+
 ---@param increment boolean
 ---@param g? boolean
 function M.dial(increment, g)

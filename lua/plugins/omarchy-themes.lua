@@ -10,5 +10,9 @@ return {
   { 'ellisonleao/gruvbox.nvim', lazy = true, enabled = true },
   { 'kepano/flexoki-neovim', lazy = true, enabled = true },
   { 'everviolet/nvim', lazy = true, enabled = true, name = 'evergarden' },
-  {config = function ()print("hello")end},
+  {
+    config = function()
+      print 'hello'
+    end,
+  },
 }
