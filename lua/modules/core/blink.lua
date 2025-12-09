@@ -13,6 +13,12 @@ return {
           and vim.bo.filetype ~= 'OverseerForm'
           and vim.g.completion
       end
+
+      opts.keymap = {
+        preset = 'enter',
+        ['<C-y>'] = { 'select_and_accept' },
+      }
+
       opts.completion = {
         keyword = { range = 'full' },
         menu = {
