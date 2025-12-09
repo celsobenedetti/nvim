@@ -383,8 +383,6 @@ return {
       end,
       desc = 'Grep Open Buffers',
     },
-    -- { "<leader>sg", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
-    -- { "<leader>sG", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
     {
       '<leader>sp',
       function()
@@ -392,8 +390,6 @@ return {
       end,
       desc = 'Search for Plugin Spec',
     },
-    -- { "<leader>sw", LazyVim.pick("grep_word"), desc = "Visual selection or word (Root Dir)", mode = { "n", "x" } },
-    -- { "<leader>sW", LazyVim.pick("grep_word", { root = false }), desc = "Visual selection or word (cwd)", mode = { "n", "x" } },
     -- search
     {
       '<leader>s"',
@@ -583,7 +579,7 @@ return {
           notify = false,
         }
       end,
-      { desc = 'Git Browse (copy)' },
+      { desc = 'Git Browse (copy)', mode = { 'n', 'x' } },
     },
 
     {
@@ -599,6 +595,21 @@ return {
         Snacks.picker.git_log { cwd = cwd.root() }
       end,
       { desc = 'Git Log' },
+    },
+
+    {
+      '<leader>sw',
+      function()
+        Snacks.picker.grep_word()
+      end,
+      { desc = 'Visual selection or word (Root Dir)', mode = { 'n', 'x' } },
+    },
+    {
+      '<leader>sW',
+      function()
+        Snacks.picker.grep_word { root = false }
+      end,
+      { desc = 'Visual selection or word (cwd)', mode = { 'n', 'x' } },
     },
   },
 }
