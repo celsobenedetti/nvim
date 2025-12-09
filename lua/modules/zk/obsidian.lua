@@ -2,7 +2,6 @@ local strings = require 'lib.strings'
 local visual = require 'lib.visual'
 
 return {
-
   {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
@@ -78,6 +77,7 @@ return {
       return not is_templates
     end,
     opts = function(_, opts)
+      opts.legacy_commands = false
       opts.new_notes_location = vim.g.notes.INBOX
       opts.workspaces = {
         { name = 'notes', path = vim.g.notes.NOTES },
