@@ -14,6 +14,7 @@ require('lazy').setup {
     { import = 'modules.omarchy' },
     { import = 'modules.ui' },
     { import = 'modules.git' },
+    { import = 'modules.overseer' },
 
     -- lazyload
     -- { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },

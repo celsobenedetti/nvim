@@ -46,7 +46,7 @@ return {
 
     config = function(_, opts)
       local overseer = require 'overseer'
-      local edge_server = require 'lib.overseer.edge-server'
+      local edge_server = require 'config.overseer.edge-server'
 
       overseer.setup(opts)
       overseer.register_template(edge_server.test)
@@ -65,15 +65,15 @@ return {
       { "<leader>OC", "<cmd>OverseerClearCache<cr>",  desc = "Overseer: Clear cache" },
     },
   },
-  {
-    'folke/which-key.nvim',
-    optional = true,
-    opts = {
-      spec = {
-        { '<leader>o', group = 'overseer' },
-      },
-    },
-  },
+  -- {
+  --   'folke/which-key.nvim',
+  --   optional = true,
+  --   opts = {
+  --     spec = {
+  --       { '<leader>o', group = 'overseer' },
+  --     },
+  --   },
+  -- },
   -- {
   --   'folke/edgy.nvim',
   --   optional = true,
@@ -88,20 +88,20 @@ return {
   --     })
   --   end,
   -- },
-  {
-    'nvim-neotest/neotest',
-    optional = true,
-    opts = function(_, opts)
-      opts = opts or {}
-      opts.consumers = opts.consumers or {}
-      opts.consumers.overseer = require 'neotest.consumers.overseer'
-    end,
-  },
-  {
-    'mfussenegger/nvim-dap',
-    optional = true,
-    opts = function()
-      require('overseer').enable_dap()
-    end,
-  },
+  -- {
+  --   'nvim-neotest/neotest',
+  --   optional = true,
+  --   opts = function(_, opts)
+  --     opts = opts or {}
+  --     opts.consumers = opts.consumers or {}
+  --     opts.consumers.overseer = require 'neotest.consumers.overseer'
+  --   end,
+  -- },
+  -- {
+  --   'mfussenegger/nvim-dap',
+  --   optional = true,
+  --   opts = function()
+  --     require('overseer').enable_dap()
+  --   end,
+  -- },
 }
