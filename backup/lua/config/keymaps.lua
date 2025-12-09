@@ -160,6 +160,7 @@ map('c', '<C-A>', '<Home>', { desc = '<Home>' })
 -- map('c', '<Esc>l', '<S-Right>', { desc = '<S-Right>' })
 
 map('n', 'gb', function()
+  ---@module 'snacks'
   Snacks.picker.git_log_line()
 end, { desc = 'Git Blame Line' })
 map({ 'n', 'x' }, 'gB', function()

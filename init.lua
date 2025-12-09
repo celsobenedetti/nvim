@@ -6,9 +6,7 @@ require 'config.autocmds'
 require 'config.keymaps'
 
 require('lazy').setup {
-
   spec = {
-    { 'wakatime/vim-wakatime' }, -- code time tracking goodness
     { import = 'modules.core' },
     { import = 'modules.tmux' },
     { import = 'modules.editor' },
@@ -17,10 +15,10 @@ require('lazy').setup {
     { import = 'modules.git' },
     { import = 'modules.overseer' },
     { import = 'modules.ai' },
-    { import = 'modules.zk' },
+    { import = 'modules.zk', ft = { 'markdown', 'org' } },
 
     -- lazyload
-    -- { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
+    { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
 
     -- { import = 'lib.plugins.performance' },
     -- { import = 'lib.plugins.disable' },
@@ -50,4 +48,5 @@ require('lazy').setup {
   },
 }
 
+require 'config.lsp'
 require 'config.transparency'

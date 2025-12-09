@@ -1,6 +1,6 @@
 -- TODO: table driven config
 -- Save file
-map({ 'i', 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save File' })
+map({ 'x', 'n', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save File' })
 
 -- tabs
 map('n', ']<tab>', ':tabnext<CR>', { desc = 'tab: next' })
