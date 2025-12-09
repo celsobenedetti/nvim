@@ -23,3 +23,9 @@ vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning
 vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = 'Goto Implementation' })
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
+
+map('n', 'gv', function()
+  vim.api.nvim_feedkeys(Keys '<c-w>v', 'n', true)
+  vim.lsp.buf.definition()
+  -- Snacks.picker.lsp_definitions()
+end, { desc = 'Split vertical and go to definition' })

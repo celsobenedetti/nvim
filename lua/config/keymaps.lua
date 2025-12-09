@@ -33,7 +33,6 @@ end, { expr = true, desc = 'Escape and Clear hlsearch' })
 
 map('n', '<leader>yy', function()
   local file = vim.fn.expand '%:p'
-  vim.cmd('!wl-copy ' .. file) -- wayland
+  vim.cmd('silent !wl-copy ' .. file, { silent = true }) -- wayland
   Snacks.notify('Copied to clipboard: ' .. file)
-  vim.cmd 'norm <esc>'
 end, { desc = 'Copy file path to clipboard' })

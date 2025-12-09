@@ -293,7 +293,7 @@ return {
     {
       '<leader>fr',
       function()
-        Snacks.picker.oldfiles()
+        Snacks.picker.recent()
       end,
       desc = 'Recent',
     },
