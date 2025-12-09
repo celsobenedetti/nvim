@@ -22,6 +22,7 @@ return {
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { "<leader>fE", function() Snacks.explorer({ cwd = cwd.root() }) end, desc = "Explorer Snacks (root dir)", },
     { '<leader>fe', function() Snacks.explorer.open({ exclude = exclude, ignored = true }) end, desc = 'Snacks: explorer', },
+    { '<leader>e', function() Snacks.explorer.open({ exclude = exclude, ignored = true }) end, desc = 'Snacks: explorer', },
     { '<leader>en', function() Snacks.explorer.open({cwd = "~/notes"}) end, desc = 'Snacks: explorer notes', },
     { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
     { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },

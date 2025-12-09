@@ -3,6 +3,7 @@ require 'config.globals'
 require 'config.options'
 require 'config.sensible'
 require 'config.autocmds'
+require 'config.keymaps'
 
 require('lazy').setup {
 
