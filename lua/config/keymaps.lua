@@ -12,6 +12,11 @@ local jump = require 'lib.jump'
 map('n', 'k', jump.up)
 map('n', 'j', jump.down)
 
+-- h/l with folding
+local fold = require 'lib.fold'
+map('n', 'h', fold.h, { desc = 'h: move left or fold' })
+map('n', 'l', fold.l, { desc = 'l: move right and unfold' })
+
 map('n', '<leader>re', function()
   vim.cmd ':w'
   vim.cmd ':e! %'

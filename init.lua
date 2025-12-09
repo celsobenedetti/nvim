@@ -17,6 +17,7 @@ require('lazy').setup {
     { import = 'modules.git' },
     { import = 'modules.overseer' },
     { import = 'modules.ai' },
+    { import = 'modules.zk' },
 
     -- lazyload
     -- { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },

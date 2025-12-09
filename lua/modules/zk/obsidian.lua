@@ -18,7 +18,7 @@ return {
       { '<leader>od', ':Obsidian dailies<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
       -- { '<leader>ot', ':ObsidianTags<CR>' },
-      { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
+      { '<leader>ch', ':Obsidian check<CR>' },
       { '<leader>oR', ':Obsidian rename<CR>' },
 
       {
