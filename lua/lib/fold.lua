@@ -11,9 +11,12 @@ M.h = function()
   end
 end
 
--- unfold with `zo`, and press `l` in normal mode
+-- if has fold, unfold with `zo`
+-- then press `l` in normal mode
 M.l = function()
-  vim.cmd 'normal! zo'
+  if vim.fn.foldclosed '.' ~= -1 then
+    vim.cmd 'normal! zo'
+  end
   vim.cmd 'normal! l'
 end
 
