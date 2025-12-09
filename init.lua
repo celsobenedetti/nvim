@@ -12,9 +12,10 @@ require('lazy').setup {
     { import = 'modules.tmux' },
     { import = 'modules.editor' },
     { import = 'modules.omarchy' },
+    { import = 'modules.ui' },
 
     -- lazyload
-    { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
+    -- { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
 
     -- { import = 'lib.plugins.performance' },
     -- { import = 'lib.plugins.disable' },
