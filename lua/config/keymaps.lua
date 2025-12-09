@@ -25,3 +25,15 @@ end, { desc = 'write and refresh buffer' })
 -- fs
 local fs = require 'lib.fs'
 map('n', '<leader>mv', fs.mv_file, { desc = 'Move file of current buffer to dir' })
+
+map({ 'i', 'n', 's' }, '<esc>', function()
+  vim.cmd 'noh'
+  return '<esc>'
+end, { expr = true, desc = 'Escape and Clear hlsearch' })
+
+map('n', '<leader>yy', function()
+  local file = vim.fn.expand '%:p'
+  vim.cmd('!wl-copy ' .. file) -- wayland
+  Snacks.notify('Copied to clipboard: ' .. file)
+  vim.cmd 'norm <esc>'
+end, { desc = 'Copy file path to clipboard' })

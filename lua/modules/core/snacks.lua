@@ -417,20 +417,6 @@ return {
       desc = 'Autocmds',
     },
     {
-      '<leader>sc',
-      function()
-        Snacks.picker.command_history()
-      end,
-      desc = 'Command History',
-    },
-    {
-      '<leader>sC',
-      function()
-        Snacks.picker.commands()
-      end,
-      desc = 'Commands',
-    },
-    {
       '<leader>sd',
       function()
         Snacks.picker.diagnostics()
@@ -574,18 +560,45 @@ return {
       desc = 'Prev Reference',
     },
     {
-      '<a-n>',
+      'gb',
       function()
-        Snacks.words.jump(vim.v.count1, true)
+        Snacks.picker.git_log_line()
       end,
-      desc = 'Next Reference',
+      { desc = 'Git Blame Line' },
     },
     {
-      '<a-p>',
+      'gB',
       function()
-        Snacks.words.jump(-vim.v.count1, true)
+        Snacks.gitbrowse()
       end,
-      desc = 'Prev Reference',
+      { desc = 'Git Browse (open)' },
+    },
+    {
+      'gY',
+      function()
+        Snacks.gitbrowse {
+          open = function(url)
+            vim.fn.setreg('+', url)
+          end,
+          notify = false,
+        }
+      end,
+      { desc = 'Git Browse (copy)' },
+    },
+
+    {
+      '<leader>gf',
+      function()
+        Snacks.picker.git_log_file()
+      end,
+      { desc = 'Git Current File History' },
+    },
+    {
+      '<leader>gl',
+      function()
+        Snacks.picker.git_log { cwd = cwd.root() }
+      end,
+      { desc = 'Git Log' },
     },
   },
 }
