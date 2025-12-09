@@ -6,6 +6,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
 vim.opt.spelllang = { 'en', 'pt' }
+vim.g.supermaven = true
 vim.g.completion = true
 vim.g.performance = vim.g.performance or false
 vim.o.winborder = 'rounded'
@@ -20,7 +21,6 @@ vim.g.snacks_animate = false
 vim.g.origami = true
 
 vim.g.scroll = false and not vim.g.performance
-vim.g.supermaven_inline_completion = true
 
 vim.g.trouble_lualine = false
 
