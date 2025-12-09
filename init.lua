@@ -13,6 +13,7 @@ require('lazy').setup {
     { import = 'modules.editor' },
     { import = 'modules.omarchy' },
     { import = 'modules.ui' },
+    { import = 'modules.git' },
 
     -- lazyload
     -- { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
