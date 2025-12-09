@@ -10,7 +10,7 @@ return {
     end,
     keys = {
       {
-        '<leader>cc',
+        '<leader>aa',
         function()
           require('sidekick.cli').toggle { name = 'opencode' }
         end,
@@ -41,7 +41,7 @@ return {
         desc = 'Send Visual Selection',
       },
       {
-        '<leader>cj',
+        '<leader>ad',
         function()
           require('sidekick.cli').close()
         end,
