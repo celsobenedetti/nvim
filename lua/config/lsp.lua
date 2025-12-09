@@ -1,4 +1,4 @@
-vim.lsp.enable { 'lua_ls' }
+vim.lsp.enable { 'lua_ls', 'vtsls' }
 
 --keymaps
 local diagnostic_goto = function(next, severity)
