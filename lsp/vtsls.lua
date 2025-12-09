@@ -59,19 +59,11 @@ return {
     end, {
       desc = 'File References',
     })
-    vim.keymap.set('n', '<leader>oi', lsp.action['source.organizeImports'], {
-      desc = 'Organize Imports',
-    })
-    vim.keymap.set('n', '<leader>ru', lsp.action['source.removeUnused.ts'], {
-      desc = 'Remove unused imports',
-    })
-    vim.keymap.set('n', '<leader>fa', lsp.action['source.fixAll.ts'], {
-      desc = 'Fix all diagnostics',
-    })
+    vim.keymap.set('n', '<leader>oi', lsp.action['source.organizeImports'], { desc = 'Organize Imports' })
+    vim.keymap.set('n', '<leader>ru', lsp.action['source.removeUnused.ts'], { desc = 'Remove unused imports' })
+    vim.keymap.set('n', '<leader>fa', lsp.action['source.fixAll.ts'], { desc = 'Fix all diagnostics' })
     vim.keymap.set('n', '<leader>cV', function()
       lsp.execute { command = 'typescript.selectTypeScriptVersion' }
-    end, {
-      desc = 'Select TS workspace version',
-    })
+    end, { desc = 'Select TS workspace version' })
   end,
 }

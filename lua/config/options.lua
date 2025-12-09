@@ -9,18 +9,14 @@ vim.opt.spelllang = { 'en', 'pt' }
 vim.g.supermaven = true
 vim.g.completion = true
 vim.g.performance = vim.g.performance or false
-vim.o.winborder = 'rounded'
 vim.o.relativenumber = false
+vim.g.eslint_autoformat = true
 
 vim.o.background = 'dark'
+vim.o.winborder = 'rounded'
 vim.g.noice = false
 vim.g.bufferline = false
 vim.g.dropbar = false
-vim.g.smear_cursor = false
-vim.g.snacks_animate = false
-vim.g.origami = true
-
-vim.g.scroll = false and not vim.g.performance
 
 vim.g.trouble_lualine = false
 
