@@ -8,6 +8,7 @@ return {
       'trivy',
       'ols',
       'vue-language-server',
+      'eslint-lsp',
     },
   },
 }
