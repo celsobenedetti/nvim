@@ -11,7 +11,17 @@ return {
 
     notifier = {
       enabled = true,
-      -- filter = function(notification) end,
+      filter = function(notification)
+        local ignore = {
+          'File is too large to send to server', -- thank you supermaven, please stfu
+        }
+        for _, s in ipairs(ignore) do
+          if notification.msg:find(s) then
+            return false
+          end
+        end
+        return true
+      end,
     },
 
     lazygit = {
@@ -177,13 +187,6 @@ return {
       desc = 'Snacks: explorer',
     },
     {
-      '<leader>e',
-      function()
-        Snacks.explorer.open { exclude = exclude, ignored = true }
-      end,
-      desc = 'Snacks: explorer',
-    },
-    {
       '<leader>en',
       function()
         Snacks.explorer.open { cwd = '~/notes' }
@@ -340,20 +343,20 @@ return {
       end,
       desc = 'Git Stash',
     },
-    {
-      '<leader>gi',
-      function()
-        Snacks.picker.gh_issue()
-      end,
-      desc = 'GitHub Issues (open)',
-    },
-    {
-      '<leader>gI',
-      function()
-        Snacks.picker.gh_issue { state = 'all' }
-      end,
-      desc = 'GitHub Issues (all)',
-    },
+    -- {
+    --   '<leader>gi',
+    --   function()
+    --     Snacks.picker.gh_issue()
+    --   end,
+    --   desc = 'GitHub Issues (open)',
+    -- },
+    -- {
+    --   '<leader>gI',
+    --   function()
+    --     Snacks.picker.gh_issue { state = 'all' }
+    --   end,
+    --   desc = 'GitHub Issues (all)',
+    -- },
     {
       '<leader>gp',
       function()
