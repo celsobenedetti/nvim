@@ -12,10 +12,11 @@ require('lazy').setup {
     { import = 'modules.core' },
     { import = 'modules.tmux' },
     { import = 'modules.editor' },
+    { import = 'modules.mini' },
     { import = 'modules.omarchy' },
-    { import = 'modules.ui' },
     { import = 'modules.git' },
     { import = 'modules.overseer' },
+    { import = 'modules.ai' },
 
     -- lazyload
     -- { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
