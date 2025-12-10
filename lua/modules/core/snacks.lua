@@ -105,7 +105,6 @@ return {
     { '<leader>fb', function() Snacks.picker.buffers() end, desc = 'Buffers', },
     { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'Buffers (all)', },
     { '<leader>ff', function() Snacks.picker.files() end, desc = 'Find Files (Root Dir)', },
-    { '<leader>fF', function() Snacks.picker.files { cwd = cwd.root() } end, desc = 'Find Files (cwd)', },
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
     { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent', },
     { '<leader>fR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'Recent (cwd)', },
