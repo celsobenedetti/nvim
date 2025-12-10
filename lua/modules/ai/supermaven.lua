@@ -1,5 +1,6 @@
 return {
   {
+
     'supermaven-inc/supermaven-nvim',
     event = 'InsertEnter',
     enabled = vim.g.supermaven,
@@ -8,7 +9,7 @@ return {
       keymaps = {
         accept_suggestion = nil, -- handled by blink.cmp
       },
-      disable_inline_completion = not vim.g.supermaven,
+      disable_inline_completion = false,
       ignore_filetypes = { 'bigfile', 'snacks_input', 'snacks_notif' },
     },
   },

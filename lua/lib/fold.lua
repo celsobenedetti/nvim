@@ -5,7 +5,9 @@ local M = {}
 M.h = function()
   local col = vim.api.nvim_win_get_cursor(0)[2] + 1
   if col == 1 then
-    vim.cmd('normal! zc')
+    pcall(function()
+      vim.cmd('normal! zc')
+    end)
   else
     vim.cmd('normal! h')
   end

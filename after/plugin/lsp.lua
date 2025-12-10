@@ -49,7 +49,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     map('n', 'gv', function()
       vim.api.nvim_feedkeys(Keys('<c-w>v'), 'n', true)
-      vim.lsp.buf.definition()
+      vim.schedule(vim.lsp.buf.definition)
       -- Snacks.picker.lsp_definitions()
     end, { desc = 'Split vertical and go to definition' })
   end,
