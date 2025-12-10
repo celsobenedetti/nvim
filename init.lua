@@ -1,9 +1,4 @@
-require 'config.lazy'
-require 'config.globals'
-require 'config.options'
-require 'config.sensible'
-require 'config.autocmds'
-require 'config.keymaps'
+require 'config.init'
 
 require('lazy').setup {
   spec = {
