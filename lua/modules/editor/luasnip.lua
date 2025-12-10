@@ -6,7 +6,7 @@ return {
         '<C-l>',
         mode = 'i',
         function()
-          local luasnip = require 'luasnip'
+          local luasnip = require('luasnip')
           if luasnip.expand_or_locally_jumpable() then
             luasnip.expand_or_jump()
             return
@@ -17,7 +17,7 @@ return {
         '<C-h>',
         mode = 'i',
         function()
-          local luasnip = require 'luasnip'
+          local luasnip = require('luasnip')
           if luasnip.locally_jumpable(-1) then
             luasnip.jump(-1)
           end
@@ -34,7 +34,9 @@ return {
         'rafamadriz/friendly-snippets',
         config = function()
           require('luasnip.loaders.from_vscode').lazy_load()
-          require('luasnip.loaders.from_vscode').lazy_load { paths = { vim.fn.stdpath 'config' .. '/snippets' } }
+          require('luasnip.loaders.from_vscode').lazy_load({
+            paths = { vim.fn.stdpath('config') .. '/snippets' },
+          })
         end,
       },
     },

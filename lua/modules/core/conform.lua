@@ -1,4 +1,4 @@
-local cwd = require 'lib.cwd'
+local cwd = require('lib.cwd')
 local eslint_projects = { 'ecommerce' }
 
 return {
@@ -6,13 +6,13 @@ return {
   lazy = false,
   enabled = function()
     -- avoid formatting files in lazy.nvim managed repos
-    return not cwd.matches { 'lazy' }
+    return not cwd.matches({ 'lazy' })
   end,
   keys = {
     {
       '<leader>cF',
       function()
-        require('conform').format { formatters = { 'injected' }, timeout_ms = 3000 }
+        require('conform').format({ formatters = { 'injected' }, timeout_ms = 3000 })
       end,
       mode = { 'n', 'x' },
       desc = 'Format Injected Langs',
@@ -21,14 +21,14 @@ return {
   config = function()
     local use_eslint = false
     for _, project in ipairs(eslint_projects) do
-      if cwd.matches { project } then
+      if cwd.matches({ project }) then
         use_eslint = true
         break
       end
     end
     local fmt_js = use_eslint and { lsp_format = 'fallback', async = true } or { 'prettier' }
 
-    require('conform').setup {
+    require('conform').setup({
       format_on_save = function()
         return {
           lsp_format = 'fallback',
@@ -63,6 +63,6 @@ return {
           },
         },
       },
-    }
+    })
   end,
 }

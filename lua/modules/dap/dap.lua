@@ -1,7 +1,7 @@
 local function setup_typescript()
-  local dap = require 'dap'
+  local dap = require('dap')
 
-  for _, adapterType in ipairs { 'node', 'chrome', 'msedge' } do
+  for _, adapterType in ipairs({ 'node', 'chrome', 'msedge' }) do
     local pwaType = 'pwa-' .. adapterType
 
     if not dap.adapters[pwaType] then
@@ -34,15 +34,15 @@ local function setup_typescript()
 
   local js_filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' }
 
-  local vscode = require 'dap.ext.vscode'
+  local vscode = require('dap.ext.vscode')
   vscode.type_to_filetypes['node'] = js_filetypes
   vscode.type_to_filetypes['pwa-node'] = js_filetypes
 
   for _, language in ipairs(js_filetypes) do
     if not dap.configurations[language] then
       local runtimeExecutable = nil
-      if language:find 'typescript' then
-        runtimeExecutable = vim.fn.executable 'tsx' == 1 and 'tsx' or 'ts-node'
+      if language:find('typescript') then
+        runtimeExecutable = vim.fn.executable('tsx') == 1 and 'tsx' or 'ts-node'
       end
       dap.configurations[language] = {
         {
@@ -227,8 +227,8 @@ return {
     config = function()
       -- vim.api.nvim_set_hl(0, 'DapStoppedLine', { default = true, link = 'Visual' })
       -- setup dap config by VsCode launch.json file
-      local vscode = require 'dap.ext.vscode'
-      local json = require 'plenary.json'
+      local vscode = require('dap.ext.vscode')
+      local json = require('plenary.json')
       vscode.json_decode = function(str)
         return vim.json.decode(json.json_strip_comments(str))
       end

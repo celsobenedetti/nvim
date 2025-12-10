@@ -1,6 +1,6 @@
 local M = {
   work = {
-    edge_server = (os.getenv 'WORK' or '') .. '/integrations-private',
+    edge_server = (os.getenv('WORK') or '') .. '/integrations-private',
   },
 }
 

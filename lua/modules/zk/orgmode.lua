@@ -37,10 +37,10 @@ return {
       {
         '<leader>T',
         function()
-          if vim.fn.expand('%'):match '/' then
-            vim.cmd ':w'
+          if vim.fn.expand('%'):match('/') then
+            vim.cmd(':w')
           end
-          vim.cmd ':Org agenda T'
+          vim.cmd(':Org agenda T')
         end,
         desc = 'Org: Today agenda',
       },
@@ -49,7 +49,7 @@ return {
     },
     config = function()
       -- Setup orgmode
-      require('orgmode').setup {
+      require('orgmode').setup({
         org_agenda_files = org_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
         org_default_notes_file = vim.g.notes.ORG_REFILE,
@@ -157,7 +157,7 @@ return {
           'CANC(c)', -- Tasks that have I've decided not to do.
           'DONE(d)', -- 😎👍
         },
-      }
+      })
     end,
   },
 
@@ -170,7 +170,7 @@ return {
       'nvim-telescope/telescope.nvim',
     },
     config = function()
-      require('telescope').load_extension 'orgmode'
+      require('telescope').load_extension('orgmode')
     end,
 
     keys = {

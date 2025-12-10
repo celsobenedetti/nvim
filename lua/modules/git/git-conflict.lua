@@ -6,9 +6,9 @@ return {
     version = '*',
     enabled = is_conflict_enabled,
     config = function()
-      require('git-conflict').setup {
+      require('git-conflict').setup({
         default_mappings = false,
-      }
+      })
       vim.keymap.set(
         'n',
         '<leader>co',

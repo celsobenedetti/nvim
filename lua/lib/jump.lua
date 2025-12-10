@@ -15,21 +15,21 @@ local relative_jump_with_mark = function(key)
 end
 
 M.up = function()
-  relative_jump_with_mark 'k'
+  relative_jump_with_mark('k')
 end
 
 M.down = function()
-  relative_jump_with_mark 'j'
+  relative_jump_with_mark('j')
 end
 
 M.diagnostic_goto = function(next, severity)
   severity = severity and vim.diagnostic.severity[severity] or nil
   return function()
-    vim.diagnostic.jump {
+    vim.diagnostic.jump({
       severity = severity,
       count = next and 1 or -1,
       float = true,
-    }
+    })
   end
 end
 

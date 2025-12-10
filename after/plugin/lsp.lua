@@ -1,14 +1,14 @@
-vim.lsp.enable {
+vim.lsp.enable({
   -- 'eslint',
   'jsonls',
   'lua_ls',
   'vtsls',
   'vue_ls',
-}
+})
 
 vim.lsp.config('vtsls', { filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' } })
 
-vim.diagnostic.config {
+vim.diagnostic.config({
   virtual_lines = false,
   float = {
     source = true,
@@ -16,7 +16,7 @@ vim.diagnostic.config {
   signs = {
     active = true,
   },
-}
+})
 
 -- lsp keymaps
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -26,11 +26,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     local diagnostic_goto = function(next, severity)
       severity = severity and vim.diagnostic.severity[severity] or nil
       return function()
-        vim.diagnostic.jump {
+        vim.diagnostic.jump({
           severity = severity,
           count = next and 1 or -1,
           float = true,
-        }
+        })
       end
     end
 
@@ -48,7 +48,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'LSP: insert mode signature help' })
 
     map('n', 'gv', function()
-      vim.api.nvim_feedkeys(Keys '<c-w>v', 'n', true)
+      vim.api.nvim_feedkeys(Keys('<c-w>v'), 'n', true)
       vim.lsp.buf.definition()
       -- Snacks.picker.lsp_definitions()
     end, { desc = 'Split vertical and go to definition' })

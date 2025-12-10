@@ -14,9 +14,9 @@ return {
     branch = 'main',
     version = false, -- last release is way too old and doesn't work on Windows
     build = function()
-      local TS = require 'nvim-treesitter'
+      local TS = require('nvim-treesitter')
       if not TS.get_installed then
-        Snacks.notify.error 'Please restart Neovim and run `:TSUpdate` to use the `nvim-treesitter` **main** branch.'
+        Snacks.notify.error('Please restart Neovim and run `:TSUpdate` to use the `nvim-treesitter` **main** branch.')
         return
       end
       TS.update(nil, { summary = true })
@@ -57,18 +57,18 @@ return {
       },
     },
     config = function(_, opts)
-      local TS = require 'nvim-treesitter'
+      local TS = require('nvim-treesitter')
 
-      setmetatable(require 'nvim-treesitter.install', {
+      setmetatable(require('nvim-treesitter.install'), {
         __newindex = function(_, k)
           if k == 'compilers' then
             vim.schedule(function()
-              Snacks.notify.error {
+              Snacks.notify.error({
                 'Setting custom compilers for `nvim-treesitter` is no longer supported.',
                 '',
                 'For more info, see:',
                 '- [compilers](https://docs.rs/cc/latest/cc/#compile-time-requirements)',
-              }
+              })
             end)
           end
         end,
@@ -76,9 +76,9 @@ return {
 
       -- some quick sanity checks
       if not TS.get_installed then
-        return Snacks.notify.error 'Please use `:Lazy` and update `nvim-treesitter`'
+        return Snacks.notify.error('Please use `:Lazy` and update `nvim-treesitter`')
       elseif type(opts.ensure_installed) ~= 'table' then
-        return Snacks.notify.error '`nvim-treesitter` opts.ensure_installed must be a table'
+        return Snacks.notify.error('`nvim-treesitter` opts.ensure_installed must be a table')
       end
 
       -- setup treesitter
@@ -99,7 +99,7 @@ return {
     'nvim-treesitter/nvim-treesitter-context',
     event = 'VeryLazy',
     opts = function()
-      local tsc = require 'treesitter-context'
+      local tsc = require('treesitter-context')
       Snacks.toggle({
         name = 'Treesitter Context',
         get = tsc.enabled,
@@ -110,7 +110,7 @@ return {
             tsc.disable()
           end
         end,
-      }):map '<leader>ut'
+      }):map('<leader>ut')
       return { mode = 'cursor', max_lines = 3 }
     end,
   },

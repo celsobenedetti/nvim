@@ -1,5 +1,5 @@
 local exclude = { '*.org_archive' }
-local cwd = require 'lib.cwd'
+local cwd = require('lib.cwd')
 
 return {
   'folke/snacks.nvim',
@@ -46,14 +46,14 @@ return {
         list = {
           keys = {
             ['ZZ'] = function()
-              vim.cmd 'wqa'
+              vim.cmd('wqa')
             end,
           },
         },
       },
       actions = {
         flash = function(picker)
-          require('flash').jump {
+          require('flash').jump({
             pattern = '^',
             label = { after = { 0, 0 } },
             search = {
@@ -68,7 +68,7 @@ return {
               local idx = picker.list:row2idx(match.pos[1])
               picker.list:_move(idx, true, true)
             end,
-          }
+          })
         end,
       },
     },

@@ -45,8 +45,8 @@ return {
     },
 
     config = function(_, opts)
-      local overseer = require 'overseer'
-      local edge_server = require 'config.overseer.edge-server'
+      local overseer = require('overseer')
+      local edge_server = require('config.overseer.edge-server')
 
       overseer.setup(opts)
       overseer.register_template(edge_server.test)

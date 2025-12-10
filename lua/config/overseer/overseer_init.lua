@@ -1,16 +1,16 @@
 vim.g.mapleader = ' '
 vim.g.performance = true
 vim.o.background = 'dark'
-require 'config.lazy'
-require 'config.globals'
+require('config.lazy')
+require('config.globals')
 
 local omarchy_colorscheme = require('lib.colors').omarchy_colorscheme()
 local colorscheme = omarchy_colorscheme.colorscheme
 local colorscheme_plugin = omarchy_colorscheme.colorscheme_plugin
 
-print(vim.inspect { colorscheme_plugin })
+print(vim.inspect({ colorscheme_plugin }))
 
-require('lazy').setup {
+require('lazy').setup({
   spec = {
     colorscheme_plugin,
     { import = 'modules.overseer' },
@@ -40,9 +40,9 @@ require('lazy').setup {
       },
     },
   },
-}
+})
 
 vim.cmd.colorscheme(colorscheme)
 
-require 'config.sensible'
-require 'lib.modules.transparency'
+require('config.sensible')
+require('lib.modules.transparency')

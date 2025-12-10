@@ -4,9 +4,9 @@ return {
     enabled = vim.g.incline,
     dependencies = { { 'nvim-mini/mini.icons', config = true } },
     config = function()
-      local helpers = require 'incline.helpers'
-      local devicons = require 'nvim-web-devicons'
-      require('incline').setup {
+      local helpers = require('incline.helpers')
+      local devicons = require('nvim-web-devicons')
+      require('incline').setup({
         window = {
           padding = 0,
           margin = { horizontal = 0 },
@@ -33,7 +33,7 @@ return {
             -- guibg = '#44406e',
           }
         end,
-      }
+      })
     end,
     event = 'VeryLazy',
   },

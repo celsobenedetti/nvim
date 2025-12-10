@@ -1,5 +1,5 @@
-local strings = require 'lib.strings'
-local visual = require 'lib.visual'
+local strings = require('lib.strings')
+local visual = require('lib.visual')
 
 return {
   {
@@ -67,12 +67,12 @@ return {
       -- stylua: ignore end
     },
     cond = function()
-      if require('lib.cwd').matches { 'journals' } then
+      if require('lib.cwd').matches({ 'journals' }) then
         return false
       end
 
-      local path = vim.fn.expand '%:p'
-      local is_templates = path:find 'templates'
+      local path = vim.fn.expand('%:p')
+      local is_templates = path:find('templates')
 
       return not is_templates
     end,
@@ -89,7 +89,7 @@ return {
         -- TODO: handle archive/notes vaults
         img_folder = 'archives/assets/imgs',
         img_name_func = function()
-          return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
+          return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
         end,
         confirm_img_paste = true,
       }
@@ -178,7 +178,7 @@ return {
       opts.note_path_func = function(spec)
         local f = spec.title or spec.id
         local path = spec.dir / strings.slugify(f)
-        return path:with_suffix '.md'
+        return path:with_suffix('.md')
       end
     end,
     dependencies = {

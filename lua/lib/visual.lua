@@ -25,8 +25,8 @@ local function get_visual_selection_region()
   local bufnr = 0
   local regtype = vim.fn.visualmode()
   local selection = vim.o.selection ~= 'exclusive'
-  local pos1 = vim.fn.getpos 'v'
-  local pos2 = vim.fn.getpos '.'
+  local pos1 = vim.fn.getpos('v')
+  local pos2 = vim.fn.getpos('.')
   pos1, pos2 = options.adjust(pos1, pos2)
   local start = { pos1[2] - 1, pos1[3] - 1 + pos1[4] }
   local finish = { pos2[2] - 1, pos2[3] - 1 + pos2[4] }

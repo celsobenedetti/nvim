@@ -1,6 +1,6 @@
-require 'config.init'
+require('config.init')
 
-require('lazy').setup {
+require('lazy').setup({
   spec = {
     { import = 'modules.core' },
     { import = 'modules.tmux' },
@@ -35,4 +35,4 @@ require('lazy').setup {
       },
     },
   },
-}
+})

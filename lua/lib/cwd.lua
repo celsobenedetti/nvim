@@ -1,11 +1,11 @@
 local M = {}
-local home = os.getenv 'HOME' or '/home/celso'
+local home = os.getenv('HOME') or '/home/celso'
 
 --- returns true if any dirs in cwd match the path
 ---@param paths string[]
 ---@return boolean
 M.matches = function(paths)
-  local file_dir = vim.fn.expand '%:p'
+  local file_dir = vim.fn.expand('%:p')
   for _, path in ipairs(paths) do
     if file_dir:find(path) then
       return true
@@ -24,7 +24,7 @@ M.root = M.cwd
 
 M.current_file = function()
   local cwd = M.cwd()
-  local file = vim.fn.expand '%'
+  local file = vim.fn.expand('%')
   file = file:gsub(cwd .. '/', '')
   file = file:gsub(home, '~')
   return file:gsub('%./', '')

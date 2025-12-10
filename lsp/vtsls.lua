@@ -3,13 +3,13 @@ local lsp = {
   action = setmetatable({}, {
     __index = function(_, action)
       return function()
-        vim.lsp.buf.code_action {
+        vim.lsp.buf.code_action({
           apply = true,
           context = {
             only = { action },
             diagnostics = {},
           },
-        }
+        })
       end
     end,
   }),
@@ -24,10 +24,10 @@ local lsp = {
       arguments = opts.arguments,
     }
     if opts.open then
-      require('trouble').open {
+      require('trouble').open({
         mode = 'lsp_command',
         params = params,
-      }
+      })
     else
       return vim.lsp.buf_request(0, 'workspace/executeCommand', params, opts.handler)
     end
@@ -47,20 +47,20 @@ local config = {
     vim.keymap.set('n', 'gD', function()
       local win = vim.api.nvim_get_current_win()
       local params = vim.lsp.util.make_position_params(win, 'utf-16')
-      lsp.execute {
+      lsp.execute({
         command = 'typescript.goToSourceDefinition',
         arguments = { params.textDocument.uri, params.position },
         open = true,
-      }
+      })
     end, {
       desc = 'Goto Source Definition',
     })
     vim.keymap.set('n', 'gR', function()
-      lsp.execute {
+      lsp.execute({
         command = 'typescript.findAllFileReferences',
         arguments = { vim.uri_from_bufnr(0) },
         open = true,
-      }
+      })
     end, {
       desc = 'File References',
     })
@@ -68,7 +68,7 @@ local config = {
     vim.keymap.set('n', '<leader>ru', lsp.action['source.removeUnused.ts'], { desc = 'Remove unused imports' })
     vim.keymap.set('n', '<leader>fa', lsp.action['source.fixAll.ts'], { desc = 'Fix all diagnostics' })
     vim.keymap.set('n', '<leader>cV', function()
-      lsp.execute { command = 'typescript.selectTypeScriptVersion' }
+      lsp.execute({ command = 'typescript.selectTypeScriptVersion' })
     end, { desc = 'Select TS workspace version' })
   end,
   filetypes = {
@@ -113,7 +113,7 @@ local config = {
 -- add vue plugin if in vue project
 local ok, cwd = pcall(require, 'lib.cwd')
 if ok and cwd.find_file(vim.g.root.vue) then
-  local vue_language_server_path = vim.fn.stdpath 'data'
+  local vue_language_server_path = vim.fn.stdpath('data')
     .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
 
   local vue_plugin = {

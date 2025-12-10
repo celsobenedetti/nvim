@@ -12,7 +12,7 @@ end
 --- get current omarchy colorscheme omarchy
 ---@return { colorscheme: string, colorscheme_plugin: table }
 M.omarchy_colorscheme = function()
-  local themes = require 'plugins.theme'
+  local themes = require('plugins.theme')
 
   local colorscheme = themes[2].opts.colorscheme
   local colorscheme_plugin = themes[1]
