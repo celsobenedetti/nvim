@@ -20,17 +20,18 @@ local diagnostic_goto = function(next, severity)
   end
 end
 
-vim.keymap.set('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
-vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
-vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
-vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
-vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
-vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
-vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
+map('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'LSP: Line Diagnostics' })
+map('n', ']d', diagnostic_goto(true), { desc = 'LSP: Next Diagnostic' })
+map('n', '[d', diagnostic_goto(false), { desc = 'LSP: Prev Diagnostic' })
+map('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'LSP: Next Error' })
+map('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'LSP: Prev Error' })
+map('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'LSP: Next Warning' })
+map('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'LSP: Prev Warning' })
 
-vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { desc = 'Goto Implementation' })
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
-vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
+map('n', 'gi', vim.lsp.buf.implementation, { desc = 'LSP: Goto Implementation' })
+map('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP: Goto Definition' })
+map('n', 'gD', vim.lsp.buf.declaration, { desc = 'LSP: Goto Declaration' })
+map('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'LSP: insert mode signature help' })
 
 map('n', 'gv', function()
   vim.api.nvim_feedkeys(Keys '<c-w>v', 'n', true)
