@@ -1,6 +1,8 @@
+local tool = 'opencode'
+
 return {
-  -- lualine
   {
+
     'folke/sidekick.nvim',
     opts = function()
       local opts = {}
@@ -8,53 +10,15 @@ return {
         enabled = false,
       })
     end,
+    -- stylua: ignore start
     keys = {
-      {
-        '<leader>aa',
-        function()
-          require('sidekick.cli').toggle { name = 'opencode' }
-        end,
-        desc = 'Sidekick Toggle',
-        mode = { 'n', 'x' },
-      },
-      {
-        '<leader>af',
-        function()
-          require('sidekick.cli').send { msg = '{file}', name = 'opencode' }
-        end,
-        desc = 'Send File',
-      },
-      {
-        '<leader>at',
-        function()
-          require('sidekick.cli').send { msg = '{this}', name = 'opencode' }
-        end,
-        mode = { 'n' },
-        desc = 'Send This',
-      },
-      {
-        '<leader>at',
-        function()
-          require('sidekick.cli').send { msg = '{selection}', name = 'opencode' }
-        end,
-        mode = { 'x' },
-        desc = 'Send Visual Selection',
-      },
-      {
-        '<leader>ad',
-        function()
-          require('sidekick.cli').close()
-        end,
-        desc = 'Detach a CLI Session',
-      },
-      {
-        '<leader>ap',
-        function()
-          require('sidekick.cli').prompt { name = 'opencode' }
-        end,
-        mode = { 'n', 'x' },
-        desc = 'Sidekick Select Prompt',
-      },
+      { '<leader>aa', function() require('sidekick.cli').toggle { name = tool } end, desc = 'Sidekick Toggle', mode = { 'n', 'x' }, },
+      { '<leader>af', function() require('sidekick.cli').send { msg = '{file}', name = tool } end, desc = 'Send File', },
+      { '<leader>at', function() require('sidekick.cli').send { msg = '{this}', name = tool } end, mode = { 'n' }, desc = 'Send This', },
+      { '<leader>at', function() require('sidekick.cli').send { msg = '{selection}', name = tool } end, mode = { 'x' }, desc = 'Send Visual Selection', },
+      { '<leader>ad', function() require('sidekick.cli').close() end, desc = 'Detach a CLI Session', },
+      { '<leader>ap', function() require('sidekick.cli').prompt { name = tool } end, mode = { 'n', 'x' }, desc = 'Sidekick Select Prompt', },
+    -- stylua: ignore end
     },
   },
   {

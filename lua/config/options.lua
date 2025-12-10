@@ -14,14 +14,11 @@ vim.g.eslint_autoformat = true
 
 vim.o.background = 'dark'
 vim.o.winborder = 'rounded'
-vim.g.noice = false
-vim.g.bufferline = false
 vim.g.dropbar = false
 
-vim.g.trouble_lualine = false
-
 vim.g.lualine = {
-  enabled = true,
+  enabled = false,
+  trouble = false,
   lsp = false,
 }
 
@@ -29,15 +26,6 @@ vim.g.ai = {
   models = {
     gpt = 'gpt-4.1',
   },
-}
-
-vim.g.animation_duration = 40
-vim.g.delay = 80 -- delay used to accomodate for animations
-
-vim.g.should_center = {
-  on_n = true,
-  on_gg = false,
-  on_ctrl_d = true,
 }
 
 vim.g.grep_ignore = {
@@ -49,7 +37,7 @@ vim.g.web = {
   jira = os.getenv 'WORK_JIRA' or '',
 }
 
-vim.g.below_split_height = 0.5
+vim.g.below_split_height = 0.5 -- TODO: remove this
 
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200

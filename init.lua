@@ -19,9 +19,6 @@ require('lazy').setup {
 
     -- lazyload
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
-
-    -- { import = 'lib.plugins.performance' },
-    -- { import = 'lib.plugins.disable' },
   },
   defaults = {
     lazy = false,

@@ -2,6 +2,7 @@ if os.getenv 'PERF' == 'true' then
   vim.g.performance = true
 end
 
+---@diagnostic disable-next-line: lowercase-global
 map = vim.keymap.set
 
 Keys = function(str)
