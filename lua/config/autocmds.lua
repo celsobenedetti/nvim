@@ -56,3 +56,14 @@ vim.api.nvim_create_autocmd('FileType', {
     end)
   end,
 })
+
+-- stylua: ignore start
+-- Macros
+local macros = augroup 'macros'
+vim.api.nvim_create_autocmd('RecordingEnter', { group = macros, callback = function()
+    Snacks.notify.warn ('started recording' , {title ="Macro"})
+end })
+vim.api.nvim_create_autocmd('RecordingLeave', { group = macros, callback = function()
+    Snacks.notify.info ('recording done ✔️', {tlte ="Macro"})
+end })
+-- stylua ignore end

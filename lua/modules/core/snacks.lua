@@ -8,6 +8,7 @@ return {
     terminal = { enabled = true },
     words = { enabled = true },
     notify = { enabled = true },
+    indent = { enabled = true },
 
     notifier = {
       enabled = true,
@@ -73,28 +74,10 @@ return {
     },
   },
   keys = {
-    {
-      '<c-_>',
-      function()
-        Snacks.terminal(nil, { cwd = cwd.root() })
-      end,
-      desc = 'Terminal (Root Dir)',
-      mode = { 'n', 't' },
-    },
-    {
-      '<leader>no',
-      function()
-        Snacks.picker.notifications()
-      end,
-      desc = 'Notification History',
-    },
-    {
-      '<leader>rg',
-      function()
-        Snacks.picker.grep()
-      end,
-      desc = 'Grep',
-    },
+    -- stylua: ignore start
+    { '<c-_>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
+    { '<leader>no', function() Snacks.picker.notifications() end, desc = 'Notification History', },
+    { '<leader>rg', function() Snacks.picker.grep() end, desc = 'Grep', },
     {
       '<leader>dd',
       function()
