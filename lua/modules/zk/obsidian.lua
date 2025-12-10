@@ -6,7 +6,7 @@ return {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
-    lazy = true,
+    ft = { 'org' },
     keys = {
     -- stylua: ignore start
       { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.notes.NOTES}) end, desc = "Grep through notes", },
@@ -18,6 +18,7 @@ return {
       -- { '<leader>ot', ':ObsidianTags<CR>' },
       { '<leader>ch', ':Obsidian check<CR>' },
       { '<leader>oR', ':Obsidian rename<CR>' },
+      { '<leader>toc', ':Obsidian toc<CR>' },
 
       {
         '<leader>n',

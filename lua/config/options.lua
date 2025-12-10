@@ -5,12 +5,13 @@ vim.opt.spelllang = { 'en', 'pt' }
 vim.g.supermaven = true
 vim.g.completion = true
 vim.g.performance = vim.g.performance or false
-vim.o.relativenumber = false
 vim.g.eslint_autoformat = true
+vim.g.incline = true -- tabs
 
 vim.o.background = 'dark'
 vim.o.winborder = 'rounded'
-vim.g.incline = true
+vim.o.cmdheight = 0 -- Height of the command bar
+vim.o.relativenumber = false
 
 vim.g.lualine = {
   enabled = false,
@@ -47,7 +48,6 @@ vim.opt.swapfile = false
 vim.opt.tabstop = 4 -- Number of spaces tabs count for
 vim.opt.shiftwidth = 4 -- Size of an indent - this seems to affect conform
 
-vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.spellcapcheck = ''
 
 vim.opt.autowrite = true -- Enable auto write
