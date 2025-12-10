@@ -1,12 +1,15 @@
 local cwd = require('lib.cwd')
 local eslint_projects = { 'ecommerce' }
 
+local ignore_dirs = {
+  'lazy', -- avoid formatting files in lazy.nvim managed repos
+}
+
 return {
   'stevearc/conform.nvim',
   lazy = false,
   enabled = function()
-    -- avoid formatting files in lazy.nvim managed repos
-    return not cwd.matches({ 'lazy' })
+    return not cwd.matches(ignore_dirs)
   end,
   keys = {
     {
@@ -30,6 +33,10 @@ return {
 
     require('conform').setup({
       format_on_save = function()
+        if not vim.g.autoformat then
+          return nil
+        end
+
         return {
           lsp_format = 'fallback',
           timeout_ms = 500,

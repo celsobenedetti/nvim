@@ -20,6 +20,12 @@ local fold = require('lib.fold')
 map('n', 'h', fold.h, { desc = 'h: move left or fold' })
 map('n', 'l', fold.l, { desc = 'l: move right and unfold' })
 
+-- toggles
+local toggle = require('lib.toggle')
+map('n', '<leader>tc', toggle.completion, { desc = 'toggle: completion' })
+map('n', '<leader>ts', toggle.supermaven, { desc = 'toggle: supermaven' })
+map('n', '<leader>tf', toggle.autoformat, { desc = 'toggle: autoformat' })
+
 map('n', '<leader>re', function()
   vim.cmd(':w')
   vim.cmd(':e! %')
@@ -53,3 +59,10 @@ map('n', '<leader>B', function()
   end
   vim.defer_fn(conform.format, 500)
 end, { desc = 'Run current line as bash command' })
+
+map({ 'n', 'x', 'v' }, '<leader>sw', function()
+  Snacks.picker.grep_word()
+end, { desc = 'Visual selection or word (Root Dir)' })
+map({ 'n', 'x', 'v' }, '<leader>sW', function()
+  Snacks.picker.grep_word({ root = false })
+end, { desc = 'Visual selection or word (Root Dir)' })

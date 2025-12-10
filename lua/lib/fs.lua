@@ -19,6 +19,7 @@ M.mv_file = function()
   end
 
   Snacks.picker.pick({
+    title = 'Move file to',
     items = snack_items,
     confirm = function(picker, item)
       picker:close()

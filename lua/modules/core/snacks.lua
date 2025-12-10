@@ -156,8 +156,6 @@ return {
     { '<leader>gf', function() Snacks.picker.git_log_file() end, { desc = 'Git Current File History' }, },
     { '<leader>gl', function() Snacks.picker.git_log { cwd = cwd.root() } end, { desc = 'Git Log' }, },
 
-    { '<leader>sw', function() Snacks.picker.grep_word() end, { desc = 'Visual selection or word (Root Dir)', mode = { 'n', 'x' } }, },
-    { '<leader>sW', function() Snacks.picker.grep_word { root = false } end, { desc = 'Visual selection or word (cwd)', mode = { 'n', 'x' } }, },
     -- stylua: ignore end
   },
 }

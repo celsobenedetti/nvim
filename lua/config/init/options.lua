@@ -4,9 +4,10 @@ vim.g.maplocalleader = '\\'
 vim.opt.spelllang = { 'en', 'pt' }
 vim.g.supermaven = true
 vim.g.completion = true
-vim.g.performance = vim.g.performance or false
+vim.g.autoformat = true
 vim.g.eslint_autoformat = true
 vim.g.incline = true -- tabs
+vim.g.performance = vim.g.performance or false
 
 vim.o.background = 'dark'
 vim.o.winborder = 'rounded'
