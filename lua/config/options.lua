@@ -25,6 +25,27 @@ vim.g.ai = {
   },
 }
 
+-- filetypes to close with q
+vim.g.close_with_q = {
+  'checkhealth',
+  'dap-view',
+  'dbout',
+  'gitsigns-blame',
+  'grug-far',
+  'help',
+  'lspinfo',
+  'neotest-output',
+  'neotest-output-panel',
+  'neotest-summary',
+  'notify',
+  'PlenaryTestPopup',
+  'qf',
+  'spectre_panel',
+  'startuptime',
+  'tsplayground',
+  'vim',
+}
+
 vim.g.grep_ignore = {
   'pnpm-lock.yaml',
   'instascan.min.js',
