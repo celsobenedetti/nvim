@@ -79,6 +79,33 @@ local config = {
     'typescriptreact',
     'vue',
   },
+  settings = {
+    complete_function_calls = true,
+    vtsls = {
+      enableMoveToFileCodeAction = true,
+      autoUseWorkspaceTsdk = true,
+      experimental = {
+        maxInlayHintLength = 30,
+        completion = {
+          enableServerSideFuzzyMatch = true,
+        },
+      },
+    },
+    typescript = {
+      updateImportsOnFileMove = { enabled = 'always' },
+      suggest = {
+        completeFunctionCalls = true,
+      },
+      inlayHints = {
+        enumMemberValues = { enabled = true },
+        functionLikeReturnTypes = { enabled = true },
+        parameterNames = { enabled = 'literals' },
+        parameterTypes = { enabled = true },
+        propertyDeclarationTypes = { enabled = true },
+        variableTypes = { enabled = false },
+      },
+    },
+  },
 }
 
 -- add vue plugin if in vue project
@@ -94,12 +121,10 @@ if ok and cwd.find_file(vim.g.root.vue) then
     configNamespace = 'typescript',
   }
 
-  config.settings = {
-    vtsls = {
-      tsserver = {
-        globalPlugins = {
-          vue_plugin,
-        },
+  config.settings.vtsls = {
+    tsserver = {
+      globalPlugins = {
+        vue_plugin,
       },
     },
   }
