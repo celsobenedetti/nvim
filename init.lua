@@ -36,6 +36,3 @@ require('lazy').setup {
     },
   },
 }
-
-require 'config.lsp'
-require 'config.transparency'

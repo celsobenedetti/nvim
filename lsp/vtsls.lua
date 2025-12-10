@@ -17,7 +17,6 @@ local lsp = {
   ---@class LspCommand: lsp.ExecuteCommandParams
   ---@field open? boolean
   ---@field handler? lsp.Handler
-
   ---@param opts LspCommand
   execute = function(opts)
     local params = {
@@ -103,6 +102,9 @@ local config = {
         parameterTypes = { enabled = true },
         propertyDeclarationTypes = { enabled = true },
         variableTypes = { enabled = false },
+      },
+      tsserver = {
+        maxTsServerMemory = 8192,
       },
     },
   },
