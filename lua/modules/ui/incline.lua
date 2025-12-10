@@ -28,7 +28,6 @@ return {
                   -- guibg = helpers.contrast_color(ft_color),
                 }
               or '',
-            ' ',
             { filename, gui = modified and 'bold,italic' or 'bold' },
             ' ',
             -- guibg = '#44406e',

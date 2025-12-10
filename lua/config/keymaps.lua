@@ -39,3 +39,17 @@ map('n', '<leader>yy', function()
   vim.cmd('silent !wl-copy ' .. file, { silent = true }) -- wayland
   Snacks.notify('Copied to clipboard: ' .. file)
 end, { desc = 'Copy file path to clipboard' })
+
+-- TODO: revise this implementation
+map('n', '<leader>B', function()
+  local conform = require 'conform'
+  local line = vim.fn.getline '.'
+  local web_query = web.get_search_url_from_query(line)
+  if web_query and #web_query > 0 then
+    vim.api.nvim_feedkeys('dd', 'n', true)
+    vim.ui.open(web_query)
+  else
+    vim.api.nvim_feedkeys(Keys 'V!bash<CR>', 'n', true)
+  end
+  vim.defer_fn(conform.format, 500)
+end, { desc = 'Run current line as bash command' })

@@ -39,7 +39,7 @@ return {
             ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
             ['<c-y>'] = { 'yank', mode = { 'n', 'i' } },
             ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
-            ['s'] = { 'flash' },
+            -- ['s'] = { 'flash' },
           },
         },
         list = {
@@ -180,7 +180,7 @@ return {
       desc = 'Explorer Snacks (root dir)',
     },
     {
-      '<leader>fe',
+      '<C-E>',
       function()
         Snacks.explorer.open { exclude = exclude, ignored = true }
       end,

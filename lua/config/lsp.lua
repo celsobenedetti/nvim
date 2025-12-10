@@ -1,5 +1,5 @@
 vim.lsp.enable {
-  'eslint',
+  -- 'eslint',
   'jsonls',
   'lua_ls',
   'vtsls',

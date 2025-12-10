@@ -126,6 +126,12 @@ return {
             target = vim.g.notes.ORG_WORK,
             headline = 'work todo',
           },
+          p = {
+            description = 'purchase',
+            template = '* TODO buy: %? :buy:\n  %U',
+            target = vim.g.notes.ORG_PURCHASES,
+            headline = 'purchases',
+          },
         },
 
         mappings = {

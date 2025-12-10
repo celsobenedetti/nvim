@@ -1,6 +1,12 @@
 return {
   -- editing
-  { 'nvim-mini/mini.ai', version = false, config = true },
+  {
+    'nvim-mini/mini.ai',
+    version = false,
+    config = function()
+      require('mini.ai').setup {}
+    end,
+  },
 
   -- ui
   { 'nvim-mini/mini.hipatterns', version = false, config = true },
