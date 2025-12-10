@@ -1,7 +1,8 @@
 vim.lsp.enable {
+  'eslint',
+  'jsonls',
   'lua_ls',
   'vtsls',
-  'eslint',
 }
 
 --keymaps
