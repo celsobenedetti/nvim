@@ -1,6 +1,6 @@
 local omarchy_colorscheme = require('lib.colors').omarchy_colorscheme()
 
--- this is here simply to prevent these plugins from being cleaned up by LazyVim
+-- this is here simply to prevent these plugins from being cleaned up by lazy.nvim
 return {
   { 'tahayvr/matteblack.nvim', lazy = true, enabled = true },
   { 'EdenEast/nightfox.nvim', lazy = true, enabled = true },

@@ -6,7 +6,7 @@ return {
         '<leader>bC',
         function()
           require('dap').clear_breakpoints()
-          LazyVim.notify 'DAP breakpoints cleared'
+          Snacks.notify.info 'DAP breakpoints cleared'
         end,
         desc = 'DAP: Clear Breakpoints',
       },
