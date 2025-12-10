@@ -14,7 +14,7 @@ vim.g.eslint_autoformat = true
 
 vim.o.background = 'dark'
 vim.o.winborder = 'rounded'
-vim.g.dropbar = false
+vim.g.incline = true
 
 vim.g.lualine = {
   enabled = false,
@@ -31,6 +31,11 @@ vim.g.ai = {
 vim.g.grep_ignore = {
   'pnpm-lock.yaml',
   'instascan.min.js',
+}
+
+--- check root file for specific stack
+vim.g.root = {
+  vue = 'vite.config.ts',
 }
 
 vim.g.web = {

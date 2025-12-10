@@ -1,3 +1,4 @@
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/vtsls.lua
 local lsp = {
   action = setmetatable({}, {
     __index = function(_, action)
@@ -34,7 +35,12 @@ local lsp = {
   end,
 }
 
-return {
+local config = {
+  on_attach = function(client)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
+  -- set keymaps
   on_init = function()
     vim.keymap.set('n', '<leader>ami', lsp.action['source.addMissingImports.ts'], {
       desc = 'Add missing imports',
@@ -66,4 +72,37 @@ return {
       lsp.execute { command = 'typescript.selectTypeScriptVersion' }
     end, { desc = 'Select TS workspace version' })
   end,
+  filetypes = {
+    'typescript',
+    'javascript',
+    'javascriptreact',
+    'typescriptreact',
+    'vue',
+  },
 }
+
+-- add vue plugin if in vue project
+local ok, cwd = pcall(require, 'lib.cwd')
+if ok and cwd.find_file(vim.g.root.vue) then
+  local vue_language_server_path = vim.fn.stdpath 'data'
+    .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
+
+  local vue_plugin = {
+    name = '@vue/typescript-plugin',
+    location = vue_language_server_path,
+    languages = { 'vue' },
+    configNamespace = 'typescript',
+  }
+
+  config.settings = {
+    vtsls = {
+      tsserver = {
+        globalPlugins = {
+          vue_plugin,
+        },
+      },
+    },
+  }
+end
+
+return config

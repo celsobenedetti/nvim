@@ -1,3 +1,4 @@
+-- https://github.com/neovim/nvim-lspconfig/blob/a2bd1cf7b0446a7414aaf373cea5e4ca804c9c69/lsp/eslint.lua
 local customizations = {
   { rule = 'style/*', severity = 'off', fixable = true },
   { rule = 'format/*', severity = 'off', fixable = true },

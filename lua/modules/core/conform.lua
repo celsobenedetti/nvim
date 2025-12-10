@@ -26,13 +26,15 @@ return {
         break
       end
     end
-    local fmt_js = use_eslint and { lsp_format = 'last', async = true } or { 'prettier' }
+    local fmt_js = use_eslint and { lsp_format = 'fallback', async = true } or { 'prettier' }
 
     require('conform').setup {
-      format_on_save = {
-        lsp_format = 'fallback',
-        timeout_ms = 500,
-      },
+      format_on_save = function()
+        return {
+          lsp_format = 'fallback',
+          timeout_ms = 500,
+        }
+      end,
 
       formatters_by_ft = {
         -- markdown = { 'mfmt' },

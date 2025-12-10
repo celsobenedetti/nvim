@@ -3,7 +3,10 @@ vim.lsp.enable {
   'jsonls',
   'lua_ls',
   'vtsls',
+  'vue_ls',
 }
+
+vim.lsp.config('vtsls', { filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' } })
 
 --keymaps
 local diagnostic_goto = function(next, severity)
