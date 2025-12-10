@@ -12,6 +12,7 @@ require('lazy').setup {
     { import = 'modules.editor' },
     { import = 'modules.git' },
     { import = 'modules.overseer' },
+    { import = 'modules.dap' },
     { import = 'modules.omarchy' },
     { import = 'modules.ai' },
     { import = 'modules.ui' },
