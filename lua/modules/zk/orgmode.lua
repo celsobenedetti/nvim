@@ -10,7 +10,7 @@ local function e(file)
   return ':e ' .. file .. '<cr>'
 end
 
-map('n', '<leader>i', e(vim.g.notes.ORG_INDEX), { desc = 'Orgmode index' })
+map('n', '<leader>oi', e(vim.g.notes.ORG_INDEX), { desc = 'Orgmode index' })
 map('n', '<leader>ow', e(vim.g.notes.ORG_WORK), { desc = 'Orgmode work file' })
 map('n', '<leader>or', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
