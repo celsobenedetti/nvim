@@ -10,16 +10,12 @@ require('lazy').setup {
     { import = 'modules.core' },
     { import = 'modules.tmux' },
     { import = 'modules.editor' },
-    { import = 'modules.mini' },
     { import = 'modules.git' },
     { import = 'modules.overseer' },
     { import = 'modules.omarchy' },
     { import = 'modules.ai' },
     { import = 'modules.ui' },
     { import = 'modules.zk' },
-
-    -- lazyload
-    { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },
   },
   defaults = {
     lazy = false,
@@ -30,8 +26,7 @@ require('lazy').setup {
     notify = false, -- notify on update
   }, -- automatically check for plugin updates
   performance = {
-    rtp = {
-      -- disable some rtp plugins
+    rtp = { -- disable some rtp plugins
       disabled_plugins = {
         'gzip',
         'matchit',
