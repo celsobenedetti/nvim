@@ -1,7 +1,8 @@
 vim.lsp.enable({
-  -- 'eslint',
+  'eslint',
   'jsonls',
   'lua_ls',
+  'tailwindcss',
   'vtsls',
   'vue_ls',
 })
