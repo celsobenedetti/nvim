@@ -83,92 +83,6 @@ local function setup_typescript()
     end
   end
 end
---
---
--- return {
---   {
---     'mfussenegger/nvim-dap',
---     keys = {
---       {
---         '<leader>bC',
---         function()
---           require('dap').clear_breakpoints()
---           Snacks.notify.info 'DAP breakpoints cleared'
---         end,
---         desc = 'DAP: Clear Breakpoints',
---       },
---       {
---         '<leader>bL',
---         function()
---           require('dap').list_breakpoints(true)
---         end,
---         desc = 'DAP List Breakpoints',
---       },
---       {
---         '<leader>do',
---         function()
---           require('dap').step_over()
---         end,
---         desc = 'DAP: Step Over',
---       },
---       {
---         '<leader>dO',
---         function()
---           require('dap').step_out()
---         end,
---         desc = 'DAP: Step Out',
---       },
---       -- TODO: figure out how to use this
---       {
---         '<leader>dl',
---         function()
---           require('osv').launch { port = 8086 }
---         end,
---         desc = 'DAP: One step for vimkind launch',
---       },
---       { '<leader>ds', false },
---
---       {
---         '<F5>',
---         function()
---           require('dap').continue()
---         end,
---         desc = 'Run/Continue',
---       },
---     },
---   },
---
---   {
---     'rcarriga/nvim-dap-ui',
---
---     opts = {
---       layouts = {
---         {
---           -- You can change the order of elements in the sidebar
---           elements = {
---             -- Provide IDs as strings or tables with "id" and "size" keys
---             { id = 'scopes', size = 0.25 },
---             { id = 'breakpoints', size = 0.25 },
---             { id = 'stacks', size = 0.25 },
---             { id = 'repl', size = 0.25 },
---             { id = 'watches', size = 0.25 },
---           },
---           size = 40,
---           position = 'left', -- Can be "left" or "right"
---         },
---         -- {
---         --   elements = {
---         --     'repl',
---         --     'console',
---         --   },
---         --   size = 10,
---         --   position = 'bottom', -- Can be "bottom" or "top"
---         -- },
---       },
---     },
---   },
--- }
---
 
 ---@param config {type?:string, args?:string[]|fun():string[]?}
 local function get_args(config)
@@ -201,8 +115,9 @@ return {
       { "<F5>", function() require("dap").continue() end, desc = "Run/Continue" },
       { "<F9>", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
       { "<F10>", function() require("dap").step_over(); vim.cmd("norm zz") end, desc = "Step Over" },
-      { "<F22>", function() require("dap").step_out() end, desc = "Step Out" }, -- shift-f10
+      { "<F22>", function() require("dap").step_out() end, desc = "Step Out (shift + f10)" }, -- shift-f10
 
+      -- TODO: remove these keymaps with "notify please get used to vscode mappings" thing
       { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
       { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
       { "<leader>dc", function() require("dap").continue() end, desc = "Run/Continue" },

@@ -43,7 +43,7 @@ Snacks.toggle.profiler():map("<leader>dpp")
 Snacks.toggle.profiler_highlights():map("<leader>dph")
 -- stylua: ignore end
 
-map('n', '<leader>re', function()
+map('n', '<leader>R', function()
   vim.cmd(':w')
   vim.cmd(':e! %')
 end, { desc = 'write and refresh buffer' })
