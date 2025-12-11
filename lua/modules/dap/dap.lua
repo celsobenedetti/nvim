@@ -110,17 +110,23 @@ return {
     dependencies = {
       { 'theHamsta/nvim-dap-virtual-text', opts = {} },
     },
-    -- stylua: ignore start
     keys = {
+      -- stylua: ignore start
       { "<F5>", function() require("dap").continue() end, desc = "Run/Continue" },
       { "<F9>", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
       { "<F10>", function() require("dap").step_over(); vim.cmd("norm zz") end, desc = "Step Over" },
       { "<F22>", function() require("dap").step_out() end, desc = "Step Out (shift + f10)" }, -- shift-f10
+      -- stylua: ignore end
 
-      -- TODO: remove these keymaps with "notify please get used to vscode mappings" thing
+      -- stylua: ignore start
+      { '<leader>dc', function() Snacks.notify.warn('DAP: please use <F5> instead of <leader>dc', { title = 'VSCode' }) end, desc = 'Run/Continue', },
+      { '<leader>db', function() Snacks.notify.warn('DAP: please use <F9> instead of <leader>db', { title = 'VSCode' }) end, desc = 'Toggle Breakpoint', },
+      { '<leader>do', function() Snacks.notify.warn('DAP: please use <F10> instead of <leader>do', { title = 'VSCode' }) end, desc = 'Step Over', },
+      { '<leader>dO', function() Snacks.notify.warn('DAP: please use <Shift-F10> instead of <leader>dO', { title = 'VSCode' }) end, desc = 'Step Out', },
+      -- stylua: ignore end
+
+      -- stylua: ignore start
       { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
-      { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
-      { "<leader>dc", function() require("dap").continue() end, desc = "Run/Continue" },
       { "<leader>da", function() require("dap").continue({ before = get_args }) end, desc = "Run with Args" },
       { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
       { "<leader>dg", function() require("dap").goto_() end, desc = "Go to Line (No Execute)" },
@@ -128,8 +134,6 @@ return {
       { "<leader>dj", function() require("dap").down() end, desc = "Down" },
       { "<leader>dk", function() require("dap").up() end, desc = "Up" },
       { "<leader>dl", function() require("dap").run_last() end, desc = "Run Last" },
-      { "<leader>dO", function() require("dap").step_out() end, desc = "Step Out" },
-      { "<leader>do", function() require("dap").step_over() end, desc = "Step Over" },
       { "<leader>dP", function() require("dap").pause() end, desc = "Pause" },
       { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL" },
       { "<leader>ds", function() require("dap").session() end, desc = "Session" },

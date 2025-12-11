@@ -18,9 +18,9 @@ return {
       dap = false,
 
       task_list = {
-        -- TODO: wtf are these numbers?
-        -- min_height = { 100, 0.1 },
-        bindings = {
+        -- min_width = {40, 0.1} means "the greater of 40 columns or 10% of total"
+        min_height = { 20, 0.2 },
+        keymaps = {
           ['<C-h>'] = false,
           ['<C-j>'] = false,
           ['<C-k>'] = false,
