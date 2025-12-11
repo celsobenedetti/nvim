@@ -43,14 +43,23 @@ return {
             -- ['s'] = { 'flash' },
           },
         },
-        list = {
-          keys = {
-            ['ZZ'] = function()
-              vim.cmd('wqa')
-            end,
+      },
+
+      sources = {
+        explorer = {
+          auto_close = true,
+          win = {
+            list = {
+              keys = {
+                ['Z'] = function()
+                  vim.cmd('q')
+                end,
+              },
+            },
           },
         },
       },
+
       actions = {
         flash = function(picker)
           require('flash').jump({
@@ -78,6 +87,7 @@ return {
     { '<c-_>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'Notification History', },
     { '<leader>rg', function() Snacks.picker.grep() end, desc = 'Grep', },
+    { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'Grep (all)', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'delete buffer', },
     { '<leader>dot', function() Snacks.picker.files { cwd = '~/.dotfiles', title = '~/.dotfiles', hidden = true } end, desc = 'search dotfiles', },
     { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'search orgifles', },
