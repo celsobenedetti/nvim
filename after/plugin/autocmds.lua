@@ -44,3 +44,14 @@ autocmd('RecordingLeave', {
     Snacks.notify.info('recording done ✔️', { tlte = 'Macro' })
   end,
 })
+
+-- open file in same position it was last closed
+-- https://stackoverflow.com/questions/72826129/in-neovim-how-do-i-get-a-file-to-open-at-the-same-line-number-i-closed-it-at-la#72836352
+vim.api.nvim_create_autocmd('BufReadPost', {
+  pattern = { '*' },
+  callback = function()
+    if vim.fn.line('\'"') > 1 and vim.fn.line('\'"') <= vim.fn.line('$') then
+      vim.cmd('normal! g\'"')
+    end
+  end,
+})
