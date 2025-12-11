@@ -8,6 +8,26 @@ return {
     end,
   },
 
+  {
+    'nvim-mini/mini.snippets',
+    version = false,
+    config = function()
+      local gen_loader = require('mini.snippets').gen_loader
+      require('mini.snippets').setup({
+        snippets = {
+          gen_loader.from_lang(),
+        },
+        mappings = {
+          expand = '<C-l>',
+          jump_next = '<C-l>',
+          jump_prev = '<C-h>',
+          stop = '<C-c>',
+        },
+      })
+    end,
+    dependencies = { 'rafamadriz/friendly-snippets' },
+  },
+
   -- ui
   { 'nvim-mini/mini.hipatterns', version = false, config = true },
   {
