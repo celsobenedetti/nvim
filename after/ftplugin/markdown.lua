@@ -21,15 +21,4 @@ local function fold_frontmatter()
   end)
 end
 
--- VimEnter autocmd should fold all
--- BufRead autocmd should fold frontmatter
-local markdown_group = vim.api.nvim_create_augroup('Markdown', { clear = true })
-local markdown = '*.md'
-vim.api.nvim_create_autocmd('BufEnter', {
-  desc = 'Fold frontmatter when entering markdown file',
-  pattern = markdown,
-  group = markdown_group,
-  callback = function()
-    vim.schedule(fold_frontmatter)
-  end,
-})
+vim.schedule(fold_frontmatter)
