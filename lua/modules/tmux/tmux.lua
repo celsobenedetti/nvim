@@ -22,6 +22,7 @@ vim.cmd('let g:tmux_navigator_no_mappings = 1')
 return {
   {
     'christoomey/vim-tmux-navigator',
+    event = 'VeryLazy',
     keys = {
       {
         '<C-h>',
