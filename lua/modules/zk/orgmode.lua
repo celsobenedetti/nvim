@@ -2,18 +2,18 @@ local highlight = true
 
 -- TODO: extract org config into distinct files
 local org_files = {
-  vim.g.notes.ORG .. '/**/*',
-  vim.g.notes.ORG_REFILE,
+  vim.g.env.notes.ORG .. '/**/*',
+  vim.g.env.notes.ORG_REFILE,
 }
 
 local function e(file)
   return ':e ' .. file .. '<cr>'
 end
 
-map('n', '<leader>oi', e(vim.g.notes.ORG_INDEX), { desc = 'Orgmode index' })
-map('n', '<leader>ow', e(vim.g.notes.ORG_WORK), { desc = 'Orgmode work file' })
-map('n', '<leader>or', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
-map('n', '<leader>rr', e(vim.g.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
+map('n', '<leader>oi', e(vim.g.env.notes.ORG_INDEX), { desc = 'Orgmode index' })
+map('n', '<leader>ow', e(vim.g.env.notes.ORG_WORK), { desc = 'Orgmode work file' })
+map('n', '<leader>or', e(vim.g.env.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
+map('n', '<leader>rr', e(vim.g.env.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
 
 if highlight then
   -- -- set highlights
@@ -52,7 +52,7 @@ return {
       require('orgmode').setup({
         org_agenda_files = org_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
-        org_default_notes_file = vim.g.notes.ORG_REFILE,
+        org_default_notes_file = vim.g.env.notes.ORG_REFILE,
 
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
@@ -123,13 +123,13 @@ return {
           w = {
             description = 'Work task',
             template = '* TODO %? :work:\n  %U',
-            target = vim.g.notes.ORG_WORK,
+            target = vim.g.env.notes.ORG_WORK,
             headline = 'work todo',
           },
           p = {
             description = 'purchase',
             template = '* TODO buy: %? :buy:\n  %U',
-            target = vim.g.notes.ORG_PURCHASES,
+            target = vim.g.env.notes.ORG_PURCHASES,
             headline = 'purchases',
           },
         },

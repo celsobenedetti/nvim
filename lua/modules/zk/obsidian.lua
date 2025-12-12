@@ -9,8 +9,8 @@ return {
     ft = { 'org' },
     keys = {
     -- stylua: ignore start
-      { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.notes.NOTES}) end, desc = "Grep through notes", },
-      { "<leader>zZ", function() Snacks.picker.files({cwd=vim.g.notes.NOTES, title = "notes", }) end, desc = "search notes", },
+      { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.env.notes.NOTES}) end, desc = "Grep through notes", },
+      { "<leader>zZ", function() Snacks.picker.files({cwd=vim.g.env.notes.NOTES, title = "notes", }) end, desc = "search notes", },
       { '<leader>oO', ':Obsidian open<CR>' },
       { '<leader>ob', ':Obsidian backlinks<CR>' },
       { '<leader>od', ':Obsidian dailies<CR>' },
@@ -78,11 +78,11 @@ return {
     end,
     opts = function(_, opts)
       opts.legacy_commands = false
-      opts.new_notes_location = vim.g.notes.INBOX
+      opts.new_notes_location = vim.g.env.notes.INBOX
       opts.workspaces = {
-        { name = 'notes', path = vim.g.notes.NOTES },
-        { name = 'archives', path = vim.g.notes.ARCHIVES },
-        { name = 'zk', path = vim.g.notes.ZK },
+        { name = 'notes', path = vim.g.env.notes.NOTES },
+        { name = 'archives', path = vim.g.env.notes.ARCHIVES },
+        { name = 'zk', path = vim.g.env.notes.ZK },
       }
 
       opts.attachments = {

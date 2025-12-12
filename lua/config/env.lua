@@ -1,4 +1,5 @@
 local M = {
+  WORK = os.getenv('WORK') or '',
   notes = {
     NOTES = os.getenv('NOTES') or '',
     ZK = os.getenv('ZK') or '',

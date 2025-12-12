@@ -12,6 +12,7 @@ return {
         return vim.bo.buftype ~= 'prompt'
           and vim.bo.filetype ~= 'DressingInput'
           and vim.bo.filetype ~= 'OverseerForm'
+          and vim.bo.filetype ~= 'snacks_picker_input'
           and vim.g.completion
       end
 

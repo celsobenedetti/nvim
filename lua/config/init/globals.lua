@@ -9,7 +9,5 @@ Keys = function(str)
   return vim.api.nvim_replace_termcodes(str, false, false, true)
 end
 
-local env = require('config.env') -- NOTES config
-vim.g.env = env
-vim.g.notes = env.notes -- NOTES config
-vim.g.dirs = require('config.dirs') -- NOTES config
+vim.g.env = require('config.env')
+vim.g.dirs = require('config.dirs')

@@ -1,7 +1,7 @@
 local M = {}
 local home = os.getenv('HOME') or '/home/celso'
 
---- returns true if any dirs in cwd match the path
+--- returns true if cwd matches any of the paths
 ---@param paths string[]
 ---@return boolean
 M.matches = function(paths)
@@ -11,7 +11,6 @@ M.matches = function(paths)
       return true
     end
   end
-
   return false
 end
 

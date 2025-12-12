@@ -1,11 +1,18 @@
-vim.lsp.enable({
-  'eslint',
+local lsps = {
+  'gopls',
   'jsonls',
   'lua_ls',
   'tailwindcss',
   'vtsls',
   'vue_ls',
-})
+}
+
+-- FIX: wht not work?
+-- if not require('lib.cwd').matches(vim.g.dirs.disable_eslint_lsp) then
+--   table.insert(lsps, 'eslint')
+-- end
+
+vim.lsp.enable(lsps)
 
 vim.lsp.config('vtsls', { filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' } })
 

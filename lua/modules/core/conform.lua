@@ -1,15 +1,10 @@
 local cwd = require('lib.cwd')
-local eslint_projects = { 'ecommerce' }
-
-local ignore_dirs = {
-  'lazy', -- avoid formatting files in lazy.nvim managed repos
-}
 
 return {
   'stevearc/conform.nvim',
   lazy = false,
   enabled = function()
-    return not cwd.matches(ignore_dirs)
+    return not cwd.matches(vim.g.dirs.dont_format)
   end,
   keys = {
     {
@@ -23,7 +18,7 @@ return {
   },
   config = function()
     local use_eslint = false
-    for _, project in ipairs(eslint_projects) do
+    for _, project in ipairs(vim.g.dirs.format_with_eslint) do
       if cwd.matches({ project }) then
         use_eslint = true
         break

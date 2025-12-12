@@ -1,3 +1,4 @@
+-- TODO: revise this
 return {
   {
     'mfussenegger/nvim-lint',
