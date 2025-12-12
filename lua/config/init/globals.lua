@@ -11,3 +11,4 @@ end
 
 vim.g.env = require('config.env')
 vim.g.dirs = require('config.dirs')
+vim.g.colors = require('config.colors').default

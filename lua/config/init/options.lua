@@ -61,8 +61,6 @@ vim.g.web = {
   jira = os.getenv('WORK_JIRA') or '',
 }
 
-vim.g.below_split_height = 0.5 -- TODO: remove this
-
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200
 vim.opt.swapfile = false

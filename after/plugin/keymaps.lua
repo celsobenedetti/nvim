@@ -1,4 +1,3 @@
--- TODO: table driven config
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save File' })
 
@@ -57,24 +56,16 @@ map({ 'i', 'n', 's' }, '<esc>', function()
   return '<esc>'
 end, { expr = true, desc = 'Escape and Clear hlsearch' })
 
-map('n', '<leader>yy', function()
+map('n', 'gy', function()
   local file = vim.fn.expand('%:p')
   vim.cmd('silent !wl-copy ' .. file, { silent = true }) -- wayland
   Snacks.notify('Copied to clipboard: ' .. file)
 end, { desc = 'Copy file path to clipboard' })
 
--- TODO: revise this implementation
 map('n', '<leader>B', function()
   local conform = require('conform')
-  local line = vim.fn.getline('.')
-  local web_query = web.get_search_url_from_query(line)
-  if web_query and #web_query > 0 then
-    vim.api.nvim_feedkeys('dd', 'n', true)
-    vim.ui.open(web_query)
-  else
-    vim.api.nvim_feedkeys(Keys('V!bash<CR>'), 'n', true)
-  end
-  vim.defer_fn(conform.format, 500)
+  vim.cmd('.!bash')
+  vim.schedule(conform.format)
 end, { desc = 'Run current line as bash command' })
 
 map({ 'n', 'x', 'v' }, '<leader>sw', function()

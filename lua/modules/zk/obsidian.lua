@@ -138,40 +138,7 @@ return {
           -- Insert a link to the selected note.
           insert_link = '<C-l>',
         },
-        -- tag_mappings = {
-        --   -- Add tag(s) to current note.
-        --   tag_note = '<C-x>',
-        --   -- Insert a tag at the current location.
-        --   insert_tag = '<C-l>',
-        -- },
-        -- tag_mappings = {
-        --   -- Add tag(s) to current note.
-        --   tag_note = '<C-x>',
-        --   -- Insert a tag at the current location.
-        --   insert_tag = '<C-l>',
-        -- },
       }
-
-      -- -- TODO: costumize frontmatter fucntion so we don't care about frontmatter for certain files
-      -- opts.note_frontmatter_func = function(note)
-      --   local frontmatter = {
-      --     id = note.id,
-      --     aliases = note.aliases,
-      --     title = note.title,
-      --     date = note.date,
-      --   }
-      --
-      --   if note.tags ~= nil and not vim.tbl_isempty(note.tags) then
-      --     frontmatter.tags = note.tags
-      --   end
-      --
-      --   if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-      --     for k, v in pairs(note.metadata) do
-      --       frontmatter[k] = v
-      --     end
-      --   end
-      --   return frontmatter
-      -- end
 
       ---@param spec { id: string, dir: obsidian.Path, title: string|? }
       ---@return string|obsidian.Path The full path to the new note.

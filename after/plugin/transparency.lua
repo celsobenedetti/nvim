@@ -54,7 +54,7 @@ vim.api.nvim_set_hl(0, 'GitSignsDelete', { bg = 'none', fg = colors.get_color('G
 -- vim.api.nvim_set_hl(0, 'DiagnosticSignError', { bg = 'none', fg = colors.get_color('DiagnosticSignError', 'fg') })
 -- vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = colors.get_color('DiagnosticSignOk', 'fg') })
 
--- vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('TroubleNormal', 'fg') })
+vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('TroubleNormal', 'fg') })
 -- vim.api.nvim_set_hl(0, 'TroubleCount', { bg = 'none', fg = colors.get_color('TroubleCount', 'fg') })
 --
 -- vim.api.nvim_set_hl(0, 'FloatShadow', { bg = 'none', fg = colors.get_color('FloatShadow', 'fg') })

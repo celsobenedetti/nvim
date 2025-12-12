@@ -105,16 +105,16 @@ return {
     { '<leader>sc', function() Snacks.picker.commands() end, desc = 'Commands', },
     { '<leader>sC', function() Snacks.picker.command_history() end, desc = 'Command History', },
     { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'References', },
-    { '<leader>ff', function() Snacks.picker.files { hidden = require('lib.cwd').matches { 'dotfiles' } } end, desc = 'Find Files (Root Dir)', },
-    { '<leader>,', function() Snacks.picker.buffers() end, desc = 'Buffers', },
-    { '<leader>/', function() Snacks.picker.grep() end, desc = 'Grep (Root Dir)', },
-    { '<leader>:', function() Snacks.picker.command_history() end, desc = 'Command History', },
-    { '<leader><space>', function() Snacks.picker.files() end, desc = 'Find Files (Root Dir)', },
-    { '<leader>n', function() Snacks.picker.notifications() end, desc = 'Notification History', },
+
+
     -- -- find
+    { '<leader>,', function() Snacks.picker.buffers() end, desc = 'Buffers', },
     { '<leader>fb', function() Snacks.picker.buffers() end, desc = 'Buffers', },
     { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'Buffers (all)', },
-    { '<leader>ff', function() Snacks.picker.files() end, desc = 'Find Files (Root Dir)', },
+    { '<leader><space>', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader><space>', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
+    { '<leader>ff', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader>ff', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
+    { '<C-p>', function() Snacks.picker.files() end, desc = 'Find Files (Root Dir)', },
+
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
     { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent', },
     { '<leader>fR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'Recent (cwd)', },
@@ -129,7 +129,7 @@ return {
     { '<leader>gp', function() Snacks.picker.gh_pr() end, desc = 'GitHub Pull Requests (open)', },
     { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'GitHub Pull Requests (all)', },
     -- -- Grep
-    { '<leader>sb', function() Snacks.picker.lines() end, desc = 'Buffer Lines', },
+    { '<leader>/', function() Snacks.picker.lines() end, desc = 'Buffer Lines', },
     { '<leader>sB', function() Snacks.picker.grep_buffers() end, desc = 'Grep Open Buffers', },
     { '<leader>sp', function() Snacks.picker.lazy() end, desc = 'Search for Plugin Spec', },
     -- search
@@ -151,16 +151,20 @@ return {
     { '<leader>su', function() Snacks.picker.undo() end, desc = 'Undotree', },
     -- ui
     { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'Colorschemes', },
-    { '<leader>ss', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', },
-    { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O
     { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
+
+    -- set in allacrity
+    { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O
+    { '<leader>ss', function() Snacks.notify.warn('VSCode: please use <C-O> instead of <leader>ss', { title = 'VSCode' }) end, desc = 'Search for Plugin Spec', },
 
     { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'Lazygit (Root Dir)', },
     { '<leader>gG', function() Snacks.lazygit() end, desc = 'Lazygit (cwd)', },
     -- lsp
     { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'Next Reference', },
     { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'Prev Reference', },
+    -- TODO: decide which of these is good
     { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
+    { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
     { 'gB', function() Snacks.gitbrowse();  end, { desc = 'Git Browse (open)' }, },
     { 'gy', function()
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }

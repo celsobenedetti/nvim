@@ -1,6 +1,5 @@
 local highlight = true
 
--- TODO: extract org config into distinct files
 local org_files = {
   vim.g.env.notes.ORG .. '/**/*',
   vim.g.env.notes.ORG_REFILE,

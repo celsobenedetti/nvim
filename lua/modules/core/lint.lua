@@ -28,9 +28,9 @@ return {
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         go = { 'golangcilint' },
-        typescript = { 'eslint' },
-        javascript = { 'eslint' },
-        vue = { 'eslint' },
+        typescript = { 'oxlint' },
+        javascript = { 'oxlint' },
+        vue = { 'oxlint' },
       }
 
       function M.debounce(ms, fn)
