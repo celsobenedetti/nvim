@@ -9,7 +9,7 @@ vim.keymap.set('n', '<C-S-E>', function()
 end, { desc = 'Snacks: explorer' })
 
 map('n', '<C-S-O>', function()
-  Snacks.picker.lsp_symbols({})
+  vim.cmd('Namu symbols')
 end, { desc = 'LSP Symbols' })
 
 map({ 'n', 't' }, '<C-/>', function()

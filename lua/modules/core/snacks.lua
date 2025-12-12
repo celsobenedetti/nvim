@@ -153,7 +153,7 @@ return {
     { '<leader>ws', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
 
     -- set in allacrity
-    { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O
+    -- { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O
     { '<leader>ss', function() Snacks.notify.warn('VSCode: please use <C-O> instead of <leader>ss', { title = 'VSCode' }) end, desc = 'Search for Plugin Spec', },
 
     { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'Lazygit (Root Dir)', },
