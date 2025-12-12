@@ -4,12 +4,31 @@ end
 
 local cwd = require('lib.cwd')
 
-map('n', '<C-S-E>', function()
+vim.keymap.set('n', '<C-S-E>', function()
   Snacks.explorer.open({ exclude = vim.g.ignore.explorer, ignored = true })
 end, { desc = 'Snacks: explorer' })
+
 map('n', '<C-S-O>', function()
   Snacks.picker.lsp_symbols({})
 end, { desc = 'LSP Symbols' })
-map('n', '<C-/>', function()
+
+map({ 'n', 't' }, '<C-/>', function()
   Snacks.terminal(nil, { cwd = cwd.root() })
-end, { desc = 'Terminal (Root Dir)', mode = { 'n', 't' } })
+end, { desc = 'Terminal (Root Dir)' })
+
+-- write and close all buffers, but don't quit neovide
+map({ 'n', 't' }, 'ZZ', function()
+  vim.cmd('wa')
+  Snacks.bufdelete.all()
+  vim.cmd('only')
+end, { desc = 'Terminal (Root Dir)' })
+
+-- paste the same way as the terminal
+vim.keymap.set({ 'n', 'v', 's', 'x', 'o', 'i', 'l', 'c', 't' }, '<C-S-v>', function()
+  vim.api.nvim_paste(vim.fn.getreg('+'), true, -1)
+end, { noremap = true, silent = true })
+
+vim.g.neovide_padding_top = 1
+vim.g.neovide_padding_bottom = 0
+vim.g.neovide_padding_right = 1
+vim.g.neovide_padding_left = 1

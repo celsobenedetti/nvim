@@ -92,7 +92,7 @@ return {
     { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'search orgifles', },
     { '<leader>fn', function() Snacks.picker.files { cwd = '~/notes', title = 'All notes' } end, desc = 'search all notes', },
     { '<leader>rs', function() require('persistence').load() end, desc = 'Restore Session', },
-    { '<leader>qS', function() require('persistence').select() end, desc = 'Select Session', },
+    { '<leader>sS', function() require('persistence').select() end, desc = 'Select Session', },
     { '<leader>ql', function() require('persistence').load { last = true } end, desc = 'Restore Last Session', },
     { '<leader>qd', function() require('persistence').stop() end, desc = "Don't Save Current Session", },
     { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
@@ -150,7 +150,7 @@ return {
     { '<leader>su', function() Snacks.picker.undo() end, desc = 'Undotree', },
     -- ui
     { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'Colorschemes', },
-    { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
+    { '<leader>ws', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
 
     -- set in allacrity
     { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O

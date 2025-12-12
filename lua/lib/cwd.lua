@@ -1,5 +1,4 @@
 local M = {}
-local home = os.getenv('HOME') or '/home/celso'
 
 --- returns true if cwd matches any of the paths
 ---@param paths string[]
@@ -22,11 +21,7 @@ end
 M.root = M.cwd
 
 M.current_file = function()
-  local cwd = M.cwd()
-  local file = vim.fn.expand('%')
-  file = file:gsub(cwd .. '/', '')
-  file = file:gsub(home, '~')
-  return file:gsub('%./', '')
+  return vim.fn.expand('%:.')
 end
 
 --- returns true if the file is found in cwd

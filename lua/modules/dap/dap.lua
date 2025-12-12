@@ -114,7 +114,7 @@ return {
       -- stylua: ignore start
       { "<F5>", function() require("dap").continue() end, desc = "Run/Continue" },
       { "<F9>", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
-      { "<F10>", function() require("dap").step_over(); vim.cmd("norm zz") end, desc = "Step Over" },
+      { "<F10>", function() require("dap").step_over(); vim.defer_fn(function () vim.cmd("norm zz")end, 100) end, desc = "Step Over" },
       { "<F22>", function() require("dap").step_out() end, desc = "Step Out (shift + f10)" }, -- shift-f10
       -- stylua: ignore end
 

@@ -63,3 +63,7 @@ vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('Tr
 --
 -- vim.api.nvim_set_hl(0, 'FloatShadow', { bg = 'none', fg = colors.get_color('FloatShadow', 'fg') })
 -- vim.api.nvim_set_hl(0, 'FloatShadowThrough', { bg = 'none', fg = colors.get_color('FloatShadowThrough', 'fg') })
+--{ {     group = "PmenuSbar",     hl = {       bg = "#FFFAF3"     }   } }
+vim.api.nvim_set_hl(0, 'PmenuSbar', { bg = 'none', fg = colors.get_color('PmenuSbar', 'fg') })
+vim.api.nvim_set_hl(0, 'WinBarNC', { bg = 'none', fg = colors.get_color('WinBarNC', 'fg') })
+vim.api.nvim_set_hl(0, 'WinBar', { bg = 'none', fg = colors.get_color('WinBar', 'fg') })
