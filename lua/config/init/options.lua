@@ -47,9 +47,14 @@ vim.g.close_with_q = {
   'vim',
 }
 
-vim.g.grep_ignore = {
-  'pnpm-lock.yaml',
-  'instascan.min.js',
+vim.g.ignore = {
+  grep = {
+    'pnpm-lock.yaml',
+    'instascan.min.js',
+  },
+  explorer = {
+    '*.org_archive',
+  },
 }
 
 --- check root file for specific stack
