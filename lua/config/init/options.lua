@@ -2,16 +2,18 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
 vim.opt.spelllang = { 'en', 'pt' }
+vim.g.performance = vim.g.performance or false
+
 vim.g.supermaven = true
 vim.g.completion = true
 vim.g.autoformat = true
 vim.g.eslint_autoformat = true
-vim.g.incline = true -- tabs
-vim.g.performance = vim.g.performance or false
+vim.g.dropbar = false
+vim.g.incline = not vim.g.dropbar
 
 vim.o.background = 'dark'
 vim.o.winborder = 'rounded'
-vim.o.cmdheight = 0 -- Height of the command bar
+vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
 
 vim.g.lualine = {
@@ -108,7 +110,9 @@ vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
 vim.opt.shortmess:append({ W = true, I = true, c = true, C = true })
 vim.opt.showmode = false -- Dont show mode since we have a statusline
+vim.opt.statusline = '%!v:lua.MyStatusLine()'
 vim.opt.sidescrolloff = 8 -- Columns of context
+
 vim.opt.signcolumn = 'yes' -- Always show the signcolumn, otherwise it would shift the text each time
 vim.opt.smartcase = true -- Don't ignore case with capitals
 vim.opt.smartindent = true -- Insert indents automatically
