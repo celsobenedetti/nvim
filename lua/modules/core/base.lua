@@ -2,8 +2,8 @@
 
 return {
   -- core plugins
-  { 'wakatime/vim-wakatime' }, -- code time tracking goodness
   { 'neovim/nvim-lspconfig' }, -- install lspconfig through lazy.nvim
+  { 'wakatime/vim-wakatime' }, -- code time tracking goodness
 
   -- json/yaml schema store
   { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } },

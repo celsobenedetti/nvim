@@ -9,6 +9,6 @@ return {
     'ecommerce',
   },
   disable_eslint_lsp = {
-    'integrations-private',
+    'integrations',
   },
 }

@@ -1,20 +1,14 @@
+local cwd = require('lib.cwd')
+
 local lsps = {
   'gopls',
+  'eslint',
   'jsonls',
   'lua_ls',
   'tailwindcss',
   'vtsls',
   'vue_ls',
 }
-
--- FIX: wht not work?
--- if not require('lib.cwd').matches(vim.g.dirs.disable_eslint_lsp) then
---   table.insert(lsps, 'eslint')
--- end
-
-vim.lsp.enable(lsps)
-
-vim.lsp.config('vtsls', { filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' } })
 
 vim.diagnostic.config({
   virtual_lines = false,
@@ -62,3 +56,5 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, { desc = 'Split vertical and go to definition' })
   end,
 })
+
+vim.lsp.enable(lsps)

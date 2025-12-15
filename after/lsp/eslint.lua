@@ -22,11 +22,13 @@ return {
     workingDirectories = { mode = 'auto' },
     format = vim.g.eslint_autoformat,
   },
-  on_attach = function(client, bufnr)
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      buffer = bufnr,
-      command = 'LspEslintFixAll',
-    })
+  root_dir = function(bufnr, on_dir)
+    if require('lib.cwd').matches(vim.g.dirs.disable_eslint_lsp) then
+      return
+    end
+    local root_markers = { 'package.json', 'pnpm-lock.yaml', '.git' }
+    local project_root = vim.fs.root(bufnr, root_markers) or vim.fn.getcwd() -- We fallback to the current working directory if no project root is found
+    on_dir(project_root)
   end,
   filetypes = {
     'astro',

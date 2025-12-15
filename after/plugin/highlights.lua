@@ -1,6 +1,10 @@
-vim.api.nvim_set_hl(0, 'MsgArea', { link = '@attribute' })
+vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.subtext })
 
 -------- transparency changes -----------
+vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'TabLine', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'TabLineFill', { bg = 'none' })
+
 if vim.g.neovide then
   return
 end
@@ -38,7 +42,6 @@ vim.api.nvim_set_hl(0, 'NotifyWARNBorder', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NotifyTRACEBorder', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NotifyDEBUGBorder', { bg = 'none' })
 
-vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'LspInlayHint', { bg = 'none', fg = colors.get_color('LspInlayHint', 'fg') })
 vim.api.nvim_set_hl(0, 'CursorLineNr', { bg = 'none', fg = colors.get_color('CursorLineNr', 'fg') })
 vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none', fg = colors.get_color('LineNr', 'fg') })

@@ -1,5 +1,6 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/lsp/vtsls.lua
 local lsp = {
+
   action = setmetatable({}, {
     __index = function(_, action)
       return function()
@@ -35,6 +36,7 @@ local lsp = {
 }
 
 local config = {
+  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
   on_attach = function(client)
     client.server_capabilities.documentFormattingProvider = false
     client.server_capabilities.documentRangeFormattingProvider = false
@@ -71,13 +73,6 @@ local config = {
       lsp.execute({ command = 'typescript.selectTypeScriptVersion' })
     end, { desc = 'Select TS workspace version' })
   end,
-  filetypes = {
-    'typescript',
-    'javascript',
-    'javascriptreact',
-    'typescriptreact',
-    'vue',
-  },
   settings = {
     complete_function_calls = true,
     vtsls = {
