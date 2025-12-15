@@ -28,6 +28,14 @@ vim.g.ai = {
   },
 }
 
+vim.g.icons = {
+  git = {
+    added = '+',
+    deleted = 'x',
+    modified = '~',
+  },
+}
+
 -- filetypes to close with q
 vim.g.close_with_q = {
   'checkhealth',
