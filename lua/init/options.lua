@@ -17,6 +17,7 @@ vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
 
 vim.g.icons = {
+  lsp = ' ',
   git = {
     added = ' +',
     modified = ' ~',
@@ -28,11 +29,12 @@ vim.g.icons = {
   },
   separator = {
     right = '  ',
+    left = '  ',
   },
 }
 
-vim.g.highlight = {
-  subtext = '@attribute',
+vim.g.hl = {
+  subtext = '@keyword.operator',
 }
 
 vim.g.ai = {

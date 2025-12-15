@@ -4,9 +4,9 @@ local M = {}
 ---@param paths string[]
 ---@return boolean
 M.matches = function(paths)
-  local file_dir = vim.fn.expand('%:p')
+  local cwd = M.cwd()
   for _, path in ipairs(paths) do
-    if file_dir:find(path) then
+    if cwd:find(path) then
       return true
     end
   end
