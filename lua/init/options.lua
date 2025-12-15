@@ -16,23 +16,20 @@ vim.o.winborder = 'rounded'
 vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
 
-vim.g.lualine = {
-  enabled = false,
-  trouble = false,
-  lsp = false,
+vim.g.icons = {
+  git = {
+    added = '+',
+    modified = '~',
+    deleted = '-',
+  },
+  dap = {
+    breakpoint = '',
+  },
 }
 
 vim.g.ai = {
   models = {
     gpt = 'gpt-4.1',
-  },
-}
-
-vim.g.icons = {
-  git = {
-    added = '+',
-    deleted = 'x',
-    modified = '~',
   },
 }
 
