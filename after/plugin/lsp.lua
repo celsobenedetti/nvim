@@ -1,14 +1,12 @@
-local cwd = require('lib.cwd')
-
-local lsps = {
-  'gopls',
+vim.lsp.enable({
   'eslint',
+  'gopls',
   'jsonls',
   'lua_ls',
   'tailwindcss',
   'vtsls',
   'vue_ls',
-}
+})
 
 vim.diagnostic.config({
   virtual_lines = false,
@@ -20,11 +18,10 @@ vim.diagnostic.config({
   },
 })
 
--- lsp keymaps
+-- setup keymaps
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
   callback = function(event)
-    --keymaps
     local diagnostic_goto = function(next, severity)
       severity = severity and vim.diagnostic.severity[severity] or nil
       return function()
@@ -56,5 +53,3 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, { desc = 'Split vertical and go to definition' })
   end,
 })
-
-vim.lsp.enable(lsps)

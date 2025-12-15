@@ -13,8 +13,12 @@ vim.g.incline = not vim.g.dropbar
 
 vim.o.background = 'dark'
 vim.o.winborder = 'rounded'
-vim.o.cmdheight = 1 -- Height of the command bar
+vim.o.cmdheight = 0 -- Height of the command bar
 vim.o.relativenumber = false
+
+vim.g.env = require('config.env')
+vim.g.dirs = require('config.dirs')
+vim.g.colors = require('config.colors').default
 
 vim.g.icons = {
   lsp = ' ',

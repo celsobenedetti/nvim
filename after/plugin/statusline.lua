@@ -61,7 +61,7 @@ local _current_lsps = function()
   for _, client in pairs(clients) do
     table.insert(c, client.name)
   end
-  return icons.lsp .. table.concat(vim.fn.reverse(c), ', ')
+  return hl('Title', icons.lsp) .. hl(HIGHLIGHT, table.concat(vim.fn.reverse(c), ', '))
 end
 
 local _current_formatters = function()
@@ -81,7 +81,7 @@ local _current_formatters = function()
     return ''
   end
 
-  return ' ' .. result
+  return hl('Title', ' ') .. hl(HIGHLIGHT, result)
 end
 
 function _G.MyStatusLine()
