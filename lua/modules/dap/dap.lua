@@ -152,6 +152,8 @@ return {
         return vim.json.decode(json.json_strip_comments(str))
       end
 
+      vim.fn.sign_define('DapBreakpoint', { text = '', texthl = '', linehl = '', numhl = '' })
+
       setup_typescript()
     end,
   },

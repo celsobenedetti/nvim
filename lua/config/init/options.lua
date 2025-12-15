@@ -110,7 +110,6 @@ vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
 vim.opt.shortmess:append({ W = true, I = true, c = true, C = true })
 vim.opt.showmode = false -- Dont show mode since we have a statusline
-vim.opt.statusline = '%!v:lua.MyStatusLine()'
 vim.opt.sidescrolloff = 8 -- Columns of context
 
 vim.opt.signcolumn = 'yes' -- Always show the signcolumn, otherwise it would shift the text each time
