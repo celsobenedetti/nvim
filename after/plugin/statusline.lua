@@ -10,7 +10,7 @@ local function _git_branch()
     return ''
   end
 
-  return hl('Title', icons.git.branch) .. hl(HIGHLIGHT, (vim.g.gitsigns_head or ''))
+  return ' ' .. hl('Title', icons.git.branch) .. hl(HIGHLIGHT, (vim.g.gitsigns_head or ''))
 end
 
 local function _current_file()

@@ -165,7 +165,7 @@ return {
     { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
     { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
     { 'gB', function() Snacks.gitbrowse();  end, { desc = 'Git Browse (open)' }, },
-    { 'gy', function()
+    { 'gY', function()
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
     end, { desc = 'Git Browse (copy)', mode = { 'n', 'x' } }, },

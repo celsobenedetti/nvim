@@ -2,6 +2,11 @@ if not vim.g.neovide then
   return
 end
 
+vim.g.neovide_padding_top = 1
+vim.g.neovide_padding_bottom = 0
+vim.g.neovide_padding_right = 0
+vim.g.neovide_padding_left = 5
+
 local cwd = require('lib.cwd')
 
 vim.keymap.set('n', '<C-S-E>', function()
@@ -27,8 +32,3 @@ end, { desc = 'Terminal (Root Dir)' })
 vim.keymap.set({ 'n', 'v', 's', 'x', 'o', 'i', 'l', 'c', 't' }, '<C-S-v>', function()
   vim.api.nvim_paste(vim.fn.getreg('+'), true, -1)
 end, { noremap = true, silent = true })
-
-vim.g.neovide_padding_top = 1
-vim.g.neovide_padding_bottom = 0
-vim.g.neovide_padding_right = 0
-vim.g.neovide_padding_left = 1

@@ -1,5 +1,6 @@
 return {
   'bassamsdata/namu.nvim',
+  cmd = 'Namu',
 
   init = function()
     vim.keymap.set('n', '♠', ':Namu symbols<cr>', {
