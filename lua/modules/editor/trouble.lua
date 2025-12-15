@@ -7,6 +7,17 @@ return {
         lsp = {
           win = { position = 'right' },
         },
+
+        -- more advanced example that extends the lsp_document_symbols
+        symbols = {
+          desc = 'document symbols',
+          mode = 'lsp_document_symbols',
+          focus = true,
+          win = { position = 'right', size = { width = 0.3 } },
+          filter = {
+            ['not'] = { ft = 'lua', kind = 'Package' }, -- remove Package since luals uses it for control flow structures
+          },
+        },
       },
     },
     keys = {

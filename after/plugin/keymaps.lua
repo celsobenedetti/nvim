@@ -74,3 +74,8 @@ end, { desc = 'Visual selection or word (Root Dir)' })
 map({ 'n', 'x', 'v' }, '<leader>sW', function()
   Snacks.picker.grep_word({ root = false })
 end, { desc = 'Visual selection or word (Root Dir)' })
+
+-- gx
+local gx = require('lib.gx')
+map('n', 'gx', gx.normal, { desc = 'gx: open link', buffer = true })
+map('v', 'gx', gx.visual, { desc = 'gx: open link', buffer = true })
