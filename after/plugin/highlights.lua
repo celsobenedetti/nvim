@@ -1,9 +1,11 @@
+vim.api.nvim_set_hl(0, 'MsgArea', { link = '@attribute' })
+
+-------- transparency changes -----------
 if vim.g.neovide then
   return
 end
 
 local colors = require('lib.colors')
--- transparent background
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none' })
@@ -20,7 +22,6 @@ vim.api.nvim_set_hl(0, 'TelescopeNormal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'TelescopePromptTitle', { bg = 'none' })
 
--- transparent notify background
 vim.api.nvim_set_hl(0, 'NotifyINFOBody', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NotifyERRORBody', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NotifyWARNBody', { bg = 'none' })
@@ -39,31 +40,13 @@ vim.api.nvim_set_hl(0, 'NotifyDEBUGBorder', { bg = 'none' })
 
 vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'LspInlayHint', { bg = 'none', fg = colors.get_color('LspInlayHint', 'fg') })
-
 vim.api.nvim_set_hl(0, 'CursorLineNr', { bg = 'none', fg = colors.get_color('CursorLineNr', 'fg') })
 vim.api.nvim_set_hl(0, 'LineNr', { bg = 'none', fg = colors.get_color('LineNr', 'fg') })
 vim.api.nvim_set_hl(0, 'GitSignsAdd', { bg = 'none', fg = colors.get_color('GitSignsAdd', 'fg') })
 vim.api.nvim_set_hl(0, 'GitSignsChange', { bg = 'none', fg = colors.get_color('GitSignsChange', 'fg') })
 vim.api.nvim_set_hl(0, 'GitSignsDelete', { bg = 'none', fg = colors.get_color('GitSignsDelete', 'fg') })
 
--- -- stylua: ignore start
--- vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextHint', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextHint', 'fg') })
--- vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextInfo', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextInfo', 'fg') })
--- vim.api.nvim_set_hl(0, 'TinyInlineDiagnosticVirtualTextWarn', { bg = 'none', fg = colors.get_color('TinyInlineDiagnosticVirtualTextWarn', 'fg') })
--- vim.api.nvim_set_hl(0, 'BlinkCmpMenu', { bg = 'none', fg = colors.get_color('BlinkCmpMenu', 'fg') })
-
--- vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', { bg = 'none', fg = colors.get_color('DiagnosticSignWarn', 'fg') })
--- vim.api.nvim_set_hl(0, 'DiagnosticSignHint', { bg = 'none', fg = colors.get_color('DiagnosticSignHint', 'fg') })
--- vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = colors.get_color('DiagnosticSignInfo', 'fg') })
--- vim.api.nvim_set_hl(0, 'DiagnosticSignError', { bg = 'none', fg = colors.get_color('DiagnosticSignError', 'fg') })
--- vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = colors.get_color('DiagnosticSignOk', 'fg') })
-
 vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('TroubleNormal', 'fg') })
--- vim.api.nvim_set_hl(0, 'TroubleCount', { bg = 'none', fg = colors.get_color('TroubleCount', 'fg') })
---
--- vim.api.nvim_set_hl(0, 'FloatShadow', { bg = 'none', fg = colors.get_color('FloatShadow', 'fg') })
--- vim.api.nvim_set_hl(0, 'FloatShadowThrough', { bg = 'none', fg = colors.get_color('FloatShadowThrough', 'fg') })
---{ {     group = "PmenuSbar",     hl = {       bg = "#FFFAF3"     }   } }
 vim.api.nvim_set_hl(0, 'PmenuSbar', { bg = 'none', fg = colors.get_color('PmenuSbar', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBarNC', { bg = 'none', fg = colors.get_color('WinBarNC', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBar', { bg = 'none', fg = colors.get_color('WinBar', 'fg') })

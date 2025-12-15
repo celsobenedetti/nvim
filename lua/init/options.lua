@@ -18,13 +18,21 @@ vim.o.relativenumber = false
 
 vim.g.icons = {
   git = {
-    added = '+',
-    modified = '~',
-    deleted = '-',
+    added = ' +',
+    modified = ' ~',
+    removed = ' -',
+    branch = ' ',
   },
   dap = {
     breakpoint = '',
   },
+  separator = {
+    right = '  ',
+  },
+}
+
+vim.g.highlight = {
+  subtext = '@attribute',
 }
 
 vim.g.ai = {
