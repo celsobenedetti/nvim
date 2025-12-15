@@ -53,8 +53,22 @@ return {
                 ['Z'] = function()
                   vim.cmd('q')
                 end,
+                ['d'] = 'safe_delete',
               },
             },
+          },
+          actions = {
+            safe_delete = function(picker)
+              local selected = picker:selected({ fallback = true })
+              local is_root = vim.iter(selected):any(function(s)
+                return not s.parent
+              end)
+              if is_root then
+                Snacks.notify.warn("Let's not delete root please")
+                return
+              end
+              picker:action('explorer_del')
+            end,
           },
         },
       },
