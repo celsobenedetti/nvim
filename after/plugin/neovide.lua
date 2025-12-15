@@ -30,5 +30,5 @@ end, { noremap = true, silent = true })
 
 vim.g.neovide_padding_top = 1
 vim.g.neovide_padding_bottom = 0
-vim.g.neovide_padding_right = 1
+vim.g.neovide_padding_right = 0
 vim.g.neovide_padding_left = 1

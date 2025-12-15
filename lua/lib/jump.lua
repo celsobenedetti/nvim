@@ -11,7 +11,7 @@ local relative_jump_with_mark = function(key)
   if count > 1 then
     vim.api.nvim_feedkeys("m'", 'n', true)
   end
-  vim.api.nvim_feedkeys(count .. orig_key, 'n', true)
+  vim.cmd('norm! ' .. orig_key)
 end
 
 M.up = function()
