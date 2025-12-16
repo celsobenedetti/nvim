@@ -1,5 +1,5 @@
 -- Save file
-map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>w<cr><esc>', { desc = 'Save File' })
+map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>silent w<cr><esc>', { desc = 'Save File' })
 
 -- lazy
 map('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
