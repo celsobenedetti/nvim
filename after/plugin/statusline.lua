@@ -127,7 +127,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 })
 
 -- Cache diagnostics and status
-vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'BufEnter', 'LspAttach' }, {
+vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
   callback = function()
     local bufnr = vim.api.nvim_get_current_buf()
     vim.defer_fn(function()
@@ -172,3 +172,16 @@ function _G.MyStatusLine()
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
+
+-- create scheduler to update some cached items periodically
+local INTERVAL = 2000
+local timer = vim.uv.new_timer()
+timer:start(
+  INTERVAL,
+  INTERVAL,
+  vim.schedule_wrap(function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', _diagnostics())
+    vim.api.nvim_buf_set_var(bufnr, 'cached_git_status', _git_status())
+  end)
+)
