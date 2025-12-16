@@ -43,16 +43,16 @@ return {
         -- org = { 'mfmt_org' },
         -- gitcommit = { 'mfmt' },
         --
-        lua = { 'stylua' },
-        sh = { 'shfmt' },
         css = fmt_js,
-        json = fmt_js,
+        go = { 'goimports', 'gofmt' },
         javascript = fmt_js,
+        json = fmt_js,
+        lua = { 'stylua' },
+        odin = { 'odinfmt' },
+        sh = { 'shfmt' },
         typescript = fmt_js,
         typescriptreact = fmt_js,
         vue = fmt_js,
-
-        odin = { 'odinfmt' },
       },
       formatters = {
         goimports = { prepend_args = { '-local', 'github.com/celsobenedetti/' } },
