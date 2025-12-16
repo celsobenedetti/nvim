@@ -1,4 +1,4 @@
----@module base module with general required plugins
+---@module 'base' module with general core plugins
 
 return {
   -- core plugins
@@ -15,6 +15,7 @@ return {
     opts = {
       library = {
         { path = 'snacks.nvim', words = { 'Snacks' } },
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } }, -- Load luvit types when the `vim.uv` word is found
       },
     },
   },
@@ -32,6 +33,28 @@ return {
         function()
           require('persistence').load()
         end,
+        desc = 'Restore Session',
+      },
+      {
+        '<leader>sS',
+        function()
+          require('persistence').select()
+        end,
+        desc = 'Select Session',
+      },
+      {
+        '<leader>ql',
+        function()
+          require('persistence').load({ last = true })
+        end,
+        desc = 'Restore Last Session',
+      },
+      {
+        '<leader>qd',
+        function()
+          require('persistence').stop()
+        end,
+        desc = "Don't Save Current Session",
       },
     },
   },

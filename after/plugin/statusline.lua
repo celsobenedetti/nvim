@@ -157,6 +157,21 @@ local function _build_section(segments, direction)
   return section
 end
 
+-- create scheduler to update some cached items periodically
+local INTERVAL = 2000
+local timer = vim.uv.new_timer()
+if timer then
+  timer:start(
+    INTERVAL,
+    INTERVAL,
+    vim.schedule_wrap(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', _diagnostics())
+      vim.api.nvim_buf_set_var(bufnr, 'cached_git_status', _git_status())
+    end)
+  )
+end
+
 function _G.MyStatusLine()
   local branch = _git_branch()
   local file = vim.b.cached_file or _file()
@@ -172,16 +187,3 @@ function _G.MyStatusLine()
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
-
--- create scheduler to update some cached items periodically
-local INTERVAL = 2000
-local timer = vim.uv.new_timer()
-timer:start(
-  INTERVAL,
-  INTERVAL,
-  vim.schedule_wrap(function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', _diagnostics())
-    vim.api.nvim_buf_set_var(bufnr, 'cached_git_status', _git_status())
-  end)
-)
