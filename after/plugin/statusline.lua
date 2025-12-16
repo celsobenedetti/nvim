@@ -10,7 +10,6 @@ local function _git_branch()
   if not vim.g.gitsigns_head or #vim.g.gitsigns_head == 0 then
     return ''
   end
-
   return ' ' .. hl('Title', icons.git.branch) .. hl(HIGHLIGHT, (vim.g.gitsigns_head or ''))
 end
 
@@ -52,7 +51,7 @@ local function _git_status()
   -- LSP clients attached to buffer
 end
 
-local _current_lsps = function()
+local function compute_lsps()
   local bufnr = vim.api.nvim_get_current_buf()
   local clients = vim.lsp.get_clients({ bufnr = bufnr })
   if next(clients) == nil then
@@ -66,7 +65,7 @@ local _current_lsps = function()
   return hl('Title', icons.lsp) .. hl(HIGHLIGHT, table.concat(vim.fn.reverse(c), ', '))
 end
 
-local _current_formatters = function()
+local function compute_formatters()
   local ok, conform = pcall(require, 'conform')
   if not ok then
     return ''
@@ -108,13 +107,29 @@ function _G.MyStatusLine()
   local branch = _git_branch()
   local git_status = _git_status()
   local file = _current_file()
-  local lsp = _current_lsps()
-  local formatters = _current_formatters()
+  local lsp = vim.b.cached_lsps or compute_lsps()
+  local formatters = vim.b.cached_formatters or compute_formatters()
 
   local left = _build_section({ branch, file .. git_status }, 'left')
   local right = _build_section({ formatters, lsp }, 'right')
 
   return left .. '%=' .. right
 end
+
+-- Cache LSP clients on attach/detach
+vim.api.nvim_create_autocmd({ 'LspAttach', 'LspDetach' }, {
+  callback = function(args)
+    local bufnr = args.buf
+    vim.api.nvim_buf_set_var(bufnr, 'cached_lsps', compute_lsps(bufnr))
+  end,
+})
+
+-- Cache formatters on buffer enter
+vim.api.nvim_create_autocmd('BufEnter', {
+  callback = function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_set_var(bufnr, 'cached_formatters', compute_formatters(bufnr))
+  end,
+})
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
