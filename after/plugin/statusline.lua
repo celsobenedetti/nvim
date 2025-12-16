@@ -85,6 +85,21 @@ local function _formatters()
   return hl('Title', ' ') .. hl(HIGHLIGHT, result)
 end
 
+local function _diagnostics()
+  local count = { 0, 0, 0, 0 } -- error, warn, info, hint
+  for _, diagnostic in pairs(vim.diagnostic.get(vim.api.nvim_get_current_buf())) do
+    count[diagnostic.severity] = count[diagnostic.severity] + 1
+  end
+  local result = ''
+  -- stylua: ignore start
+  if count[1] > 0 then result = result .. hl('DiagnosticError', icons.diagnostics.error .. tostring(count[1]) .. ' ') end
+  if count[2] > 0 then result = result .. hl('DiagnosticWarn', icons.diagnostics.warn .. tostring(count[2]) .. ' ') end
+  if count[3] > 0 then result = result .. hl('DiagnosticInfo', icons.diagnostics.info .. tostring(count[3]) .. ' ') end
+  if count[4] > 0 then result = result .. hl('DiagnosticHint', icons.diagnostics.hint .. tostring(count[4]) .. ' ') end
+  -- stylua: ignore end
+  return result
+end
+
 -- Cache LSP clients on attach/detach
 vim.api.nvim_create_autocmd({ 'LspAttach', 'LspDetach' }, {
   callback = function(args)
@@ -122,12 +137,13 @@ end
 
 function _G.MyStatusLine()
   local branch = _git_branch()
-  local git_status = _git_status()
   local file = vim.b.cached_file or _file()
+  local git_status = _git_status()
+  local diagnostics = _diagnostics()
   local lsp = vim.b.cached_lsps or _lsps()
   local formatters = vim.b.cached_formatters or _formatters()
 
-  local left = _build_section({ branch, file .. git_status }, 'left')
+  local left = _build_section({ branch, file .. git_status, diagnostics }, 'left')
   local right = _build_section({ formatters, lsp }, 'right')
 
   return left .. '%=' .. right

@@ -1,4 +1,4 @@
-require('config.init')
+require('init')
 
 require('lazy').setup({
   spec = {

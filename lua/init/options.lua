@@ -28,6 +28,12 @@ vim.g.icons = {
     removed = ' -',
     branch = ' ',
   },
+  diagnostics = {
+    error = ' ',
+    warn = ' ',
+    hint = ' ',
+    info = ' ',
+  },
   dap = {
     breakpoint = '',
   },
