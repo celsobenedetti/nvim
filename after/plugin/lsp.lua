@@ -16,6 +16,12 @@ vim.diagnostic.config({
   },
   signs = {
     active = true,
+    text = {
+      [vim.diagnostic.severity.ERROR] = vim.g.icons.diagnostics.error,
+      [vim.diagnostic.severity.WARN] = vim.g.icons.diagnostics.warn,
+      [vim.diagnostic.severity.INFO] = vim.g.icons.diagnostics.info,
+      [vim.diagnostic.severity.HINT] = vim.g.icons.diagnostics.hint,
+    },
   },
 })
 

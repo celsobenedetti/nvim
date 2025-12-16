@@ -1,3 +1,12 @@
+---@module 'statusline' home cooked statusline plugin
+---@author Celso Benedetti
+---@license MIT
+---
+--- example:
+---  main  󰢱 after/plugin/statusline.lua +3 ~1 -1   5  1  1                                                       stylua   lua_ls
+---
+--- try to cache as much as possible since the statusline is re-rendered on every keystroke
+
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = require('lib.strings').hl
 
@@ -118,7 +127,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 })
 
 -- Cache diagnostics and status
-vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'BufEnter' }, {
+vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'BufEnter', 'LspAttach' }, {
   callback = function()
     local bufnr = vim.api.nvim_get_current_buf()
     vim.defer_fn(function()

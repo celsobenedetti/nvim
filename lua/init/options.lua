@@ -31,8 +31,8 @@ vim.g.icons = {
   diagnostics = {
     error = ' ',
     warn = ' ',
-    hint = ' ',
     info = ' ',
+    hint = ' ',
   },
   dap = {
     breakpoint = '',
