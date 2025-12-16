@@ -38,14 +38,14 @@ local function _git_status()
 
   local result = ''
   if added > 0 then
-    result = result .. hl('GitSignsAdd', vim.g.icons.git.added .. added)
+    result = result .. hl('GitSignsAdd', icons.git.added .. added)
   end
   if modified > 0 then
     --
-    result = result .. hl('GitSignsChange', vim.g.icons.git.modified .. modified)
+    result = result .. hl('GitSignsChange', icons.git.modified .. modified)
   end
   if removed > 0 then
-    result = result .. hl('GitSignsDelete', vim.g.icons.git.removed .. removed)
+    result = result .. hl('GitSignsDelete', icons.git.removed .. removed)
   end
   return result
   -- LSP clients attached to buffer
@@ -117,6 +117,19 @@ vim.api.nvim_create_autocmd('BufEnter', {
   end,
 })
 
+-- Cache diagnostics and status
+vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'BufEnter' }, {
+  callback = function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    vim.defer_fn(function()
+      pcall(function()
+        vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', _diagnostics())
+        vim.api.nvim_buf_set_var(bufnr, 'cached_git_status', _git_status())
+      end)
+    end, 300)
+  end,
+})
+
 --- builts a statusline section, with its segments separated by the separator
 ---@alias Direction 'left' | 'right'
 ---@param segments string[]
@@ -138,8 +151,8 @@ end
 function _G.MyStatusLine()
   local branch = _git_branch()
   local file = vim.b.cached_file or _file()
-  local git_status = _git_status()
-  local diagnostics = _diagnostics()
+  local git_status = vim.b.cached_git_status or _git_status()
+  local diagnostics = vim.b.cached_diagnostics or _diagnostics()
   local lsp = vim.b.cached_lsps or _lsps()
   local formatters = vim.b.cached_formatters or _formatters()
 
