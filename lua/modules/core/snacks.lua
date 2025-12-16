@@ -47,6 +47,7 @@ return {
       sources = {
         explorer = {
           auto_close = true,
+          ignored = true,
           win = {
             list = {
               keys = {
@@ -113,7 +114,13 @@ return {
     { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Rename File', },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
-    { '<C-E>', function() Snacks.explorer.open { exclude = vim.g.ignore.explorer, ignored = true } end, desc = 'Snacks: explorer', },
+    { '<C-E>', function() 
+      if vim.bo.filetype == "snacks_picker_list" then
+        vim.cmd("q")
+        return
+      end
+      Snacks.picker.resume({source = "explorer", })
+    end, desc = 'Snacks: explorer', },
     { '<leader>en', function() Snacks.explorer.open { cwd = '~/notes' } end, desc = 'Snacks: explorer notes', },
     { '<leader>sc', function() Snacks.picker.commands() end, desc = 'Commands', },
     { '<leader>sC', function() Snacks.picker.command_history() end, desc = 'Command History', },

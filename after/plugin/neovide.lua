@@ -10,7 +10,11 @@ vim.g.neovide_padding_left = 5
 local cwd = require('lib.cwd')
 
 vim.keymap.set('n', '<C-S-E>', function()
-  Snacks.explorer.open({ exclude = vim.g.ignore.explorer, ignored = true })
+  if vim.bo.filetype == 'snacks_picker_list' then
+    vim.cmd('q')
+    return
+  end
+  Snacks.picker.resume('explorer')
 end, { desc = 'Snacks: explorer' })
 
 map('n', '<C-S-O>', function()

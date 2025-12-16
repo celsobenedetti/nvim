@@ -3,6 +3,8 @@ local hl = require('lib.strings').hl
 
 local icons = vim.g.icons
 local HIGHLIGHT = vim.g.hl.subtext
+local LEFT_SEPARATOR = hl(HIGHLIGHT, icons.separator.right)
+local RIGHT_SEPARATOR = hl(HIGHLIGHT, icons.separator.left)
 
 local function _git_branch()
   if not vim.g.gitsigns_head or #vim.g.gitsigns_head == 0 then
@@ -84,6 +86,24 @@ local _current_formatters = function()
   return hl('Title', ' ') .. hl(HIGHLIGHT, result)
 end
 
+--- builts a statusline section, with its segments separated by the separator
+---@alias Direction 'left' | 'right'
+---@param segments string[]
+---@param direction Direction
+local function _build_section(segments, direction)
+  local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
+  local section = ''
+  for i, segment in pairs(segments) do
+    if #segment > 0 then
+      if i > 1 and #section > 0 then
+        section = section .. separator
+      end
+      section = section .. segment
+    end
+  end
+  return section
+end
+
 function _G.MyStatusLine()
   local branch = _git_branch()
   local git_status = _git_status()
@@ -91,18 +111,8 @@ function _G.MyStatusLine()
   local lsp = _current_lsps()
   local formatters = _current_formatters()
 
-  local left_separator = ''
-  if #branch > 0 and #file > 0 then
-    left_separator = hl(HIGHLIGHT, icons.separator.right)
-  end
-
-  local right_separator = ''
-  if #formatters > 0 then
-    right_separator = hl(HIGHLIGHT, icons.separator.left)
-  end
-
-  local left = branch .. left_separator .. file .. git_status
-  local right = formatters .. right_separator .. lsp
+  local left = _build_section({ branch, file .. git_status }, 'left')
+  local right = _build_section({ formatters, lsp }, 'right')
 
   return left .. '%=' .. right
 end
