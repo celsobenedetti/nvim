@@ -110,7 +110,9 @@ return {
     { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Rename File', },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
-    { '<C-E>', function() 
+    { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Explorer Snacks (root dir)', },
+
+    { '<C-E>', function()
       if vim.bo.filetype == "snacks_picker_list" then
         vim.cmd("q")
         return

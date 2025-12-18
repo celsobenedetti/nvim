@@ -31,10 +31,7 @@ map({ 'n', 't' }, 'ZZ', function()
     vim.api.nvim_feedkeys(Keys('ZZ'), 'n', false)
     return
   end
-
   vim.cmd('wa')
-  Snacks.bufdelete.all()
-  vim.cmd('only')
 end, { desc = 'Terminal (Root Dir)' })
 
 -- paste the same way as the terminal

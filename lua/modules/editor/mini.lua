@@ -21,8 +21,7 @@ return {
           expand = '<C-l>',
           jump_next = '<C-l>',
           jump_prev = '<C-h>',
-          -- stop = '<C-c>',
-          stop = '<esc>',
+          stop = '<C-c>',
         },
       })
     end,
@@ -36,6 +35,7 @@ return {
     version = false,
     opts = {
       file = {
+        ['AGENTS.md'] = { glyph = '', hl = 'MiniIconsYellow' },
         ['.eslintrc.js'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
         ['eslint.config.ts'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
         ['.node-version'] = { glyph = '', hl = 'MiniIconsGreen' },

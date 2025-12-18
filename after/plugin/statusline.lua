@@ -86,7 +86,7 @@ local function _formatters()
   for _, formatter in pairs(formatters) do
     table.insert(c, formatter)
   end
-  local result = table.concat(c, ',')
+  local result = table.concat(c, ', ')
   if #result == 0 then
     return ''
   end
