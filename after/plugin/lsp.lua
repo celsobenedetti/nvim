@@ -53,6 +53,7 @@ local diagnostic_goto = function(next, severity)
     })
   end
 end
+
 map('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'LSP: Line Diagnostics' })
 map('n', ']d', diagnostic_goto(true), { desc = 'LSP: Next Diagnostic' })
 map('n', '[d', diagnostic_goto(false), { desc = 'LSP: Prev Diagnostic' })
@@ -60,3 +61,5 @@ map('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'LSP: Next Error' })
 map('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'LSP: Prev Error' })
 map('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'LSP: Next Warning' })
 map('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'LSP: Prev Warning' })
+
+Snacks.toggle.inlay_hints():map('<leader>uh')

@@ -21,7 +21,6 @@ vim.g.dirs = require('config.dirs')
 vim.g.colors = require('config.colors').default
 
 vim.g.icons = {
-  lsp = ' ',
   git = {
     added = ' +',
     modified = ' ~',
@@ -34,17 +33,18 @@ vim.g.icons = {
     info = ' ',
     hint = ' ',
   },
-  dap = {
-    breakpoint = '',
-  },
   separator = {
     right = '  ',
     left = '  ',
   },
+  dap = {
+    breakpoint = '',
+  },
+  lsp = ' ',
 }
 
 vim.g.hl = {
-  subtext = 'Comment',
+  subtext = '@attribute',
 }
 
 vim.g.ai = {

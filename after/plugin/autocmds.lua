@@ -29,22 +29,11 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- Macros
+-- stylua: ignore start
 local macros = augroup('macros')
-vim.api.nvim_create_autocmd('RecordingEnter', {
-  group = macros,
-  callback = function()
-    vim.g.recording_macro = true
-    Snacks.notify.warn('started recording', { title = 'Macro' })
-  end,
-})
-vim.api.nvim_create_autocmd('RecordingLeave', {
-  group = macros,
-  callback = function()
-    vim.g.recording_macro = false
-    Snacks.notify.info('recording done ✔️', { tlte = 'Macro' })
-  end,
-})
+vim.api.nvim_create_autocmd('RecordingEnter', { group = macros, callback = function() vim.g.recording_macro = true end, })
+vim.api.nvim_create_autocmd('RecordingLeave', { group = macros, callback = function() vim.g.recording_macro = false end, })
+-- stylua: ignore end
 
 -- open file in same position it was last closed
 -- https://stackoverflow.com/questions/72826129/in-neovim-how-do-i-get-a-file-to-open-at-the-same-line-number-i-closed-it-at-la#72836352

@@ -109,6 +109,13 @@ local modules = {
     -- stylua: ignore end
     return result
   end,
+
+  _macro = function()
+    if not vim.g.recording_macro then
+      return ''
+    end
+    return hl('MiniStatuslineModeReplace', ' recording macro ')
+  end,
 }
 
 local function setup_caching_and_updating()
@@ -183,9 +190,10 @@ function _G.MyStatusLine()
   local diagnostics = vim.b.cached_diagnostics or modules._diagnostics()
   local lsp = vim.b.cached_lsps or modules._lsps()
   local formatters = vim.b.cached_formatters or modules._formatters()
+  local macro = modules._macro()
 
   local left = _build_section({ branch, file .. git_status, diagnostics }, 'left')
-  local right = _build_section({ formatters, lsp }, 'right')
+  local right = _build_section({ macro, formatters, lsp }, 'right')
 
   return left .. '%=' .. right
 end
