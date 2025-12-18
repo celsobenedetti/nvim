@@ -26,12 +26,13 @@ map({ 'n', 't' }, '<C-/>', function()
 end, { desc = 'Terminal (Root Dir)' })
 
 -- write and close all buffers, but don't quit neovide
-map({ 'n', 't' }, 'ZZ', function()
+map({ 'n' }, 'ZZ', function()
   if vim.bo.filetype == 'markdown' or vim.bo.filetype == 'sidekick_terminal' or vim.bo.filetype == 'gitcommit' then
     vim.api.nvim_feedkeys(Keys('ZZ'), 'n', false)
     return
   end
   vim.cmd('wa')
+  Snacks.bufdelete.all()
 end, { desc = 'Terminal (Root Dir)' })
 
 -- paste the same way as the terminal
