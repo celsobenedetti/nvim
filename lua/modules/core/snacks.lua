@@ -97,6 +97,32 @@ return {
         end,
       },
     },
+
+    dashboard = {
+      enabled = true,
+      preset = {
+        header = '',
+        -- Defaults to a picker that supports `fzf-lua`, `telescope.nvim` and `mini.pick`
+        ---@type fun(cmd:string, opts:table)|nil
+        pick = nil,
+        -- Used by the `keys` section to show keymaps.
+        -- Set your custom keymaps here.
+        -- When using a function, the `items` argument are the default keymaps.
+        ---@type snacks.dashboard.Item[]
+        keys = {
+          {
+            icon = ' ',
+            key = 's',
+            desc = 'select session',
+            action = require('persistence').select,
+          },
+          { icon = ' ', key = 'r', desc = 'recent files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
+          { icon = ' ', key = 'e', desc = 'new file', action = ':ene | startinsert' },
+          { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
+          { icon = ' ', key = 'q', desc = 'quit', action = ':qa' },
+        },
+      },
+    },
   },
   keys = {
     -- stylua: ignore start
