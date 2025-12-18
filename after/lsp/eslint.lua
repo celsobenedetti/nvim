@@ -40,7 +40,7 @@ return {
     'json',
     'jsonc',
     'less',
-    'markdown',
+    -- 'markdown',
     'pcss',
     'postcss',
     'scss',

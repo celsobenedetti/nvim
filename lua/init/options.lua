@@ -44,7 +44,7 @@ vim.g.icons = {
 }
 
 vim.g.hl = {
-  subtext = '@keyword.operator',
+  subtext = 'Comment',
 }
 
 vim.g.ai = {

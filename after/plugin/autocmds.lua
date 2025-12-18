@@ -1,10 +1,9 @@
-local autocmd = vim.api.nvim_create_autocmd
 local function augroup(name)
   return vim.api.nvim_create_augroup('celso_' .. name, { clear = true })
 end
 
 -- Highlight on yank
-autocmd('TextYankPost', {
+vim.api.nvim_create_autocmd('TextYankPost', {
   group = augroup('highlight_yank'),
   callback = function()
     (vim.hl or vim.highlight).on_yank()
@@ -12,7 +11,7 @@ autocmd('TextYankPost', {
 })
 
 -- close some filetypes with <q>
-autocmd('FileType', {
+vim.api.nvim_create_autocmd('FileType', {
   group = augroup('close_with_q'),
   pattern = vim.g.close_with_q,
   callback = function(event)
@@ -32,15 +31,17 @@ autocmd('FileType', {
 
 -- Macros
 local macros = augroup('macros')
-autocmd('RecordingEnter', {
+vim.api.nvim_create_autocmd('RecordingEnter', {
   group = macros,
   callback = function()
+    vim.g.recording_macro = true
     Snacks.notify.warn('started recording', { title = 'Macro' })
   end,
 })
-autocmd('RecordingLeave', {
+vim.api.nvim_create_autocmd('RecordingLeave', {
   group = macros,
   callback = function()
+    vim.g.recording_macro = false
     Snacks.notify.info('recording done ✔️', { tlte = 'Macro' })
   end,
 })
@@ -53,5 +54,14 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     if vim.fn.line('\'"') > 1 and vim.fn.line('\'"') <= vim.fn.line('$') then
       vim.cmd('normal! g\'"')
     end
+  end,
+})
+
+-- diosable comment continuation on different lines
+-- https://neovim.discourse.group/t/how-do-i-prevent-neovim-commenting-out-next-line-after-a-comment-line/3711/7
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    vim.opt_local.formatoptions:remove({ 'r', 'o' })
   end,
 })

@@ -1,12 +1,13 @@
 local strings = require('lib.strings')
 local visual = require('lib.visual')
+local cwd = require('lib.cwd')
 
 return {
   {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
-    ft = { 'org' },
+    lazy = cwd.root == vim.g.env.notes.NOTES,
     keys = {
     -- stylua: ignore start
       { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.env.notes.NOTES}) end, desc = "Grep through notes", },
