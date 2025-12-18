@@ -14,7 +14,7 @@ local create_terminal_buffer = function(name)
 end
 
 map('n', '<C-t>', function()
-  local picker = Snacks.picker.buffers({
+  local result = Snacks.picker.buffers({
     prompt = 'search/create terminal: ',
     filter = {
       filter = function(item)
@@ -25,18 +25,19 @@ map('n', '<C-t>', function()
       local item = picker:current()
       if item then
         return vim.cmd('b ' .. item.buf)
-      else
-        local pattern = picker.finder.filter.pattern or ''
-        local name = pattern ~= '' and pattern or 'Terminal'
-        picker:close()
-        vim.schedule(function()
-          create_terminal_buffer(name)
-        end)
       end
+
+      local pattern = picker.finder.filter.pattern or ''
+      local name = pattern ~= '' and pattern or 'Terminal'
+      picker:close()
+      vim.schedule(function()
+        create_terminal_buffer(name)
+      end)
     end,
   })
 
-  if picker.finder:count() == 0 then
+  if result.finder:count() == 0 then
+    -- if there are no terminals, picker won't even open, so let's prompt
     vim.ui.input({ prompt = 'Create terminal:' }, function(input)
       if input and #input > 0 then
         create_terminal_buffer(input)
@@ -51,5 +52,6 @@ vim.api.nvim_create_autocmd('TermEnter', {
   callback = function()
     vim.opt_local.number = false
     vim.opt_local.relativenumber = false
+    vim.b.term = true
   end,
 })

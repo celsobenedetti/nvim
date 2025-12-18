@@ -5,33 +5,28 @@
 ---  main  󰢱 after/plugin/statusline.lua +3 ~1 -1   5  1  1                                                       stylua   lua_ls
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
-
---------------- globals start -----------------------
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = require('lib.strings').hl
-local HIGHLIGHT = vim.g.hl.subtext
-local LEFT_SEPARATOR = hl(HIGHLIGHT, vim.g.icons.separator.right)
-local RIGHT_SEPARATOR = hl(HIGHLIGHT, vim.g.icons.separator.left)
---------------- globals end -----------------------
 
 local modules = {
   _git_branch = function()
     if not vim.g.gitsigns_head or #vim.g.gitsigns_head == 0 then
       return ''
     end
-    return ' ' .. hl('Title', vim.g.icons.git.branch) .. hl(HIGHLIGHT, (vim.g.gitsigns_head or ''))
+    return ' ' .. hl('Title', vim.g.icons.git.branch) .. hl(vim.g.hl.subtext, (vim.g.gitsigns_head or ''))
   end,
 
   _file = function()
-    local relative_file = vim.fn.expand('%:.')
+    vim.b.relative_file = vim.fn.expand('%:.')
     local icon = ''
     if has_icons then
-      local ft_icon, ft_color = devicons.get_icon(relative_file)
+      local ft_icon, ft_color = devicons.get_icon(vim.b.relative_file)
       if ft_icon then
         icon = hl(ft_color, ft_icon) .. ' '
       end
     end
-    local file = hl(HIGHLIGHT, relative_file)
+
+    local file = hl(vim.g.hl.subtext, vim.b.relative_file)
     return icon .. '' .. file
   end,
 
@@ -71,7 +66,7 @@ local modules = {
     for _, client in pairs(clients) do
       table.insert(c, client.name)
     end
-    return hl('Title', vim.g.icons.lsp) .. hl(HIGHLIGHT, table.concat(vim.fn.reverse(c), ', '))
+    return hl('Title', vim.g.icons.lsp) .. hl(vim.g.hl.subtext, table.concat(vim.fn.reverse(c), ', '))
   end,
 
   _formatters = function()
@@ -91,7 +86,7 @@ local modules = {
       return ''
     end
 
-    return hl('Title', ' ') .. hl(HIGHLIGHT, result)
+    return hl('Title', ' ') .. hl(vim.g.hl.subtext, result)
   end,
 
   _diagnostics = function()
@@ -113,7 +108,14 @@ local modules = {
     if not vim.g.recording_macro then
       return ''
     end
-    return hl('MiniStatuslineModeReplace', ' recording macro ')
+    return hl(vim.g.hl.warn, ' recording macro ')
+  end,
+
+  _terminal = function()
+    if not vim.b.term then
+      return ''
+    end
+    return hl(vim.g.hl.highlighted, '   terminal ')
   end,
 }
 
@@ -169,6 +171,8 @@ end
 ---@param segments string[]
 ---@param direction Direction
 local function _build_section(segments, direction)
+  local LEFT_SEPARATOR = hl(vim.g.hl.subtext, vim.g.icons.separator.right)
+  local RIGHT_SEPARATOR = hl(vim.g.hl.subtext, vim.g.icons.separator.left)
   local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
   local section = ''
   for i, segment in pairs(segments) do
@@ -190,9 +194,10 @@ function _G.MyStatusLine()
   local lsp = vim.b.cached_lsps or modules._lsps()
   local formatters = vim.b.cached_formatters or modules._formatters()
   local macro = modules._macro()
+  local terminal = modules._terminal()
 
   local left = _build_section({ branch, file .. git_status, diagnostics }, 'left')
-  local right = _build_section({ macro, formatters, lsp }, 'right')
+  local right = _build_section({ macro, terminal, formatters, lsp }, 'right')
 
   return left .. '%=' .. right
 end

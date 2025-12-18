@@ -44,7 +44,9 @@ vim.g.icons = {
 }
 
 vim.g.hl = {
-  subtext = '@attribute',
+  subtext = '@lsp.type.parameter.bash',
+  highlighted = 'MiniStatuslineModeOther',
+  warn = 'MiniStatuslineModeReplace',
 }
 
 vim.g.ai = {
