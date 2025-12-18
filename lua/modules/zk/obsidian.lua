@@ -74,80 +74,87 @@ return {
 
       local path = vim.fn.expand('%:p')
       local is_templates = path:find('templates')
+      local has_env = vim.g.env.notes.NOTES
 
-      return not is_templates
+      return has_env and not is_templates
     end,
-    opts = function(_, opts)
-      opts.legacy_commands = false
-      opts.new_notes_location = vim.g.env.notes.INBOX
-      opts.workspaces = {
-        { name = 'notes', path = vim.g.env.notes.NOTES },
-        { name = 'archives', path = vim.g.env.notes.ARCHIVES },
-        { name = 'zk', path = vim.g.env.notes.ZK },
-      }
-
-      opts.attachments = {
-        -- TODO: handle archive/notes vaults
-        img_folder = 'archives/assets/imgs',
-        img_name_func = function()
-          return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
-        end,
-        confirm_img_paste = true,
-      }
-
-      opts.completion = {
-        -- Enables completion using nvim_cmp
-        nvim_cmp = false,
-        -- Enables completion using blink.cmp
-        blink = true,
-        -- Trigger completion at 2 chars.
-        min_chars = 2,
-      }
-      opts.ui = {
-        enable = false,
-        -- checkboxes = {
-        --   [" "] = { char = "󰄱", hl_groupth
-        --   = "ObsidianTodo" },
-        --   [">"] = { char = "", hl_group = "ObsidianRightArrow" },
-        --   ["~"] = { char = "x", hl_group = "ObsidianTilde" },
-        --   ["x"] = { char = "✔", hl_group = "ObsidianDone" },
-        -- },
-      }
-
-      --- @param title string|?
-      --- @param path obsidian.Path|?
-      opts.note_id_func = function(title, path)
-        if title ~= nil then
-          return title
-        end
-
-        if path ~= nil then
-          return path.stem or path.name or path.filename
-        end
-
-        return nil
+    config = function()
+      if not vim.g.env.notes.NOTES then
+        return
       end
 
-      opts.picker = {
-        -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
-        name = 'snacks.pick',
-        -- Optional, configure key mappings for the picker. These are the defaults.
-        -- Not all pickers support all mappings.
-        note_mappings = {
-          -- Create a new note from your query.
-          new = '<C-x>',
-          -- Insert a link to the selected note.
-          insert_link = '<C-l>',
+      require('obsidian').setup({
+        legacy_commands = false,
+        -- new_notes_location = vim.g.env.notes.INBOX,
+        workspaces = {
+          { name = 'notes', path = vim.g.env.notes.NOTES },
+          { name = 'archives', path = vim.g.env.notes.ARCHIVES },
+          { name = 'zk', path = vim.g.env.notes.ZK },
         },
-      }
 
-      ---@param spec { id: string, dir: obsidian.Path, title: string|? }
-      ---@return string|obsidian.Path The full path to the new note.
-      opts.note_path_func = function(spec)
-        local f = spec.title or spec.id
-        local path = spec.dir / strings.slugify(f)
-        return path:with_suffix('.md')
-      end
+        attachments = {
+          -- TODO: handle archive/notes vaults
+          img_folder = 'archives/assets/imgs',
+          img_name_func = function()
+            return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
+          end,
+          confirm_img_paste = true,
+        },
+
+        completion = {
+          -- Enables completion using nvim_cmp
+          nvim_cmp = false,
+          -- Enables completion using blink.cmp
+          blink = true,
+          -- Trigger completion at 2 chars.
+          min_chars = 2,
+        },
+        ui = {
+          enable = false,
+          -- checkboxes = {
+          --   [" "] = { char = "󰄱", hl_groupth
+          --   = "ObsidianTodo" },
+          --   [">"] = { char = "", hl_group = "ObsidianRightArrow" },
+          --   ["~"] = { char = "x", hl_group = "ObsidianTilde" },
+          --   ["x"] = { char = "✔", hl_group = "ObsidianDone" },
+          -- },
+        },
+
+        --- @param title string|?
+        --- @param path obsidian.Path|?
+        note_id_func = function(title, path)
+          if title ~= nil then
+            return title
+          end
+
+          if path ~= nil then
+            return path.stem or path.name or path.filename
+          end
+
+          return 'BUG: BAD_ID'
+        end,
+
+        picker = {
+          -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
+          name = 'snacks.pick',
+          -- Optional, configure key mappings for the picker. These are the defaults.
+          -- Not all pickers support all mappings.
+          note_mappings = {
+            -- Create a new note from your query.
+            new = '<C-x>',
+            -- Insert a link to the selected note.
+            insert_link = '<C-l>',
+          },
+        },
+
+        ---@param spec { id: string, dir: obsidian.Path, title: string|? }
+        ---@return string|obsidian.Path The full path to the new note.
+        note_path_func = function(spec)
+          local f = spec.title or spec.id
+          local path = spec.dir / strings.slugify(f)
+          return path:with_suffix('.md')
+        end,
+      })
     end,
     dependencies = {
       'nvim-lua/plenary.nvim',
