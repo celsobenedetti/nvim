@@ -21,7 +21,7 @@ return {
           expand = '<C-l>',
           jump_next = '<C-l>',
           jump_prev = '<C-h>',
-          stop = '<C-c>',
+          stop = '<esc>',
         },
       })
     end,

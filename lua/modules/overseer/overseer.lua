@@ -56,7 +56,8 @@ return {
     keys = {
       { "<leader>OR", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
       { "<leader>run", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
-      { "<leader>OT", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" },
+      { "<leader>OT", function() Snacks.notify.warn("Please use C-S-R instead of OT") end,      desc = "Overseer: Toggle" },
+      { "♥", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" }, -- C-S-R set in allacritty
       { "<C-]>", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" },
       { "<leader>OQ", "<cmd>OverseerQuickAction<cr>", desc = "Overseer: Action recent task" },
       { "<leader>OI", "<cmd>OverseerInfo<cr>",        desc = "Overseer: Overseer Info" },

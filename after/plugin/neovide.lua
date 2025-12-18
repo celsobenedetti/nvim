@@ -21,21 +21,29 @@ map('n', '<C-S-O>', function()
   vim.cmd('Namu symbols')
 end, { desc = 'LSP Symbols' })
 
+map('n', '<C-S-R>', function()
+  vim.cmd('OverseerToggle')
+end, { desc = 'Overseer toggle' })
+
 map({ 'n', 't' }, '<C-/>', function()
   Snacks.terminal(nil, { cwd = cwd.root() })
-end, { desc = 'Terminal (Root Dir)' })
-
--- write and close all buffers, but don't quit neovide
-map({ 'n' }, 'ZZ', function()
-  if vim.bo.filetype == 'markdown' or vim.bo.filetype == 'sidekick_terminal' or vim.bo.filetype == 'gitcommit' then
-    vim.api.nvim_feedkeys(Keys('ZZ'), 'n', false)
-    return
-  end
-  vim.cmd('wa')
-  Snacks.bufdelete.all()
 end, { desc = 'Terminal (Root Dir)' })
 
 -- paste the same way as the terminal
 vim.keymap.set({ 'n', 'v', 's', 'x', 'o', 'i', 'l', 'c', 't' }, '<C-S-v>', function()
   vim.api.nvim_paste(vim.fn.getreg('+'), true, -1)
 end, { noremap = true, silent = true })
+
+-- write and close all buffers, but don't quit neovide
+local function close_all_buffers()
+  if vim.bo.filetype == 'markdown' or vim.bo.filetype == 'sidekick_terminal' or vim.bo.filetype == 'gitcommit' then
+    vim.api.nvim_feedkeys(Keys('ZZ'), 'n', false)
+    return
+  end
+  vim.cmd('wa')
+  Snacks.bufdelete.all()
+  vim.cmd('tabonly', { silent = true })
+end
+
+map({ 'n' }, 'ZZ', close_all_buffers, { desc = 'Terminal (Root Dir)' })
+map({ 'n' }, 'ZQ', close_all_buffers, { desc = 'Terminal (Root Dir)' })
