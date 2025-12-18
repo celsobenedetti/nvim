@@ -1,4 +1,5 @@
 local M = {}
+
 ---@param increment boolean
 ---@param g? boolean
 function M.dial(increment, g)
@@ -22,15 +23,15 @@ return {
     { "g<C-x>", function() return M.dial(false, true) end, expr = true, desc = "Decrement", mode = {"n", "v"} },
   },
   opts = function()
-    local augend = require 'dial.augend'
+    local augend = require('dial.augend')
 
-    local logical_alias = augend.constant.new {
+    local logical_alias = augend.constant.new({
       elements = { '&&', '||' },
       word = false,
       cyclic = true,
-    }
+    })
 
-    local ordinal_numbers = augend.constant.new {
+    local ordinal_numbers = augend.constant.new({
       -- elements through which we cycle. When we increment, we go down
       -- On decrement we go up
       elements = {
@@ -50,9 +51,9 @@ return {
       -- do we cycle back and forth (tenth to first on increment, first to tenth on decrement).
       -- Otherwise nothing will happen when there are no further values
       cyclic = true,
-    }
+    })
 
-    local weekdays = augend.constant.new {
+    local weekdays = augend.constant.new({
       elements = {
         'Monday',
         'Tuesday',
@@ -64,9 +65,9 @@ return {
       },
       word = true,
       cyclic = true,
-    }
+    })
 
-    local months = augend.constant.new {
+    local months = augend.constant.new({
       elements = {
         'January',
         'February',
@@ -83,16 +84,16 @@ return {
       },
       word = true,
       cyclic = true,
-    }
+    })
 
-    local capitalized_boolean = augend.constant.new {
+    local capitalized_boolean = augend.constant.new({
       elements = {
         'True',
         'False',
       },
       word = true,
       cyclic = true,
-    }
+    })
 
     return {
       dials_by_ft = {
@@ -124,42 +125,42 @@ return {
         },
         vue = {
           -- augend.constant.new { elements = { 'let', 'const' } },
-          augend.hexcolor.new { case = 'lower' },
-          augend.hexcolor.new { case = 'upper' },
+          augend.hexcolor.new({ case = 'lower' }),
+          augend.hexcolor.new({ case = 'upper' }),
         },
         typescript = {
           -- augend.constant.new { elements = { 'let', 'const' } },
         },
         css = {
-          augend.hexcolor.new {
+          augend.hexcolor.new({
             case = 'lower',
-          },
-          augend.hexcolor.new {
+          }),
+          augend.hexcolor.new({
             case = 'upper',
-          },
+          }),
         },
         markdown = {
-          augend.constant.new {
+          augend.constant.new({
             elements = { '[ ]', '[x]' },
             word = false,
             cyclic = true,
-          },
+          }),
           augend.misc.alias.markdown_header,
         },
         json = {
           augend.semver.alias.semver, -- versioning (v1.1.2)
         },
         lua = {
-          augend.constant.new {
+          augend.constant.new({
             elements = { 'and', 'or' },
             word = true, -- if false, "sand" is incremented into "sor", "doctor" into "doctand", etc.
             cyclic = true, -- "or" is incremented into "and".
-          },
+          }),
         },
         python = {
-          augend.constant.new {
+          augend.constant.new({
             elements = { 'and', 'or' },
-          },
+          }),
         },
       },
     }

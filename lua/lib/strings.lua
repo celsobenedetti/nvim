@@ -46,4 +46,11 @@ M.shellescape = function(s)
   return s
 end
 
+--- highlight text with a given highlight group
+--- @param hl string the highlight group to set
+--- @param text string the text to highlight
+M.hl = function(hl, text)
+  return '%#' .. hl .. '#' .. text .. '%*'
+end
+
 return M

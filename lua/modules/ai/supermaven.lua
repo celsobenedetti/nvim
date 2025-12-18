@@ -1,12 +1,16 @@
 return {
   {
-    'supermaven-inc/supermaven-nvim',
-    opts = function(_, opts)
-      opts.disable_inline_completion = not vim.g.supermaven_inline_completion
-    end,
 
-    keys = {
-      { '<leader>tS', ':SupermavenToggle<CR>' },
+    'supermaven-inc/supermaven-nvim',
+    event = 'InsertEnter',
+    enabled = vim.g.supermaven,
+    cmd = { 'SupermavenUseFree', 'SupermavenToggle' },
+    opts = {
+      keymaps = {
+        accept_suggestion = nil, -- handled by blink.cmp
+      },
+      disable_inline_completion = false,
+      ignore_filetypes = { 'bigfile', 'snacks_input', 'snacks_notif' },
     },
   },
 }

@@ -18,9 +18,9 @@ return {
       dap = false,
 
       task_list = {
-        -- TODO: wtf are these numbers?
-        -- min_height = { 100, 0.1 },
-        bindings = {
+        -- min_width = {40, 0.1} means "the greater of 40 columns or 10% of total"
+        min_height = { 20, 0.2 },
+        keymaps = {
           ['<C-h>'] = false,
           ['<C-j>'] = false,
           ['<C-k>'] = false,
@@ -45,8 +45,8 @@ return {
     },
 
     config = function(_, opts)
-      local overseer = require 'overseer'
-      local edge_server = require 'lib.overseer.edge-server'
+      local overseer = require('overseer')
+      local edge_server = require('config.overseer.edge-server')
 
       overseer.setup(opts)
       overseer.register_template(edge_server.test)
@@ -56,7 +56,8 @@ return {
     keys = {
       { "<leader>OR", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
       { "<leader>run", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
-      { "<leader>OT", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" },
+      { "<leader>OT", function() Snacks.notify.warn("Please use C-S-R instead of OT") end,      desc = "Overseer: Toggle" },
+      { "♥", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" }, -- C-S-R set in allacritty
       { "<C-]>", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" },
       { "<leader>OQ", "<cmd>OverseerQuickAction<cr>", desc = "Overseer: Action recent task" },
       { "<leader>OI", "<cmd>OverseerInfo<cr>",        desc = "Overseer: Overseer Info" },
@@ -65,15 +66,15 @@ return {
       { "<leader>OC", "<cmd>OverseerClearCache<cr>",  desc = "Overseer: Clear cache" },
     },
   },
-  {
-    'folke/which-key.nvim',
-    optional = true,
-    opts = {
-      spec = {
-        { '<leader>o', group = 'overseer' },
-      },
-    },
-  },
+  -- {
+  --   'folke/which-key.nvim',
+  --   optional = true,
+  --   opts = {
+  --     spec = {
+  --       { '<leader>o', group = 'overseer' },
+  --     },
+  --   },
+  -- },
   -- {
   --   'folke/edgy.nvim',
   --   optional = true,
@@ -88,20 +89,20 @@ return {
   --     })
   --   end,
   -- },
-  {
-    'nvim-neotest/neotest',
-    optional = true,
-    opts = function(_, opts)
-      opts = opts or {}
-      opts.consumers = opts.consumers or {}
-      opts.consumers.overseer = require 'neotest.consumers.overseer'
-    end,
-  },
-  {
-    'mfussenegger/nvim-dap',
-    optional = true,
-    opts = function()
-      require('overseer').enable_dap()
-    end,
-  },
+  -- {
+  --   'nvim-neotest/neotest',
+  --   optional = true,
+  --   opts = function(_, opts)
+  --     opts = opts or {}
+  --     opts.consumers = opts.consumers or {}
+  --     opts.consumers.overseer = require 'neotest.consumers.overseer'
+  --   end,
+  -- },
+  -- {
+  --   'mfussenegger/nvim-dap',
+  --   optional = true,
+  --   opts = function()
+  --     require('overseer').enable_dap()
+  --   end,
+  -- },
 }

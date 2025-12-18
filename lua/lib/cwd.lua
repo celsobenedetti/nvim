@@ -1,17 +1,15 @@
 local M = {}
-local home = os.getenv 'HOME' or '/home/celso'
 
---- returns true if any dirs in cwd match the path
+--- returns true if cwd matches any of the paths
 ---@param paths string[]
 ---@return boolean
 M.matches = function(paths)
-  local file_dir = vim.fn.expand '%:p'
+  local cwd = M.cwd()
   for _, path in ipairs(paths) do
-    if file_dir:find(path) then
+    if cwd:find(path) then
       return true
     end
   end
-
   return false
 end
 
@@ -20,12 +18,15 @@ M.cwd = function()
   return vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
 end
 
+---@return boolean
+M.is_git_repo = function()
+  return vim.fs.root(0, '.git') ~= nil
+end
+
+M.root = M.cwd
+
 M.current_file = function()
-  local cwd = M.cwd()
-  local file = vim.fn.expand '%'
-  file = file:gsub(cwd .. '/', '')
-  file = file:gsub(home, '~')
-  return file:gsub('%./', '')
+  return vim.fn.expand('%:.')
 end
 
 --- returns true if the file is found in cwd

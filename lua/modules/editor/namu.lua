@@ -1,15 +1,30 @@
 return {
-  {
-    'bassamsdata/namu.nvim',
-    lazy = true,
-    keys = {
-      { '<leader>ns', '<cmd>Namu symbols<cr>', desc = 'Namu: document symbols' },
-      { '<leader>ds', '<cmd>Namu symbols<cr>', desc = 'Namu: document symbols' },
-      { '<leader>nw', '<cmd>Namu workspace<cr>', desc = 'Namu: workspace symbols' },
-      { '<leader>ws', '<cmd>Namu workspace<cr>', desc = 'Namu: workspace symbols' },
+  'bassamsdata/namu.nvim',
+  cmd = 'Namu',
+
+  init = function()
+    vim.keymap.set('n', '♠', ':Namu symbols<cr>', {
+      desc = 'Jump to LSP symbol',
+      silent = true,
+    })
+    vim.keymap.set('n', '<leader>sw', ':Namu workspace<cr>', {
+      desc = 'LSP Symbols - Workspace',
+      silent = true,
+    })
+  end,
+  opts = {
+    global = {
+      window = {
+        auto_size = true,
+        min_width = 70,
+      },
+      display = {
+        format = 'tree_guides',
+      },
+      -- },
+      namu_symbols = { -- Specific Module options
+      },
     },
-    config = function()
-      require('namu').setup {}
-    end,
   },
+  -- === Suggested Keymaps: ===
 }

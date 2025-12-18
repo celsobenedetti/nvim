@@ -1,10 +1,9 @@
 return {
-
   'kylechui/nvim-surround',
   version = '^3.0.0', -- Use for stability; omit to use `main` branch for the latest features
   event = 'VeryLazy',
   config = function()
-    require('nvim-surround').setup {
+    require('nvim-surround').setup({
       keymaps = {
         insert = '<C-g>s',
         insert_line = '<C-g>S',
@@ -35,9 +34,9 @@ return {
         -- Only re-indent the selection if a formatter is set up already
         if start < stop and (b.equalprg ~= '' or b.indentexpr ~= '' or b.cindent or b.smartindent or b.lisp) then
           vim.cmd(string.format('silent normal! %dG=%dG', start, stop))
-          require('nvim-surround.cache').set_callback ''
+          require('nvim-surround.cache').set_callback('')
         end
       end,
-    }
+    })
   end,
 }

@@ -1,6 +1,6 @@
 local escape = function()
-  vim.api.nvim_feedkeys(Keys '<esc>', 'n', true)
-  vim.api.nvim_feedkeys(Keys '<esc>', 'n', true)
+  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
+  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
 end
 
 --- Runs cmd if not inside Luasnip snippet
@@ -17,26 +17,27 @@ local cmd = function(cmd)
 end
 
 -- disable default mappings
-vim.cmd 'let g:tmux_navigator_no_mappings = 1'
+vim.cmd('let g:tmux_navigator_no_mappings = 1')
 
 return {
   {
     'christoomey/vim-tmux-navigator',
+    event = 'VeryLazy',
     keys = {
       {
         '<C-h>',
         function()
           if Snacks.zen.win and not Snacks.zen.win.closed then
-            vim.cmd '!tmux select-pane -t 0'
+            vim.cmd('!tmux select-pane -t 0')
             return
           end
-          return cmd 'TmuxNavigateLeft'()
+          return cmd('TmuxNavigateLeft')()
         end,
         desc = 'Go to Left tmux pane',
       },
-      { '<C-j>', cmd 'TmuxNavigateDown', desc = 'Go to Down tmux pane' },
-      { '<C-k>', cmd 'TmuxNavigateUp', desc = 'Go to Up tmux pane' },
-      { '<C-l>', cmd 'TmuxNavigateRight', desc = 'Go to Right tmux pane' },
+      { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane' },
+      { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane' },
+      { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane' },
     },
   },
 }

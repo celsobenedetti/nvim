@@ -6,8 +6,8 @@ return {
     opts = function(_, opts)
       opts.bar = {
         sources = function(buf, _)
-          local sources = require 'dropbar.sources'
-          local utils = require 'dropbar.utils'
+          local sources = require('dropbar.sources')
+          local utils = require('dropbar.utils')
           if vim.bo[buf].ft == 'markdown' then
             return {}
           end

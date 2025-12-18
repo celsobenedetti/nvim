@@ -1,112 +1,198 @@
-local exclude = { '*.org_archive' }
+local cwd = require('lib.cwd')
 
 return {
-
   'folke/snacks.nvim',
-  keys = {
-    -- stylua: ignore start
-    -- { '<c-/>', false },
-    { "<leader>no", function() Snacks.picker.notifications() end, desc = "Notification History", },
-    { "<leader>rg", function() Snacks.picker.grep() end, desc = "Grep", },
-    { "<leader>dd", function() Snacks.bufdelete() end, desc = "delete buffer", },
-    { "<leader>dot", function() Snacks.picker.files({cwd="~/.dotfiles", title = "~/.dotfiles", hidden = true, }) end, desc = "search dotfiles", },
-    { "<leader>of", function() Snacks.picker.files({cwd="~/notes", title = " Org Files", ft ="org" }) end, desc = "search orgifles", },
-    { "<leader>fn", function() Snacks.picker.files({cwd="~/notes", title = "All notes",  }) end, desc = "search all notes", },
-    { "<leader>rs", function() require("persistence").load() end, desc = "Restore Session" },
-    { "<leader>qS", function() require("persistence").select() end,desc = "Select Session" },
-    { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
-    { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
-    { "<leader>fF", function() Snacks.picker.git_files() end, desc = "Find Files (git-files)" },
-    { "<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File", },
-    { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
-    { "<leader>fE", function() Snacks.explorer({ cwd = LazyVim.root() }) end, desc = "Explorer Snacks (root dir)", },
-    { '<leader>fe', function() Snacks.explorer.open({ exclude = exclude, ignored = true }) end, desc = 'Snacks: explorer', },
-    { '<leader>en', function() Snacks.explorer.open({cwd = "~/notes"}) end, desc = 'Snacks: explorer notes', },
-    { "<leader>sc", function() Snacks.picker.commands() end, desc = "Commands" },
-    { "<leader>sC", function() Snacks.picker.command_history() end, desc = "Command History" },
-    { "grs", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
-    { '<leader>ff', function () LazyVim.pick('files', { hidden = require('lib.cwd').matches { 'dotfiles' } }) end, desc = 'Find Files (Root Dir)'},
-    -- { "<leader>ss", function() Snacks.picker.lsp_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Symbols", has = "documentSymbol" },
-    -- { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols({ filter = LazyVim.config.kind_filter }) end, desc = "LSP Workspace Symbols", has = "workspace/symbols" },
-    -- stylua: ignore end
-  },
+  lazy = false,
+  opts = {
+    terminal = { enabled = true },
+    words = { enabled = true },
+    notify = { enabled = true },
+    indent = { enabled = true },
+    input = { enabled = true },
 
-  opts = function(_, opts)
-    -- Terminal Mappings
-    local function term_nav(dir)
-      ---@param self snacks.terminal
-      return function(self)
-        return self:is_floating() and '<c-' .. dir .. '>'
-          or vim.schedule(function()
-            vim.cmd.wincmd(dir)
-          end)
-      end
-    end
+    notifier = {
+      enabled = true,
+      filter = function(notification)
+        local ignore = {
+          'File is too large to send to server', -- thank you supermaven, please stfu
+          'No results found for.*buffers', -- Snacks.picker.buffers when there are no results
+        }
+        for _, s in ipairs(ignore) do
+          if notification.msg:find(s) then
+            return false
+          end
+        end
+        return true
+      end,
+    },
 
-    opts.lazygit = {
-      theme = {
-        selectedLineBgColor = { bg = 'CursorLine' },
-      },
-      -- https://github.com/folke/snacks.nvim/issues/719
+    lazygit = {
+      theme = { selectedLineBgColor = { bg = 'CursorLine' } },
+      win = { width = 0, height = 0 },
+    },
+
+    picker = {
+      enabled = true,
+      exclude = vim.g.ignore.grep,
       win = {
-        -- style = 'dashboard',
-        width = 0,
-        height = 0,
+        input = {
+          keys = {
+            ['<c-x>'] = { 'bufdelete', mode = { 'n', 'i' } },
+            ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
+            ['<c-y>'] = { 'yank', mode = { 'n', 'i' } },
+            ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
+            -- ['s'] = { 'flash' },
+          },
+        },
       },
-    }
 
-    -- opts.terminal = {
-    --   win = {
-    --     keys = {
-    --       nav_h = { '<C-h>', term_nav 'h', desc = 'Go to Left Window', expr = true, mode = 't' },
-    --       nav_j = { '<C-j>', term_nav 'j', desc = 'Go to Lower Window', expr = true, mode = 't' },
-    --       nav_k = { '<C-k>', term_nav 'k', desc = 'Go to Upper Window', expr = true, mode = 't' },
-    --       nav_l = { '<C-l>', term_nav 'l', desc = 'Go to Right Window', expr = true, mode = 't' },
-    --       hide_slash = { '<C-/>', 'hide', desc = 'Hide Terminal', mode = { 't', 'n' } },
-    --       hide_underscore = { '<c-_>', 'hide', desc = 'which_key_ignore', mode = { 't', 'n' } },
-    --     },
-    --   },
-    -- }
-
-    opts.dashboard = { enabled = false }
-    opts.picker = opts.picker or {}
-    opts.picker.exclude = vim.tbl_extend('keep', opts.picker.exclude or {}, vim.g.grep_ignore or {})
-
-    opts.picker.win = opts.picker.win or {}
-    opts.picker.win.input = opts.picker.win.input or {}
-    opts.picker.win.input.keys = vim.tbl_deep_extend('force', opts.picker.win.input.keys or {}, {
-      ['<c-x>'] = { 'bufdelete', mode = { 'n', 'i' } },
-      ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
-      ['<c-y>'] = { 'yank', mode = { 'n', 'i' } },
-      ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
-      ['s'] = { 'flash' },
-    })
-
-    opts.picker.win.list = opts.picker.win.list or {}
-    opts.picker.win.list.keys = opts.picker.win.list.keys or {}
-    opts.picker.win.list.keys['ZZ'] = function()
-      vim.cmd 'wqa'
-    end
-
-    opts.picker.actions = vim.tbl_deep_extend('force', opts.picker.actions or {}, {
-      flash = function(picker)
-        require('flash').jump {
-          pattern = '^',
-          label = { after = { 0, 0 } },
-          search = {
-            mode = 'search',
-            exclude = {
-              function(win)
-                return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
-              end,
+      sources = {
+        explorer = {
+          auto_close = true,
+          ignored = true,
+          win = {
+            list = {
+              keys = {
+                ['Z'] = function()
+                  vim.cmd('q')
+                end,
+                ['d'] = 'safe_delete',
+              },
             },
           },
-          action = function(match)
-            local idx = picker.list:row2idx(match.pos[1])
-            picker.list:_move(idx, true, true)
-          end,
-        }
-      end,
-    })
-  end,
+          actions = {
+            safe_delete = function(picker)
+              local selected = picker:selected({ fallback = true })
+              local is_root = vim.iter(selected):any(function(s)
+                return not s.parent
+              end)
+              if is_root then
+                Snacks.notify.warn("Let's not delete root please")
+                return
+              end
+              picker:action('explorer_del')
+            end,
+          },
+        },
+      },
+
+      actions = {
+        flash = function(picker)
+          require('flash').jump({
+            pattern = '^',
+            label = { after = { 0, 0 } },
+            search = {
+              mode = 'search',
+              exclude = {
+                function(win)
+                  return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
+                end,
+              },
+            },
+            action = function(match)
+              local idx = picker.list:row2idx(match.pos[1])
+              picker.list:_move(idx, true, true)
+            end,
+          })
+        end,
+      },
+    },
+  },
+  keys = {
+    -- stylua: ignore start
+    { '<c-_>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
+    { '<leader>no', function() Snacks.picker.notifications() end, desc = 'Notification History', },
+    { '<leader>rg', function() Snacks.picker.grep() end, desc = 'Grep', },
+    { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'Grep (all)', },
+    { '<leader>dd', function() Snacks.bufdelete() end, desc = 'delete buffer', },
+    { '<leader>dot', function() Snacks.picker.files { cwd = '~/.dotfiles', title = '~/.dotfiles', hidden = true } end, desc = 'search dotfiles', },
+    { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'search orgifles', },
+    { '<leader>fn', function() Snacks.picker.files { cwd = '~/notes', title = 'All notes' } end, desc = 'search all notes', },
+    { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
+    { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Rename File', },
+    { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
+    { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
+    { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
+
+    { '<C-E>', function()
+      if vim.bo.filetype == "snacks_picker_list" then
+        vim.cmd("q")
+        return
+      end
+      Snacks.picker.resume({source = "explorer", })
+    end, desc = 'Snacks: explorer', },
+    { '<leader>en', function() Snacks.explorer.open { cwd = '~/notes' } end, desc = 'Snacks: explorer notes', },
+    { '<leader>sc', function() Snacks.picker.commands() end, desc = 'Commands', },
+    { '<leader>sC', function() Snacks.picker.command_history() end, desc = 'Command History', },
+    { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'References', },
+
+
+    -- -- find
+    { '<leader>,', function() Snacks.picker.buffers() end, desc = 'Buffers', },
+    { '<leader>fb', function() Snacks.picker.buffers() end, desc = 'Buffers', },
+    { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'Buffers (all)', },
+    { '<leader><space>', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader><space>', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
+    { '<leader>ff', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader>ff', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
+    { '<C-p>', function() Snacks.picker.smart() end, desc = 'Smart picker', },
+
+    { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
+    { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent', },
+    { '<leader>fR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'Recent (cwd)', },
+    { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects', },
+    -- -- git
+    { '<leader>gd', function() Snacks.picker.git_diff() end, desc = 'Git Diff (hunks)', },
+    { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'Git Diff (origin)', },
+    { '<leader>gs', function() Snacks.picker.git_status() end, desc = 'Git Status', },
+    { '<leader>gS', function() Snacks.picker.git_stash() end, desc = 'Git Stash', },
+    -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'GitHub Issues (open)', },
+    -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'GitHub Issues (all)', },
+    { '<leader>gp', function() Snacks.picker.gh_pr() end, desc = 'GitHub Pull Requests (open)', },
+    { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'GitHub Pull Requests (all)', },
+    -- -- Grep
+    { '<leader>/', function() Snacks.picker.lines() end, desc = 'Buffer Lines', },
+    { '<leader>sB', function() Snacks.picker.grep_buffers() end, desc = 'Grep Open Buffers', },
+    { '<leader>sp', function() Snacks.picker.lazy() end, desc = 'Search for Plugin Spec', },
+    -- search
+    { '<leader>s"', function() Snacks.picker.registers() end, desc = 'Registers', },
+    { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'Search History', },
+    { '<leader>sa', function() Snacks.picker.autocmds() end, desc = 'Autocmds', },
+    { '<leader>sd', function() Snacks.picker.diagnostics() end, desc = 'Diagnostics', },
+    { '<leader>sD', function() Snacks.picker.diagnostics_buffer() end, desc = 'Buffer Diagnostics', },
+    { '<leader>sh', function() Snacks.picker.help() end, desc = 'Help Pages', },
+    { '<leader>sH', function() Snacks.picker.highlights() end, desc = 'Highlights', },
+    { '<leader>si', function() Snacks.picker.icons() end, desc = 'Icons', },
+    { '<leader>sj', function() Snacks.picker.jumps() end, desc = 'Jumps', },
+    { '<leader>sk', function() Snacks.picker.keymaps() end, desc = 'Keymaps', },
+    { '<leader>sl', function() Snacks.picker.loclist() end, desc = 'Location List', },
+    { '<leader>sM', function() Snacks.picker.man() end, desc = 'Man Pages', },
+    { '<leader>sm', function() Snacks.picker.marks() end, desc = 'Marks', },
+    { '<leader>sR', function() Snacks.picker.resume() end, desc = 'Resume', },
+    { '<leader>sq', function() Snacks.picker.qflist() end, desc = 'Quickfix List', },
+    { '<leader>su', function() Snacks.picker.undo() end, desc = 'Undotree', },
+    -- ui
+    { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'Colorschemes', },
+    { '<leader>ws', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
+
+    -- set in allacrity
+    -- { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O
+    { '<leader>ss', function() Snacks.notify.warn('VSCode: please use <C-O> instead of <leader>ss', { title = 'VSCode' }) end, desc = 'Search for Plugin Spec', },
+
+    { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'Lazygit (Root Dir)', },
+    { '<leader>gG', function() Snacks.lazygit() end, desc = 'Lazygit (cwd)', },
+    -- lsp
+    { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'Next Reference', },
+    { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'Prev Reference', },
+    -- TODO: decide which of these is good
+    { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
+    { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
+    { 'gB', function() Snacks.gitbrowse();  end, { desc = 'Git Browse (open)' }, },
+    { 'gY', function()
+      Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
+      Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
+    end, { desc = 'Git Browse (copy)', mode = { 'n', 'x' } }, },
+    { '<leader>gf', function() Snacks.picker.git_log_file() end, { desc = 'Git Current File History' }, },
+    { '<leader>gl', function() Snacks.picker.git_log { cwd = cwd.root() } end, { desc = 'Git Log' }, },
+
+    -- stylua: ignore end
+  },
 }

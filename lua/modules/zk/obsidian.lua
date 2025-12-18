@@ -1,25 +1,25 @@
-local strings = require 'lib.strings'
-local visual = require 'lib.visual'
+local strings = require('lib.strings')
+local visual = require('lib.visual')
+local cwd = require('lib.cwd')
 
 return {
-
   {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
-    -- lazy = true,
-    ft = { 'markdown', 'org' },
+    lazy = cwd.root == vim.g.env.notes.NOTES,
     keys = {
     -- stylua: ignore start
-      { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.notes.NOTES}) end, desc = "Grep through notes", },
-      { "<leader>zZ", function() Snacks.picker.files({cwd=vim.g.notes.NOTES, title = "notes", }) end, desc = "search notes", },
+      { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.env.notes.NOTES}) end, desc = "Grep through notes", },
+      { "<leader>zZ", function() Snacks.picker.files({cwd=vim.g.env.notes.NOTES, title = "notes", }) end, desc = "search notes", },
       { '<leader>oO', ':Obsidian open<CR>' },
-      { '<leader>ob', ':ObsidianBacklinks<CR>' },
+      { '<leader>ob', ':Obsidian backlinks<CR>' },
       { '<leader>od', ':Obsidian dailies<CR>' },
       { '<leader>ol', ':Obsidian links<CR>' },
       -- { '<leader>ot', ':ObsidianTags<CR>' },
-      { '<leader>ch', ':Obsidian toggleCheckbox<CR>' },
+      { '<leader>ch', ':Obsidian check<CR>' },
       { '<leader>oR', ':Obsidian rename<CR>' },
+      { '<leader>toc', ':Obsidian toc<CR>' },
 
       {
         '<leader>n',
@@ -68,28 +68,29 @@ return {
       -- stylua: ignore end
     },
     cond = function()
-      if require('lib.cwd').matches { 'journals' } then
+      if require('lib.cwd').matches({ 'journals' }) then
         return false
       end
 
-      local path = vim.fn.expand '%:p'
-      local is_templates = path:find 'templates'
+      local path = vim.fn.expand('%:p')
+      local is_templates = path:find('templates')
 
       return not is_templates
     end,
     opts = function(_, opts)
-      opts.new_notes_location = vim.g.notes.INBOX
+      opts.legacy_commands = false
+      opts.new_notes_location = vim.g.env.notes.INBOX
       opts.workspaces = {
-        { name = 'notes', path = vim.g.notes.NOTES },
-        { name = 'archives', path = vim.g.notes.ARCHIVES },
-        { name = 'zk', path = vim.g.notes.ZK },
+        { name = 'notes', path = vim.g.env.notes.NOTES },
+        { name = 'archives', path = vim.g.env.notes.ARCHIVES },
+        { name = 'zk', path = vim.g.env.notes.ZK },
       }
 
       opts.attachments = {
         -- TODO: handle archive/notes vaults
         img_folder = 'archives/assets/imgs',
         img_name_func = function()
-          return string.format('Pasted image %s', os.date '%Y%m%d%H%M%S')
+          return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
         end,
         confirm_img_paste = true,
       }
@@ -138,47 +139,14 @@ return {
           -- Insert a link to the selected note.
           insert_link = '<C-l>',
         },
-        -- tag_mappings = {
-        --   -- Add tag(s) to current note.
-        --   tag_note = '<C-x>',
-        --   -- Insert a tag at the current location.
-        --   insert_tag = '<C-l>',
-        -- },
-        -- tag_mappings = {
-        --   -- Add tag(s) to current note.
-        --   tag_note = '<C-x>',
-        --   -- Insert a tag at the current location.
-        --   insert_tag = '<C-l>',
-        -- },
       }
-
-      -- -- TODO: costumize frontmatter fucntion so we don't care about frontmatter for certain files
-      -- opts.note_frontmatter_func = function(note)
-      --   local frontmatter = {
-      --     id = note.id,
-      --     aliases = note.aliases,
-      --     title = note.title,
-      --     date = note.date,
-      --   }
-      --
-      --   if note.tags ~= nil and not vim.tbl_isempty(note.tags) then
-      --     frontmatter.tags = note.tags
-      --   end
-      --
-      --   if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-      --     for k, v in pairs(note.metadata) do
-      --       frontmatter[k] = v
-      --     end
-      --   end
-      --   return frontmatter
-      -- end
 
       ---@param spec { id: string, dir: obsidian.Path, title: string|? }
       ---@return string|obsidian.Path The full path to the new note.
       opts.note_path_func = function(spec)
         local f = spec.title or spec.id
         local path = spec.dir / strings.slugify(f)
-        return path:with_suffix '.md'
+        return path:with_suffix('.md')
       end
     end,
     dependencies = {

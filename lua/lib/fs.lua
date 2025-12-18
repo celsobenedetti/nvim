@@ -1,12 +1,12 @@
-local cwd = require 'lib.cwd'
-local strings = require 'lib.strings'
+local cwd = require('lib.cwd')
+local strings = require('lib.strings')
 
 local M = {}
 
 M.mv_file = function()
   --- @type snacks.picker.finder.Item[]
   local snack_items = {}
-  for _, dir in ipairs(cwd.directories { git = true }) do
+  for _, dir in ipairs(cwd.directories({ git = true })) do
     dir = dir .. '/' -- remove trailing slash
     table.insert(snack_items, {
       text = dir,
@@ -18,7 +18,8 @@ M.mv_file = function()
     })
   end
 
-  Snacks.picker.pick {
+  Snacks.picker.pick({
+    title = 'Move file to',
     items = snack_items,
     confirm = function(picker, item)
       picker:close()
@@ -31,24 +32,24 @@ M.mv_file = function()
       local original_buffer = vim.api.nvim_get_current_buf()
 
       destination = strings.shellescape(destination)
-      local current_file = strings.shellescape(vim.fn.expand '%')
+      local current_file = strings.shellescape(vim.fn.expand('%'))
 
       vim.cmd('silent! !mv ' .. current_file .. ' ' .. destination)
-      local new_file = strings.shellescape((vim.fn.expand '%:t'))
+      local new_file = strings.shellescape((vim.fn.expand('%:t')))
 
       vim.cmd('e ' .. destination .. '/' .. new_file)
       vim.api.nvim_buf_delete(original_buffer, { force = true })
     end,
-  }
+  })
 end
 
 M.rm = function()
-  os.remove(vim.fn.expand '%')
-  vim.api.nvim_feedkeys(Keys ':bdelete<cr>', 'n', true)
+  os.remove(vim.fn.expand('%'))
+  vim.api.nvim_feedkeys(Keys(':bdelete<cr>'), 'n', true)
 end
 
 M.is_current_buffer_a_file = function()
-  return vim.fn.expand('%'):match '/'
+  return vim.fn.expand('%'):match('/')
 end
 
 return M
