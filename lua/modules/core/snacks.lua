@@ -8,12 +8,14 @@ return {
     words = { enabled = true },
     notify = { enabled = true },
     indent = { enabled = true },
+    input = { enabled = true },
 
     notifier = {
       enabled = true,
       filter = function(notification)
         local ignore = {
           'File is too large to send to server', -- thank you supermaven, please stfu
+          'No results found for.*buffers', -- Snacks.picker.buffers when there are no results
         }
         for _, s in ipairs(ignore) do
           if notification.msg:find(s) then
@@ -131,7 +133,7 @@ return {
     { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'Buffers (all)', },
     { '<leader><space>', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader><space>', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
     { '<leader>ff', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader>ff', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
-    { '<C-p>', function() Snacks.picker.files() end, desc = 'Find Files (Root Dir)', },
+    { '<C-p>', function() Snacks.picker.smart() end, desc = 'Smart picker', },
 
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
     { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent', },

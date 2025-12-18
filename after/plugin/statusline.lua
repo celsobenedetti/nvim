@@ -1,6 +1,5 @@
 ---@module 'statusline' home cooked statusline plugin
 ---@author Celso Benedetti
----@license MIT
 ---
 --- example:
 ---  main  󰢱 after/plugin/statusline.lua +3 ~1 -1   5  1  1                                                       stylua   lua_ls
