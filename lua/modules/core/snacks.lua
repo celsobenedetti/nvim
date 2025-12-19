@@ -1,5 +1,9 @@
 local cwd = require('lib.cwd')
 
+local function dotfiles()
+  Snacks.picker.files({ dirs = { '~/.dotfiles', '~/.config/nvim' }, title = 'dotfiles', hidden = true })
+end
+
 return {
   'folke/snacks.nvim',
   lazy = false,
@@ -100,6 +104,9 @@ return {
 
     dashboard = {
       enabled = true,
+      sections = {
+        { section = 'keys', gap = 1, padding = 1 },
+      },
       preset = {
         header = '',
         -- Defaults to a picker that supports `fzf-lua`, `telescope.nvim` and `mini.pick`
@@ -109,20 +116,22 @@ return {
         -- Set your custom keymaps here.
         -- When using a function, the `items` argument are the default keymaps.
         ---@type snacks.dashboard.Item[]
+        
+        -- stylua: ignore start
         keys = {
-          {
-            icon = ' ',
-            key = 's',
-            desc = 'select session',
-            action = require('persistence').select,
-          },
-          { icon = ' ', key = 'r', desc = 'recent files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
+          { icon = ' ', key = 'c', desc = 'cd', action = ':lua Snacks.picker.zoxide()' },
+          { icon = '', key = 'g', desc = 'git', action = function()Snacks.lazygit()end, enabled = function() return cwd.is_git_repo() end },
+          { icon = ' ', key = 's', desc = 'session', action = require('persistence').select },
           { icon = '', key = 't', desc = 'terminal', action = ':term' },
+          { icon = ' ', key = 'r', desc = 'recent files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
           { icon = ' ', key = 'e', desc = 'new file', action = ':ene | startinsert' },
+          { icon = '󱙺', key = 'o', desc = 'opencode', action = ":lua require('sidekick.cli').toggle({name = 'opencode'})", },
+          { icon = ' ', key = '.', desc = 'config', action = dotfiles, },
           { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'm', desc = 'mason', action = ':Mason', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'q', desc = 'quit', action = ':qa' },
         },
+        -- stylua: ignore end
       },
     },
   },
@@ -133,7 +142,7 @@ return {
     { '<leader>rg', function() Snacks.picker.grep() end, desc = 'Grep', },
     { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'Grep (all)', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'delete buffer', },
-    { '<leader>dot', function() Snacks.picker.files { cwd = '~/.dotfiles', title = '~/.dotfiles', hidden = true } end, desc = 'search dotfiles', },
+    { '<leader>dot', dotfiles, desc = 'search dotfiles', },
     { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'search orgifles', },
     { '<leader>fn', function() Snacks.picker.files { cwd = '~/notes', title = 'All notes' } end, desc = 'search all notes', },
     { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
@@ -141,6 +150,7 @@ return {
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
+    { '<leader>sz', function() Snacks.picker.zoxide({ }) end, desc = 'Snacks: zoxide', },
 
     { '<C-E>', function()
       if vim.bo.filetype == "snacks_picker_list" then

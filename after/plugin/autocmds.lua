@@ -46,11 +46,11 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   end,
 })
 
--- diosable comment continuation on different lines
--- https://neovim.discourse.group/t/how-do-i-prevent-neovim-commenting-out-next-line-after-a-comment-line/3711/7
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = '*',
-  callback = function()
-    vim.opt_local.formatoptions:remove({ 'r', 'o' })
-  end,
-})
+-- -- diosable comment continuation on different lines
+-- -- https://neovim.discourse.group/t/how-do-i-prevent-neovim-commenting-out-next-line-after-a-comment-line/3711/7
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = '*',
+--   callback = function()
+--     vim.opt_local.formatoptions:remove({ 'r', 'o' })
+--   end,
+-- })
