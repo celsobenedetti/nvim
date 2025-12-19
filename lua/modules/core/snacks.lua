@@ -12,6 +12,14 @@ local function notes()
   Snacks.picker.files({ cwd = '~/notes', title = 'notes' })
 end
 
+function Explorer()
+  if vim.bo.filetype == 'snacks_picker_list' then
+    vim.cmd('q')
+    return
+  end
+  Snacks.picker.resume({ source = 'explorer' })
+end
+
 return {
   'folke/snacks.nvim',
   lazy = false,
@@ -128,14 +136,11 @@ return {
         keys = {
           { icon = ' ', key = 'c', desc = 'cd', action = zoxide },
           { icon = '', key = 't', desc = 'terminal', action = ':term' },
-          { icon = ' ', key = 'r', desc = 'recent files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
+          { icon = ' ', key = 'r', desc = 'recent', action = ":lua Snacks.picker.recent()" },
           { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
           { icon = ' ', key = 's', desc = 'session', action = require('persistence').select },
-          { icon = '', key = 'a', desc = 'agenda', action = function ()
-            vim.cmd("tabnew")
-            vim.cmd("Org agenda T")
-          end, },
+          { icon = '', key = 'a', desc = 'agenda', action = function () vim.cmd("tabnew") vim.cmd("Org agenda T") end, },
           { icon = '', key = 'o', desc = 'opencode', action = ":lua require('sidekick.cli').toggle({name = 'opencode'})", },
           { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
           { icon = ' ', key = '.', desc = 'config', action = dotfiles },
@@ -164,13 +169,7 @@ return {
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
     { '<leader>cd', zoxide, desc = 'Snacks: zoxide', },
 
-    { '<C-S-E>', function()
-      if vim.bo.filetype == "snacks_picker_list" then
-        vim.cmd("q")
-        return
-      end
-      Snacks.picker.resume({source = "explorer", })
-    end, desc = 'Snacks: explorer', },
+    { '<C-S-E>', Explorer, desc = 'Snacks: explorer', },
     { '<leader>en', function() Snacks.explorer.open { cwd = '~/notes' } end, desc = 'Snacks: explorer notes', },
     { '<leader>sc', function() Snacks.picker.commands() end, desc = 'Commands', },
     { '<leader>sC', function() Snacks.picker.command_history() end, desc = 'Command History', },

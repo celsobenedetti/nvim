@@ -3,15 +3,15 @@ require('init')
 require('lazy').setup({
   spec = {
     { import = 'modules.core' },
-    { import = 'modules.tmux' },
-    { import = 'modules.editor' },
     { import = 'modules.git' },
+    { import = 'modules.editor' },
     { import = 'modules.overseer' },
     { import = 'modules.dap' },
-    { import = 'modules.omarchy' },
     { import = 'modules.ai' },
     { import = 'modules.ui' },
     { import = 'modules.zk' },
+    { import = 'modules.omarchy' },
+    { import = 'modules.tmux' },
   },
   defaults = {
     lazy = false,

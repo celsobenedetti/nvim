@@ -1,12 +1,14 @@
-local escape = function()
-  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
-  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
+local tmux = os.getenv('TMUX')
+if not tmux or tmux == '' then
+  return {}
 end
 
---- Runs cmd if not inside Luasnip snippet
+--- Runs cmd if not inside snippet
 ---@param cmd string
 local cmd = function(cmd)
-  escape()
+  -- escape
+  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
+  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
 
   return function()
     local ok, luasnip = pcall(require, 'luasnip')
@@ -38,6 +40,17 @@ return {
       { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane' },
       { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane' },
       { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane' },
+
+      -- keymaps needed only when inside tmux tmux only
+      { '<C-e>', Explorer, desc = 'Snacks: explorer' },
+      {
+        '<c-_>',
+        function()
+          Snacks.terminal(nil, { cwd = require('lib.cwd').root() })
+        end,
+        desc = 'Terminal (Root Dir)',
+        mode = { 'n', 't' },
+      },
     },
   },
 }
