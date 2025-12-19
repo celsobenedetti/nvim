@@ -4,6 +4,14 @@ local function dotfiles()
   Snacks.picker.files({ dirs = { '~/.dotfiles', '~/.config/nvim' }, title = 'dotfiles', hidden = true })
 end
 
+local function zoxide()
+  Snacks.picker.zoxide({ confirm = { 'cd', 'close' } })
+end
+
+local function notes()
+  Snacks.picker.files({ cwd = '~/notes', title = 'notes' })
+end
+
 return {
   'folke/snacks.nvim',
   lazy = false,
@@ -12,7 +20,7 @@ return {
     words = { enabled = true },
     notify = { enabled = true },
     indent = { enabled = true },
-    input = { enabled = true },
+    input = { enabled = false },
 
     notifier = {
       enabled = true,
@@ -116,17 +124,21 @@ return {
         -- Set your custom keymaps here.
         -- When using a function, the `items` argument are the default keymaps.
         ---@type snacks.dashboard.Item[]
-        
         -- stylua: ignore start
         keys = {
-          { icon = ' ', key = 'c', desc = 'cd', action = ':lua Snacks.picker.zoxide()' },
-          { icon = '', key = 'g', desc = 'git', action = function()Snacks.lazygit()end, enabled = function() return cwd.is_git_repo() end },
-          { icon = ' ', key = 's', desc = 'session', action = require('persistence').select },
+          { icon = ' ', key = 'c', desc = 'cd', action = zoxide },
           { icon = '', key = 't', desc = 'terminal', action = ':term' },
           { icon = ' ', key = 'r', desc = 'recent files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = ' ', key = 'e', desc = 'new file', action = ':ene | startinsert' },
-          { icon = '󱙺', key = 'o', desc = 'opencode', action = ":lua require('sidekick.cli').toggle({name = 'opencode'})", },
-          { icon = ' ', key = '.', desc = 'config', action = dotfiles, },
+          { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
+          { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
+          { icon = ' ', key = 's', desc = 'session', action = require('persistence').select },
+          { icon = '', key = 'a', desc = 'agenda', action = function ()
+            vim.cmd("tabnew")
+            vim.cmd("Org agenda T")
+          end, },
+          { icon = '', key = 'o', desc = 'opencode', action = ":lua require('sidekick.cli').toggle({name = 'opencode'})", },
+          { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
+          { icon = ' ', key = '.', desc = 'config', action = dotfiles },
           { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'm', desc = 'mason', action = ':Mason', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'q', desc = 'quit', action = ':qa' },
@@ -137,22 +149,22 @@ return {
   },
   keys = {
     -- stylua: ignore start
-    { '<c-_>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
+    { '<c-/>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'Notification History', },
     { '<leader>rg', function() Snacks.picker.grep() end, desc = 'Grep', },
     { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'Grep (all)', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'delete buffer', },
     { '<leader>dot', dotfiles, desc = 'search dotfiles', },
     { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'search orgifles', },
-    { '<leader>fn', function() Snacks.picker.files { cwd = '~/notes', title = 'All notes' } end, desc = 'search all notes', },
+    { '<leader>sn', notes, desc = 'search all notes', },
     { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
     { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Rename File', },
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
-    { '<leader>sz', function() Snacks.picker.zoxide({ }) end, desc = 'Snacks: zoxide', },
+    { '<leader>cd', zoxide, desc = 'Snacks: zoxide', },
 
-    { '<C-E>', function()
+    { '<C-S-E>', function()
       if vim.bo.filetype == "snacks_picker_list" then
         vim.cmd("q")
         return
@@ -174,8 +186,8 @@ return {
     { '<C-p>', function() Snacks.picker.smart() end, desc = 'Smart picker', },
 
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
-    { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent', },
-    { '<leader>fR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'Recent (cwd)', },
+    { '<leader>sr', function() Snacks.picker.recent() end, desc = 'Recent', },
+    { '<leader>sR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'Recent (cwd)', },
     { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects', },
     -- -- git
     { '<leader>gd', function() Snacks.picker.git_diff() end, desc = 'Git Diff (hunks)', },
@@ -204,7 +216,7 @@ return {
     { '<leader>sl', function() Snacks.picker.loclist() end, desc = 'Location List', },
     { '<leader>sM', function() Snacks.picker.man() end, desc = 'Man Pages', },
     { '<leader>sm', function() Snacks.picker.marks() end, desc = 'Marks', },
-    { '<leader>sR', function() Snacks.picker.resume() end, desc = 'Resume', },
+    { '<leader>pr', function() Snacks.picker.resume() end, desc = 'Resume', },
     { '<leader>sq', function() Snacks.picker.qflist() end, desc = 'Quickfix List', },
     { '<leader>su', function() Snacks.picker.undo() end, desc = 'Undotree', },
     -- ui

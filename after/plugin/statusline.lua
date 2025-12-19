@@ -108,7 +108,7 @@ local modules = {
     if not vim.g.recording_macro then
       return ''
     end
-    return hl(vim.g.hl.warn, ' recording macro ')
+    return hl(vim.g.hl.warn, '  recording macro ')
   end,
 
   _terminal = function()

@@ -29,6 +29,7 @@ return {
   {
     'nvim-orgmode/orgmode',
     -- event = "VeryLazy",
+    cmd = { 'Org' },
     ft = { 'org', 'markdown' },
     keys = {
       { '<leader>oim', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
@@ -39,6 +40,7 @@ return {
           if vim.fn.expand('%'):match('/') then
             vim.cmd(':w')
           end
+          vim.cmd('tabnew')
           vim.cmd(':Org agenda T')
         end,
         desc = 'Org: Today agenda',

@@ -49,13 +49,13 @@ return {
         mode = 'v',
       },
 
-      {
-        '<leader>oo',
-        function()
-          require('lib.zk').open_orgmode_or_obsidian_link()
-        end,
-        desc = 'Open orgmode or obsidian link',
-      },
+      -- {
+      --   '<leader>oo',
+      --   function()
+      --     require('lib.zk').open_orgmode_or_obsidian_link()
+      --   end,
+      --   desc = 'Open orgmode or obsidian link',
+      -- },
       {
         '<leader>ov',
         function()
