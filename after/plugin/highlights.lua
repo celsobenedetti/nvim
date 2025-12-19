@@ -1,7 +1,6 @@
 local colors = require('lib.colors')
-vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.subtext })
+vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- transparency changes -----------
 
--------- transparency changes -----------
 -- vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
 vim.api.nvim_set_hl(
   0,

@@ -4,8 +4,22 @@ local function dotfiles()
   Snacks.picker.files({ dirs = { '~/.dotfiles', '~/.config/nvim' }, title = 'dotfiles', hidden = true })
 end
 
-local function zoxide()
+local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
+end
+
+local function workspace()
+  Snacks.picker.zoxide({
+    confirm = {
+      function(_, item)
+        vim.cmd('tabnew')
+        vim.cmd('file ' .. item.file)
+      end,
+      'lcd',
+      'close',
+    },
+    title = 'workspace (zoxide)',
+  })
 end
 
 local function notes()
@@ -132,7 +146,7 @@ return {
         ---@type snacks.dashboard.Item[]
         -- stylua: ignore start
         keys = {
-          { icon = ' ', key = 'c', desc = 'cd', action = zoxide },
+          { icon = ' ', key = 'c', desc = 'cd', action = cd },
           { icon = '', key = 't', desc = 'terminal', action = Terminal },
           { icon = ' ', key = 'r', desc = 'recent', action = ":lua Snacks.picker.recent()" },
           { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
@@ -164,7 +178,8 @@ return {
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
-    { '<leader>cd', zoxide, desc = 'Snacks: zoxide (cd)', },
+    { '<leader>cd', cd, desc = 'Snacks: zoxide (cd)', },
+    { '<leader>ws', workspace, desc = 'Snacks: workspace (zoxide)', },
     { '<leader>zo', function()Snacks.picker.zoxide({title="session (zoxide)"})end, desc = 'Snacks: zoxide (session)', },
 
     { '<C-S-E>', Explorer, desc = 'Snacks: explorer', },
