@@ -29,9 +29,9 @@ local function close_all_buffers()
   vim.cmd('wa')
   Snacks.bufdelete.all()
   vim.cmd('tabonly', { silent = true })
-  vim.fn.delay(function()
+  vim.defer_fn(function()
     vim.cmd('LspRestart')
-  end, 100)
+  end, 500)
 end
 
 map({ 'n' }, 'ZZ', close_all_buffers, { desc = 'Terminal (Root Dir)' })

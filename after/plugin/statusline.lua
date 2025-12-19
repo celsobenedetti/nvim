@@ -13,7 +13,7 @@ local modules = {
     if not vim.g.gitsigns_head or #vim.g.gitsigns_head == 0 then
       return ''
     end
-    return ' ' .. hl('Title', vim.g.icons.git.branch) .. hl(vim.g.hl.subtext, (vim.g.gitsigns_head or ''))
+    return ' ' .. hl('Title', vim.g.icons.git.branch) .. hl(vim.g.hl.text_secondary, (vim.g.gitsigns_head or ''))
   end,
 
   _file = function()
@@ -26,7 +26,7 @@ local modules = {
       end
     end
 
-    local file = hl(vim.g.hl.subtext, vim.b.relative_file)
+    local file = hl(vim.g.hl.text_secondary, vim.b.relative_file)
     return icon .. '' .. file
   end,
 
@@ -66,7 +66,7 @@ local modules = {
     for _, client in pairs(clients) do
       table.insert(c, client.name)
     end
-    return hl('Title', vim.g.icons.lsp) .. hl(vim.g.hl.subtext, table.concat(vim.fn.reverse(c), ', '))
+    return hl('Title', vim.g.icons.lsp) .. hl(vim.g.hl.text_secondary, table.concat(vim.fn.reverse(c), ', '))
   end,
 
   _formatters = function()
@@ -86,7 +86,7 @@ local modules = {
       return ''
     end
 
-    return hl('Title', ' ') .. hl(vim.g.hl.subtext, result)
+    return hl('Title', ' ') .. hl(vim.g.hl.text_secondary, result)
   end,
 
   _diagnostics = function()
@@ -171,8 +171,8 @@ end
 ---@param segments string[]
 ---@param direction Direction
 local function _build_section(segments, direction)
-  local LEFT_SEPARATOR = hl(vim.g.hl.subtext, vim.g.icons.separator.right)
-  local RIGHT_SEPARATOR = hl(vim.g.hl.subtext, vim.g.icons.separator.left)
+  local LEFT_SEPARATOR = hl(vim.g.hl.text_secondary, vim.g.icons.separator.right)
+  local RIGHT_SEPARATOR = hl(vim.g.hl.text_secondary, vim.g.icons.separator.left)
   local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
   local section = ''
   for i, segment in pairs(segments) do
@@ -199,7 +199,7 @@ function _G.MyStatusLine()
   local left = _build_section({ branch, file .. git_status, diagnostics }, 'left')
   local right = _build_section({ macro, terminal, formatters, lsp }, 'right')
 
-  return left .. '%=' .. right
+  return left .. '%=' .. right .. ' '
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'

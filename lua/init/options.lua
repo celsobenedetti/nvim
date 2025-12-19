@@ -44,7 +44,8 @@ vim.g.icons = {
 }
 
 vim.g.hl = {
-  subtext = '@lsp.type.parameter.bash',
+  text_secondary = '@lsp.type.parameter.bash',
+  subtext = 'Comment',
   highlighted = 'MiniStatuslineModeOther',
   warn = 'LspDiagnosticsVirtualTextWarning',
 }

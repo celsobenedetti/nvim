@@ -1,15 +1,24 @@
+local colors = require('lib.colors')
 vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.subtext })
 
 -------- transparency changes -----------
-vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'TabLine', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'TabLineFill', { bg = 'none' })
+-- vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
+vim.api.nvim_set_hl(
+  0,
+  'TabLine',
+  { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(vim.g.hl.subtext, 'fg') }
+)
+vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
+vim.api.nvim_set_hl(
+  0,
+  'TabLineSel',
+  { bg = colors.get_color('BlinkCmpMenuBorder', 'fg'), fg = colors.get_color(vim.g.hl.text_secondary, 'fg') }
+)
 
 if vim.g.neovide then
   return
 end
 
-local colors = require('lib.colors')
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none' })
