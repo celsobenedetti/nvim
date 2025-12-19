@@ -41,6 +41,7 @@ map('n', '<C-t>', function()
     vim.ui.input({ prompt = 'Create terminal:' }, function(input)
       if input and #input > 0 then
         create_terminal_buffer(input)
+        vim.cmd('startinsert')
       end
     end)
   end
