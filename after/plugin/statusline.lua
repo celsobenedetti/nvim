@@ -117,6 +117,13 @@ local modules = {
     end
     return hl(vim.g.hl.highlighted, '   terminal ')
   end,
+
+  _location = function()
+    if not vim.g.statusline_show_position then
+      return ''
+    end
+    return hl(vim.g.hl.subtext, '%l:%v')
+  end,
 }
 
 local function setup_caching_and_updating()
@@ -195,9 +202,10 @@ function _G.MyStatusLine()
   local formatters = vim.b.cached_formatters or modules._formatters()
   local macro = modules._macro()
   local terminal = modules._terminal()
+  local location = modules._location()
 
   local left = _build_section({ branch, file .. git_status, diagnostics }, 'left')
-  local right = _build_section({ macro, terminal, formatters, lsp }, 'right')
+  local right = _build_section({ macro, terminal, location, formatters, lsp }, 'right')
 
   return left .. '%=' .. right .. ' '
 end

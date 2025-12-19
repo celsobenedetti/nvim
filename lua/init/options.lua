@@ -9,7 +9,8 @@ vim.g.completion = true
 vim.g.autoformat = true
 vim.g.eslint_autoformat = true
 vim.g.dropbar = false
-vim.g.incline = not vim.g.dropbar
+vim.g.incline = true
+vim.g.statusline_show_position = false
 
 vim.o.background = 'dark'
 vim.o.winborder = 'rounded'

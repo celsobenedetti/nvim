@@ -64,7 +64,7 @@ return {
           test = true,
           trailspace = true,
         },
-        telescope = true,
+        telescope = false,
         which_key = true,
       },
     },

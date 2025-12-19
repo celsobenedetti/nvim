@@ -168,7 +168,7 @@ return {
     -- event = 'VeryLazy',
     dependencies = {
       'nvim-orgmode/orgmode',
-      'nvim-telescope/telescope.nvim',
+      { 'nvim-telescope/telescope.nvim', lazy = true },
     },
     config = function()
       require('telescope').load_extension('orgmode')

@@ -4,7 +4,7 @@ if not tmux or tmux == '' then
   map('n', '<C-S-P>', function()
     Snacks.picker.keymaps()
   end, { desc = 'Overseer toggle' })
-  return {}
+  return { 'christoomey/vim-tmux-navigator', lazy = true }
 end
 
 --- Runs cmd if not inside snippet
