@@ -36,7 +36,7 @@ return {
         desc = 'Restore Session',
       },
       {
-        '<leader>sS',
+        '<leader>ss',
         function()
           require('persistence').select()
         end,

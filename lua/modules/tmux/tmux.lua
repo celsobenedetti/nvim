@@ -1,5 +1,9 @@
 local tmux = os.getenv('TMUX')
 if not tmux or tmux == '' then
+  -- keymaps that only should be available outside tmux
+  map('n', '<C-S-P>', function()
+    Snacks.picker.keymaps()
+  end, { desc = 'Overseer toggle' })
   return {}
 end
 

@@ -79,3 +79,7 @@ end, { desc = 'Visual selection or word (Root Dir)' })
 local gx = require('lib.gx')
 map('n', 'gx', gx.normal, { desc = 'gx: open link', buffer = true })
 map('v', 'gx', gx.visual, { desc = 'gx: open link', buffer = true })
+
+map('n', '<leader>ws', function()
+  Terminal('workspace.sh', { newtab = true })
+end, { desc = 'workspace.sh' })

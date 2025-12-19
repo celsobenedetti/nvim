@@ -118,7 +118,7 @@ return {
       config = function()
         -- dashboard buffer keymaps
         vim.api.nvim_buf_set_keymap(0, 'n', 'a', ':lua Terminal()<CR>', {})
-        vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.recent()<CR>', {})
+        vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.files()<CR>', {})
         vim.api.nvim_buf_set_keymap(0, 'n', '<C-f>', ":lua Terminal('workspace.sh', {newtab=true})<CR>", {})
       end,
       preset = {
@@ -217,11 +217,8 @@ return {
     { '<leader>su', function() Snacks.picker.undo() end, desc = 'Undotree', },
     -- ui
     { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'Colorschemes', },
-    { '<leader>ws', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
+    { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
 
-    -- set in allacrity
-    -- { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O
-    { '<leader>ss', function() Snacks.notify.warn('VSCode: please use <C-O> instead of <leader>ss', { title = 'VSCode' }) end, desc = 'Search for Plugin Spec', },
 
     { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'Lazygit (Root Dir)', },
     { '<leader>gG', function() Snacks.lazygit() end, desc = 'Lazygit (cwd)', },

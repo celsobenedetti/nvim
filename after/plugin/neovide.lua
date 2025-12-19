@@ -31,7 +31,7 @@ local function close_all_buffers()
   vim.cmd('tabonly', { silent = true })
   vim.defer_fn(function()
     vim.cmd('LspRestart')
-  end, 500)
+  end, 1500)
 end
 
 map({ 'n' }, 'ZZ', close_all_buffers, { desc = 'Terminal (Root Dir)' })

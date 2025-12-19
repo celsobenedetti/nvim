@@ -3,8 +3,9 @@ return {
   cmd = 'Namu',
 
   init = function()
+    -- set in allacritty
     vim.keymap.set('n', '♠', ':Namu symbols<cr>', {
-      desc = 'Jump to LSP symbol',
+      desc = 'Jump to LSP symbol ',
       silent = true,
     })
     vim.keymap.set('n', '<leader>sw', ':Namu workspace<cr>', {
