@@ -35,13 +35,13 @@ return {
         end,
         desc = 'Restore Session',
       },
-      {
-        '<leader>ss',
-        function()
-          require('persistence').select()
-        end,
-        desc = 'Select Session',
-      },
+      -- {
+      --   '<leader>ss',
+      --   function()
+      --     require('persistence').select()
+      --   end,
+      --   desc = 'Select Session',
+      -- },
       {
         '<leader>ql',
         function()

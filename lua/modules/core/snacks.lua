@@ -5,7 +5,7 @@ local function dotfiles()
 end
 
 local function zoxide()
-  Snacks.picker.zoxide({ confirm = { 'cd', 'close' } })
+  Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
 end
 
 local function notes()
@@ -137,7 +137,7 @@ return {
           { icon = ' ', key = 'r', desc = 'recent', action = ":lua Snacks.picker.recent()" },
           { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
-          { icon = ' ', key = 's', desc = 'session', action = require('persistence').select },
+          { icon = ' ', key = 's', desc = 'session', action = function()Snacks.picker.zoxide({ title="session (zoxide)" })end },
           { icon = '', key = 'o', desc = 'opencode', action = ":lua require('sidekick.cli').toggle({name = 'opencode'})", },
           { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
           { icon = ' ', key = '.', desc = 'config', action = dotfiles },
@@ -164,7 +164,8 @@ return {
     { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
-    { '<leader>cd', zoxide, desc = 'Snacks: zoxide', },
+    { '<leader>cd', zoxide, desc = 'Snacks: zoxide (cd)', },
+    { '<leader>zo', function()Snacks.picker.zoxide({title="session (zoxide)"})end, desc = 'Snacks: zoxide (session)', },
 
     { '<C-S-E>', Explorer, desc = 'Snacks: explorer', },
     { '<leader>en', function() Snacks.explorer.open { cwd = '~/notes' } end, desc = 'Snacks: explorer notes', },

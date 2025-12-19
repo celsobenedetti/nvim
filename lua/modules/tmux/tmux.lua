@@ -1,9 +1,14 @@
+-- TODO: refactor: create "tmux_keymap" util function to set keymap if/if not tmux
 local tmux = os.getenv('TMUX')
 if not tmux or tmux == '' then
   -- keymaps that only should be available outside tmux
   map('n', '<C-S-P>', function()
     Snacks.picker.keymaps()
   end, { desc = 'Overseer toggle' })
+
+  map('n', '<C-S-d>', ':DapViewToggle<CR>', { desc = 'Overseer toggle' })
+
+  -- return plugin so it is not cleaned up by lazy
   return { 'christoomey/vim-tmux-navigator', lazy = true }
 end
 

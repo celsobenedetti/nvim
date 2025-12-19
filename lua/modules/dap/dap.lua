@@ -164,7 +164,11 @@ return {
     ---@module 'dap-view'
     ---@type dapview.Config
     opts = {},
-    keys = { { '<leader>du', ':DapViewToggle<CR>', desc = 'DAP: UI toggle' } },
+    keys = { {
+      '<leader>du',
+      ':DapViewToggle<CR>',
+      desc = 'DAP: UI toggle',
+    } },
   },
 
   -- mason.nvim integration
