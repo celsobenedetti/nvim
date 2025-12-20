@@ -41,6 +41,8 @@ return {
             vim.cmd(':w')
           end
           vim.cmd('tabnew')
+          vim.cmd('file notes')
+          vim.cmd('lcd ' .. vim.g.env.notes.NOTES)
           vim.cmd(':Org agenda T')
         end,
         desc = 'Org: Today agenda',

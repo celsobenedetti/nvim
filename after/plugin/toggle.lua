@@ -22,9 +22,7 @@ end
 
 M.statusline_show_position = function()
   vim.g.statusline_show_position = not vim.g.statusline_show_position
-  notify('statusline show position')
 end
-
 
 -- toggles
 -- stylua: ignore start

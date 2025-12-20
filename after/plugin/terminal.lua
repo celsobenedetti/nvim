@@ -4,9 +4,11 @@
 --- fuzzy search for open terminal buffers
 --- if found, open it
 --- else create new terminal with name equal to query
+--- TODO: decide: do I really want this?
 
 ---@param name string
 local create_terminal_buffer = function(name)
+  vim.cmd('tabnew')
   vim.cmd('term')
   vim.schedule(function()
     vim.cmd('file ' .. vim.fn.fnameescape(name))

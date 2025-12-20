@@ -8,12 +8,11 @@ local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
 end
 
-local function workspace()
+function Workspace()
   Snacks.picker.zoxide({
     confirm = {
-      function(_, item)
+      function()
         vim.cmd('tabnew')
-        vim.cmd('file ' .. item.file)
       end,
       'lcd',
       'close',
@@ -133,7 +132,7 @@ return {
         -- dashboard buffer keymaps
         vim.api.nvim_buf_set_keymap(0, 'n', 'a', ':lua Terminal()<CR>', {})
         vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.files()<CR>', {})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<C-f>', ":lua Terminal('workspace.sh', {newtab=true})<CR>", {})
+        vim.api.nvim_buf_set_keymap(0, 'n', '<C-f>', ':lua Workspace()<CR>', {})
       end,
       preset = {
         header = '',
@@ -179,11 +178,11 @@ return {
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
     { '<leader>cd', cd, desc = 'Snacks: zoxide (cd)', },
-    { '<leader>ws', workspace, desc = 'Snacks: workspace (zoxide)', },
+    { '<leader>ws', Workspace, desc = 'Snacks: workspace (zoxide)', },
     { '<leader>zo', function()Snacks.picker.zoxide({title="session (zoxide)"})end, desc = 'Snacks: zoxide (session)', },
 
     { '<C-S-E>', Explorer, desc = 'Snacks: explorer', },
-    { '<leader>en', function() Snacks.explorer.open { cwd = '~/notes' } end, desc = 'Snacks: explorer notes', },
+    { '<leader>fe', function()Snacks.explorer()end, desc = 'Snacks: explorer (fe)', },
     { '<leader>sc', function() Snacks.picker.commands() end, desc = 'Commands', },
     { '<leader>sC', function() Snacks.picker.command_history() end, desc = 'Command History', },
     { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'References', },

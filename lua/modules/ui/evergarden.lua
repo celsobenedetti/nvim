@@ -12,8 +12,9 @@ local config = {
 local overrides = {
   ['@keyword'] = config.highlights.keyword,
   ['@constant'] = { c.white },
-  SpellBad = { style = { 'italic', 'underdotted' } },
-  TabLineSel = { bg = c.inactivegray },
+  ['typescriptVariable'] = { c.orange },
+  -- SpellBad = { style = { 'italic', 'underdotted' } },
+  -- TabLineSel = { bg = c.inactivegray },
 }
 
 if not should_override then
