@@ -1,19 +1,11 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = '\\'
-
-vim.opt.spelllang = { 'en', 'pt' }
-vim.g.performance = vim.g.performance or false
-
 vim.g.supermaven = true
-vim.g.completion = true
 vim.g.autoformat = true
+vim.g.completion = true
 vim.g.eslint_autoformat = true
-vim.g.dropbar = false
 vim.g.incline = true
-vim.g.statusline_show_position = false
+vim.g.dropbar = false
 
 vim.o.background = 'dark'
-vim.o.winborder = 'rounded'
 vim.o.cmdheight = 0 -- Height of the command bar
 vim.o.relativenumber = false
 
@@ -22,6 +14,8 @@ vim.g.dirs = require('config.dirs')
 vim.g.colors = require('config.colors').default
 
 vim.g.icons = {
+  lsp = ' ',
+  format = ' ',
   git = {
     added = ' +',
     modified = ' ~',
@@ -43,24 +37,41 @@ vim.g.icons = {
   dap = {
     breakpoint = '',
   },
-  lsp = ' ',
 }
 
-vim.g.hl = {
-  text_secondary = '@lsp.type.parameter.bash',
-  subtext = 'Comment',
-  highlighted = 'MiniStatuslineModeOther',
-  warn = 'WarningMsg',
-  WARN = 'LspDiagnosticsVirtualTextWarning',
-}
-
-vim.g.ai = {
-  models = {
-    gpt = 'gpt-4.1',
+vim.g.cmd = {
+  git = {
+    commits_ahead_of_origin = 'git rev-list --count HEAD ^origin/$(git branch --show-current)',
+    commits_behind_origin = 'git rev-list --count ^HEAD origin/$(git branch --show-current)',
   },
 }
 
--- filetypes to close with q
+vim.g.hl = {
+  text = {
+    highlight = 'Title',
+    secondary = '@lsp.type.parameter.bash',
+    subtext = 'Comment',
+    warn = 'WarningMsg',
+  },
+  highlight = 'MiniStatuslineModeOther',
+  warn = 'LspDiagnosticsVirtualTextWarning',
+}
+
+vim.g.ignore = {
+  grep = {
+    'pnpm-lock.yaml',
+    'instascan.min.js',
+  },
+  explorer = {
+    '*.org_archive',
+  },
+}
+
+vim.g.web = {
+  jira = vim.g.env.work.jira or '',
+}
+
+--- filsubtextetypes to close with q
 vim.g.close_with_q = {
   'checkhealth',
   'dap-view',
@@ -81,24 +92,12 @@ vim.g.close_with_q = {
   'vim',
 }
 
-vim.g.ignore = {
-  grep = {
-    'pnpm-lock.yaml',
-    'instascan.min.js',
-  },
-  explorer = {
-    '*.org_archive',
-  },
-}
-
 --- check root file for specific stack
 vim.g.root = {
   vue = 'vite.config.ts',
 }
 
-vim.g.web = {
-  jira = os.getenv('WORK_JIRA') or '',
-}
+vim.g.statusline_show_position = false
 
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200
@@ -107,9 +106,11 @@ vim.opt.swapfile = false
 vim.opt.tabstop = 4 -- Number of spaces tabs count for
 vim.opt.shiftwidth = 4 -- Size of an indent - this seems to affect conform
 
+vim.o.winborder = 'rounded'
+vim.opt.spelllang = { 'en', 'pt' }
 vim.o.spellcapcheck = ''
-
 vim.opt.autowrite = true -- Enable auto write
+
 -- only set clipboard if not in ssh, to make sure the OSC 52
 -- integration works automatically.
 vim.opt.clipboard = vim.env.SSH_CONNECTION and '' or 'unnamedplus' -- Sync with system clipboard

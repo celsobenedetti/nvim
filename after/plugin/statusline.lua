@@ -14,7 +14,9 @@ local modules = {
       return ''
     end
 
-    return ' ' .. hl('Title', vim.g.icons.git.branch) .. hl(vim.g.hl.text_secondary, (vim.g.gitsigns_head or ''))
+    return ' '
+      .. hl(vim.g.hl.text.highlight, vim.g.icons.git.branch)
+      .. hl(vim.g.hl.text.secondary, (vim.g.gitsigns_head or ''))
   end,
 
   _branch_sync_status = function()
@@ -29,7 +31,7 @@ local modules = {
       branch_status = branch_status .. vim.g.icons.git.ahead .. vim.g.branch_commits_ahead_of_origin
     end
 
-    return hl(vim.g.hl.text_secondary, branch_status)
+    return hl(vim.g.hl.text.secondary, branch_status)
   end,
 
   _file = function()
@@ -42,7 +44,7 @@ local modules = {
       end
     end
 
-    local file = hl(vim.g.hl.text_secondary, vim.b.relative_file)
+    local file = hl(vim.g.hl.text.secondary, vim.b.relative_file)
     return icon .. '' .. file
   end,
 
@@ -82,7 +84,8 @@ local modules = {
     for _, client in pairs(clients) do
       table.insert(c, client.name)
     end
-    return hl('Title', vim.g.icons.lsp) .. hl(vim.g.hl.text_secondary, table.concat(vim.fn.reverse(c), ', '))
+    return hl(vim.g.hl.text.highlight, vim.g.icons.lsp)
+      .. hl(vim.g.hl.text.secondary, table.concat(vim.fn.reverse(c), ', '))
   end,
 
   _formatters = function()
@@ -102,7 +105,7 @@ local modules = {
       return ''
     end
 
-    return hl('Title', ' ') .. hl(vim.g.hl.text_secondary, result)
+    return hl(vim.g.hl.text.highlight, vim.g.icons.format) .. hl(vim.g.hl.text.secondary, result)
   end,
 
   _diagnostics = function()
@@ -124,21 +127,21 @@ local modules = {
     if not vim.g.recording_macro then
       return ''
     end
-    return hl(vim.g.hl.WARN, '  recording macro ')
+    return hl(vim.g.hl.warn, '  recording macro ')
   end,
 
   _terminal = function()
     if not vim.b.term then
       return ''
     end
-    return hl(vim.g.hl.highlighted, '   terminal ')
+    return hl(vim.g.hl.highlight, '   terminal ')
   end,
 
   _location = function()
     if not vim.g.statusline_show_position then
       return ''
     end
-    return hl(vim.g.hl.subtext, '%l:%v')
+    return hl(vim.g.hl.text.subtext, '%l:%v')
   end,
 }
 
@@ -195,10 +198,8 @@ local function setup_caching_and_updating()
       INTERVAL,
       BIG_INTERVAL,
       vim.schedule_wrap(function()
-        vim.g.branch_commits_ahead_of_origin =
-          tonumber(vim.fn.system('git rev-list --count HEAD ^origin/$(git branch --show-current)'))
-        vim.g.branch_commits_behind_origin =
-          tonumber(vim.fn.system('git rev-list --count ^HEAD origin/$(git branch --show-current)'))
+        vim.g.branch_commits_ahead_of_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_ahead_of_origin))
+        vim.g.branch_commits_behind_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_behind_origin))
       end)
     )
   end
@@ -209,8 +210,8 @@ end
 ---@param segments string[]
 ---@param direction Direction
 local function _build_section(segments, direction)
-  local LEFT_SEPARATOR = hl(vim.g.hl.text_secondary, vim.g.icons.separator.right)
-  local RIGHT_SEPARATOR = hl(vim.g.hl.text_secondary, vim.g.icons.separator.left)
+  local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
+  local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
   local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
   local section = ''
   for i, segment in pairs(segments) do
@@ -238,8 +239,9 @@ function _G.MyStatusLine()
 
   local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics }, 'left')
   local right = _build_section({ macro, terminal, location, formatters, lsp }, 'right')
+  local SPACE_BETWEEN = '%=' --- :h statusline
 
-  return left .. '%=' .. right .. ' '
+  return left .. SPACE_BETWEEN .. right .. ' '
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'

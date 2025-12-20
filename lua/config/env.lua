@@ -1,5 +1,8 @@
 local M = {
   WORK = os.getenv('WORK') or '',
+  work = {
+    jira = os.getenv('WORK_JIRA') or '',
+  },
 
   HOME = os.getenv('HOME') or '',
 
