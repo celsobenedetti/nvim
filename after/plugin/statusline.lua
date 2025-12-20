@@ -188,11 +188,11 @@ local function setup_caching_and_updating()
     )
   end
 
-  local BIG_INTERVAL = 10000
+  local BIG_INTERVAL = 5000
   local big_timer = vim.uv.new_timer()
   if big_timer then
     big_timer:start(
-      BIG_INTERVAL,
+      INTERVAL,
       BIG_INTERVAL,
       vim.schedule_wrap(function()
         vim.g.branch_commits_ahead_of_origin =
