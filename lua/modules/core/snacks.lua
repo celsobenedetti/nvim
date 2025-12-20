@@ -151,7 +151,7 @@ return {
           { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
           { icon = ' ', key = 's', desc = 'session', action = function()Snacks.picker.zoxide({ title="session (zoxide)" })end },
-          { icon = '', key = 'o', desc = 'opencode', action = ":lua require('sidekick.cli').toggle({name = 'opencode'})", },
+          { icon = '', key = 'o', desc = 'orgmode', action = function()require('telescope').extensions.orgmode.search_headings()end, },
           { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
           { icon = ' ', key = '.', desc = 'config', action = dotfiles },
           { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
