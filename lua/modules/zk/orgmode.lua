@@ -37,7 +37,7 @@ return {
       {
         '<leader>T',
         function()
-          if vim.fn.expand('%'):match('/') then
+          if vim.o.buftype == '' and vim.fn.expand('%'):match('/') then
             vim.cmd(':w')
           end
           vim.cmd('tabnew')
