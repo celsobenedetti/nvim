@@ -13,7 +13,23 @@ local modules = {
     if not vim.g.gitsigns_head or #vim.g.gitsigns_head == 0 then
       return ''
     end
+
     return ' ' .. hl('Title', vim.g.icons.git.branch) .. hl(vim.g.hl.text_secondary, (vim.g.gitsigns_head or ''))
+  end,
+
+  _branch_sync_status = function()
+    local branch_status = ''
+    if vim.g.branch_commits_behind_origin and vim.g.branch_commits_behind_origin > 0 then
+      branch_status = ' ' .. vim.g.icons.git.behind .. vim.g.branch_commits_behind_origin
+    end
+    if vim.g.branch_commits_ahead_of_origin and vim.g.branch_commits_ahead_of_origin > 0 then
+      if branch_status == '' then
+        branch_status = ' '
+      end
+      branch_status = branch_status .. vim.g.icons.git.ahead .. vim.g.branch_commits_ahead_of_origin
+    end
+
+    return hl(vim.g.hl.text_secondary, branch_status)
   end,
 
   _file = function()
@@ -108,7 +124,7 @@ local modules = {
     if not vim.g.recording_macro then
       return ''
     end
-    return hl(vim.g.hl.warn, '  recording macro ')
+    return hl(vim.g.hl.WARN, '  recording macro ')
   end,
 
   _terminal = function()
@@ -171,6 +187,21 @@ local function setup_caching_and_updating()
       end)
     )
   end
+
+  local BIG_INTERVAL = 10000
+  local big_timer = vim.uv.new_timer()
+  if big_timer then
+    big_timer:start(
+      BIG_INTERVAL,
+      BIG_INTERVAL,
+      vim.schedule_wrap(function()
+        vim.g.branch_commits_ahead_of_origin =
+          tonumber(vim.fn.system('git rev-list --count HEAD ^origin/$(git branch --show-current)'))
+        vim.g.branch_commits_behind_origin =
+          tonumber(vim.fn.system('git rev-list --count ^HEAD origin/$(git branch --show-current)'))
+      end)
+    )
+  end
 end
 
 --- builts a statusline section, with its segments separated by the separator
@@ -195,6 +226,7 @@ end
 
 function _G.MyStatusLine()
   local branch = modules._git_branch()
+  local branch_sync_status = modules._branch_sync_status()
   local file = vim.b.cached_file or modules._file()
   local git_status = vim.b.cached_git_status or modules._git_status()
   local diagnostics = vim.b.cached_diagnostics or modules._diagnostics()
@@ -204,7 +236,7 @@ function _G.MyStatusLine()
   local terminal = modules._terminal()
   local location = modules._location()
 
-  local left = _build_section({ branch, file .. git_status, diagnostics }, 'left')
+  local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics }, 'left')
   local right = _build_section({ macro, terminal, location, formatters, lsp }, 'right')
 
   return left .. '%=' .. right .. ' '

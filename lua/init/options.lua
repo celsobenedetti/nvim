@@ -27,6 +27,8 @@ vim.g.icons = {
     modified = ' ~',
     removed = ' -',
     branch = ' ',
+    ahead = '',
+    behind = '',
   },
   diagnostics = {
     error = ' ',
@@ -48,7 +50,8 @@ vim.g.hl = {
   text_secondary = '@lsp.type.parameter.bash',
   subtext = 'Comment',
   highlighted = 'MiniStatuslineModeOther',
-  warn = 'LspDiagnosticsVirtualTextWarning',
+  warn = 'WarningMsg',
+  WARN = 'LspDiagnosticsVirtualTextWarning',
 }
 
 vim.g.ai = {
