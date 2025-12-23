@@ -154,6 +154,7 @@ return {
           { icon = '', key = 'o', desc = 'orgmode', action = function()require('telescope').extensions.orgmode.search_headings()end, },
           { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
           { icon = ' ', key = '.', desc = 'config', action = dotfiles },
+          { icon = '', key = '/', desc = 'terminal', action = function()Snacks.terminal(nil, { cwd = cwd.root() })end },
           { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'm', desc = 'mason', action = ':Mason', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'q', desc = 'quit', action = ':qa' },
