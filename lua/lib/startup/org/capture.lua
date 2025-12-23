@@ -1,7 +1,7 @@
 require('orgmode')
 local delay = {
   capture = 10,
-  delete_top_buffer = 50,
+  delete_top_buffer = 150,
 }
 
 vim.defer_fn(function()

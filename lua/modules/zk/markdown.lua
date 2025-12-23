@@ -60,7 +60,7 @@ return {
       vim.keymap.set('n', '<C-b>', '<Plug>(MarkdownPlusBold)')
       vim.keymap.set('n', '<C-i>', '<Plug>(MarkdownPlusItalic)')
       -- vim.keymap.set('n', '<C-s>', '<Plug>(MarkdownPlusStrikethrough)') -- conflicts with save
-      vim.keymap.set('n', '<C-k>', '<Plug>(MarkdownPlusCode)')
+      -- vim.keymap.set('n', '<C-k>', '<Plug>(MarkdownPlusCode)') -- C-k is window movement
       vim.keymap.set('n', '<C-x>', '<Plug>(MarkdownPlusClearFormatting)')
 
       -- Visual mode
