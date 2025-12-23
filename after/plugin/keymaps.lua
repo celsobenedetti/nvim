@@ -7,7 +7,8 @@ map('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 -- tabs
 map('n', ']<tab>', ':tabnext<CR>', { desc = 'tab: next' })
 map('n', '[<tab>', ':tabprevious<CR>', { desc = 'tab: prev' })
-map('n', '<leader><tab>n', ':tabnew<CR>', { desc = 'tab: new' })
+map('n', '<leader><tab>n', ':tabnew<CR>', { desc = 'tab: tabnew' })
+map('n', '<leader><tab>d', ':tabclose<CR>', { desc = 'tab: tabclose' })
 
 -- better j/k
 local jump = require('lib.jump')
