@@ -16,6 +16,11 @@ return {
           and vim.g.completion
       end
 
+      -- TODO: this is here since there is an issue in the non nightly rust build of this
+      opts.fuzzy = {
+        implementation = 'prefer_rust',
+      }
+
       opts.keymap = {
         preset = 'enter',
         ['<C-y>'] = { 'select_and_accept' },
