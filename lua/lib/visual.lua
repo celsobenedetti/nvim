@@ -69,8 +69,22 @@ M.replace = function(new_text)
   if not lines or #lines == 0 then
     return
   end
-  lines[1] = new_text
-  replace_region_with_text(start, finish, lines)
+
+  -- replace text
+  local start_col = region[start[1]][1]
+  local end_col = region[finish[1]][2]
+  local new_lines = vim.split(new_text, '\n', { plain = true })
+  local result_lines = {}
+  table.insert(result_lines, lines[1]:sub(1, start_col) .. new_lines[1])
+  for i = 2, #new_lines - 1 do
+    table.insert(result_lines, new_lines[i])
+  end
+  if #new_lines > 1 then
+    table.insert(result_lines, new_lines[#new_lines] .. lines[#lines]:sub(end_col + 1))
+  else
+    result_lines[1] = result_lines[1] .. lines[#lines]:sub(end_col + 1)
+  end
+  replace_region_with_text(start, finish, result_lines)
 end
 
 M.get_selection = function()
