@@ -79,7 +79,7 @@ return {
       vim.keymap.set('n', '<leader>ht', '<Plug>(MarkdownPlusGenerateTOC)')
       vim.keymap.set('n', '<leader>hu', '<Plug>(MarkdownPlusUpdateTOC)')
       vim.keymap.set('n', '<leader>hT', '<Plug>(MarkdownPlusOpenTocWindow)')
-      vim.keymap.set('n', '<CR>', '<Plug>(MarkdownPlusFollowLink)') -- Follow TOC link
+      -- vim.keymap.set('n', '<CR>', '<Plug>(MarkdownPlusFollowLink)') -- Follow TOC link -- interfeers with general <CR> behavior
 
       --- Header levels (H1-H6)
       for i = 1, 6 do
@@ -107,7 +107,7 @@ return {
       -- vim.keymap.set('i', '<C-]>', '<Plug>(MarkdownPlusListIndent)') -- conflicts with supermaven
       vim.keymap.set('i', '<C-[>', '<Plug>(MarkdownPlusListOutdent)')
       vim.keymap.set('i', '<C-h>', '<Plug>(MarkdownPlusListBackspace)')
-      -- vim.keymap.set('i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)')
+      -- vim.keymap.set('i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)') interfeer's with native C-t
 
       -- Normal mode
       vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusRenumberLists)')
