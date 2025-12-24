@@ -10,9 +10,7 @@
 local create_terminal_buffer = function(name)
   vim.cmd('tabnew')
   vim.cmd('term')
-  vim.schedule(function()
-    vim.cmd('file ' .. vim.fn.fnameescape(name))
-  end)
+  vim.g.fn.rename_tab(name)
 end
 
 map('n', '<C-t>', function()

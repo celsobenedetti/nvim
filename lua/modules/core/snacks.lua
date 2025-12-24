@@ -11,8 +11,11 @@ end
 function Workspace()
   Snacks.picker.zoxide({
     confirm = {
-      function()
+      function(_, item)
         vim.cmd('tabnew')
+        if item.file and item.file ~= '' then
+          vim.g.fn.rename_tab(vim.fs.basename(item.file))
+        end
       end,
       'lcd',
       'close',
