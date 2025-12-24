@@ -165,7 +165,10 @@ return {
   },
   keys = {
     -- stylua: ignore start
-    { '<c-/>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
+    -- TODO: figure out cwd in terminal, if opening file with different cwd from root
+    -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
+    -- { '<c-/>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
+    { '<c-/>', function() Snacks.terminal() end, desc = 'terminal toggle', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'Notification History', },
     { '<leader>rg', function() Snacks.picker.grep() end, desc = 'Grep', },
     { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'Grep (all)', },

@@ -107,7 +107,7 @@ return {
       -- vim.keymap.set('i', '<C-]>', '<Plug>(MarkdownPlusListIndent)') -- conflicts with supermaven
       vim.keymap.set('i', '<C-[>', '<Plug>(MarkdownPlusListOutdent)')
       vim.keymap.set('i', '<C-h>', '<Plug>(MarkdownPlusListBackspace)')
-      vim.keymap.set('i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)')
+      -- vim.keymap.set('i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)')
 
       -- Normal mode
       vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusRenumberLists)')
