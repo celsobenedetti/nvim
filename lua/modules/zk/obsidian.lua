@@ -19,12 +19,7 @@ local function create_note_from_selection()
     })
     :save({ path = vim.g.env.notes.INBOX .. '/' .. id .. '.md' })
 
-  if vim.bo.filetype == 'markdown' then
-    -- we only want to add use the title syntax in markdown file, otherwise we want to just add the id
-    visual.replace('[[' .. id .. '|' .. title .. ']]')
-  else
-    visual.replace('[[' .. id .. ']]')
-  end
+  visual.replace('[[' .. id .. ']]')
 end
 
 return {
