@@ -246,14 +246,14 @@ return {
     { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'Prev Reference', },
     -- TODO: decide which of these is good
     { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
-    { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
+    -- { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
     { 'gB', function() Snacks.gitbrowse();  end, { desc = 'Git Browse (open)' }, },
     { 'gY', function()
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
     end, { desc = 'Git Browse (copy)', mode = { 'n', 'x' } }, },
-    { '<leader>gf', function() Snacks.picker.git_log_file() end, { desc = 'Git Current File History' }, },
-    { '<leader>gl', function() Snacks.picker.git_log { cwd = cwd.root() } end, { desc = 'Git Log' }, },
+    -- { '<leader>gf', function() Snacks.picker.git_log_file() end, { desc = 'Git Current File History' }, },
+    -- { '<leader>gl', function() Snacks.picker.git_log { cwd = cwd.root() } end, { desc = 'Git Log' }, },
 
     -- stylua: ignore end
   },
