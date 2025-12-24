@@ -135,6 +135,11 @@ return {
             target = vim.g.env.notes.ORG_PURCHASES,
             headline = 'purchases',
           },
+          c = {
+            description = 'quick capture',
+            template = '* %?\n %U',
+            target = vim.g.env.notes.ORG_REFILE,
+          },
         },
 
         mappings = {
