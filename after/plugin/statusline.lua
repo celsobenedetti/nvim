@@ -143,6 +143,13 @@ local modules = {
     end
     return hl(vim.g.hl.text.subtext, '%l:%v')
   end,
+
+  _time = function()
+    if not vim.g.statusline_show_time then
+      return ''
+    end
+    return os.date('%H:%M')
+  end,
 }
 
 local function setup_caching_and_updating()
@@ -177,12 +184,12 @@ local function setup_caching_and_updating()
   })
 
   -- create scheduler to update some cached items periodically
-  local INTERVAL = 2000
+  local SHORT_INTERVAL = 2000
   local timer = vim.uv.new_timer()
   if timer then
     timer:start(
-      INTERVAL,
-      INTERVAL,
+      SHORT_INTERVAL,
+      SHORT_INTERVAL,
       vim.schedule_wrap(function()
         local bufnr = vim.api.nvim_get_current_buf()
         vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', modules._diagnostics())
@@ -191,15 +198,27 @@ local function setup_caching_and_updating()
     )
   end
 
-  local BIG_INTERVAL = 5000
+  local MEDIUM_INTERVAL = 5000
   local big_timer = vim.uv.new_timer()
   if big_timer then
     big_timer:start(
-      INTERVAL,
-      BIG_INTERVAL,
+      SHORT_INTERVAL,
+      MEDIUM_INTERVAL,
       vim.schedule_wrap(function()
         vim.g.branch_commits_ahead_of_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_ahead_of_origin))
         vim.g.branch_commits_behind_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_behind_origin))
+      end)
+    )
+  end
+
+  local MINUTE = 60000
+  local minute_timer = vim.uv.new_timer()
+  if minute_timer then
+    minute_timer:start(
+      SHORT_INTERVAL,
+      MINUTE,
+      vim.schedule_wrap(function()
+        vim.g.time = modules._time()
       end)
     )
   end
@@ -236,9 +255,10 @@ function _G.MyStatusLine()
   local macro = modules._macro()
   local terminal = modules._terminal()
   local location = modules._location()
+  local time = vim.g.time or modules._time()
 
   local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics }, 'left')
-  local right = _build_section({ macro, terminal, location, formatters, lsp }, 'right')
+  local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
   return left .. SPACE_BETWEEN .. right .. ' '

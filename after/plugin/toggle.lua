@@ -24,12 +24,17 @@ M.statusline_show_position = function()
   vim.g.statusline_show_position = not vim.g.statusline_show_position
 end
 
+M.statusline_show_time = function()
+  vim.g.statusline_show_time = not vim.g.statusline_show_time
+end
+
 -- toggles
 -- stylua: ignore start
 map('n', '<leader>tc', M.completion, { desc = 'toggle: completion' })
 map('n', '<leader>ts', M.supermaven, { desc = 'toggle: supermaven' })
 map('n', '<leader>tf', M.autoformat, { desc = 'toggle: autoformat' })
 map('n', '<leader>tp', M.statusline_show_position, { desc = 'toggle: show position in statusline' })
+map('n', '<leader>ut', M.statusline_show_time, { desc = 'toggle: show time in statusline' })
 Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
 Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
 Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>ur")
