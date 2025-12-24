@@ -145,9 +145,6 @@ local modules = {
   end,
 
   _time = function()
-    if not vim.g.statusline_show_time then
-      return ''
-    end
     return os.date('%H:%M')
   end,
 }
@@ -255,7 +252,7 @@ function _G.MyStatusLine()
   local macro = modules._macro()
   local terminal = modules._terminal()
   local location = modules._location()
-  local time = vim.g.time or modules._time()
+  local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
 
   local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics }, 'left')
   local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
