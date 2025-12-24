@@ -2,6 +2,31 @@ local strings = require('lib.strings')
 local visual = require('lib.visual')
 local cwd = require('lib.cwd')
 
+local function create_note_from_selection()
+  local text = visual.get_selection()
+  if not text or #text == 0 then
+    return
+  end
+  local obsidian = require('obsidian')
+  local title = strings.trim(text)
+  local id = strings.slugify(text)
+  id = id:gsub('-', '') -- remove hyphens from id
+
+  obsidian.Note
+    .create({
+      id = id,
+      title = title,
+    })
+    :save({ path = vim.g.env.notes.INBOX .. '/' .. id .. '.md' })
+
+  if vim.bo.filetype == 'markdown' then
+    -- we only want to add use the title syntax in markdown file, otherwise we want to just add the id
+    visual.replace('[[' .. id .. '|' .. title .. ']]')
+  else
+    visual.replace('[[' .. id .. ']]')
+  end
+end
+
 return {
   {
     'obsidian-nvim/obsidian.nvim',
@@ -20,34 +45,7 @@ return {
       { '<leader>ch', ':Obsidian check<CR>' },
       { '<leader>oR', ':Obsidian rename<CR>' },
       { '<leader>toc', ':Obsidian toc<CR>' },
-
-      {
-        '<leader>n',
-        function()
-          local text = visual.get_selection()
-          if not text or #text == 0 then
-            return
-          end
-          local obsidian = require 'obsidian'
-
-          local title = strings.trim(text)
-          local id = strings.slugify(text)
-          obsidian.Note
-            .create({
-              id = id,
-              title = title,
-            })
-            :save()
-
-          if vim.bo.filetype == 'markdown' then
-            -- we only want to add use the title syntax in markdown file, otherwise we want to just add the id
-            visual.replace('[[' .. id .. '|' .. title .. ']]')
-          else
-            visual.replace('[[' .. id .. ']]')
-          end
-        end,
-        mode = 'v',
-      },
+      { '<leader>n', create_note_from_selection, mode = 'v', },
 
       -- {
       --   '<leader>oo',

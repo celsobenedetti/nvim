@@ -87,12 +87,12 @@ return {
       end
 
       --- Links
-      vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)')
+      -- vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)')
       vim.keymap.set('v', '<leader>li', '<Plug>(MarkdownPlusSelectionToLink)')
       vim.keymap.set('n', '<leader>le', '<Plug>(MarkdownPlusEditLink)')
       vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusConvertToReference)')
       vim.keymap.set('n', '<leader>ln', '<Plug>(MarkdownPlusConvertToInline)')
-      vim.keymap.set('n', '<leader>la', '<Plug>(MarkdownPlusAutoLinkURL)')
+      vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusAutoLinkURL)')
 
       --- Images
       vim.keymap.set('n', '<leader>mL', '<Plug>(MarkdownPlusInsertImage)')

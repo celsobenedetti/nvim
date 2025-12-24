@@ -2,7 +2,7 @@
 map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>silent w<cr><esc>', { desc = 'Save File' })
 
 -- lazy
-map('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
+map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
 -- tabs
 map('n', ']<tab>', ':tabnext<CR>', { desc = 'tab: next' })
