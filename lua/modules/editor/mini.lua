@@ -72,7 +72,7 @@ return {
     version = false,
     opts = {
       file = {
-        ['AGENTS.md'] = { glyph = '', hl = 'MiniIconsYellow' },
+        ['AGENTS.md'] = { glyph = ' ', hl = 'MiniIconsYellow' },
         ['.eslintrc.js'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
         ['eslint.config.ts'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
         ['.node-version'] = { glyph = '', hl = 'MiniIconsGreen' },

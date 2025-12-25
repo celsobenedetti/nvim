@@ -31,7 +31,7 @@ vim.g.icons = {
     hint = ' ',
   },
   separator = {
-    right = '  ',
+    right = '  ',
     left = '  ',
   },
   dap = {

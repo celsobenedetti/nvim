@@ -26,7 +26,7 @@ return {
             line.tabs().foreach(function(tab)
               local hl = tab.is_current() and theme.current_tab or theme.tab
               return {
-                line.sep(' ', hl, theme.fill),
+                line.sep(vim.g.icons.separator.right, hl, theme.fill),
                 -- tab.is_current() and '' or '󰆣',
                 -- tab.number(),
                 tab.name(),

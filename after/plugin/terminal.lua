@@ -10,7 +10,7 @@
 local create_terminal_buffer = function(name)
   vim.cmd('tabnew')
   vim.cmd('term')
-  vim.g.fn.rename_tab(name)
+  vim.g.fn.rename_tab(' ' .. name)
 end
 
 map('n', '<C-t>', function()
