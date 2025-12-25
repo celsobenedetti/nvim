@@ -22,6 +22,7 @@ vim.g.fn = {
   rename_tab = function(name)
     local ok, tabby = pcall(require, 'tabby')
     if not ok then
+      Snacks.notify.warn("can't rename tab: tabby.nvim not installed")
       return
     end
     if name and #name > 0 then
