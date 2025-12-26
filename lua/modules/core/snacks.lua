@@ -8,7 +8,13 @@ local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
 end
 
-function Workspace()
+local function terminal()
+  vim.cmd('tab term')
+  vim.g.fn.rename_tab(' bash')
+  vim.cmd('startinsert')
+end
+
+local function workspace()
   Snacks.picker.zoxide({
     confirm = {
       function(_, item)
@@ -133,9 +139,7 @@ return {
       },
       config = function()
         -- dashboard buffer keymaps
-        vim.api.nvim_buf_set_keymap(0, 'n', 'a', ':lua Terminal()<CR>', {})
         vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.files()<CR>', {})
-        vim.api.nvim_buf_set_keymap(0, 'n', '<C-f>', ':lua Workspace()<CR>', {})
       end,
       preset = {
         header = '',
@@ -149,7 +153,7 @@ return {
         -- stylua: ignore start
         keys = {
           { icon = ' ', key = 'c', desc = 'cd', action = cd },
-          { icon = '', key = 't', desc = 'terminal', action = Terminal },
+          { icon = '', key = 't', desc = 'terminal', action = terminal },
           { icon = ' ', key = 'r', desc = 'recent', action = ":lua Snacks.picker.recent()" },
           { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
@@ -185,7 +189,7 @@ return {
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
     { '<leader>cd', cd, desc = 'Snacks: zoxide (cd)', },
-    { '<leader>ws', Workspace, desc = 'Snacks: workspace (zoxide)', },
+    { '<leader>ws', workspace, desc = 'Snacks: workspace (zoxide)', },
     { '<leader>zo', function()Snacks.picker.zoxide({title="session (zoxide)"})end, desc = 'Snacks: zoxide (session)', },
 
     { '<C-S-E>', Explorer, desc = 'Snacks: explorer', },

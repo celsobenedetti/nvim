@@ -12,7 +12,6 @@ return {
     config = function()
       local theme = {
         fill = 'TabLineFill',
-        -- Also you can do this: fill = { fg='#f2e9de', bg='#907aa9', style='italic' }
         head = 'TabLine',
         current_tab = 'TabLineSel',
         tab = 'TabLine',
@@ -28,7 +27,7 @@ return {
               return {
                 -- line.sep(vim.g.icons.separator.right, hl, theme.fill),
                 -- tab.is_current() and '' or '󰆣',
-                tab.number(),
+                -- tab.is_current() and tab.number() or '',
                 tab.name(),
                 line.sep(' ', hl, theme.fill),
                 hl = hl,

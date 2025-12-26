@@ -8,8 +8,7 @@
 
 ---@param name string
 local create_terminal_buffer = function(name)
-  vim.cmd('tabnew')
-  vim.cmd('term')
+  vim.cmd('tab term')
   vim.g.fn.rename_tab(' ' .. name)
 end
 

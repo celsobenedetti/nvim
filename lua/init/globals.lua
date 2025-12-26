@@ -48,19 +48,3 @@ vim.g.fn = {
     vim.api.nvim_feedkeys(Keys('<CR>'), 'n', true)
   end,
 }
-
----@class Options
----@field newtab? boolean opens terminal in new tab
----@param cmd? string
----@param opts? Options
-function Terminal(cmd, opts)
-  local term = 'terminal'
-  if opts ~= nil and opts.newtab then
-    term = 'tab term'
-  end
-  if type(cmd) == 'string' and #cmd > 0 then
-    term = term .. ' ' .. cmd
-  end
-  vim.cmd(term)
-  vim.cmd('startinsert')
-end
