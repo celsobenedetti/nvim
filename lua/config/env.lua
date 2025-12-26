@@ -13,6 +13,7 @@ local M = {
     ORG = os.getenv('ORG') or '',
     PROJECTS = os.getenv('PROJECTS') or '',
     ARCHIVES = os.getenv('ARCHIVES') or '',
+    IMG_ASSETS = os.getenv('IMG_ASSETS') or '',
 
     ORG_INDEX = os.getenv('ORG_INDEX') or '',
     ORG_REFILE = os.getenv('ORG_REFILE') or '',

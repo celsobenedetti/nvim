@@ -4,7 +4,8 @@ vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- t
 -- stylua: ignore start
 vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(vim.g.hl.text.subtext, 'fg') })
 vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
-vim.api.nvim_set_hl( 0, 'TabLineSel', { bg = colors.get_color('Statusline', 'fg'), link = "incline__gui_bold"})
+vim.api.nvim_set_hl( 0, 'TabLineSel', { bg = colors.get_color('Statusline', 'fg'), link = "@markup.heading.5"})
+
 -- stylua: ignore end
 
 vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })

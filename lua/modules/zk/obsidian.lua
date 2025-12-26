@@ -49,15 +49,6 @@ return {
       --   end,
       --   desc = 'Open orgmode or obsidian link',
       -- },
-      {
-        '<leader>ov',
-        function()
-          vim.cmd 'vsplit'
-          require('lib.zk').open_orgmode_or_obsidian_link()
-        end,
-        desc = 'Open orgmode or obsidian link (vertical split)',
-      },
-
       -- stylua: ignore end
     },
     cond = function()
@@ -86,8 +77,7 @@ return {
         },
 
         attachments = {
-          -- TODO: handle archive/notes vaults
-          img_folder = 'archives/assets/imgs',
+          img_folder = vim.g.env.notes.IMG_ASSETS,
           img_name_func = function()
             return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
           end,
