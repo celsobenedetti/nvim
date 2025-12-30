@@ -244,6 +244,7 @@ return {
     -- ui
     { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'Colorschemes', },
     { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
+    { 'z=', function() Snacks.picker.spelling () end, desc = 'picker: spelling', },
 
 
     { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'Lazygit (Root Dir)', },
