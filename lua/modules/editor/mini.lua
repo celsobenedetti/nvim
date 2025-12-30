@@ -1,6 +1,6 @@
 return {
   -- editing
-  { 'nvim-mini/mini.pairs', version = false, config = true },
+  -- { 'nvim-mini/mini.pairs', version = false, config = true },
   {
     'nvim-mini/mini.ai',
     version = false,

@@ -35,5 +35,4 @@ local function close_all_buffers()
   end, 1500)
 end
 
-map({ 'n' }, 'ZZ', close_all_buffers, { desc = 'Terminal (Root Dir)' })
 map({ 'n' }, 'ZQ', close_all_buffers, { desc = 'Terminal (Root Dir)' })
