@@ -2,7 +2,6 @@ local highlight = true
 
 local org_files = {
   vim.g.env.notes.ORG .. '/**/*',
-  vim.g.env.notes.ORG_REFILE,
 }
 
 local function e(file)

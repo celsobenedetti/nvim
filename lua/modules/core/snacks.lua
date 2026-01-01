@@ -84,6 +84,7 @@ return {
         explorer = {
           auto_close = true,
           ignored = true,
+          exclude = vim.g.ignore.explorer,
           win = {
             list = {
               keys = {
