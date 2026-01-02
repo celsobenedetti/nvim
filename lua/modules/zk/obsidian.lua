@@ -77,7 +77,7 @@ return {
         },
 
         attachments = {
-          img_folder = vim.g.env.notes.IMG_ASSETS,
+          folder = vim.g.env.notes.IMG_ASSETS,
           img_name_func = function()
             return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
           end,
