@@ -31,8 +31,8 @@ vim.api.nvim_create_autocmd('FileType', {
 
 -- stylua: ignore start
 local macros = augroup('macros')
-vim.api.nvim_create_autocmd('RecordingEnter', { group = macros, callback = function() vim.g.recording_macro = true end, })
-vim.api.nvim_create_autocmd('RecordingLeave', { group = macros, callback = function() vim.g.recording_macro = false end, })
+vim.api.nvim_create_autocmd('RecordingEnter', { group = macros, callback = function() vim.g.recording_macro = true; Snacks.notify.info(" recording", {title = "Macro"}) end, })
+vim.api.nvim_create_autocmd('RecordingLeave', { group = macros, callback = function() vim.g.recording_macro = false; Snacks.notify.info(" done", {title = "Macro"}) end, })
 -- stylua: ignore end
 
 -- open file in same position it was last closed
