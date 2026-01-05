@@ -47,7 +47,7 @@ return {
   -- QoL text editing utilities
   {
     'yousefhadder/markdown-plus.nvim',
-    ft = 'markdown',
+    ft = { 'markdown', 'org' },
     config = function()
       require('markdown-plus').setup({
         keymaps = {
@@ -110,10 +110,10 @@ return {
       -- vim.keymap.set('i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)') interfeer's with native C-t
 
       -- Normal mode
-      vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusRenumberLists)')
-      vim.keymap.set('n', '<leader>ld', '<Plug>(MarkdownPlusDebugLists)')
-      vim.keymap.set('n', 'o', '<Plug>(MarkdownPlusNewListItemBelow)')
-      vim.keymap.set('n', 'O', '<Plug>(MarkdownPlusNewListItemAbove)')
+      -- vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusRenumberLists)')
+      -- vim.keymap.set('n', '<leader>ld', '<Plug>(MarkdownPlusDebugLists)')
+      -- vim.keymap.set('n', 'o', '<Plug>(MarkdownPlusNewListItemBelow)') -- the fuk is this
+      -- vim.keymap.set('n', 'O', '<Plug>(MarkdownPlusNewListItemAbove)')
       vim.keymap.set('n', '<leader>mx', '<Plug>(MarkdownPlusToggleCheckbox)')
 
       -- Visual mode

@@ -8,6 +8,8 @@ return {
   },
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
+    cmd = 'MasonToolsUpdate',
+    lazy = true,
     config = function()
       require('mason-tool-installer').setup({
         ensure_installed = {
