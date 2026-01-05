@@ -1,7 +1,7 @@
 return {
   {
     'stevearc/overseer.nvim',
-    lazy = false,
+    lazy = true,
     cmd = {
       'OverseerOpen',
       'OverseerClose',
@@ -54,7 +54,7 @@ return {
     end,
     -- stylua: ignore
     keys = {
-      { "<leader>OR", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
+      -- { "<leader>OR", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
       { "<leader>run", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
       { "<leader>OT", function() Snacks.notify.warn("Please use C-S-R instead of OT") end,      desc = "Overseer: Toggle" },
       { "♥", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" }, -- C-S-R set in allacritty
