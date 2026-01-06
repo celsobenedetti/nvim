@@ -29,9 +29,38 @@ return {
     vscode = false,
     lazy = cwd.root == vim.g.env.notes.NOTES,
     keys = {
-    -- stylua: ignore start
-      { "<leader>zz", function() Snacks.picker.grep({cwd = vim.g.env.notes.NOTES}) end, desc = "Grep through notes", },
-      { "<leader>zZ", function() Snacks.picker.files({cwd=vim.g.env.notes.NOTES, title = "notes", }) end, desc = "search notes", },
+      {
+        '<leader>zz',
+        function()
+          Snacks.picker.files({
+            title = vim.g.icons.notes .. 'notes',
+            cwd = vim.g.env.notes.NOTES,
+            confirm = function(_, item)
+              require('lib.notes').focus_or_create_notes_tab(function()
+                vim.cmd('e ' .. item.file)
+              end)
+            end,
+          })
+        end,
+        desc = 'search notes',
+      },
+      {
+        '<leader>zZ',
+        function()
+          Snacks.picker.grep({
+            cwd = vim.g.env.notes.NOTES,
+            title = vim.g.icons.notes .. 'search through notes',
+            confirm = function(_, item)
+              require('lib.notes').focus_or_create_notes_tab(function()
+                vim.cmd('e ' .. item.file)
+              end)
+            end,
+          })
+        end,
+        desc = 'Grep through notes',
+      },
+
+      -- stylua: ignore start
       { '<leader>oO', ':Obsidian open<CR>' },
       { '<leader>ob', ':Obsidian backlinks<CR>' },
       { '<leader>od', ':Obsidian dailies<CR>' },

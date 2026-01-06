@@ -36,15 +36,14 @@ return {
       {
         '<leader>T',
         function()
-          if vim.o.buftype == '' and vim.fn.expand('%'):match('/') then
-            vim.cmd(':w')
-          end
-          vim.cmd('tabnew')
-          vim.cmd('lcd ' .. vim.g.env.notes.NOTES)
-          vim.cmd(':Org agenda T')
-          vim.g.fn.rename_tab(' orgmode')
+          -- if vim.o.buftype == '' and vim.fn.expand('%'):match('/') then
+          --   vim.cmd(':w')
+          -- end
+          require('lib.notes').focus_or_create_notes_tab(function()
+            vim.cmd(':Org agenda T')
+          end)
         end,
-        desc = 'Org: Today agenda',
+        desc = 'Org: agenda today',
       },
       { '<leader>oct', ':Org capture t<CR>', desc = 'Org: Today agenda' },
       { '<leader>ocw', ':Org capture w<CR>', desc = 'Org: Today agenda' },

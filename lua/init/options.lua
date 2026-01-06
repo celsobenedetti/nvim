@@ -16,6 +16,7 @@ vim.g.colors = require('config.colors').default
 vim.g.icons = {
   lsp = ' ',
   format = ' ',
+  notes = ' ',
   git = {
     added = ' +',
     modified = ' ~',
