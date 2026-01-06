@@ -131,6 +131,14 @@ return {
           },
         },
       })
+
+      vim.api.nvim_create_autocmd('BufReadCmd', {
+        group = vim.api.nvim_create_augroup('celso_codefiff', { clear = true }),
+        pattern = 'vscodediff:///*',
+        callback = function()
+          vim.g.fn.rename_tab(' diff')
+        end,
+      })
     end,
 
     keys = {
