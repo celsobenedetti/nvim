@@ -13,6 +13,7 @@ require('lazy').setup({
     { import = 'modules.omarchy' },
     { import = 'modules.tmux' },
   },
+  change_detection = { notify = false },
   defaults = {
     lazy = false,
     version = false, -- always use the latest git commit

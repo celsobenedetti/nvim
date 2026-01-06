@@ -93,6 +93,17 @@ vim.g.close_with_q = {
   'vim',
 }
 
+vim.g.treesitter = {
+  -- filetypes to highlight with treesitter
+  highlight = {
+    'json',
+    'html',
+    'markdown',
+    'typescript',
+    'vue',
+  },
+}
+
 --- check root file for specific stack
 vim.g.root = {
   vue = 'vite.config.ts',
