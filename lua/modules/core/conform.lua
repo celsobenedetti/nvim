@@ -46,6 +46,7 @@ return {
         --
         css = fmt_js,
         go = { 'goimports', 'gofmt' },
+        html = { 'prettier' },
         javascript = fmt_js,
         json = fmt_js,
         lua = { 'stylua' },

@@ -27,7 +27,7 @@ return {
               return {
                 -- line.sep(vim.g.icons.separator.right, hl, theme.fill),
                 -- tab.is_current() and '' or '󰆣',
-                -- tab.is_current() and tab.number() or '',
+                tab.number() == 1 and ' ' or '',
                 tab.name(),
                 line.sep(' ', hl, theme.fill),
                 hl = hl,

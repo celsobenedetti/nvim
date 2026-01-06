@@ -12,6 +12,7 @@ local config = {
 local overrides = {
   ['@keyword'] = config.highlights.keyword,
   ['@constant'] = { c.white },
+  ['@annotation'] = { c.white },
   ['typescriptVariable'] = { c.orange },
   -- SpellBad = { style = { 'italic', 'underdotted' } },
   -- TabLineSel = { bg = c.inactivegray },

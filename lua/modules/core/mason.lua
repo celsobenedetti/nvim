@@ -16,18 +16,21 @@ return {
           'bash-language-server',
           'eslint-lsp',
           'gopls',
+          'js-debug-adapter',
           'json-lsp',
           'lua-language-server',
           'ols',
           'oxlint',
+          'prettier',
           'shellcheck',
           'shfmt',
           'stylua',
           'typescript-language-server',
+          'vtsls',
           'vue-language-server',
         },
         auto_update = false,
-        run_on_start = false,
+        run_on_start = true,
         start_delay = 3000, -- 3 second delay
         debounce_hours = 5, -- at least 5 hours between attempts to install/update
         integrations = {

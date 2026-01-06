@@ -135,10 +135,10 @@ return {
 
     keys = {
       -- stylua: ignore start
-      { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'Git Search (Buffer)', },
-      { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'Git Search (Global)', },
-      { '<leader>gf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff }) end, desc = 'find_git_log_file', },
-      { '<leader>gl', function() Snacks.picker.git_log({ confirm = walk_in_codediff }) end, desc = 'find_git_log', },
+      { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'pickaxe: Git Search (Buffer)', },
+      { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
+      { '<leader>gf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff }) end, desc = 'pickaxe: find_git_log_file', },
+      { '<leader>gl', function() Snacks.picker.git_log({ confirm = walk_in_codediff }) end, desc = 'pickaxe: find_git_log', },
       -- stylua: ignore end
     },
   },
