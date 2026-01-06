@@ -16,14 +16,9 @@ return {
     end,
     event = { 'VeryLazy' },
     cmd = { 'TSUpdate', 'TSInstall', 'TSLog', 'TSUninstall' },
-    config = function(_, opts)
-      local ts = require('nvim-treesitter')
-      ts.setup({
-        indent = { enable = true },
-        highlight = { enable = true },
-        folds = { enable = true },
-      })
-      ts.install({
+    config = function()
+      -- NOTE: setup function not needed when using default options
+      require('nvim-treesitter').install({
         'bash',
         'c',
         'diff',

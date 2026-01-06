@@ -13,13 +13,17 @@ return {
     config = function()
       require('mason-tool-installer').setup({
         ensure_installed = {
-          'lua-language-server',
+          'bash-language-server',
           'eslint-lsp',
+          'gopls',
           'json-lsp',
+          'lua-language-server',
           'ols',
+          'oxlint',
           'shellcheck',
           'shfmt',
           'stylua',
+          'typescript-language-server',
           'vue-language-server',
         },
         auto_update = false,
