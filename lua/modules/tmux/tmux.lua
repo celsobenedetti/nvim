@@ -52,7 +52,7 @@ return {
       { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane' },
 
       -- keymaps needed only when inside tmux tmux only
-      { '<C-e>', Explorer, desc = 'Snacks: explorer' },
+      -- { '<C-e>', Explorer, desc = 'Snacks: explorer' },
       {
         '<c-_>',
         function()

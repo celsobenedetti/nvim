@@ -9,9 +9,9 @@ local function e(file)
 end
 
 -- map('n', '<leader>oi', e(vim.g.env.notes.ORG_INDEX), { desc = 'Orgmode index' })
-map('n', '<leader>ow', e(vim.g.env.notes.ORG_WORK), { desc = 'Orgmode work file' })
-map('n', '<leader>or', e(vim.g.env.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
-map('n', '<leader>rr', e(vim.g.env.notes.ORG_REFILE), { desc = 'Orgmode refile file' })
+map('n', '<leader>ow', e(vim.g.env.notes.ORG_WORK), { desc = 'org: work file' })
+map('n', '<leader>or', e(vim.g.env.notes.ORG_REFILE), { desc = 'org: refile file' })
+map('n', '<leader>rr', e(vim.g.env.notes.ORG_REFILE), { desc = 'org: refile file' })
 
 if highlight then
   -- -- set highlights
@@ -31,8 +31,7 @@ return {
     cmd = { 'Org' },
     ft = { 'org', 'markdown' },
     keys = {
-      { '<leader>oim', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
-      -- { '<leader>todo', ':Org indent_mode<CR>', desc = 'Orgmode: toggle indent_mode' },
+      { '<leader>oim', ':Org indent_mode<CR>', desc = 'org:: toggle indent_mode' },
       {
         '<leader>T',
         function()
@@ -65,7 +64,7 @@ return {
             types = {
               {
                 type = 'agenda',
-                match = '+PRIORITY="A"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                -- match = '+PRIORITY="A"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
                 org_agenda_span = 'day',
                 org_agenda_sorting_strategy = {
                   'time-up',
@@ -81,7 +80,10 @@ return {
               {
                 type = 'tags_todo', -- Type can be agenda | tags | tags_todo
                 match = '-TODO="TODO"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-                org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' }, -- See all options available on org_agenda_sorting_strategy
+                org_agenda_sorting_strategy = {
+                  'todo-state-down',
+                  'priority-down',
+                }, -- See all options available on org_agenda_sorting_strategy
                 -- org_agenda_overriding_header = 'High priority todos',
                 -- org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
               },
@@ -181,74 +183,28 @@ return {
 
     keys = {
       {
-        '<leader>tor',
-        function()
-          require('telescope').extensions.orgmode.refile_heading()
-        end,
-        desc = 'Telescope Orgmode refile_heading',
-      },
-
-      {
         '<leader>re',
         function()
           require('telescope').extensions.orgmode.refile_heading()
         end,
-        desc = 'Telescope Orgmode refile_heading :hot:',
+        desc = 'org: refile heading',
       },
-      {
-        '<leader>tos',
-        function()
-          require('telescope').extensions.orgmode.search_headings()
-        end,
-        desc = 'Telescope Orgmode search_headings',
-      },
-
       {
         '<leader>os',
         function()
           require('telescope').extensions.orgmode.search_headings()
         end,
-        desc = 'Telescope Orgmode search_headings',
+        desc = 'org: search headings',
       },
       {
         '<leader>toi',
         function()
           require('telescope').extensions.orgmode.insert_link()
         end,
-        desc = 'Telescope Orgmode insert_link',
-      },
-
-      {
-        '<leader>ot',
-        function()
-          require('telescope').extensions.orgmode.search_headings()
-        end,
-        desc = 'Telescope Orgmode search_headings',
+        desc = 'org: insert link to heading',
       },
     },
   },
-
-  -- {
-  --   "akinsho/org-bullets.nvim",
-  --   ft = { "org" },
-  --   config = function()
-  --     require("org-bullets").setup({
-  --       symbols = {
-  --         headlines = {
-  --           { "○", "MyBulletL2" },
-  --           { "✸", "MyBulletL3" },
-  --           { "✿", "MyBulletL4" },
-  --           { "◉", "MyBulletL1" },
-  --         },
-  --         checkboxes = {
-  --           half = { "", "@org.checkbox.halfchecked" },
-  --           done = { "✓", "@org.keyword.done" },
-  --           todo = { " ", "@org.keyword.todo" },
-  --         },
-  --       },
-  --     })
-  --   end,
-  -- },
 
   {
     'saghen/blink.cmp',

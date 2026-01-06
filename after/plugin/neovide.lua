@@ -11,6 +11,8 @@ map('n', '<C-S-O>', function()
   vim.cmd('Namu symbols')
 end, { desc = 'LSP Symbols' })
 
+map('n', '<C-S-E>', Explorer, { desc = 'snacks: explorer' })
+
 map('n', '<C-S-R>', function()
   vim.cmd('OverseerToggle')
 end, { desc = 'Overseer toggle' })
