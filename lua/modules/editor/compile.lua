@@ -5,7 +5,7 @@
 return {
   'ej-shafran/compile-mode.nvim',
   version = '^5.0.0',
-  event = 'CmdlineEnter',
+  cmd = 'Compile',
   dependencies = {
     'nvim-lua/plenary.nvim',
     { 'm00qek/baleia.nvim', tag = 'v1.3.0' }, -- if you want to enable coloring of ANSI escape codes in compilation output
