@@ -9,15 +9,24 @@ local function create_note_from_selection()
   end
   local obsidian = require('obsidian')
   local title = strings.trim(text)
-  local id = strings.slugify(text)
-  id = id:gsub('-', '') -- remove hyphens from id
+  local filename = strings.slugify(text)
+  local id = filename:gsub('-', ' ') -- remove hyphens from id
+  Snacks.notify.info(vim.inspect({ id, title }))
 
   obsidian.Note
     .create({
       id = id,
       title = title,
     })
-    :save({ path = vim.g.env.notes.INBOX .. '/' .. id .. '.md' })
+    :save({
+      path = vim.g.env.notes.INBOX .. '/' .. filename .. '.md',
+      insert_frontmatter = true,
+      update_content = function()
+        return {
+          '# ' .. title,
+        }
+      end,
+    })
 
   visual.replace('[[' .. id .. ']]')
 end
