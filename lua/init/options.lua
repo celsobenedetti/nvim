@@ -96,6 +96,8 @@ vim.g.close_with_q = {
 vim.g.treesitter = {
   -- filetypes to highlight with treesitter
   highlight = {
+    'gitcommit',
+    'go',
     'json',
     'html',
     'markdown',

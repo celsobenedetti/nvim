@@ -23,6 +23,8 @@ return {
         'c',
         'diff',
         'html',
+        'gitcommit',
+        'go',
         'javascript',
         'jsdoc',
         'json',
