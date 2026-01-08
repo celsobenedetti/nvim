@@ -15,7 +15,6 @@ local M = {
     ARCHIVES = os.getenv('ARCHIVES') or '',
     IMG_ASSETS = os.getenv('IMG_ASSETS') or '',
 
-    ORG_INDEX = os.getenv('ORG_INDEX') or '',
     ORG_REFILE = os.getenv('ORG_REFILE') or '',
     ORG_WORK = os.getenv('ORG_WORK') or '',
     ORG_PURCHASES = os.getenv('ORG_PURCHASES') or '',

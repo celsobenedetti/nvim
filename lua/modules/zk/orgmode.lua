@@ -8,9 +8,7 @@ local function e(file)
   return ':e ' .. file .. '<cr>'
 end
 
--- map('n', '<leader>oi', e(vim.g.env.notes.ORG_INDEX), { desc = 'Orgmode index' })
 map('n', '<leader>ow', e(vim.g.env.notes.ORG_WORK), { desc = 'org: work file' })
-map('n', '<leader>or', e(vim.g.env.notes.ORG_REFILE), { desc = 'org: refile file' })
 map('n', '<leader>rr', e(vim.g.env.notes.ORG_REFILE), { desc = 'org: refile file' })
 
 if highlight then
