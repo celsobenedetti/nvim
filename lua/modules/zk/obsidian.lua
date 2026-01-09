@@ -1,6 +1,5 @@
 local strings = require('lib.strings')
 local visual = require('lib.visual')
-local cwd = require('lib.cwd')
 
 local function create_note_from_selection()
   local text = visual.get_selection()
@@ -9,17 +8,14 @@ local function create_note_from_selection()
   end
   local obsidian = require('obsidian')
   local title = strings.trim(text)
-  local filename = strings.slugify(text)
-  local id = filename:gsub('-', ' ') -- remove hyphens from id
-  Snacks.notify.info(vim.inspect({ id, title }))
 
   obsidian.Note
     .create({
-      id = id,
+      id = title,
       title = title,
     })
     :save({
-      path = vim.g.env.notes.INBOX .. '/' .. filename .. '.md',
+      path = vim.g.env.notes.INBOX .. '/' .. title .. '.md',
       insert_frontmatter = true,
       update_content = function()
         return {
@@ -28,7 +24,7 @@ local function create_note_from_selection()
       end,
     })
 
-  visual.replace('[[' .. id .. ']]')
+  visual.replace('[[' .. title .. ']]')
 end
 
 return {
@@ -80,15 +76,6 @@ return {
       { '<leader>oR', ':Obsidian rename<CR>' },
       { '<leader>toc', ':Obsidian toc<CR>' },
       { '<leader>n', create_note_from_selection, mode = 'v', },
-
-      -- {
-      --   '<leader>oo',
-      --   function()
-      --     require('lib.zk').open_orgmode_or_obsidian_link()
-      --   end,
-      --   desc = 'Open orgmode or obsidian link',
-      -- },
-      -- stylua: ignore end
     },
     -- cond = function()
     --   if require('lib.cwd').matches({ 'journals' }) then
@@ -111,7 +98,8 @@ return {
           folder = 'daily',
         },
         legacy_commands = false,
-        -- new_notes_location = vim.g.env.notes.INBOX,
+        notes_subdir = '_inbox',
+        new_notes_location = 'notes_subdir',
         workspaces = {
           { name = 'notes', path = vim.g.env.notes.NOTES },
           { name = 'archives', path = vim.g.env.notes.ARCHIVES },
@@ -156,6 +144,7 @@ return {
             return path.stem or path.name or path.filename
           end
 
+          Snacks.notify.error('BUG: BAD_ID')
           return 'BUG: BAD_ID'
         end,
 
@@ -171,14 +160,6 @@ return {
             insert_link = '<C-l>',
           },
         },
-
-        ---@param spec { id: string, dir: obsidian.Path, title: string|? }
-        ---@return string|obsidian.Path The full path to the new note.
-        note_path_func = function(spec)
-          local f = spec.title or spec.id
-          local path = spec.dir / strings.slugify(f)
-          return path:with_suffix('.md')
-        end,
       })
     end,
     dependencies = {

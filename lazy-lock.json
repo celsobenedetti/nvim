@@ -3,6 +3,7 @@
   "baleia.nvim": { "branch": "main", "commit": "fb3aff021b2b64ef820d0230d2c22ebfaf71bb6a" },
   "bamboo.nvim": { "branch": "master", "commit": "1309bc88bffcf1bedc3e84e7fa9004de93da774a" },
   "blink.cmp": { "branch": "main", "commit": "6a4914ca987453464a7dfc7fc237a992adb567d0" },
+  "codediff.nvim": { "branch": "main", "commit": "2e4031f288d7466ba16723ee45e16ce611c13e53" },
   "compile-mode.nvim": { "branch": "main", "commit": "cf1c0acca12d54157343ebe0553fb1110a6b2d93" },
   "conform.nvim": { "branch": "master", "commit": "8314f4c9e205e7f30b62147069729f9a1227d8bf" },
   "dial.nvim": { "branch": "master", "commit": "f2634758455cfa52a8acea6f142dcd6271a1bf57" },
@@ -67,6 +68,5 @@
   "vim-markdown-folding": { "branch": "master", "commit": "0592d3efcb9b287fff265aa542872d95478a7536" },
   "vim-tmux-navigator": { "branch": "master", "commit": "c45243dc1f32ac6bcf6068e5300f3b2b237e576a" },
   "vim-wakatime": { "branch": "master", "commit": "d7973b157a632d1edeff01818f18d67e584eeaff" },
-  "vscode-diff.nvim": { "branch": "main", "commit": "e6d0efcf20197b266deeb8e4b6a2bbe7f0e8c6ec" },
   "yazi.nvim": { "branch": "main", "commit": "7c2a2c3511f8790b8de749a04d37563d77478c17" }
 }
