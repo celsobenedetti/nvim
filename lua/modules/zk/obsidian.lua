@@ -44,7 +44,8 @@ return {
           Snacks.picker.files({
             title = vim.g.icons.notes .. 'notes',
             cwd = vim.g.env.notes.NOTES,
-            confirm = function(_, item)
+            confirm = function(picker, item)
+              picker:close()
               require('lib.notes').focus_or_create_notes_tab(function()
                 vim.cmd('e ' .. item.file)
               end)
