@@ -68,6 +68,7 @@ return {
             ['<c-x>'] = { 'bufdelete', mode = { 'n', 'i' } },
             ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
             ['<c-y>'] = { 'yank', mode = { 'n', 'i' } },
+            ['<c-l>'] = { 'yank', mode = { 'n', 'i' } }, -- TODO: this should actually insert the text to buffer
             ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
             -- ['s'] = { 'flash' },
           },

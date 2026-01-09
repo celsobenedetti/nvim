@@ -36,7 +36,7 @@ return {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
-    lazy = true,
+    lazy = false,
     keys = {
       {
         '<leader>zz',
