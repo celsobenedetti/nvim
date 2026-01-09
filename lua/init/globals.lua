@@ -33,18 +33,4 @@ vim.g.fn = {
       require('tabby').tab_rename(input)
     end)
   end,
-  cr = function()
-    if vim.bo.filetype == 'markdown' then
-      require('obsidian.api').smart_action()
-      return
-    end
-    if vim.bo.filetype == 'org' then
-      local ok, orgmode = pcall(require, 'orgmode')
-      if ok then
-        orgmode.action('org_mappings.open_at_point')
-      end
-      return
-    end
-    vim.api.nvim_feedkeys(Keys('<CR>'), 'n', true)
-  end,
 }
