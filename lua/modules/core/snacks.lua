@@ -8,12 +8,6 @@ local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
 end
 
-local function terminal()
-  vim.cmd('tab term')
-  vim.g.fn.rename_tab(' bash')
-  vim.cmd('startinsert')
-end
-
 local function workspace()
   Snacks.picker.zoxide({
     confirm = {
@@ -141,6 +135,7 @@ return {
       config = function()
         -- dashboard buffer keymaps
         vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.files()<CR>', {})
+        vim.api.nvim_buf_set_keymap(0, 'n', 'p', ':lua Snacks.picker.files()<CR>', {})
       end,
       preset = {
         header = '',
@@ -154,18 +149,14 @@ return {
         -- stylua: ignore start
         keys = {
           { icon = ' ', key = 'c', desc = 'cd', action = cd },
-          { icon = '', key = 't', desc = 'terminal', action = terminal },
           { icon = ' ', key = 'r', desc = 'recent', action = ":lua Snacks.picker.recent()" },
           { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
           { icon = ' ', key = 's', desc = 'session', action = function()Snacks.picker.zoxide({ title="session (zoxide)" })end },
           { icon = '', key = 'o', desc = 'orgmode', action = function()require('telescope').extensions.orgmode.search_headings()end, },
           { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
-          { icon = ' ', key = '.', desc = 'config', action = dotfiles },
-          { icon = '', key = '/', desc = 'terminal', action = function()Snacks.terminal(nil, { cwd = cwd.root() })end },
           { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
-          { icon = ' ', key = 'm', desc = 'mason', action = ':Mason', enabled = package.loaded.lazy ~= nil },
-          { icon = ' ', key = 'q', desc = 'quit', action = ':qa' },
+          { icon = ' ', key = 'q', desc = 'quit', action = ':q' },
         },
         -- stylua: ignore end
       },

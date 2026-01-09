@@ -40,6 +40,18 @@ return {
         },
         documentation = { auto_show = true, window = { border = 'single' } },
       }
+      opts.sources = {
+        per_filetype = {
+          org = { 'orgmode' },
+        },
+        providers = {
+          orgmode = {
+            name = 'Orgmode',
+            module = 'orgmode.org.autocompletion.blink',
+            fallbacks = { 'buffer' },
+          },
+        },
+      }
 
       opts.snippets = {
         preset = 'mini_snippets',

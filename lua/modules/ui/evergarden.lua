@@ -24,7 +24,6 @@ if not should_override then
 end
 
 return {
-
   {
     'everviolet/nvim',
     name = 'evergarden',

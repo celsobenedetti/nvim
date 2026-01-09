@@ -36,7 +36,7 @@ return {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
-    lazy = cwd.root == vim.g.env.notes.NOTES,
+    lazy = true,
     keys = {
       {
         '<leader>zz',
@@ -89,23 +89,26 @@ return {
       -- },
       -- stylua: ignore end
     },
-    cond = function()
-      if require('lib.cwd').matches({ 'journals' }) then
-        return false
-      end
-
-      local path = vim.fn.expand('%:p')
-      local is_templates = path:find('templates')
-      local has_env = vim.g.env.notes.NOTES
-
-      return has_env and not is_templates
-    end,
+    -- cond = function()
+    --   if require('lib.cwd').matches({ 'journals' }) then
+    --     return false
+    --   end
+    --
+    --   local path = vim.fn.expand('%:p')
+    --   local is_templates = path:find('templates')
+    --   local has_env = vim.g.env.notes.NOTES
+    --
+    --   return has_env and not is_templates
+    -- end,
     config = function()
       if not vim.g.env.notes.NOTES then
         return
       end
 
       require('obsidian').setup({
+        daily_notes = {
+          folder = 'daily',
+        },
         legacy_commands = false,
         -- new_notes_location = vim.g.env.notes.INBOX,
         workspaces = {

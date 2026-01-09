@@ -1,3 +1,4 @@
+vim.g.colorscheme = 'omarchy'
 vim.g.supermaven = true
 vim.g.autoformat = true
 vim.g.completion = true
@@ -99,7 +100,6 @@ vim.g.treesitter = {
     'gitcommit',
     'go',
     'json',
-    'html',
     'markdown',
     'typescript',
     'vue',

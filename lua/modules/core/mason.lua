@@ -14,6 +14,7 @@ return {
       require('mason-tool-installer').setup({
         ensure_installed = {
           'bash-language-server',
+          'checkmake',
           'eslint-lsp',
           'gopls',
           'js-debug-adapter',
