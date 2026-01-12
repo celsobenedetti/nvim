@@ -39,11 +39,12 @@ map('n', 'gy', function()
   Snacks.notify('Copied to clipboard: ' .. file)
 end, { desc = 'Copy file path to clipboard' })
 
-map('n', '<leader>B', function()
-  local conform = require('conform')
-  vim.cmd('.!bash')
-  vim.schedule(conform.format)
-end, { desc = 'Run current line as bash command' })
+-- NOTE: this is a pretty awesome keymap, but I'll try to avoid it and use default
+-- map('n', '<leader>B', function()
+--   local conform = require('conform')
+--   vim.cmd('.w !bash')
+--   vim.schedule(conform.format)
+-- end, { desc = 'Run current line as bash command' })
 
 map({ 'n', 'x', 'v' }, '<leader>sw', function()
   Snacks.picker.grep_word()

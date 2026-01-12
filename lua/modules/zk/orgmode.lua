@@ -16,7 +16,7 @@ if highlight then
   -- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
   vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
 
-  -- vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
+  vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
   vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'darkgray' })
   -- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
   -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'gray' })
@@ -48,7 +48,7 @@ return {
         org_agenda_files = org_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
         org_default_notes_file = vim.g.env.notes.ORG_REFILE,
-
+        org_log_into_drawer = 'LOGBOOK',
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
         --
@@ -148,6 +148,7 @@ return {
           },
           org = {
             org_set_tags_command = nil,
+            org_priority_up = '+',
             -- org_refile = false,
             -- org_agenda_set_tags = '<nop>',
             org_toggle_checkbox = '<leader><C-Space>',
@@ -164,6 +165,20 @@ return {
           'CANC(c)', -- Tasks that have I've decided not to do.
           'DONE(d)', -- 😎👍
         },
+      })
+
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('celso-orgmode-filetype', { clear = true }),
+        pattern = { 'org' },
+        callback = function()
+          vim.api.nvim_buf_set_keymap(
+            0,
+            'n',
+            'gd',
+            ':lua require("orgmode").action("org_mappings.open_at_point")<CR>',
+            { desc = 'org:: toggle indent_mode' }
+          )
+        end,
       })
     end,
   },
