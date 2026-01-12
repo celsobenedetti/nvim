@@ -1,3 +1,17 @@
+vim.g.treesitter = {
+  --- filetypes to highlight with treesitter
+  highlight = {
+    'gitcommit',
+    'go',
+    'json',
+    'markdown',
+    'typescript',
+    'vue',
+    --- these look better without treesitter
+    -- 'hmtl',
+  },
+}
+
 return {
   -- Treesitter is a new parser generator tool that we can
   -- use in Neovim to power faster and more accurate

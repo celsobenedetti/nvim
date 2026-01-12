@@ -45,7 +45,7 @@ M.directories = function(opts)
   if opts.git then
     dir = vim.fs.root(0, '.git') or '.'
   end
-  local fd = string.format('!fd . %s --type=directory ', dir)
+  local fd = string.format('!fd . %s --type=directory --hidden ', dir)
   local fd_result = vim.api.nvim_exec2(fd, { output = true })
 
   local dirs = vim.split(fd_result.output, '\n')
