@@ -101,8 +101,8 @@ return {
         notes_subdir = '_inbox',
         new_notes_location = 'notes_subdir',
         workspaces = {
-          { name = 'notes', path = vim.g.env.notes.NOTES },
-          { name = 'archives', path = vim.g.env.notes.ARCHIVES },
+          -- { name = 'notes', path = vim.g.env.notes.NOTES },
+          -- { name = 'archives', path = vim.g.env.notes.ARCHIVES },
           { name = 'zk', path = vim.g.env.notes.ZK },
         },
 

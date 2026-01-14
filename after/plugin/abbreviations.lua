@@ -8,6 +8,8 @@ local abbreviations = {
   Qa = 'qa',
   Bd = 'bd',
   E = 'e',
+  Tabclose = 'tabclose',
+  Tabnew = 'tabnew',
 }
 
 for left, right in pairs(abbreviations) do
