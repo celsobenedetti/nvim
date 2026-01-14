@@ -1,26 +1,19 @@
 local highlight = true
-
 local org_files = {
   vim.g.env.notes.ORG .. '/**/*',
 }
 
+local function set_highlights()
+  vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
+  vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
+  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
+end
+
 local function e(file)
   return ':e ' .. file .. '<cr>'
 end
-
 map('n', '<leader>ow', e(vim.g.env.notes.ORG_WORK), { desc = 'org: work file' })
 map('n', '<leader>rr', e(vim.g.env.notes.ORG_REFILE), { desc = 'org: refile file' })
-
-if highlight then
-  -- -- set highlights
-  -- vim.api.nvim_set_hl(0, '@org.headline.level2', { fg = 'gray' })
-  vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
-
-  vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
-  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'darkgray' })
-  -- vim.api.nvim_set_hl(0, '@org.agenda.timegrid', { fg = 'gray' })
-  -- vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = 'gray' })
-end
 
 return {
   {
@@ -49,6 +42,9 @@ return {
         org_agenda_sorting_strategy = { 'todo-state-up' },
         org_default_notes_file = vim.g.env.notes.ORG_REFILE,
         org_log_into_drawer = 'LOGBOOK',
+        org_startup_indented = true,
+        org_adapt_indentation = false,
+        org_id_link_to_org_use_id = true,
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
         --
@@ -180,6 +176,16 @@ return {
           )
         end,
       })
+
+      if highlight then
+        vim.schedule(set_highlights)
+      end
+    end,
+  },
+  {
+    'akinsho/org-bullets.nvim',
+    config = function()
+      require('org-bullets').setup()
     end,
   },
 
