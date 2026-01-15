@@ -12,6 +12,7 @@ local M = {
     INBOX = os.getenv('INBOX') or '',
     ORG = os.getenv('ORG') or '',
     PROJECTS = os.getenv('PROJECTS') or '',
+    RESOURCES = os.getenv('RESOURCES') or '',
     ARCHIVES = os.getenv('ARCHIVES') or '',
     IMG_ASSETS = os.getenv('IMG_ASSETS') or '',
 

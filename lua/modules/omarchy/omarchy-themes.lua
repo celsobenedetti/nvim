@@ -13,6 +13,9 @@ return {
   }),
 
   -- these are here simply to prevent these plugins from being cleaned up by lazy.nvim
+
+  { 'oskarnurm/koda.nvim', lazy = true, enabled = true },
+  { 'blazkowolf/gruber-darker.nvim', lazy = true, enabled = true },
   { 'tahayvr/matteblack.nvim', lazy = true, enabled = true },
   { 'EdenEast/nightfox.nvim', lazy = true, enabled = true },
   { 'gthelding/monokai-pro.nvim', lazy = true, enabled = true },

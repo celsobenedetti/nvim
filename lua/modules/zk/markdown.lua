@@ -27,6 +27,7 @@ return {
             google = { pattern = 'google%.com', icon = '󰊭 ' },
             linkedin = { pattern = 'linkedin%.com', icon = '󰌻 ' },
             neovim = { pattern = 'neovim%.io', icon = ' ' },
+            spotify = { pattern = 'open.spotify.com*', icon = ' ' },
             reddit = { pattern = 'reddit%.com', icon = '󰑍 ' },
             slack = { pattern = 'slack%.com', icon = '󰒱 ' },
             stackoverflow = { pattern = 'stackoverflow%.com', icon = '󰓌 ' },

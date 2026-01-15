@@ -1,3 +1,4 @@
+local omarchy_colorscheme = require('lib.colors').omarchy_colorscheme().colorscheme
 local highlight = true
 local org_files = {
   vim.g.env.notes.ORG .. '/**/*',
@@ -6,7 +7,7 @@ local org_files = {
 local function set_highlights()
   vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
   vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
-  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
+  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'darkgray' })
 end
 
 local function e(file)
@@ -41,6 +42,9 @@ return {
         org_agenda_files = org_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
         org_default_notes_file = vim.g.env.notes.ORG_REFILE,
+        org_priority_highest = 'A',
+        org_priority_default = 'C',
+        org_priority_lowest = 'C',
         org_log_into_drawer = 'LOGBOOK',
         org_startup_indented = true,
         org_adapt_indentation = false,

@@ -21,7 +21,7 @@ return {
             line = '#272727', -- line highlights
             keyword = '#777777', -- language syntax
             comment = '#50585d', -- code comments
-            border = '#ffffff', -- floating window borders
+            border = '#b0b0b0', -- floating window borders
             emphasis = '#ffffff', -- bold text and prominent UI elements
             func = '#ffffff', -- function names and headings
             string = '#ffffff', -- string literals
