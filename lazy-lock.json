@@ -3,6 +3,7 @@
   "baleia.nvim": { "branch": "main", "commit": "fb3aff021b2b64ef820d0230d2c22ebfaf71bb6a" },
   "bamboo.nvim": { "branch": "master", "commit": "1309bc88bffcf1bedc3e84e7fa9004de93da774a" },
   "blink.cmp": { "branch": "main", "commit": "b1b77404ce3c8b11e8f35611a28176b944c41e29" },
+  "catppuccin": { "branch": "main", "commit": "beaf41a30c26fd7d6c386d383155cbd65dd554cd" },
   "codediff.nvim": { "branch": "main", "commit": "9b3258557d92de7d2f03955066697ca62aabeb4e" },
   "compile-mode.nvim": { "branch": "main", "commit": "cf1c0acca12d54157343ebe0553fb1110a6b2d93" },
   "conform.nvim": { "branch": "master", "commit": "238f542a118984a88124fc915d5b981680418707" },

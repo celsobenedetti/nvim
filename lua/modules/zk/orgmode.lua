@@ -1,6 +1,5 @@
-local omarchy_colorscheme = require('lib.colors').omarchy_colorscheme().colorscheme
 local highlight = true
-local org_files = {
+local agenda_files = {
   vim.g.env.notes.ORG .. '/**/*',
 }
 
@@ -23,7 +22,7 @@ return {
     cmd = { 'Org' },
     ft = { 'org', 'markdown' },
     keys = {
-      { '<leader>oim', ':Org indent_mode<CR>', desc = 'org:: toggle indent_mode' },
+      { '<leader>oim', ':Org indent_mode<CR>', desc = 'org: toggle indent_mode' },
       {
         '<leader>T',
         function()
@@ -39,19 +38,20 @@ return {
     config = function()
       -- Setup orgmode
       require('orgmode').setup({
-        org_agenda_files = org_files,
+        org_agenda_files = agenda_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
         org_default_notes_file = vim.g.env.notes.ORG_REFILE,
         org_priority_highest = 'A',
         org_priority_default = 'C',
         org_priority_lowest = 'C',
         org_log_into_drawer = 'LOGBOOK',
+        org_ellipsis = ' ',
         org_startup_indented = true,
         org_adapt_indentation = false,
         org_id_link_to_org_use_id = true,
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
-        --
+        notifications = { enabled = true },
         org_agenda_custom_commands = {
 
           T = {
@@ -165,20 +165,6 @@ return {
           'CANC(c)', -- Tasks that have I've decided not to do.
           'DONE(d)', -- 😎👍
         },
-      })
-
-      vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup('celso-orgmode-filetype', { clear = true }),
-        pattern = { 'org' },
-        callback = function()
-          vim.api.nvim_buf_set_keymap(
-            0,
-            'n',
-            'gd',
-            ':lua require("orgmode").action("org_mappings.open_at_point")<CR>',
-            { desc = 'org:: toggle indent_mode' }
-          )
-        end,
       })
 
       if highlight then

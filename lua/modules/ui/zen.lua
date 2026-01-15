@@ -15,7 +15,7 @@ return {
     Snacks.config.style('zen', {
       enter = true,
       fixbuf = false,
-      minimal = false,
+      minimal = true,
       width = 120,
       height = 0,
       backdrop = { transparent = false, blend = 99 },
