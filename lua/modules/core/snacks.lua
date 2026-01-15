@@ -40,6 +40,7 @@ end
 return {
   'folke/snacks.nvim',
   lazy = false,
+  ---@type snacks.Config
   opts = {
     terminal = { enabled = true },
     words = { enabled = true },
@@ -64,7 +65,7 @@ return {
     },
 
     lazygit = {
-      theme = { selectedLineBgColor = { bg = 'CursorLine' } },
+      -- theme = { selectedLineBgColor = { bg = 'CursorLine' } },
       win = { width = 0, height = 0 },
     },
 
@@ -80,6 +81,41 @@ return {
             ['<c-l>'] = { 'yank', mode = { 'n', 'i' } }, -- TODO: this should actually insert the text to buffer
             ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
             -- ['s'] = { 'flash' },
+          },
+        },
+      },
+      layouts = {
+        vscode = {
+          hidden = { 'preview' },
+          layout = {
+            backdrop = false,
+            row = 1,
+            width = 0.4,
+            min_width = 80,
+            height = 0.4,
+            border = 'single',
+            box = 'vertical',
+            { win = 'input', height = 1, border = true, title = '{title} {live} {flags}', title_pos = 'center' },
+            { win = 'list', border = 'hpad' },
+            { win = 'preview', title = '{preview}', border = true },
+          },
+        },
+        select = {
+          hidden = { 'preview' },
+          layout = {
+            backdrop = false,
+            width = 0.5,
+            min_width = 80,
+            max_width = 100,
+            height = 0.4,
+            min_height = 2,
+            box = 'vertical',
+            border = true,
+            title = '{title}',
+            title_pos = 'center',
+            { win = 'input', height = 1, border = 'bottom' },
+            { win = 'list', border = 'none' },
+            -- { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
           },
         },
       },
@@ -205,7 +241,7 @@ return {
     -- -- find
     { '<leader>,', function() Snacks.picker.buffers() end, desc = 'snacks: Buffers', },
     { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
-    { '<C-p>', function() Snacks.picker.smart() end, desc = 'snacks: Smart picker', },
+    { '<C-p>', function() Snacks.picker.smart({layout="select", title=""}) end, desc = 'snacks: Smart picker', },
 
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
     { '<leader>sr', function() Snacks.picker.recent() end, desc = 'snacks: Recent', },

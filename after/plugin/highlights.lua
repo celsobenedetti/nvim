@@ -6,10 +6,10 @@ vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), 
 vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
 vim.api.nvim_set_hl( 0, 'TabLineSel', { bg = colors.get_color('Statusline', 'fg'), link = "@markup.heading.5"})
 vim.api.nvim_set_hl( 0, 'NonText', { link = "Comment"})
+vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
 
 -- stylua: ignore end
 
-vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
 if vim.g.neovide then
   return
 end
@@ -55,3 +55,4 @@ vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('Tr
 vim.api.nvim_set_hl(0, 'PmenuSbar', { bg = 'none', fg = colors.get_color('PmenuSbar', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBarNC', { bg = 'none', fg = colors.get_color('WinBarNC', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBar', { bg = 'none', fg = colors.get_color('WinBar', 'fg') })
+vim.api.nvim_set_hl(0, 'FloatTitle', { bg = 'none', fg = colors.get_color('FloatTitle', 'fg') })
