@@ -53,9 +53,9 @@ vim.keymap.set('n', '<leader>hT', '<Plug>(MarkdownPlusOpenTocWindow)', { buffer 
 for i = 1, 6 do
   vim.keymap.set('n', '<leader>' .. i, '<Plug>(MarkdownPlusHeader' .. i .. ')', { buffer = true })
 end
-
---- Links
--- vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)', { buffer = true })
+--
+-- --- Links
+-- -- vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)', { buffer = true })
 vim.keymap.set('v', '<leader>li', '<Plug>(MarkdownPlusSelectionToLink)', { buffer = true })
 vim.keymap.set('n', '<leader>le', '<Plug>(MarkdownPlusEditLink)', { buffer = true })
 vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusConvertToReference)', { buffer = true })
@@ -67,13 +67,13 @@ vim.keymap.set('n', '<leader>mL', '<Plug>(MarkdownPlusInsertImage)', { buffer = 
 vim.keymap.set('v', '<leader>mL', '<Plug>(MarkdownPlusSelectionToImage)', { buffer = true })
 vim.keymap.set('n', '<leader>mE', '<Plug>(MarkdownPlusEditImage)', { buffer = true })
 vim.keymap.set('n', '<leader>mA', '<Plug>(MarkdownPlusToggleImageLink)', { buffer = true })
-
---- List  Management
+--
+-- --- List  Management
 -- Insert mode
 vim.keymap.set('i', '<C-CR>', '<Plug>(MarkdownPlusListEnter)', { buffer = true })
 vim.keymap.set('i', '<A-CR>', '<Plug>(MarkdownPlusListShiftEnter)', { buffer = true })
 -- vim.keymap.set('i', '<C-]>', '<Plug>(MarkdownPlusListIndent)') -- conflicts with supermave, { buffer = true }n
-vim.keymap.set('i', '<C-[>', '<Plug>(MarkdownPlusListOutdent)', { buffer = true })
+-- vim.keymap.set('i', '<C-[>', '<Plug>(MarkdownPlusListOutdent)', { buffer = true })
 vim.keymap.set('i', '<C-h>', '<Plug>(MarkdownPlusListBackspace)', { buffer = true })
 -- vim.keymap.set('i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)') interfeer's with native C-, { buffer = true }t
 
@@ -96,6 +96,7 @@ vim.keymap.set('x', '<C-q>', '<Plug>(MarkdownPlusToggleQuote)', { buffer = true 
 --- Callouts
 -- Normal mode - Insert callout
 vim.keymap.set('n', '<leader>mc', '<Plug>(MarkdownPlusInsertCallout)', { buffer = true })
+--
 -- Visual mode - Wrap selection in callout
 vim.keymap.set('x', '<leader>mc', '<Plug>(MarkdownPlusInsertCallout)', { buffer = true })
 -- Toggle callout type (cycle through types)
