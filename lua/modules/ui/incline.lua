@@ -4,12 +4,18 @@ return {
     enabled = vim.g.incline,
     dependencies = { { 'nvim-mini/mini.icons', config = true } },
     config = function()
+      local is_notes = require('lib.cwd').matches({ 'notes' })
+
       local helpers = require('incline.helpers')
       local devicons = require('nvim-web-devicons')
       require('incline').setup({
         window = {
           padding = 0,
           margin = { horizontal = 0 },
+          placement = {
+            horizontal = is_notes and 'left' or 'right',
+            vertical = 'top',
+          },
         },
         render = function(props)
           local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')

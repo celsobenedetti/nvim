@@ -14,7 +14,8 @@ local M = {
     PROJECTS = os.getenv('PROJECTS') or '',
     RESOURCES = os.getenv('RESOURCES') or '',
     ARCHIVES = os.getenv('ARCHIVES') or '',
-    IMG_ASSETS = os.getenv('IMG_ASSETS') or '',
+    ASSETS = os.getenv('ASSETS') or '',
+    ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
 
     ORG_REFILE = os.getenv('ORG_REFILE') or '',
     ORG_WORK = os.getenv('ORG_WORK') or '',
@@ -23,6 +24,8 @@ local M = {
     AI_RULES = os.getenv('AI_RULES') or '',
   },
 }
+
+M.notes.ASSETS = M.notes.ASSETS:gsub(M.notes.NOTES .. '/', '')
 
 for k, v in pairs(M.notes) do
   if M.notes[k] == '' then

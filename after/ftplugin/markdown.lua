@@ -5,8 +5,6 @@ local function fold_frontmatter()
       return
     end
 
-    vim.opt.foldmethod = 'manual'
-
     local lines = vim.api.nvim_buf_get_lines(0, 1, -1, false)
     local end_of_frontmatter = 1
 
@@ -17,13 +15,16 @@ local function fold_frontmatter()
       end
     end
 
+    vim.opt.foldmethod = 'manual'
     vim.api.nvim_command('1,' .. end_of_frontmatter .. 'fold')
   end)
 end
 
 vim.schedule(fold_frontmatter)
-
+-- keymaps
+-- https://github.com/yousefhadder/markdown-plus.nvim
 --- Text formatting
+--
 -- Normal mode
 vim.keymap.set('n', '<C-b>', '<Plug>(MarkdownPlusBold)', { buffer = true })
 vim.keymap.set('n', '<C-i>', '<Plug>(MarkdownPlusItalic)', { buffer = true })

@@ -16,7 +16,7 @@ local function create_note_from_selection()
     })
     :save({
       path = vim.g.env.notes.INBOX .. '/' .. title .. '.md',
-      insert_frontmatter = true,
+      insert_frontmatter = false,
       update_content = function()
         return {
           '# ' .. title,
@@ -96,6 +96,17 @@ return {
       require('obsidian').setup({
         daily_notes = {
           folder = 'daily',
+          template = 'daily',
+        },
+        templates = {
+          folder = vim.g.env.notes.ASSETS .. '/templates',
+          date_format = '%F',
+          time_format = '%H:%M',
+        },
+        frontmatter = {
+          enabled = false,
+          func = require('obsidian.builtin').frontmatter,
+          sort = { 'id', 'aliases', 'tags' },
         },
         legacy_commands = false,
         notes_subdir = '_inbox',
@@ -107,7 +118,7 @@ return {
         },
 
         attachments = {
-          folder = vim.g.env.notes.IMG_ASSETS,
+          folder = vim.g.env.notes.ATTACHMENTS,
           img_name_func = function()
             return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
           end,

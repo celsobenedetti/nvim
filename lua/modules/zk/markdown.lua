@@ -1,6 +1,4 @@
 return {
-  { 'masukomi/vim-markdown-folding', ft = { 'markdown' } },
-
   {
     'MeanderingProgrammer/render-markdown.nvim',
     keys = { { '<leader>md', ':RenderMarkdown toggle<CR>', desc = 'Toggle render markdown' } },
