@@ -224,7 +224,7 @@ return {
     { '<leader>sn', notes, desc = 'snacks: search all notes', },
     { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
     { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'snacks: Rename File', },
-    { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'snacks: Lazygit Log (cwd)', },
+    { '<leader>lgl', function() Snacks.lazygit.log() end, desc = 'snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'snacks: Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'snacks: delete all buffers', },
     { '<leader>cd', cd, desc = 'snacks: zoxide (cd)', },
