@@ -109,7 +109,7 @@ return {
           sort = { 'id', 'aliases', 'tags' },
         },
         legacy_commands = false,
-        notes_subdir = '_inbox',
+        notes_subdir = vim.g.env.notes.INBOX:gsub(vim.g.env.notes.NOTES .. '/', ''),
         new_notes_location = 'notes_subdir',
         workspaces = {
           -- { name = 'notes', path = vim.g.env.notes.NOTES },
