@@ -16,3 +16,7 @@ vim.api.nvim_create_autocmd('ModeChanged', {
   end,
   group = vim.api.nvim_create_augroup('celso-orgmode-autocmd', { clear = true }),
 })
+
+-- diosable comment continuation on different lines
+-- https://neovim.discourse.group/t/how-do-i-prevent-neovim-commenting-out-next-line-after-a-comment-line/3711/7
+vim.opt_local.formatoptions:remove({ 'r', 'o' })
