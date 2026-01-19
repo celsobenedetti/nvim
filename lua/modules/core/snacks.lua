@@ -213,8 +213,7 @@ return {
     -- stylua: ignore start
     -- TODO: figure out cwd in terminal, if opening file with different cwd from root
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
-    -- { '<c-/>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
-    { '<c-/>', function() Snacks.terminal() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
+    { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'snacks: notification history', },
     { '<leader>rg', function() Snacks.picker.grep() end, desc = 'snacks: grep', },
     { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'snacks: grep (all)', },

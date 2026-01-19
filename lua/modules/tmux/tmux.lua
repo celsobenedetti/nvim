@@ -56,9 +56,9 @@ return {
       {
         '<c-_>',
         function()
-          Snacks.terminal(nil, { cwd = require('lib.cwd').root() })
+          Snacks.terminal.toggle()
         end,
-        desc = 'Terminal (Root Dir)',
+        desc = 'snacks: toggle terminal',
         mode = { 'n', 't' },
       },
     },
