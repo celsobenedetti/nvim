@@ -24,7 +24,7 @@ return {
             border = '#b0b0b0', -- floating window borders
             emphasis = '#ffffff', -- bold text and prominent UI elements
             func = '#ffffff', -- function names and headings
-            string = '#ffffff', -- string literals
+            string = '#86cd82', -- string literals
             const = '#d9ba73', -- numbers, booleans, and constants
             highlight = '#b0b0b0', -- search results and selection base
             info = '#8ebeec', -- diagnostic hints and informative icons
@@ -35,9 +35,9 @@ return {
         }
       )
 
-      vim.schedule(function()
-        vim.api.nvim_set_hl(0, 'String', { fg = '#86cd82' })
-      end)
+      -- vim.schedule(function()
+      --   vim.api.nvim_set_hl(0, 'String', { fg = '#86cd82' })
+      -- end)
     end,
   },
 }
