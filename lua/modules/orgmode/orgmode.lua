@@ -19,6 +19,7 @@ return {
   {
     'nvim-orgmode/orgmode',
     -- event = "VeryLazy",
+    lazy = vim.g.lazy_orgmode == nil and true or vim.g.lazy_orgmode,
     cmd = { 'Org' },
     ft = { 'org', 'markdown' },
     keys = {

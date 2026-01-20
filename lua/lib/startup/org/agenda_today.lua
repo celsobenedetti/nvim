@@ -1,6 +1,5 @@
 local fullscreen = true
 
--- vim.defer_fn(function()
 require('lib.notes').focus_or_create_notes_tab(function()
   vim.cmd(':Org agenda T')
   vim.schedule(function()
@@ -14,4 +13,3 @@ require('lib.notes').focus_or_create_notes_tab(function()
     end
   end)
 end)
--- end, 10)
