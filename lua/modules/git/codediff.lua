@@ -59,6 +59,7 @@ local function git_pickaxe(opts)
       finder = 'proc',
       cmd = 'git',
       args = args,
+      layout = 'ivy_split',
 
       transform = function(item)
         local clean_text = item.text:gsub('\27%[[0-9;]*m', '')
@@ -147,6 +148,7 @@ return {
       { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
       { '<leader>gf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
       { '<leader>gl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
+      { 'gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
       -- stylua: ignore end
     },
   },

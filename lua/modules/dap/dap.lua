@@ -197,3 +197,38 @@ return {
     config = function() end,
   },
 }
+
+-- # Neovim Go Delve Debugger Attach
+--
+-- #### Dap config
+--
+-- ```lua
+-- require('dap-go').setup {
+--
+--   dap_configurations = {
+--     {
+--       type = "go",
+--       name = "Attach remote",
+--       mode = "remote",
+--       request = "attach",
+--       -- tell which host and port to connect to
+--       connect = {
+--         host = "127.0.0.1",
+--         port = "8181"
+--       }
+--     },
+--   },
+--   delve = {
+--     port = "8181"
+--   },
+-- }
+-- ```
+--
+-- #### Delve command
+--
+-- ```bash
+-- dlv debug -l 127.0.0.1:8181 --headless ./cmd/api/
+-- ```
+--
+--
+-- [Goated GH comment 🙌](https://github.com/leoluz/nvim-dap-go/issues/35#issuecomment-1526728411)
