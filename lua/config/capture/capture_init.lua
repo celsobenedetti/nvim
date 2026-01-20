@@ -9,27 +9,12 @@ require('lazy').setup({
     { import = 'modules.omarchy' },
     { 'folke/snacks.nvim', opts = { picker = {} } },
   },
-  performance = {
-    rtp = {
-      disabled_plugins = {
-        'gzip',
-        'matchit',
-        'matchparen',
-        'netrwPlugin',
-        'tarPlugin',
-        'tohtml',
-        'tutor',
-        'zipPlugin',
-      },
-    },
-  },
+  performance = vim.g.lazy_nvim_config.performance,
 })
 
 local DELAY_CLOSE_WIN = 20
-Org.capture.c()
-vim.schedule(function()
-  vim.defer_fn(function()
-    vim.cmd('wincmd k')
-    vim.api.nvim_win_close(0, false)
-  end, DELAY_CLOSE_WIN)
-end)
+Org.capture.c({ win_split_mode = 'float' })
+vim.defer_fn(function()
+  vim.cmd('wincmd k')
+  vim.api.nvim_win_close(0, false)
+end, DELAY_CLOSE_WIN)

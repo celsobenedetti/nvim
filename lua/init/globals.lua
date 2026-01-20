@@ -34,3 +34,20 @@ vim.g.fn = {
     end)
   end,
 }
+
+vim.g.lazy_nvim_config = {
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        'gzip',
+        'matchit',
+        'matchparen',
+        'netrwPlugin',
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
+      },
+    },
+  },
+}

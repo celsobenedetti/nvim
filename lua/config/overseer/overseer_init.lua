@@ -7,18 +7,5 @@ require('lazy').setup({
     { import = 'modules.omarchy' },
     { 'folke/snacks.nvim', opts = { picker = {} } },
   },
-  performance = {
-    rtp = {
-      disabled_plugins = {
-        'gzip',
-        'matchit',
-        'matchparen',
-        'netrwPlugin',
-        'tarPlugin',
-        'tohtml',
-        'tutor',
-        'zipPlugin',
-      },
-    },
-  },
+  performance = vim.g.lazy_nvim_config.performance,
 })
