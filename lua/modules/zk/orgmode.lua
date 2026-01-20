@@ -52,6 +52,8 @@ return {
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
         notifications = { enabled = true },
+        org_agenda_use_time_grid = false,
+        org_deadline_warning_days = 5,
         org_agenda_custom_commands = {
 
           T = {
