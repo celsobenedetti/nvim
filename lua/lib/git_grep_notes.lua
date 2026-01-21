@@ -23,10 +23,6 @@ M.git_grep_notes = function(opts)
     local filepath = table.remove(entry, 1)
     local lineNr = table.remove(entry, 1)
 
-    -- if opts.cwd then
-    --   filepath = string.format('%s/%s', opts.cwd, filepath)
-    -- end
-
     table.insert(items, {
       text = line,
       line = table.concat(entry, ':'),
@@ -41,11 +37,6 @@ M.git_grep_notes = function(opts)
     items = items,
     cwd = opts.cwd or '.',
     layout = 'ivy_split',
-    confirm = function(picker, item)
-      picker:close()
-      vim.cmd('edit ' .. item.file)
-      vim.api.nvim_win_set_cursor(0, { tonumber(item.lineNr), 0 })
-    end,
   })
 end
 
