@@ -36,9 +36,11 @@ return {
     opts.zen = opts.zen or {}
     opts.zen.on_close = function()
       require('twilight').toggle()
+      require('incline').enable()
     end
     opts.zen.on_open = function()
       require('twilight').toggle()
+      require('incline').disable()
     end
 
     opts.zen.show = {

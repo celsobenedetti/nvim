@@ -18,7 +18,7 @@ return {
           padding = 0,
           margin = { horizontal = 0 },
           placement = {
-            horizontal = is_notes and 'left' or 'right',
+            horizontal = is_notes and 'center' or 'right',
             vertical = 'top',
           },
           overlap = {
