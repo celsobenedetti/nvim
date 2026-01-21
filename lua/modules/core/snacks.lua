@@ -34,7 +34,7 @@ local function workspace()
 end
 
 local function notes()
-  Snacks.picker.files({ cwd = '~/notes', title = 'notes' })
+  Snacks.picker.files({ cwd = '~/notes', title = 'notes', layout = 'ivy_split' })
 end
 
 return {
@@ -196,11 +196,9 @@ return {
         -- stylua: ignore start
         keys = {
           { icon = '', key = 'a', desc = 'agenda', action = agenda },
+          { icon = '', key = 'r', desc = 'restore', action = ":lua require('persistence').load({ last = true })" },
           { icon = ' ', key = 'c', desc = 'cd', action = cd },
-          { icon = ' ', key = 'r', desc = 'recent', action = ":lua Snacks.picker.recent()" },
-          { icon = '', key = 'g', desc = 'git', action = function() if not cwd.is_git_repo() then Snacks.notify.warn('Not in a git repo', { title = 'Git' }) return end Snacks.lazygit() end, },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
-          { icon = ' ', key = 's', desc = 'session', action = function()Snacks.picker.zoxide({ title="session (zoxide)" })end },
           { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
           { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'q', desc = 'quit', action = ':q' },
@@ -215,8 +213,8 @@ return {
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
     { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'snacks: notification history', },
-    { '<leader>rg', function() Snacks.picker.grep() end, desc = 'snacks: grep', },
-    { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'snacks: grep (all)', },
+    { '<leader>rg', function() Snacks.picker.grep({layout= "ivy_split"}) end, desc = 'snacks: grep', },
+    { '<leader>rG', function() Snacks.picker.grep({layout= "ivy_split", hidden = true}) end, desc = 'snacks: grep (all)', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'snacks: delete buffer', },
     { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
     { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'snacks: search orgifles', },

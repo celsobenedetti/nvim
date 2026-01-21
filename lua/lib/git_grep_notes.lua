@@ -1,0 +1,47 @@
+-- use `git grep .` to get a list of entries
+-- create snacks.picker.finder.Item[] from each entry
+-- open Snacks.picker.pick with the list to search through the entries
+
+local M = {}
+
+--- grep dir with git grep
+---@param opts {cwd?: string, cmd?: string}
+M.git_grep_notes = function(opts)
+  opts = opts or {}
+  local cmd = opts.cmd or string.format('git -C %s grep --line-number .', opts.cwd or '.')
+  local out = vim.fn.system(cmd)
+
+  --- @type snacks.picker.Item[]
+  local items = {}
+  for _, line in ipairs(vim.split(out, '\n')) do
+    local entry = vim.split(line, ':')
+    local filepath = table.remove(entry, 1)
+    local lineNr = table.remove(entry, 1)
+
+    if opts.cwd then
+      filepath = string.format('%s/%s', opts.cwd, filepath)
+    end
+
+    table.insert(items, {
+      text = line,
+      line = table.concat(entry, ':'),
+      file = filepath,
+      lineNr = lineNr,
+
+      pos = { tonumber(lineNr), 0 },
+      desc = line,
+    })
+  end
+  Snacks.picker.pick({
+    title = 'Git Grep Results for ',
+    items = items,
+    layout = 'ivy_split',
+    confirm = function(picker, item)
+      picker:close()
+      vim.cmd('edit ' .. item.file)
+      vim.api.nvim_win_set_cursor(0, { tonumber(item.lineNr), 0 })
+    end,
+  })
+end
+
+return M
