@@ -7,6 +7,7 @@ return {
       ['<C-h>'] = false,
       ['<C-l>'] = false,
       ['<C-p>'] = false,
+      ['<C-s>'] = false,
       ['gp'] = 'actions.preview',
     },
   },

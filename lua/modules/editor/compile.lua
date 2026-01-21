@@ -21,4 +21,19 @@ return {
     -- :help abbreviation
     vim.cmd('cnoreabbrev ! Compile')
   end,
+
+  keys = {
+    {
+      '♦', -- "C-S-;"
+      function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        if bufname:find('oil://') then
+          vim.g.compilation_directory = bufname:gsub('oil://', '')
+        end
+        vim.api.nvim_feedkeys(':Compile ', 'i', false)
+      end,
+      { desc = 'cmd: compile command runner' },
+    },
+  },
 }
