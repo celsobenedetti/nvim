@@ -60,7 +60,7 @@ vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 
 vim.keymap.set('n', 'NOTES', function()
   require('lib.git_grep_notes').git_grep_notes({
-    cwd = '~/notes',
-    cmd = "git -C ~/notes grep -n . -- ':!.*'", -- exclude hidden files
+    cwd = vim.g.env.notes.NOTES,
+    cmd = 'rg --no-heading --line-number . ' .. vim.g.env.notes.NOTES, -- exclude hidden files
   })
 end, { desc = 'search all notes' })
