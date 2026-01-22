@@ -1,3 +1,6 @@
+-- disable wrap
+vim.opt.wrap = true
+
 local function fold_frontmatter()
   vim.schedule(function()
     local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---')
@@ -56,12 +59,12 @@ for i = 1, 6 do
 end
 --
 -- --- Links
--- -- vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)', { buffer = true })
+-- vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)', { buffer = true })
 vim.keymap.set('v', '<leader>li', '<Plug>(MarkdownPlusSelectionToLink)', { buffer = true })
 vim.keymap.set('n', '<leader>le', '<Plug>(MarkdownPlusEditLink)', { buffer = true })
 vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusConvertToReference)', { buffer = true })
 vim.keymap.set('n', '<leader>ln', '<Plug>(MarkdownPlusConvertToInline)', { buffer = true })
-vim.keymap.set('n', '<leader><C-k>', '<Plug>(MarkdownPlusAutoLinkURL)', { buffer = true })
+vim.keymap.set('n', '<C-k>', '<Plug>(MarkdownPlusAutoLinkURL)', { buffer = true })
 
 --- Images
 vim.keymap.set('n', '<leader>mL', '<Plug>(MarkdownPlusInsertImage)', { buffer = true })
