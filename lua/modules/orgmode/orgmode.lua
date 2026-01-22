@@ -1,4 +1,5 @@
-local highlight = true
+local highlight = false
+
 local agenda_files = {
   vim.g.env.notes.ORG .. '/**/*',
 }
@@ -171,6 +172,17 @@ return {
       })
 
       if highlight then
+        local ignore_colorschemes = {
+          'evergarden',
+        }
+
+        local colorscheme = require('lib.colors').omarchy_colorscheme().colorscheme
+        for _, c in ipairs(ignore_colorschemes) do
+          if c == colorscheme then
+            return
+          end
+        end
+
         vim.schedule(set_highlights)
       end
     end,

@@ -39,7 +39,7 @@ end
 
 return {
   {
-    'everviolet/nvim',
+    'https://codeberg.org/evergarden/nvim',
     name = 'evergarden',
     lazy = true,
     opts = {

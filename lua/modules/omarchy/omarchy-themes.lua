@@ -25,5 +25,5 @@ return {
   { 'rose-pine/neovim', lazy = true, enabled = true, name = 'rose-pine' },
   { 'ellisonleao/gruvbox.nvim', lazy = true, enabled = true },
   { 'kepano/flexoki-neovim', lazy = true, enabled = true },
-  { 'everviolet/nvim', lazy = true, enabled = true, name = 'evergarden' },
+  { 'https://codeberg.org/evergarden/nvim', lazy = true, enabled = true, name = 'evergarden' },
 }
