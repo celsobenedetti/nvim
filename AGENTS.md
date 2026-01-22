@@ -3,6 +3,13 @@
 This document provides guidelines for agentic coding assistants working on this Neovim configuration codebase.
 It covers build/lint/test commands, code style conventions, and development practices.
 
+
+## Context
+
+Neovim APIs are documented in the help docs: `/usr/share/nvim/runtime/doc/`
+When asked about neovim APIs, research the local help docs first, then the [Neovim API Reference](https://neovim.io/doc/user/api.html) if needed.
+ALWAYS populate your findings in a neovim_api_findings.md file.
+
 ## Build/Lint/Test Commands
 
 ### Testing
@@ -144,6 +151,3 @@ This configuration emphasizes performance, consistency, and maintainability whil
 <parameter name="filePath">/home/celso/.config/nvim/AGENTS.md
 
 
-## Context
-
-Neovim help docs are stored in `/usr/share/nvim/runtime/doc/`

@@ -6,7 +6,7 @@ return {
     config = function()
       require('render-markdown').setup({
         link = {
-          enabled = true,
+          enabled = true, -- Turn on / off inline link icon rendering.
           render_modes = false, -- Additional modes to render links.
           footnote = { -- How to handle footnote links, start with a '^'.
             enabled = true, -- Turn on / off footnote rendering.
@@ -18,6 +18,16 @@ return {
           image = '󰥶 ', -- Inlined with 'image' elements.
           email = '󰀓 ', -- Inlined with 'email_autolink' elements.
           hyperlink = '󰌹 ', -- Fallback icon for 'inline_link' and 'uri_autolink' elements.
+          highlight = 'RenderMarkdownLink', -- Applies to the inlined icon as a fallback.
+          highlight_title = 'RenderMarkdownLinkTitle', -- Applies to the link title.
+          wiki = { -- Applies to WikiLink elements.
+            icon = '',
+            body = function()
+              return nil
+            end,
+            highlight = 'RenderMarkdownWikiLink',
+            scope_highlight = nil,
+          },
           custom = {
             discord = { pattern = 'discord%.com', icon = '󰙯 ' },
             github = { pattern = 'github%.com', icon = '󰊤 ' },
@@ -35,6 +45,9 @@ return {
           },
         },
       })
+
+      vim.api.nvim_set_hl(0, 'RenderMarkdownWikiLink', { underline = true })
+
       Snacks.toggle({
         name = 'Render Markdown',
         get = require('render-markdown').get,

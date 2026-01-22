@@ -62,7 +62,16 @@ vim.keymap.set('n', 'NOTES', function()
   require('lib.notes').focus_or_create_notes_tab(function()
     require('lib.git_grep_notes').git_grep_notes({
       cwd = vim.g.env.notes.NOTES,
-      cmd = 'rg --no-heading --line-number . ' .. vim.g.env.notes.NOTES, -- exclude hidden files
+      cmd = {
+        'rg',
+        '--no-heading',
+        '--line-number',
+        '-g',
+        '!' .. vim.g.env.notes.ASSETS_DIR .. '/*',
+        '-v',
+        vim.g.env.notes.GREP_IGNORE, -- No quotes needed here!
+        vim.g.env.notes.NOTES,
+      },
     })
   end)
 end, { desc = 'search all notes' })

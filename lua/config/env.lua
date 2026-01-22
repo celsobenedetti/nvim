@@ -14,6 +14,8 @@ local M = {
     PROJECTS = os.getenv('PROJECTS') or '',
     RESOURCES = os.getenv('RESOURCES') or '',
     ARCHIVES = os.getenv('ARCHIVES') or '',
+
+    ASSETS_DIR = os.getenv('ASSETS_DIR') or '',
     ASSETS = os.getenv('ASSETS') or '',
     ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
 
@@ -22,6 +24,8 @@ local M = {
     ORG_PURCHASES = os.getenv('ORG_PURCHASES') or '',
 
     AI_RULES = os.getenv('AI_RULES') or '',
+
+    GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
   },
 }
 

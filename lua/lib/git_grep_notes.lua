@@ -5,18 +5,18 @@
 local M = {}
 
 --- grep dir with git grep
----@param opts {cwd?: string, cmd?: string}
+---@param opts {cwd?: string, cmd?: string[]}
 M.git_grep_notes = function(opts)
   opts = opts or {}
-  local cmd = opts.cmd or string.format('git -C %s grep --line-number .', opts.cwd or '.')
-  local out = vim.system(vim.split(cmd, ' '), { cwd = opts.cwd or '.' })
+  local cmd = opts.cmd or { 'git', '-C', '%s', 'grep', '--line-number', '.', opts.cwd or '.' }
+  local out = vim.system(cmd)
   local res = out:wait()
-  if not res.stdout then
+  if not res.stdout or res.stdout == '' or #res.stderr > 0 then
     Snacks.notify('No results found. err: ' .. res.stderr)
     return
   end
 
-  --- @type snacks.picker.Item[]
+  -- - @type snacks.picker.Item[]
   local items = {}
   for _, line in ipairs(vim.split(res.stdout, '\n')) do
     local entry = vim.split(line, ':')
@@ -33,7 +33,7 @@ M.git_grep_notes = function(opts)
     })
   end
   Snacks.picker.pick({
-    title = 'Git Grep Results for ',
+    title = 'grep notes',
     items = items,
     cwd = opts.cwd or '.',
     layout = 'ivy_split',
