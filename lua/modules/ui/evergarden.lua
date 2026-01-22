@@ -1,5 +1,10 @@
 local should_override = true
 local c = require('config.colors').evergarden -- colors
+local colorscheme = require('lib.colors').omarchy_colorscheme()
+if colorscheme.colorscheme ~= 'evergarden' then
+  return {}
+end
+local light = colorscheme.colorscheme_plugin.opts.theme.variant == 'summer'
 
 local config = {
   highlights = {
@@ -9,7 +14,7 @@ local config = {
   },
 }
 
-local overrides = {
+local overrides_dark = {
   ['@keyword'] = config.highlights.keyword,
   ['@constant'] = { c.white },
   ['@annotation'] = { c.white, style = { 'bold' } },
@@ -22,6 +27,12 @@ local overrides = {
   -- TabLineSel = { bg = c.inactivegray },
 }
 
+local overrides_light = {
+  ['WinSeparator'] = { fg = c.summer.text },
+}
+
+local overrides = light and overrides_light or overrides_dark
+
 if not should_override then
   overrides = {}
 end
@@ -31,14 +42,7 @@ return {
     'everviolet/nvim',
     name = 'evergarden',
     lazy = true,
-    -- priority = 1000,
     opts = {
-
-      theme = {
-        variant = 'fall', -- 'winter'|'fall'|'spring'|'summer'
-        accent = 'green',
-      },
-
       overrides = overrides,
       integrations = {
         cmp = true,
