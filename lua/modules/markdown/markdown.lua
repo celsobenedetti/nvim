@@ -46,8 +46,6 @@ return {
         },
       })
 
-      vim.api.nvim_set_hl(0, 'RenderMarkdownWikiLink', { underline = true })
-
       Snacks.toggle({
         name = 'Render Markdown',
         get = require('render-markdown').get,

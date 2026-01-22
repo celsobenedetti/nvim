@@ -7,6 +7,7 @@ vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg'
 vim.api.nvim_set_hl( 0, 'TabLineSel', { bg = colors.get_color('Statusline', 'fg'), link = "@boolean"})
 vim.api.nvim_set_hl( 0, 'NonText', { link = "Comment"})
 vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
+vim.api.nvim_set_hl(0, '@markup.link.label.markdown_inline', { underline = true, fg = colors.get_color('@markup.link.label.markdown_inline', 'fg') })
 
 -- stylua: ignore end
 
