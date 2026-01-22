@@ -47,7 +47,7 @@ end, { desc = 'Copy file path to clipboard' })
 -- end, { desc = 'Run current line as bash command' })
 
 map({ 'n', 'x', 'v' }, '<leader>sw', function()
-  Snacks.picker.grep_word()
+  Snacks.picker.grep_word({ layout = 'ivy_split' })
 end, { desc = 'Visual selection or word (Root Dir)' })
 map({ 'n', 'x', 'v' }, '<leader>sW', function()
   Snacks.picker.grep_word({ root = false })
@@ -59,8 +59,10 @@ vim.keymap.set('n', 'gx', gx.normal, { desc = 'gx: open link' })
 vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 
 vim.keymap.set('n', 'NOTES', function()
-  require('lib.git_grep_notes').git_grep_notes({
-    cwd = vim.g.env.notes.NOTES,
-    cmd = 'rg --no-heading --line-number . ' .. vim.g.env.notes.NOTES, -- exclude hidden files
-  })
+  require('lib.notes').focus_or_create_notes_tab(function()
+    require('lib.git_grep_notes').git_grep_notes({
+      cwd = vim.g.env.notes.NOTES,
+      cmd = 'rg --no-heading --line-number . ' .. vim.g.env.notes.NOTES, -- exclude hidden files
+    })
+  end)
 end, { desc = 'search all notes' })

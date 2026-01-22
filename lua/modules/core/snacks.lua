@@ -255,7 +255,7 @@ return {
     { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'snacks: GitHub Pull Requests (all)', },
     -- -- Grep
     { '<leader>/', function() Snacks.picker.lines() end, desc = 'snacks: Buffer Lines', },
-    { '<leader>sB', function() Snacks.picker.grep_buffers() end, desc = 'snacks: Grep Open Buffers', },
+    { '<leader>sB', function() Snacks.picker.grep_buffers({layout="ivy_split"}) end, desc = 'snacks: Grep Open Buffers', },
     { '<leader>sp', function() Snacks.picker.lazy() end, desc = 'snacks: Search for Plugin Spec', },
     -- search
     { '<leader>s"', function() Snacks.picker.registers() end, desc = 'snacks: Registers', },
@@ -295,7 +295,6 @@ return {
     end, { desc = 'snacks: Git Browse (copy)', mode = { 'n', 'x' } }, },
     -- { '<leader>gf', function() Snacks.picker.git_log_file() end, { desc = 'Git Current File History' }, },
     -- { '<leader>gl', function() Snacks.picker.git_log { cwd = cwd.root() } end, { desc = 'Git Log' }, },
-
     -- stylua: ignore end
   },
 }

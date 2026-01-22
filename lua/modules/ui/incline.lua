@@ -9,6 +9,7 @@ return {
         -- set winbar to render empty line above first line of file
         -- this is done mostly because of obsidian notes, which don't contain a top level H1 by default
         vim.opt.winbar = ' '
+        vim.opt.wrap = true
       end
 
       -- local helpers = require('incline.helpers')

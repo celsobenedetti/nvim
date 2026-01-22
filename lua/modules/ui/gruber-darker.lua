@@ -7,7 +7,9 @@ return {
       vim.api.nvim_create_autocmd('ColorScheme', {
         pattern = 'gruber-darker',
         callback = function()
-          -- vim.api.nvim_set_hl(0, 'GruberDarkerDarkNiagara', { link = 'GruberDarkerNiagara' })
+          local colors = require('lib.colors')
+          vim.api.nvim_set_hl(0, 'TabLine', { fg = colors.get_color('Comment', 'fg') })
+          vim.api.nvim_set_hl(0, 'TabLineSel', { fg = colors.get_color('GruberDarker_Yellow', 'fg') })
         end,
       })
     end,

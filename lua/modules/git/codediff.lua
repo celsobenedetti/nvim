@@ -86,6 +86,17 @@ local function git_pickaxe(opts)
   end)
 end
 
+--- runs command and renames tab
+---@param cmd string
+local function codefiff_cmd(cmd)
+  return function()
+    vim.cmd(cmd)
+    vim.defer_fn(function()
+      vim.g.fn.rename_tab(' git log')
+    end, 50)
+  end
+end
+
 return {
   {
     'esmuellert/codediff.nvim',
@@ -146,8 +157,10 @@ return {
       -- stylua: ignore start
       { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'pickaxe: Git Search (Buffer)', },
       { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
-      { '<leader>gf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
-      { '<leader>gl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
+      { '<leader>sgf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
+      { '<leader>sgl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
+      { '<leader>gl', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
+      { '<leader>gf', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
       { 'gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
       -- stylua: ignore end
     },

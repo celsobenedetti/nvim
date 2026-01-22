@@ -14,6 +14,9 @@ local overrides = {
   ['@constant'] = { c.white },
   ['@annotation'] = { c.white, style = { 'bold' } },
   ['@attribute'] = { c.orange },
+  ['@markup.italic'] = { c.lime, style = { 'italic' } },
+  ['@markup.link.label.markdown_inline'] = { c.skye, style = { 'bold' } },
+
   -- ['typescriptVariable'] = { c.orange },
   -- SpellBad = { style = { 'italic', 'underdotted' } },
   -- TabLineSel = { bg = c.inactivegray },
