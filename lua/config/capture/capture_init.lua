@@ -1,9 +1,11 @@
 vim.g.lazy_orgmode = false
 
+local mini = require('modules.core.mini')
 require('init')
 
 require('lazy').setup({
   spec = {
+    mini,
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } }, -- no clue why this is needed tbh
     { import = 'modules.orgmode' },
     { import = 'modules.omarchy' },
@@ -12,9 +14,11 @@ require('lazy').setup({
   performance = vim.g.lazy_nvim_config.performance,
 })
 
-local DELAY_CLOSE_WIN = 20
-Org.capture.c({ win_split_mode = 'float' })
-vim.defer_fn(function()
-  vim.cmd('wincmd k')
-  vim.api.nvim_win_close(0, false)
-end, DELAY_CLOSE_WIN)
+local initial_window = vim.api.nvim_get_current_win()
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'org',
+  callback = function()
+    pcall(vim.api.nvim_win_close, initial_window, true)
+  end,
+})
+Org.capture.c()
