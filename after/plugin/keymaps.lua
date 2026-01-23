@@ -1,3 +1,5 @@
+local strings = require('lib.strings')
+
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>silent w<cr><esc>', { desc = 'Save File' })
 
@@ -35,7 +37,8 @@ end, { expr = true, desc = 'Escape and Clear hlsearch' })
 
 map('n', 'gy', function()
   local file = vim.fn.expand('%:p')
-  vim.cmd('silent !wl-copy ' .. file, { silent = true }) -- wayland
+  file = file:gsub(' ', '\\ ')
+  vim.fn.setreg('+', file)
   Snacks.notify('Copied to clipboard: ' .. file)
 end, { desc = 'Copy file path to clipboard' })
 
