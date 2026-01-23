@@ -2,6 +2,7 @@ vim.lsp.enable({
   'eslint',
   'gopls',
   'jsonls',
+  'harper_ls',
   'lua_ls',
   'tailwindcss',
   'vtsls',

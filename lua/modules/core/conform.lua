@@ -32,6 +32,9 @@ return {
         if not vim.g.autoformat then
           return nil
         end
+        if vim.bo.filetype == 'markdown' then
+          return nil
+        end
 
         return {
           lsp_format = 'fallback',
@@ -40,7 +43,6 @@ return {
       end,
 
       formatters_by_ft = {
-        -- markdown = { 'mfmt' },
         -- org = { 'mfmt_org' },
         -- gitcommit = { 'mfmt' },
         --

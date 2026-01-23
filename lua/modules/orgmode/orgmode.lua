@@ -14,7 +14,7 @@ local function e(file)
   return ':e ' .. file .. '<cr>'
 end
 map('n', '<leader>ow', e(vim.g.env.notes.ORG_WORK), { desc = 'org: work file' })
-map('n', '<leader>rr', e(vim.g.env.notes.ORG_REFILE), { desc = 'org: refile file' })
+map('n', '<leader>in', e(vim.g.env.notes.ORG_INBOX), { desc = 'org: refile file' })
 
 return {
   {
@@ -42,7 +42,7 @@ return {
       require('orgmode').setup({
         org_agenda_files = agenda_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
-        org_default_notes_file = vim.g.env.notes.ORG_REFILE,
+        org_default_notes_file = vim.g.env.notes.ORG_INBOX,
         org_priority_highest = 'A',
         org_priority_default = 'C',
         org_priority_lowest = 'C',
@@ -141,7 +141,7 @@ return {
           c = {
             description = 'quick capture',
             template = '* %?\n %U',
-            target = vim.g.env.notes.ORG_REFILE,
+            target = vim.g.env.notes.ORG_INBOX,
           },
         },
 

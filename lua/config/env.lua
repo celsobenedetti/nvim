@@ -8,8 +8,8 @@ local M = {
 
   notes = {
     NOTES = os.getenv('NOTES') or '',
+    OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
     ZK = os.getenv('ZK') or '',
-    INBOX = os.getenv('INBOX') or '',
     ORG = os.getenv('ORG') or '',
     PROJECTS = os.getenv('PROJECTS') or '',
     RESOURCES = os.getenv('RESOURCES') or '',
@@ -19,7 +19,7 @@ local M = {
     ASSETS = os.getenv('ASSETS') or '',
     ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
 
-    ORG_REFILE = os.getenv('ORG_REFILE') or '',
+    ORG_INBOX = os.getenv('ORG_INBOX') or '',
     ORG_WORK = os.getenv('ORG_WORK') or '',
     ORG_PURCHASES = os.getenv('ORG_PURCHASES') or '',
 

@@ -15,7 +15,7 @@ local function create_note_from_selection()
       title = title,
     })
     :save({
-      path = vim.g.env.notes.INBOX .. '/' .. title .. '.md',
+      path = vim.g.env.notes.OBSIDIAN_INBOX .. '/' .. title .. '.md',
       insert_frontmatter = false,
       update_content = function()
         return {
@@ -109,7 +109,7 @@ return {
           sort = { 'id', 'aliases', 'tags' },
         },
         legacy_commands = false,
-        notes_subdir = vim.g.env.notes.INBOX:gsub(vim.g.env.notes.NOTES .. '/', ''),
+        notes_subdir = vim.g.env.notes.OBSIDIAN_INBOX:gsub(vim.g.env.notes.NOTES .. '/', ''),
         new_notes_location = 'notes_subdir',
         workspaces = {
           -- { name = 'notes', path = vim.g.env.notes.NOTES },

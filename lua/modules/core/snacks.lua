@@ -182,7 +182,6 @@ return {
         -- dashboard buffer keymaps
         vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.files()<CR>', {})
         vim.api.nvim_buf_set_keymap(0, 'n', 'p', ':lua Snacks.picker.files()<CR>', {})
-        vim.api.nvim_buf_set_keymap(0, 'n', 'o', ":lua require('telescope').extensions.orgmode.search_headings()", {})
       end,
       preset = {
         header = '',
@@ -199,8 +198,6 @@ return {
           { icon = '', key = 'r', desc = 'restore', action = ":lua require('persistence').load({ last = true })" },
           { icon = ' ', key = 'c', desc = 'cd', action = cd },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
-          { icon = '󰺿 ', key = 'n', desc = 'notes', action = notes },
-          { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
           { icon = ' ', key = 'q', desc = 'quit', action = ':q' },
         },
         -- stylua: ignore end

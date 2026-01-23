@@ -1,0 +1,41 @@
+return {
+  settings = {
+    ['harper-ls'] = {
+      userDictPath = '~/.config/nvim/spell/en.utf-8.add',
+      linters = {
+        SentenceCapitalization = false,
+        SpellCheck = false,
+        UseTitleCase = false,
+      },
+    },
+  },
+
+  filetypes = {
+    'asciidoc',
+    'c',
+    'clojure',
+    'cmake',
+    'cpp',
+    'cs',
+    'dart',
+    'gitcommit',
+    'go',
+    'haskell',
+    'html',
+    'java',
+    'javascript',
+    'lua',
+    'markdown',
+    'nix',
+    'php',
+    'python',
+    'ruby',
+    'rust',
+    'sh',
+    'swift',
+    'toml',
+    'typescript',
+    'typescriptreact',
+    'typst',
+  },
+}
