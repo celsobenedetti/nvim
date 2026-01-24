@@ -110,8 +110,10 @@ vim.opt.shiftwidth = 4 -- Size of an indent - this seems to affect conform
 
 vim.o.winborder = 'rounded'
 vim.opt.spelllang = { 'en', 'pt' }
+vim.opt.spellfile = vim.fn.expand('~/.config/nvim/spell/en.utf-8.add')
+
 vim.o.spellcapcheck = ''
-vim.opt.autowrite = true -- Enable auto write
+vim.opt.autowrite = true -- Enable autowrite
 
 -- only set clipboard if not in ssh, to make sure the OSC 52
 -- integration works automatically.

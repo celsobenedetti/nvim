@@ -1,3 +1,8 @@
+local function highlight_tags()
+  vim.cmd('syntax match MarkdownTag /#[a-zA-Z0-9_-]\\+/')
+  vim.api.nvim_set_hl(0, 'MarkdownTag', { link = 'BlinkCmpScrollBarThumb' })
+end
+
 local function fold_frontmatter()
   vim.schedule(function()
     local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---')
@@ -134,11 +139,6 @@ local function set_keymaps()
   vim.keymap.set('n', '<leader>TiC', '<Plug>(markdown-plus-table-insert-column-left)', { buffer = true })
   vim.keymap.set('n', '<leader>Tdc', '<Plug>(markdown-plus-table-delete-column)', { buffer = true })
   vim.keymap.set('n', '<leader>Tyc', '<Plug>(markdown-plus-table-duplicate-column)', { buffer = true })
-end
-
-local function highlight_tags()
-  vim.cmd('syntax match MarkdownTag /#[a-zA-Z0-9_-]\\+/')
-  vim.api.nvim_set_hl(0, 'MarkdownTag', { link = 'BlinkCmpScrollBarThumb' })
 end
 
 --- main execution

@@ -19,7 +19,7 @@ local function create_note_from_selection()
       insert_frontmatter = false,
       update_content = function()
         return {
-          '# ' .. title,
+          '#seed',
         }
       end,
     })
@@ -96,7 +96,7 @@ return {
       require('obsidian').setup({
         daily_notes = {
           folder = 'daily',
-          template = 'daily',
+          -- template = 'daily',
         },
         templates = {
           folder = vim.g.env.notes.ASSETS .. '/templates',
