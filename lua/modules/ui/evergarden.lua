@@ -7,7 +7,8 @@ return {
       local should_override = true
       -- TODO: get colors from plugin itself
       local c = require('config.colors').evergarden -- colors
-      local colorscheme = require('lib.colors').omarchy_colorscheme()
+      local lib_colors = require('lib.colors')
+      local colorscheme = lib_colors.omarchy_colorscheme()
       if colorscheme.colorscheme ~= 'evergarden' and colorscheme.colorscheme ~= 'evergarden-summer' then
         return {}
       end
@@ -36,6 +37,7 @@ return {
 
       local overrides_light = {
         ['WinSeparator'] = { fg = c.summer.surface2 },
+        ['@keyword'] = { fg = c.summer.red, style = { 'nocombine' } },
         ['@constant'] = { fg = c.summer.text },
         ['@annotation'] = { c.summer.snow },
       }

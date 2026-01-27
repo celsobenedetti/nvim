@@ -16,6 +16,35 @@ end
 map('n', '<leader>ow', e(vim.g.env.notes.ORG_WORK), { desc = 'org: work file' })
 map('n', '<leader>in', e(vim.g.env.notes.ORG_INBOX), { desc = 'org: refile file' })
 
+local function set_keymaps()
+  -- TODO: can I figure out a way to parse the heading of the match location within the org file?
+  vim.keymap.set('n', '<leader>sum', function()
+    vim.ui.input({
+      prompt = 'Get summary for date: (YYYY-MM-DD): ',
+      default = tostring(os.date('%F')),
+    }, function(selected_date)
+      if not selected_date or selected_date == '' then
+        return
+      end
+
+      local search_cmd = [[silent vimgrep /\(Note taken\|CLOSED\).*]] .. selected_date .. [[/gj 0\ org/*]]
+
+      -- 2. Execute the search
+      local ok, _ = pcall(vim.cmd, search_cmd)
+      local qf_list = vim.fn.getqflist()
+      if not ok or #qf_list == 0 then
+        Snacks.notify.info('No matches found for: ' .. selected_date)
+        vim.cmd('cclose') -- Close copen if it was open from a previous search but this one failed
+        return
+      end
+
+      -- 3. Open the search results
+      Snacks.notify.info('Found ' .. #qf_list .. ' matches.')
+      vim.cmd('copen')
+    end)
+  end, { desc = 'org: search summary for day' })
+end
+
 return {
   {
     'nvim-orgmode/orgmode',
@@ -102,13 +131,18 @@ return {
               },
             },
           },
-          p = {
-            description = 'Project tasks',
+          W = {
+            description = 'waiting',
             types = {
               {
-                type = 'tags_todo',
-                match = 'project',
-                org_agenda_sorting_strategy = { 'todo-state-down', 'time-up' }, -- See all options available on org_agenda_sorting_strategy
+                type = 'tags_todo', -- Type can be agenda | tags | tags_todo
+                match = 'TODO="WAITING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+                org_agenda_sorting_strategy = {
+                  'priority-down',
+                  'todo-state-down',
+                }, -- See all options available on org_agenda_sorting_strategy
+                -- org_agenda_overriding_header = 'High priority todos',
+                -- org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
               },
             },
           },
@@ -164,9 +198,10 @@ return {
         org_todo_keywords = {
           'TODO(t)', -- Tasks that are not started and not planned. They could be the backlogs or the GTD’s someday/maybe. These tasks could be converted to NEXT during a review.
           'NEXT(n)', -- Tasks that are not started but planned to do as soon as I can. When there is no actionable PROG (e.g., blocked), I start one of those and convert it to PROG.
+          'WAITING(w)', -- Tasks that have been started, but are waiting on some update or time to lapse.
           'PROG(p)', -- Tasks that are working in progress (open loops). I work on these tasks before starting another NEXT task to avoid too many open loops at any moment.
           '|', -- Hold up
-          'CANC(c)', -- Tasks that have I've decided not to do.
+          'CANCELLED(c)', -- Tasks that have I've decided not to do.
           'DONE(d)', -- 😎👍
         },
       })
@@ -185,6 +220,7 @@ return {
 
         vim.schedule(set_highlights)
       end
+      vim.schedule(set_keymaps)
     end,
   },
   {
