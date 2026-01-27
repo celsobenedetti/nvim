@@ -78,3 +78,8 @@ vim.keymap.set('n', 'NOTES', function()
     })
   end)
 end, { desc = 'search all notes' })
+
+-- orgmode
+vim.keymap.set('n', '<leader>in', ':e' .. vim.g.env.notes.ORG_INBOX .. '<cr>', { desc = 'org: refile file' })
+vim.keymap.set('n', '<leader>om', ':e' .. vim.g.env.notes.ORG_MAIN .. '<cr>', { desc = 'org: main file' })
+vim.keymap.set('n', '<leader>ow', ':e' .. vim.g.env.notes.ORG_WORK .. '<cr>', { desc = 'org: work file' })

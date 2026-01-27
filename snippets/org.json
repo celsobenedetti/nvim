@@ -17,6 +17,11 @@
   "id": {
     "description": "id property",
     "prefix": "id",
-    "body": [":PROPERTIES:", ":ID: $1", ":END:"]
+    "body": [":PROPERTIES:", ":${2:ID}: $1", ":END:"]
+  },
+  "link": {
+    "description": "link",
+    "prefix": "li",
+    "body": ["[[$2][$1]]"]
   }
 }

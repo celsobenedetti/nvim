@@ -20,8 +20,8 @@ local M = {
     ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
 
     ORG_INBOX = os.getenv('ORG_INBOX') or '',
+    ORG_MAIN = os.getenv('ORG_MAIN') or '',
     ORG_WORK = os.getenv('ORG_WORK') or '',
-    ORG_PURCHASES = os.getenv('ORG_PURCHASES') or '',
 
     AI_RULES = os.getenv('AI_RULES') or '',
 

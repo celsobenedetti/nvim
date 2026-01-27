@@ -5,6 +5,7 @@ vim.lsp.enable({
   'jsonls',
   'harper_ls',
   'lua_ls',
+  'org',
   'tailwindcss',
   'vtsls',
   'vue_ls',
