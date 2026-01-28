@@ -53,6 +53,7 @@ return {
       filter = function(notification)
         local ignore = {
           'File is too large to send to server', -- thank you supermaven, please stfu
+          'Request textDocument/diagnostic failed with message: No ESLint configuration found in', -- err when eslint is not available
           'No results found for.*buffers', -- Snacks.picker.buffers when there are no results
         }
         for _, s in ipairs(ignore) do
@@ -195,10 +196,8 @@ return {
         -- stylua: ignore start
         keys = {
           { icon = '', key = 'a', desc = 'agenda', action = agenda },
-          { icon = '', key = 'r', desc = 'restore', action = ":lua require('persistence').load({ last = true })" },
-          { icon = ' ', key = 'c', desc = 'cd', action = cd },
+          { icon = '', key = 'r', desc = 'restore', action = function()require("auto-session").restore_session()end },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
-          { icon = ' ', key = 'q', desc = 'quit', action = ':q' },
         },
         -- stylua: ignore end
       },
@@ -290,8 +289,6 @@ return {
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
     end, { desc = 'snacks: Git Browse (copy)', mode = { 'n', 'x' } }, },
-    -- { '<leader>gf', function() Snacks.picker.git_log_file() end, { desc = 'Git Current File History' }, },
-    -- { '<leader>gl', function() Snacks.picker.git_log { cwd = cwd.root() } end, { desc = 'Git Log' }, },
     -- stylua: ignore end
   },
 }
