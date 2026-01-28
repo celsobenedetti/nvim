@@ -75,7 +75,7 @@ return {
             starters = true,
             statusline = true,
             surround = true,
-            tabline = true,
+            tabline = false,
             test = true,
             trailspace = true,
           },

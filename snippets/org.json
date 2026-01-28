@@ -2,12 +2,7 @@
   "code block": {
     "description": "code block",
     "prefix": "cb",
-    "body": ["#+BEGIN_${1:LANG} ${2:options}", "$0", "#+END_$1"]
-  },
-  "TODO [category]": {
-    "description": "todo [category]",
-    "prefix": "c",
-    "body": ["[$1] $2"]
+    "body": ["#+begin_src ${1:bash}", "$0", "#+end_src"]
   },
   "todo bullet list": {
     "description": "todo bullet list",

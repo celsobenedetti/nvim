@@ -52,7 +52,7 @@ vim.g.hl = {
   text = {
     highlight = 'Title',
     secondary = '@lsp.type.parameter.bash',
-    subtext = '@attribute',
+    subtext = '@comment',
     warn = 'WarningMsg',
   },
   highlight = 'MiniStatuslineModeOther',

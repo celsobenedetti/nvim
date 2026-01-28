@@ -5,6 +5,9 @@ vim.api.nvim_buf_set_keymap(0, 'n', 'gd', ':lua require("orgmode").action("org_m
 vim.api.nvim_buf_set_keymap(0, 'n', '<leader>j', '<Cmd>lua require("orgmode").action("org_mappings.insert_heading_respect_content")<CR>',
   { desc = 'org: insert headline (respect content)' }
 )
+vim.api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("orgmode").action("org_mappings.todo_next_state")<CR>',
+  { desc = 'org: change todo state' }
+)
 -- stylua: ignore end
 
 vim.api.nvim_create_autocmd('ModeChanged', {

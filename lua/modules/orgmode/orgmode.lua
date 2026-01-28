@@ -1,9 +1,10 @@
 local highlight = false
 
 local agenda_files = {
+  vim.g.env.notes.ORG_INBOX,
   vim.g.env.notes.ORG_MAIN,
   vim.g.env.notes.ORG_WORK,
-  vim.g.env.notes.ORG .. '/resources/*',
+  vim.g.env.notes.ORG_REFERENCES .. '/*',
 }
 
 --- @type table<string, OrgAgendaCustomCommand>
@@ -141,7 +142,7 @@ return {
         org_log_into_drawer = 'LOGBOOK',
         org_ellipsis = ' ',
         org_startup_indented = true,
-        org_adapt_indentation = false,
+        org_adapt_indentation = false, -- left flush
         org_id_link_to_org_use_id = true,
         calendar_week_start_day = 0,
         -- org_agenda_start_on_weekday = 7, -- start on sunday
@@ -252,7 +253,7 @@ return {
         desc = 'org: refile heading',
       },
       {
-        '<leader>os',
+        '<leader>osh',
         function()
           require('telescope').extensions.orgmode.search_headings()
         end,
