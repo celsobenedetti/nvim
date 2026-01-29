@@ -11,9 +11,12 @@ end
 local function agenda()
   require('lib.notes').focus_or_create_notes_tab(function()
     vim.cmd(':Org agenda T')
-    vim.schedule(function()
-      vim.cmd('tabclose 1')
-    end)
+
+    if #vim.api.nvim_list_tabpages() > 1 then
+      vim.schedule(function()
+        vim.cmd('tabclose 1')
+      end)
+    end
   end)
 end
 

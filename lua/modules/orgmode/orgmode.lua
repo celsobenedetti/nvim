@@ -199,6 +199,7 @@ return {
 
         org_todo_keywords = {
           'TODO(t)', -- Tasks that are not started and not planned. They could be the backlogs or the GTD’s someday/maybe. These tasks could be converted to NEXT during a review.
+          'PROJECT(s)', -- Projects that are started and in progress
           'NEXT(n)', -- Tasks that are not started but planned to do as soon as I can. When there is no actionable PROG (e.g., blocked), I start one of those and convert it to PROG.
           'WAITING(w)', -- Tasks that have been started, but are waiting on some update or time to lapse.
           'PROG(p)', -- Tasks that are working in progress (open loops). I work on these tasks before starting another NEXT task to avoid too many open loops at any moment.
