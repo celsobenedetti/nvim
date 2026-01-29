@@ -22,6 +22,7 @@ local M = {
     ORG_INBOX = os.getenv('ORG_INBOX') or '',
     ORG_MAIN = os.getenv('ORG_MAIN') or '',
     ORG_WORK = os.getenv('ORG_WORK') or '',
+    ORG_REFERENCES = os.getenv('ORG_REFERENCES') or '',
 
     AI_RULES = os.getenv('AI_RULES') or '',
 

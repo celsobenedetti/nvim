@@ -196,7 +196,7 @@ return {
         -- stylua: ignore start
         keys = {
           { icon = '', key = 'a', desc = 'agenda', action = agenda },
-          { icon = '', key = 'r', desc = 'restore', action = function()require("auto-session").restore_session()end },
+          { icon = '', key = 'r', desc = 'restore', action = function()vim.cmd('AutoSession restore')end },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
         },
         -- stylua: ignore end
