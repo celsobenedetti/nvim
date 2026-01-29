@@ -1,6 +1,11 @@
 return {
   -- editing
   {
+    'nvim-mini/mini.move',
+    version = false,
+    config = true,
+  },
+  {
     'nvim-mini/mini.ai',
     version = false,
     config = function()
