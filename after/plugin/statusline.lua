@@ -147,6 +147,19 @@ local modules = {
   _time = function()
     return os.date('%H:%M')
   end,
+
+  _search_results = function()
+    if vim.v.hlsearch == 1 then
+      local sinfo = vim.fn.searchcount({ maxcount = 0 })
+      local search_stat = sinfo.incomplete > 0 and '[?/?]'
+        or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
+        or nil
+
+      if search_stat then
+        return hl(vim.g.hl.text.subtext, search_stat)
+      end
+    end
+  end,
 }
 
 local function setup_caching_and_updating()
@@ -253,8 +266,9 @@ function _G.MyStatusLine()
   local terminal = modules._terminal()
   local location = modules._location()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
+  local search_results = modules._search_results()
 
-  local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics }, 'left')
+  local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics, search_results }, 'left')
   local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
