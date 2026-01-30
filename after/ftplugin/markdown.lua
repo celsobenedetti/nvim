@@ -1,8 +1,3 @@
-local function highlight_tags()
-  vim.cmd('syntax match MarkdownTag /#[a-zA-Z0-9_-]\\+/')
-  vim.api.nvim_set_hl(0, 'MarkdownTag', { link = 'BlinkCmpScrollBarThumb' })
-end
-
 local function fold_frontmatter()
   vim.schedule(function()
     local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---')
@@ -25,6 +20,46 @@ local function fold_frontmatter()
   end)
 end
 
+-- create custom highlight group for markdown #tags
+-- namespace code to ensure higlights only apply to markdown windows, even after markdown ftplugin is loaded
+local function highlight_tags()
+  local ns = vim.api.nvim_create_namespace('ft_markdown_local_hl')
+  vim.cmd('syntax match MarkdownTag /#[a-zA-Z0-9_-]\\+/')
+  vim.api.nvim_set_hl(ns, 'MarkdownTag', { link = 'BlinkCmpScrollBarThumb' })
+
+  -- apply highlight namespace only for markdown windows
+  local bufnr = vim.api.nvim_get_current_buf()
+  local group = vim.api.nvim_create_augroup('markdown_local_hl_' .. bufnr, { clear = true })
+
+  local function apply_ns()
+    local ok = pcall(vim.api.nvim_win_set_hl_ns, 0, ns)
+    if not ok and vim.api.nvim_set_hl_ns then
+      pcall(vim.api.nvim_set_hl_ns, ns)
+    end
+  end
+
+  local function reset_ns()
+    local ok = pcall(vim.api.nvim_win_set_hl_ns, 0, 0)
+    if not ok and vim.api.nvim_set_hl_ns then
+      pcall(vim.api.nvim_set_hl_ns, 0)
+    end
+  end
+
+  vim.api.nvim_create_autocmd('BufWinEnter', {
+    buffer = bufnr,
+    group = group,
+    callback = apply_ns,
+  })
+
+  vim.api.nvim_create_autocmd('BufWinLeave', {
+    buffer = bufnr,
+    group = group,
+    callback = reset_ns,
+  })
+  -- set for the current window now
+  apply_ns()
+end
+
 local function set_keymaps()
   -- keymaps
   -- https://github.com/yousefhadder/markdown-plus.nvim
@@ -41,7 +76,7 @@ local function set_keymaps()
   vim.keymap.set('x', '<C-b>', '<Plug>(MarkdownPlusBold)', { buffer = true })
   vim.keymap.set('x', '<C-i>', '<Plug>(MarkdownPlusItalic)', { buffer = true })
   vim.keymap.set('x', '<C-s>', '<Plug>(MarkdownPlusStrikethrough)', { buffer = true })
-  vim.keymap.set('x', '<C-k>', '<Plug>(MarkdownPlusCode)', { buffer = true })
+  -- vim.keymap.set('x', '<C-k>', '<Plug>(MarkdownPlusCode)', { buffer = true }) -- replaced by Cusor like C-k for opencode
   vim.keymap.set('x', '<leader>mw', '<Plug>(MarkdownPlusCodeBlock)', { buffer = true })
   vim.keymap.set('x', '<C-x>', '<Plug>(MarkdownPlusClearFormatting)', { buffer = true })
 
