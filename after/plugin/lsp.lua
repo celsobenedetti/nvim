@@ -1,8 +1,12 @@
 vim.lsp.enable({
+  'bashls',
+  -- 'copilot',
   'eslint',
   'gopls',
   'jsonls',
+  'harper_ls',
   'lua_ls',
+  'org',
   'tailwindcss',
   'vtsls',
   'vue_ls',
@@ -29,16 +33,10 @@ vim.diagnostic.config({
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
   callback = function(event)
-    map('n', 'gi', vim.lsp.buf.implementation, { desc = 'LSP: Goto Implementation' })
+    -- map('n', 'gi', vim.lsp.buf.implementation, { desc = 'LSP: Goto Implementation' }) -- NOTE: let's use default gri instead
     map('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP: Goto Definition' })
     map('n', 'gD', vim.lsp.buf.declaration, { desc = 'LSP: Goto Declaration' })
     map('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'LSP: insert mode signature help' })
-
-    map('n', 'gv', function()
-      vim.api.nvim_feedkeys(Keys('<c-w>v'), 'n', true)
-      vim.schedule(vim.lsp.buf.definition)
-      -- Snacks.picker.lsp_definitions()
-    end, { desc = 'Split vertical and go to definition' })
   end,
 })
 
@@ -54,7 +52,7 @@ local diagnostic_goto = function(next, severity)
   end
 end
 
-map('n', '<leader>cd', vim.diagnostic.open_float, { desc = 'LSP: Line Diagnostics' })
+map('n', '<leader>e', vim.diagnostic.open_float, { desc = 'LSP: Line Diagnostics' })
 map('n', ']d', diagnostic_goto(true), { desc = 'LSP: Next Diagnostic' })
 map('n', '[d', diagnostic_goto(false), { desc = 'LSP: Prev Diagnostic' })
 map('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'LSP: Next Error' })

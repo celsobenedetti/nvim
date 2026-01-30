@@ -1,3 +1,17 @@
+vim.g.treesitter = {
+  --- filetypes to highlight with treesitter
+  highlight = {
+    'gitcommit',
+    'go',
+    'json',
+    'markdown',
+    'typescript',
+    'vue',
+    --- these look better without treesitter
+    -- 'hmtl',
+  },
+}
+
 return {
   -- Treesitter is a new parser generator tool that we can
   -- use in Neovim to power faster and more accurate
@@ -16,38 +30,35 @@ return {
     end,
     event = { 'VeryLazy' },
     cmd = { 'TSUpdate', 'TSInstall', 'TSLog', 'TSUninstall' },
-    config = function(_, opts)
-      require('nvim-treesitter').setup({
-        indent = { enable = true },
-        highlight = { enable = true },
-        folds = { enable = true },
-        ensure_installed = {
-          'bash',
-          'c',
-          'diff',
-          'html',
-          'javascript',
-          'jsdoc',
-          'json',
-          'jsonc',
-          'lua',
-          'luadoc',
-          'luap',
-          'markdown',
-          'markdown_inline',
-          'printf',
-          'python',
-          'query',
-          'regex',
-          'toml',
-          'tsx',
-          'typescript',
-          'vim',
-          'vimdoc',
-          'vue',
-          'xml',
-          'yaml',
-        },
+    config = function()
+      -- NOTE: setup function not needed when using default options
+      require('nvim-treesitter').install({
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'gitcommit',
+        'go',
+        'javascript',
+        'jsdoc',
+        'json',
+        'lua',
+        'luadoc',
+        'luap',
+        'markdown',
+        'markdown_inline',
+        'printf',
+        'python',
+        'query',
+        'regex',
+        'toml',
+        'tsx',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'vue',
+        'xml',
+        'yaml',
       })
       vim.wo.foldmethod = 'expr'
       vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
@@ -65,18 +76,6 @@ return {
     'nvim-treesitter/nvim-treesitter-context',
     event = 'VeryLazy',
     opts = function()
-      local tsc = require('treesitter-context')
-      Snacks.toggle({
-        name = 'Treesitter Context',
-        get = tsc.enabled,
-        set = function(state)
-          if state then
-            tsc.enable()
-          else
-            tsc.disable()
-          end
-        end,
-      }):map('<leader>ut')
       return { mode = 'cursor', max_lines = 3 }
     end,
   },
@@ -90,9 +89,17 @@ return {
         enable = true,
         set_jumps = true, -- whether to set jumps in the jumplist
         keys = {
-          goto_next_start = { [']f'] = '@function.outer', [']c'] = '@class.outer', [']a'] = '@parameter.inner' },
+          goto_next_start = {
+            [']f'] = '@function.outer',
+            [']c'] = '@class.outer',
+            [']a'] = '@parameter.inner',
+          },
           goto_next_end = { [']F'] = '@function.outer', [']C'] = '@class.outer', [']A'] = '@parameter.inner' },
-          goto_previous_start = { ['[f'] = '@function.outer', ['[c'] = '@class.outer', ['[a'] = '@parameter.inner' },
+          goto_previous_start = {
+            ['[f'] = '@function.outer',
+            ['[c'] = '@class.outer',
+            ['[a'] = '@parameter.inner',
+          },
           goto_previous_end = { ['[F'] = '@function.outer', ['[C'] = '@class.outer', ['[A'] = '@parameter.inner' },
         },
       },

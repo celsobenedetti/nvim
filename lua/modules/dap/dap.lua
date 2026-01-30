@@ -112,16 +112,17 @@ return {
     },
     keys = {
       -- stylua: ignore start
-      { "<F5>", function() require("dap").continue() end, desc = "Run/Continue" },
-      { "<F9>", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
-      { "<F10>", function() require("dap").step_over(); vim.defer_fn(function () vim.cmd("norm zz")end, 100) end, desc = "Step Over" },
-      { "<F22>", function() require("dap").step_out() end, desc = "Step Out (shift + f10)" }, -- shift-f10
+      { "<F5>", function() require("dap").continue() end, desc = "dap: Run/Continue" },
+      { "<F9>", function() require("dap").toggle_breakpoint() end, desc = "dap: Toggle Breakpoint" },
+      { "<F10>", function() require("dap").step_over(); vim.defer_fn(function () vim.cmd("norm zz")end, 100) end, desc = "dap: Step Over" },
+      { "<F11>", function() require("dap").step_into(); vim.defer_fn(function () vim.cmd("norm zz")end, 100) end, desc = "dap: Step into" },
+      { "<F22>", function() require("dap").step_out() end, desc = "dap: Step Out (shift + f10)" }, -- shift-f10
       -- stylua: ignore end
 
       -- stylua: ignore start
       { '<leader>dc', function() Snacks.notify.warn('DAP: please use <F5> instead of <leader>dc', { title = 'VSCode' }) end, desc = 'Run/Continue', },
-      { '<leader>db', function() Snacks.notify.warn('DAP: please use <F9> instead of <leader>db', { title = 'VSCode' }) end, desc = 'Toggle Breakpoint', },
       { '<leader>do', function() Snacks.notify.warn('DAP: please use <F10> instead of <leader>do', { title = 'VSCode' }) end, desc = 'Step Over', },
+      { '<leader>db', function() Snacks.notify.warn('DAP: please use <F9> instead of <leader>db', { title = 'VSCode' }) end, desc = 'Toggle Breakpoint', },
       { '<leader>dO', function() Snacks.notify.warn('DAP: please use <Shift-F10> instead of <leader>dO', { title = 'VSCode' }) end, desc = 'Step Out', },
       -- stylua: ignore end
 
@@ -140,6 +141,7 @@ return {
       { "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
       { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
       { '<leader>bC', function() require('dap').clear_breakpoints(); Snacks.notify.info 'DAP breakpoints cleared' end, desc = 'DAP: Clear Breakpoints', },
+      { 'grb', function() require('dap').list_breakpoints(true) end, desc = 'DAP List Breakpoints', },
     },
     -- stylua: ignore end
 
@@ -164,7 +166,11 @@ return {
     ---@module 'dap-view'
     ---@type dapview.Config
     opts = {},
-    keys = { { '<leader>du', ':DapViewToggle<CR>', desc = 'DAP: UI toggle' } },
+    keys = { {
+      '<leader>du',
+      ':DapViewToggle<CR>',
+      desc = 'DAP: UI toggle',
+    } },
   },
 
   -- mason.nvim integration
@@ -191,3 +197,38 @@ return {
     config = function() end,
   },
 }
+
+-- # Neovim Go Delve Debugger Attach
+--
+-- #### Dap config
+--
+-- ```lua
+-- require('dap-go').setup {
+--
+--   dap_configurations = {
+--     {
+--       type = "go",
+--       name = "Attach remote",
+--       mode = "remote",
+--       request = "attach",
+--       -- tell which host and port to connect to
+--       connect = {
+--         host = "127.0.0.1",
+--         port = "8181"
+--       }
+--     },
+--   },
+--   delve = {
+--     port = "8181"
+--   },
+-- }
+-- ```
+--
+-- #### Delve command
+--
+-- ```bash
+-- dlv debug -l 127.0.0.1:8181 --headless ./cmd/api/
+-- ```
+--
+--
+-- [Goated GH comment 🙌](https://github.com/leoluz/nvim-dap-go/issues/35#issuecomment-1526728411)

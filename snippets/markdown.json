@@ -18,5 +18,10 @@
     "description": "quote block",
     "prefix": "qb",
     "body": ["> [!$1]", "> $2"]
+  },
+  "frontmatter": {
+    "description": "YAML frontmatter",
+    "prefix": "---",
+    "body": ["---", "tags:", "  - $1", "---"]
   }
 }

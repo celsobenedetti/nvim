@@ -5,33 +5,46 @@
 ---  main  󰢱 after/plugin/statusline.lua +3 ~1 -1   5  1  1                                                       stylua   lua_ls
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
-
---------------- globals start -----------------------
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = require('lib.strings').hl
-local HIGHLIGHT = vim.g.hl.subtext
-local LEFT_SEPARATOR = hl(HIGHLIGHT, vim.g.icons.separator.right)
-local RIGHT_SEPARATOR = hl(HIGHLIGHT, vim.g.icons.separator.left)
---------------- globals end -----------------------
 
 local modules = {
   _git_branch = function()
     if not vim.g.gitsigns_head or #vim.g.gitsigns_head == 0 then
       return ''
     end
-    return ' ' .. hl('Title', vim.g.icons.git.branch) .. hl(HIGHLIGHT, (vim.g.gitsigns_head or ''))
+
+    return ' '
+      .. hl(vim.g.hl.text.highlight, vim.g.icons.git.branch)
+      .. hl(vim.g.hl.text.secondary, (vim.g.gitsigns_head or ''))
+  end,
+
+  _branch_sync_status = function()
+    local branch_status = ''
+    if vim.g.branch_commits_behind_origin and vim.g.branch_commits_behind_origin > 0 then
+      branch_status = ' ' .. vim.g.icons.git.behind .. vim.g.branch_commits_behind_origin
+    end
+    if vim.g.branch_commits_ahead_of_origin and vim.g.branch_commits_ahead_of_origin > 0 then
+      if branch_status == '' then
+        branch_status = ' '
+      end
+      branch_status = branch_status .. vim.g.icons.git.ahead .. vim.g.branch_commits_ahead_of_origin
+    end
+
+    return hl(vim.g.hl.text.secondary, branch_status)
   end,
 
   _file = function()
-    local relative_file = vim.fn.expand('%:.')
+    vim.b.relative_file = vim.fn.expand('%:.')
     local icon = ''
     if has_icons then
-      local ft_icon, ft_color = devicons.get_icon(relative_file)
+      local ft_icon, ft_color = devicons.get_icon(vim.b.relative_file)
       if ft_icon then
         icon = hl(ft_color, ft_icon) .. ' '
       end
     end
-    local file = hl(HIGHLIGHT, relative_file)
+
+    local file = hl(vim.g.hl.text.secondary, vim.b.relative_file)
     return icon .. '' .. file
   end,
 
@@ -71,7 +84,8 @@ local modules = {
     for _, client in pairs(clients) do
       table.insert(c, client.name)
     end
-    return hl('Title', vim.g.icons.lsp) .. hl(HIGHLIGHT, table.concat(vim.fn.reverse(c), ', '))
+    return hl(vim.g.hl.text.highlight, vim.g.icons.lsp)
+      .. hl(vim.g.hl.text.secondary, table.concat(vim.fn.reverse(c), ', '))
   end,
 
   _formatters = function()
@@ -91,7 +105,7 @@ local modules = {
       return ''
     end
 
-    return hl('Title', ' ') .. hl(HIGHLIGHT, result)
+    return hl(vim.g.hl.text.highlight, vim.g.icons.format) .. hl(vim.g.hl.text.secondary, result)
   end,
 
   _diagnostics = function()
@@ -113,7 +127,38 @@ local modules = {
     if not vim.g.recording_macro then
       return ''
     end
-    return hl('MiniStatuslineModeReplace', ' recording macro ')
+    return hl(vim.g.hl.warn, '  recording macro ')
+  end,
+
+  _terminal = function()
+    if not vim.b.term then
+      return ''
+    end
+    return hl(vim.g.hl.highlight, '   terminal ')
+  end,
+
+  _location = function()
+    if not vim.g.statusline_show_position then
+      return ''
+    end
+    return hl(vim.g.hl.text.subtext, '%l:%v')
+  end,
+
+  _time = function()
+    return os.date('%H:%M')
+  end,
+
+  _search_results = function()
+    if vim.v.hlsearch == 1 then
+      local sinfo = vim.fn.searchcount({ maxcount = 0 })
+      local search_stat = sinfo.incomplete > 0 and '[?/?]'
+        or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
+        or nil
+
+      if search_stat then
+        return hl(vim.g.hl.text.subtext, search_stat)
+      end
+    end
   end,
 }
 
@@ -149,16 +194,41 @@ local function setup_caching_and_updating()
   })
 
   -- create scheduler to update some cached items periodically
-  local INTERVAL = 2000
+  local SHORT_INTERVAL = 2000
   local timer = vim.uv.new_timer()
   if timer then
     timer:start(
-      INTERVAL,
-      INTERVAL,
+      SHORT_INTERVAL,
+      SHORT_INTERVAL,
       vim.schedule_wrap(function()
         local bufnr = vim.api.nvim_get_current_buf()
         vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', modules._diagnostics())
         vim.api.nvim_buf_set_var(bufnr, 'cached_git_status', modules._git_status())
+      end)
+    )
+  end
+
+  local MEDIUM_INTERVAL = 5000
+  local big_timer = vim.uv.new_timer()
+  if big_timer then
+    big_timer:start(
+      SHORT_INTERVAL,
+      MEDIUM_INTERVAL,
+      vim.schedule_wrap(function()
+        vim.g.branch_commits_ahead_of_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_ahead_of_origin))
+        vim.g.branch_commits_behind_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_behind_origin))
+      end)
+    )
+  end
+
+  local MINUTE = 60000
+  local minute_timer = vim.uv.new_timer()
+  if minute_timer then
+    minute_timer:start(
+      SHORT_INTERVAL,
+      MINUTE,
+      vim.schedule_wrap(function()
+        vim.g.time = modules._time()
       end)
     )
   end
@@ -169,6 +239,8 @@ end
 ---@param segments string[]
 ---@param direction Direction
 local function _build_section(segments, direction)
+  local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
+  local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
   local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
   local section = ''
   for i, segment in pairs(segments) do
@@ -184,17 +256,23 @@ end
 
 function _G.MyStatusLine()
   local branch = modules._git_branch()
+  local branch_sync_status = modules._branch_sync_status()
   local file = vim.b.cached_file or modules._file()
   local git_status = vim.b.cached_git_status or modules._git_status()
   local diagnostics = vim.b.cached_diagnostics or modules._diagnostics()
   local lsp = vim.b.cached_lsps or modules._lsps()
   local formatters = vim.b.cached_formatters or modules._formatters()
   local macro = modules._macro()
+  local terminal = modules._terminal()
+  local location = modules._location()
+  local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
+  local search_results = modules._search_results()
 
-  local left = _build_section({ branch, file .. git_status, diagnostics }, 'left')
-  local right = _build_section({ macro, formatters, lsp }, 'right')
+  local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics, search_results }, 'left')
+  local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
+  local SPACE_BETWEEN = '%=' --- :h statusline
 
-  return left .. '%=' .. right
+  return left .. SPACE_BETWEEN .. right .. ' '
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'

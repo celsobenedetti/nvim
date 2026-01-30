@@ -13,6 +13,9 @@ return {
   }),
 
   -- these are here simply to prevent these plugins from being cleaned up by lazy.nvim
+
+  { 'oskarnurm/koda.nvim', lazy = true, enabled = true },
+  { 'blazkowolf/gruber-darker.nvim', lazy = true, enabled = true },
   { 'tahayvr/matteblack.nvim', lazy = true, enabled = true },
   { 'EdenEast/nightfox.nvim', lazy = true, enabled = true },
   { 'gthelding/monokai-pro.nvim', lazy = true, enabled = true },
@@ -22,5 +25,5 @@ return {
   { 'rose-pine/neovim', lazy = true, enabled = true, name = 'rose-pine' },
   { 'ellisonleao/gruvbox.nvim', lazy = true, enabled = true },
   { 'kepano/flexoki-neovim', lazy = true, enabled = true },
-  { 'everviolet/nvim', lazy = true, enabled = true, name = 'evergarden' },
+  { 'https://codeberg.org/evergarden/nvim', lazy = true, enabled = true, name = 'evergarden' },
 }

@@ -1,12 +1,24 @@
-local escape = function()
-  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
-  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
+-- TODO: refactor: create "tmux_keymap" util function to set keymap if/if not tmux
+local tmux = os.getenv('TMUX')
+if not tmux or tmux == '' then
+  -- keymaps that only should be available outside tmux
+  -- TODO: have a tmux version of this using "set in allacritty"
+  map('n', '<C-S-P>', function()
+    Snacks.picker.keymaps()
+  end, { desc = 'Overseer toggle' })
+
+  map('n', '<C-S-d>', ':DapViewToggle<CR>', { desc = 'Overseer toggle' })
+
+  -- return plugin so it is not cleaned up by lazy
+  return { 'christoomey/vim-tmux-navigator', lazy = true }
 end
 
---- Runs cmd if not inside Luasnip snippet
+--- Runs cmd if not inside snippet
 ---@param cmd string
 local cmd = function(cmd)
-  escape()
+  -- escape
+  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
+  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
 
   return function()
     local ok, luasnip = pcall(require, 'luasnip')
@@ -36,8 +48,19 @@ return {
         desc = 'Go to Left tmux pane',
       },
       { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane' },
-      { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane' },
+      -- { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane' },
       { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane' },
+
+      -- keymaps needed only when inside tmux tmux only
+      -- { '<C-e>', Explorer, desc = 'Snacks: explorer' },
+      {
+        '<c-_>',
+        function()
+          Snacks.terminal.toggle()
+        end,
+        desc = 'snacks: toggle terminal',
+        mode = { 'n', 't' },
+      },
     },
   },
 }

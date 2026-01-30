@@ -1,71 +1,88 @@
-local should_override = true
-local c = require('config.colors').evergarden -- colors
-
-local config = {
-  highlights = {
-    keyword = { fg = c.red, style = { 'nocombine' } },
-    type = { c.yellow, style = { 'nocombine' } },
-    comment = { fg = c.gray, style = { 'italic' } },
-  },
-}
-
-local overrides = {
-  ['@keyword'] = config.highlights.keyword,
-  ['@constant'] = { c.white },
-  SpellBad = { style = { 'italic', 'underdotted' } },
-}
-
-if not should_override then
-  overrides = {}
-end
-
 return {
-
   {
-    'everviolet/nvim',
+    'https://codeberg.org/evergarden/nvim',
     name = 'evergarden',
     lazy = true,
-    -- priority = 1000,
-    opts = {
+    config = function(_, opts)
+      local should_override = true
+      -- TODO: get colors from plugin itself
+      local c = require('config.colors').evergarden -- colors
+      local lib_colors = require('lib.colors')
+      local colorscheme = lib_colors.omarchy_colorscheme()
+      if colorscheme.colorscheme ~= 'evergarden' and colorscheme.colorscheme ~= 'evergarden-summer' then
+        return {}
+      end
+      local light = colorscheme.colorscheme_plugin.opts.theme.variant == 'summer'
 
-      theme = {
-        variant = 'fall', -- 'winter'|'fall'|'spring'|'summer'
-        accent = 'green',
-      },
-
-      overrides = overrides,
-      integrations = {
-        cmp = true,
-        gitsigns = true,
-        lualine = true,
-        mini = {
-          enable = true,
-          animate = true,
-          clue = true,
-          completion = true,
-          cursorword = true,
-          deps = true,
-          diff = false,
-          files = true,
-          hipatterns = true,
-          icons = true,
-          indentscope = true,
-          jump = true,
-          jump2d = true,
-          map = true,
-          notify = true,
-          operators = true,
-          pick = true,
-          starters = true,
-          statusline = true,
-          surround = true,
-          tabline = true,
-          test = true,
-          trailspace = true,
+      local config = {
+        highlights = {
+          keyword = { fg = c.red, style = { 'nocombine' } },
+          type = { c.yellow, style = { 'nocombine' } },
+          comment = { fg = c.gray, style = { 'italic' } },
         },
-        telescope = true,
-        which_key = true,
-      },
-    },
+      }
+
+      local overrides_dark = {
+        ['@keyword'] = config.highlights.keyword,
+        ['@constant'] = { fg = c.white },
+        ['@annotation'] = { c.white, style = { 'bold' } },
+        ['@attribute'] = { c.orange },
+        ['@markup.italic'] = { c.lime, style = { 'italic' } },
+        ['@markup.link.label.markdown_inline'] = { c.skye, style = { 'bold' } },
+
+        -- ['typescriptVariable'] = { c.orange },
+        -- SpellBad = { style = { 'italic', 'underdotted' } },
+        -- TabLineSel = { bg = c.inactivegray },
+      }
+
+      local overrides_light = {
+        ['WinSeparator'] = { fg = c.summer.surface2 },
+        ['@keyword'] = { fg = c.summer.red, style = { 'nocombine' } },
+        ['@constant'] = { fg = c.summer.text },
+        ['@annotation'] = { c.summer.snow },
+      }
+
+      local overrides = light and overrides_light or overrides_dark
+
+      if not should_override then
+        overrides = {}
+      end
+
+      require('evergarden').setup(vim.tbl_deep_extend('force', opts, {
+        overrides = overrides,
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          lualine = true,
+          mini = {
+            enable = true,
+            animate = true,
+            clue = true,
+            completion = true,
+            cursorword = true,
+            deps = true,
+            diff = false,
+            files = true,
+            hipatterns = true,
+            icons = true,
+            indentscope = true,
+            jump = true,
+            jump2d = true,
+            map = true,
+            notify = true,
+            operators = true,
+            pick = true,
+            starters = true,
+            statusline = true,
+            surround = true,
+            tabline = false,
+            test = true,
+            trailspace = true,
+          },
+          telescope = false,
+          which_key = true,
+        },
+      }))
+    end,
   },
 }

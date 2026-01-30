@@ -1,5 +1,11 @@
 return {
+
   -- editing
+  {
+    'nvim-mini/mini.move',
+    version = false,
+    config = true,
+  },
   {
     'nvim-mini/mini.ai',
     version = false,
@@ -23,6 +29,14 @@ return {
           -- g = LazyVim.mini.ai_buffer, -- buffer
           u = ai.gen_spec.function_call(), -- u for "Usage"
           U = ai.gen_spec.function_call({ name_pattern = '[%w_]' }), -- without dot in function name
+          ['%'] = function()
+            local from = { line = 1, col = 1 }
+            local to = {
+              line = vim.fn.line('$'),
+              col = math.max(vim.fn.getline('$'):len(), 1),
+            }
+            return { from = from, to = to }
+          end,
         },
       })
     end,
@@ -72,7 +86,7 @@ return {
     version = false,
     opts = {
       file = {
-        ['AGENTS.md'] = { glyph = '', hl = 'MiniIconsYellow' },
+        ['AGENTS.md'] = { glyph = ' ', hl = 'MiniIconsYellow' },
         ['.eslintrc.js'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
         ['eslint.config.ts'] = { glyph = '󰱺', hl = 'MiniIconsYellow' },
         ['.node-version'] = { glyph = '', hl = 'MiniIconsGreen' },

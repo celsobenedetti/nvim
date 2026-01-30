@@ -1,20 +1,62 @@
 local cwd = require('lib.cwd')
 
+local function dotfiles()
+  Snacks.picker.files({ dirs = { '~/.dotfiles', '~/.config/nvim' }, title = 'dotfiles', hidden = true })
+end
+
+local function cd()
+  Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
+end
+
+local function agenda()
+  require('lib.notes').focus_or_create_notes_tab(function()
+    vim.cmd(':Org agenda T')
+
+    if #vim.api.nvim_list_tabpages() > 1 then
+      vim.schedule(function()
+        vim.cmd('tabclose 1')
+      end)
+    end
+  end)
+end
+
+local function workspace()
+  Snacks.picker.zoxide({
+    confirm = {
+      function(_, item)
+        vim.cmd('tabnew')
+        if item.file and item.file ~= '' then
+          vim.g.fn.rename_tab(vim.fs.basename(item.file))
+        end
+      end,
+      'lcd',
+      'close',
+    },
+    title = 'workspace (zoxide)',
+  })
+end
+
+local function notes()
+  Snacks.picker.files({ cwd = '~/notes', title = 'notes', layout = 'ivy_split' })
+end
+
 return {
   'folke/snacks.nvim',
   lazy = false,
+  ---@type snacks.Config
   opts = {
     terminal = { enabled = true },
     words = { enabled = true },
     notify = { enabled = true },
     indent = { enabled = true },
-    input = { enabled = true },
+    input = { enabled = false },
 
     notifier = {
       enabled = true,
       filter = function(notification)
         local ignore = {
           'File is too large to send to server', -- thank you supermaven, please stfu
+          'Request textDocument/diagnostic failed with message: No ESLint configuration found in', -- err when eslint is not available
           'No results found for.*buffers', -- Snacks.picker.buffers when there are no results
         }
         for _, s in ipairs(ignore) do
@@ -27,7 +69,7 @@ return {
     },
 
     lazygit = {
-      theme = { selectedLineBgColor = { bg = 'CursorLine' } },
+      -- theme = { selectedLineBgColor = { bg = 'CursorLine' } },
       win = { width = 0, height = 0 },
     },
 
@@ -40,8 +82,44 @@ return {
             ['<c-x>'] = { 'bufdelete', mode = { 'n', 'i' } },
             ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
             ['<c-y>'] = { 'yank', mode = { 'n', 'i' } },
+            ['<c-l>'] = { 'yank', mode = { 'n', 'i' } }, -- TODO: this should actually insert the text to buffer
             ['<a-q>'] = { 'qflist', mode = { 'n', 'i' } },
             -- ['s'] = { 'flash' },
+          },
+        },
+      },
+      layouts = {
+        vscode = {
+          hidden = { 'preview' },
+          layout = {
+            backdrop = false,
+            row = 1,
+            width = 0.4,
+            min_width = 80,
+            height = 0.4,
+            border = 'single',
+            box = 'vertical',
+            { win = 'input', height = 1, border = true, title = '{title} {live} {flags}', title_pos = 'center' },
+            { win = 'list', border = 'hpad' },
+            { win = 'preview', title = '{preview}', border = true },
+          },
+        },
+        select = {
+          hidden = { 'preview' },
+          layout = {
+            backdrop = false,
+            width = 0.5,
+            min_width = 80,
+            max_width = 100,
+            height = 0.4,
+            min_height = 2,
+            box = 'vertical',
+            border = true,
+            title = '{title}',
+            title_pos = 'center',
+            { win = 'input', height = 1, border = 'bottom' },
+            { win = 'list', border = 'none' },
+            -- { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
           },
         },
       },
@@ -50,6 +128,7 @@ return {
         explorer = {
           auto_close = true,
           ignored = true,
+          exclude = vim.g.ignore.explorer,
           win = {
             list = {
               keys = {
@@ -100,6 +179,14 @@ return {
 
     dashboard = {
       enabled = true,
+      sections = {
+        { section = 'keys', gap = 1, padding = 1 },
+      },
+      config = function()
+        -- dashboard buffer keymaps
+        vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.files()<CR>', {})
+        vim.api.nvim_buf_set_keymap(0, 'n', 'p', ':lua Snacks.picker.files()<CR>', {})
+      end,
       preset = {
         header = '',
         -- Defaults to a picker that supports `fzf-lua`, `telescope.nvim` and `mini.pick`
@@ -109,116 +196,102 @@ return {
         -- Set your custom keymaps here.
         -- When using a function, the `items` argument are the default keymaps.
         ---@type snacks.dashboard.Item[]
+        -- stylua: ignore start
         keys = {
-          {
-            icon = ' ',
-            key = 's',
-            desc = 'select session',
-            action = require('persistence').select,
-          },
-          { icon = ' ', key = 'r', desc = 'recent files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = ' ', key = 'e', desc = 'new file', action = ':ene | startinsert' },
-          { icon = '󰒲 ', key = 'l', desc = 'lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
-          { icon = ' ', key = 'q', desc = 'quit', action = ':qa' },
+          { icon = '', key = 'a', desc = 'agenda', action = agenda },
+          { icon = '', key = 'r', desc = 'restore', action = function()vim.cmd('AutoSession restore')end },
+          { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
         },
+        -- stylua: ignore end
       },
     },
   },
   keys = {
     -- stylua: ignore start
-    { '<c-_>', function() Snacks.terminal(nil, { cwd = cwd.root() }) end, desc = 'Terminal (Root Dir)', mode = { 'n', 't' }, },
-    { '<leader>no', function() Snacks.picker.notifications() end, desc = 'Notification History', },
-    { '<leader>rg', function() Snacks.picker.grep() end, desc = 'Grep', },
-    { '<leader>rG', function() Snacks.picker.grep({hidden = true}) end, desc = 'Grep (all)', },
-    { '<leader>dd', function() Snacks.bufdelete() end, desc = 'delete buffer', },
-    { '<leader>dot', function() Snacks.picker.files { cwd = '~/.dotfiles', title = '~/.dotfiles', hidden = true } end, desc = 'search dotfiles', },
-    { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'search orgifles', },
-    { '<leader>fn', function() Snacks.picker.files { cwd = '~/notes', title = 'All notes' } end, desc = 'search all notes', },
-    { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
-    { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Rename File', },
-    { '<leader>gl', function() Snacks.lazygit.log() end, desc = 'Snacks: Lazygit Log (cwd)', },
-    { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'Explorer Snacks (root dir)', },
-    { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'Snacks: delete all buffers', },
+    -- TODO: figure out cwd in terminal, if opening file with different cwd from root
+    -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
+    { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
+    { '<leader>no', function() Snacks.picker.notifications() end, desc = 'snacks: notification history', },
+    { '<leader>rg', function() Snacks.picker.grep({layout= "ivy_split"}) end, desc = 'snacks: grep', },
+    { '<leader>rG', function() Snacks.picker.grep({layout= "ivy_split", hidden = true}) end, desc = 'snacks: grep (all)', },
+    { '<leader>dd', function() Snacks.bufdelete() end, desc = 'snacks: delete buffer', },
+    { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
+    { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'snacks: search orgifles', },
+    { '<leader>sn', notes, desc = 'snacks: search all notes', },
+    { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
+    { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'snacks: Rename File', },
+    { '<leader>lgl', function() Snacks.lazygit.log() end, desc = 'snacks: Lazygit Log (cwd)', },
+    { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'snacks: Explorer Snacks (root dir)', },
+    { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'snacks: delete all buffers', },
+    { '<leader>cd', cd, desc = 'snacks: zoxide (cd)', },
+    { '<leader>ws', workspace, desc = 'snacks: workspace (zoxide)', },
+    { '<leader>zo', function()Snacks.picker.zoxide({title="session (zoxide)"})end, desc = 'snacks: zoxide (session)', },
 
-    { '<C-E>', function()
-      if vim.bo.filetype == "snacks_picker_list" then
-        vim.cmd("q")
-        return
-      end
-      Snacks.picker.resume({source = "explorer", })
-    end, desc = 'Snacks: explorer', },
-    { '<leader>en', function() Snacks.explorer.open { cwd = '~/notes' } end, desc = 'Snacks: explorer notes', },
-    { '<leader>sc', function() Snacks.picker.commands() end, desc = 'Commands', },
-    { '<leader>sC', function() Snacks.picker.command_history() end, desc = 'Command History', },
-    { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'References', },
+    { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
+    { '<leader>fe', function()Snacks.explorer()end, desc = 'snacks: explorer (fe)', },
+    { '<leader>sc', function() Snacks.picker.commands() end, desc = 'snacks: Commands', },
+    { '<leader>sC', function() Snacks.picker.command_history() end, desc = 'snacks: Command History', },
+    { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'snacks: snacks: References', },
 
 
     -- -- find
-    { '<leader>,', function() Snacks.picker.buffers() end, desc = 'Buffers', },
-    { '<leader>fb', function() Snacks.picker.buffers() end, desc = 'Buffers', },
-    { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'Buffers (all)', },
-    { '<leader><space>', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader><space>', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
-    { '<leader>ff', function() Snacks.notify.warn('VSCode: please use <C-p> instead of <leader>ff', { title = 'VSCode' }) end, desc = 'Find Files (Root Dir)', },
-    { '<C-p>', function() Snacks.picker.smart() end, desc = 'Smart picker', },
+    { '<leader>,', function() Snacks.picker.buffers() end, desc = 'snacks: Buffers', },
+    { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
+    { '<C-p>', function() Snacks.picker.smart({layout="select", title=""}) end, desc = 'snacks: Smart picker', },
 
-    { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Files (git-files)', },
-    { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent', },
-    { '<leader>fR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'Recent (cwd)', },
-    { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects', },
+    { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
+    { '<leader>sr', function() Snacks.picker.recent() end, desc = 'snacks: Recent', },
+    { '<leader>sR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'snacks: Recent (cwd)', },
+    { '<leader>fp', function() Snacks.picker.projects() end, desc = 'snacks: Projects', },
     -- -- git
-    { '<leader>gd', function() Snacks.picker.git_diff() end, desc = 'Git Diff (hunks)', },
-    { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'Git Diff (origin)', },
-    { '<leader>gs', function() Snacks.picker.git_status() end, desc = 'Git Status', },
-    { '<leader>gS', function() Snacks.picker.git_stash() end, desc = 'Git Stash', },
-    -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'GitHub Issues (open)', },
-    -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'GitHub Issues (all)', },
-    { '<leader>gp', function() Snacks.picker.gh_pr() end, desc = 'GitHub Pull Requests (open)', },
-    { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'GitHub Pull Requests (all)', },
+    { '<leader>gd', function() Snacks.picker.git_diff() end, desc = 'snacks: Git Diff (hunks)', },
+    { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
+    { '<leader>gs', function() Snacks.picker.git_status({layout="ivy_split"}) end, desc = 'snacks: Git Status', },
+    { '<leader>gS', function() Snacks.picker.git_stash({layout="ivy_split"}) end, desc = 'snacks: Git Stash', },
+    -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'snacks: GitHub Issues (open)', },
+    -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'snacks: GitHub Issues (all)', },
+    { '<leader>gp', function() Snacks.picker.gh_pr() end, desc = 'snacks: GitHub Pull Requests (open)', },
+    { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'snacks: GitHub Pull Requests (all)', },
     -- -- Grep
-    { '<leader>/', function() Snacks.picker.lines() end, desc = 'Buffer Lines', },
-    { '<leader>sB', function() Snacks.picker.grep_buffers() end, desc = 'Grep Open Buffers', },
-    { '<leader>sp', function() Snacks.picker.lazy() end, desc = 'Search for Plugin Spec', },
+    { '<leader>/', function() Snacks.picker.lines() end, desc = 'snacks: Buffer Lines', },
+    { '<leader>sB', function() Snacks.picker.grep_buffers({layout="ivy_split"}) end, desc = 'snacks: Grep Open Buffers', },
+    { '<leader>sp', function() Snacks.picker.lazy() end, desc = 'snacks: Search for Plugin Spec', },
     -- search
-    { '<leader>s"', function() Snacks.picker.registers() end, desc = 'Registers', },
-    { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'Search History', },
-    { '<leader>sa', function() Snacks.picker.autocmds() end, desc = 'Autocmds', },
-    { '<leader>sd', function() Snacks.picker.diagnostics() end, desc = 'Diagnostics', },
-    { '<leader>sD', function() Snacks.picker.diagnostics_buffer() end, desc = 'Buffer Diagnostics', },
-    { '<leader>sh', function() Snacks.picker.help() end, desc = 'Help Pages', },
-    { '<leader>sH', function() Snacks.picker.highlights() end, desc = 'Highlights', },
-    { '<leader>si', function() Snacks.picker.icons() end, desc = 'Icons', },
-    { '<leader>sj', function() Snacks.picker.jumps() end, desc = 'Jumps', },
-    { '<leader>sk', function() Snacks.picker.keymaps() end, desc = 'Keymaps', },
-    { '<leader>sl', function() Snacks.picker.loclist() end, desc = 'Location List', },
-    { '<leader>sM', function() Snacks.picker.man() end, desc = 'Man Pages', },
-    { '<leader>sm', function() Snacks.picker.marks() end, desc = 'Marks', },
-    { '<leader>sR', function() Snacks.picker.resume() end, desc = 'Resume', },
-    { '<leader>sq', function() Snacks.picker.qflist() end, desc = 'Quickfix List', },
-    { '<leader>su', function() Snacks.picker.undo() end, desc = 'Undotree', },
+    { '<leader>s"', function() Snacks.picker.registers() end, desc = 'snacks: Registers', },
+    { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'snacks: Search History', },
+    { '<leader>sa', function() Snacks.picker.autocmds() end, desc = 'snacks: Autocmds', },
+    { '<leader>sd', function() Snacks.picker.diagnostics() end, desc = 'snacks: Diagnostics', },
+    { '<leader>sD', function() Snacks.picker.diagnostics_buffer() end, desc = 'snacks: Buffer Diagnostics', },
+    { '<leader>sh', function() Snacks.picker.help() end, desc = 'snacks: Help Pages', },
+    { '<leader>sH', function() Snacks.picker.highlights() end, desc = 'snacks: Highlights', },
+    { '<leader>si', function() Snacks.picker.icons() end, desc = 'snacks: Icons', },
+    { '<leader>sj', function() Snacks.picker.jumps() end, desc = 'snacks: Jumps', },
+    { '<leader>sk', function() Snacks.picker.keymaps() end, desc = 'snacks: Keymaps', },
+    { '<leader>sl', function() Snacks.picker.loclist() end, desc = 'snacks: Location List', },
+    { '<leader>sM', function() Snacks.picker.man() end, desc = 'snacks: Man Pages', },
+    { '<leader>sm', function() Snacks.picker.marks() end, desc = 'snacks: Marks', },
+    { '<leader>pr', function() Snacks.picker.resume() end, desc = 'snacks: Resume', },
+    { '<leader>sq', function() Snacks.picker.qflist() end, desc = 'snacks: Quickfix List', },
+    { '<leader>su', function() Snacks.picker.undo() end, desc = 'snacks: Undotree', },
     -- ui
-    { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'Colorschemes', },
-    { '<leader>ws', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'LSP Workspace Symbols', },
+    { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'snacks: Colorschemes', },
+    { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'snacks: LSP Workspace Symbols', },
+    { 'z=', function() Snacks.picker.spelling () end, desc = 'snacks: picker: spelling', },
 
-    -- set in allacrity
-    -- { '♠', function() Snacks.picker.lsp_symbols {} end, desc = 'LSP Symbols', }, -- C-S-O
-    { '<leader>ss', function() Snacks.notify.warn('VSCode: please use <C-O> instead of <leader>ss', { title = 'VSCode' }) end, desc = 'Search for Plugin Spec', },
 
-    { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'Lazygit (Root Dir)', },
-    { '<leader>gG', function() Snacks.lazygit() end, desc = 'Lazygit (cwd)', },
+    { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'snacks: Lazygit (Root Dir)', },
+    { '<leader>gG', function() Snacks.lazygit() end, desc = 'snacks: Lazygit (cwd)', },
     -- lsp
-    { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'Next Reference', },
-    { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'Prev Reference', },
+    { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'snacks: Next Reference', },
+    { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'snacks: Prev Reference', },
     -- TODO: decide which of these is good
-    { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
-    { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
-    { 'gB', function() Snacks.gitbrowse();  end, { desc = 'Git Browse (open)' }, },
+    -- { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'snacks: Git Blame Line' }, },
+    -- { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
+    { 'gB', function() Snacks.gitbrowse();  end, { desc = 'snacks: Git Browse (open)' }, },
     { 'gY', function()
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
-    end, { desc = 'Git Browse (copy)', mode = { 'n', 'x' } }, },
-    { '<leader>gf', function() Snacks.picker.git_log_file() end, { desc = 'Git Current File History' }, },
-    { '<leader>gl', function() Snacks.picker.git_log { cwd = cwd.root() } end, { desc = 'Git Log' }, },
-
+    end, { desc = 'snacks: Git Browse (copy)', mode = { 'n', 'x' } }, },
     -- stylua: ignore end
   },
 }

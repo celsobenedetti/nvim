@@ -13,6 +13,16 @@ M.matches = function(paths)
   return false
 end
 
+M.is_current_file_in_repo = function(paths)
+  local filepath = vim.fn.expand('%:p')
+  for _, path in ipairs(paths) do
+    if filepath:find(path) then
+      return true
+    end
+  end
+  return false
+end
+
 ---@return string
 M.cwd = function()
   return vim.fs.root(0, '.git') or vim.uv.cwd() --[[@as string]]
@@ -45,7 +55,7 @@ M.directories = function(opts)
   if opts.git then
     dir = vim.fs.root(0, '.git') or '.'
   end
-  local fd = string.format('!fd . %s --type=directory ', dir)
+  local fd = string.format('!fd . %s --type=directory --hidden ', dir)
   local fd_result = vim.api.nvim_exec2(fd, { output = true })
 
   local dirs = vim.split(fd_result.output, '\n')

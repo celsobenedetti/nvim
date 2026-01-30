@@ -1,15 +1,24 @@
-vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.subtext })
+local colors = require('lib.colors')
+vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- transparency changes -----------
 
--------- transparency changes -----------
-vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'TabLine', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'TabLineFill', { bg = 'none' })
+-- stylua: ignore start
+vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(vim.g.hl.text.subtext, 'fg') })
+vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
+vim.api.nvim_set_hl(0, 'TabLineSel', { bg = colors.get_color('StatusLine', 'bg') , bold = true, underline=true})
+vim.api.nvim_set_hl(0, 'NonText', { link = "Comment"})
+vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'FlashMatch', { link = 'MiniHipatternsNote' })
+
+local hyperlink = { underline = true, fg = colors.get_color('@markup.link.label.markdown_inline', 'fg') }
+vim.api.nvim_set_hl(0, '@markup.link.label.markdown_inline', hyperlink)
+vim.api.nvim_set_hl(0, '@org.hyperlink.desc.org', hyperlink)
+
+-- stylua: ignore end
 
 if vim.g.neovide then
   return
 end
 
-local colors = require('lib.colors')
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none' })
@@ -17,7 +26,6 @@ vim.api.nvim_set_hl(0, 'Pmenu', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'Terminal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'EndOfBuffer', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FoldColumn', { bg = 'none' })
-vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'WhichKeyFloat', { bg = 'none' })
@@ -52,3 +60,4 @@ vim.api.nvim_set_hl(0, 'TroubleNormal', { bg = 'none', fg = colors.get_color('Tr
 vim.api.nvim_set_hl(0, 'PmenuSbar', { bg = 'none', fg = colors.get_color('PmenuSbar', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBarNC', { bg = 'none', fg = colors.get_color('WinBarNC', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBar', { bg = 'none', fg = colors.get_color('WinBar', 'fg') })
+vim.api.nvim_set_hl(0, 'FloatTitle', { bg = 'none', fg = colors.get_color('FloatTitle', 'fg') })

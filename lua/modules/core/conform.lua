@@ -17,6 +17,7 @@ return {
     },
   },
   config = function()
+    -- BUG: this only runs when neovim starts up, if we change the dir later, this config is already set
     local use_eslint = false
     for _, project in ipairs(vim.g.dirs.format_with_eslint) do
       if cwd.matches({ project }) then
@@ -31,6 +32,9 @@ return {
         if not vim.g.autoformat then
           return nil
         end
+        if vim.bo.filetype == 'markdown' then
+          return nil
+        end
 
         return {
           lsp_format = 'fallback',
@@ -39,12 +43,12 @@ return {
       end,
 
       formatters_by_ft = {
-        -- markdown = { 'mfmt' },
         -- org = { 'mfmt_org' },
         -- gitcommit = { 'mfmt' },
         --
         css = fmt_js,
         go = { 'goimports', 'gofmt' },
+        html = { 'prettier' },
         javascript = fmt_js,
         json = fmt_js,
         lua = { 'stylua' },

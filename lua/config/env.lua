@@ -1,24 +1,35 @@
 local M = {
   WORK = os.getenv('WORK') or '',
+  work = {
+    jira = os.getenv('WORK_JIRA') or '',
+  },
 
   HOME = os.getenv('HOME') or '',
 
   notes = {
     NOTES = os.getenv('NOTES') or '',
+    OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
     ZK = os.getenv('ZK') or '',
-    INBOX = os.getenv('INBOX') or '',
     ORG = os.getenv('ORG') or '',
     PROJECTS = os.getenv('PROJECTS') or '',
+    RESOURCES = os.getenv('RESOURCES') or '',
     ARCHIVES = os.getenv('ARCHIVES') or '',
 
-    ORG_INDEX = os.getenv('ORG_INDEX') or '',
-    ORG_REFILE = os.getenv('ORG_REFILE') or '',
-    ORG_WORK = os.getenv('ORG_WORK') or '',
-    ORG_PURCHASES = os.getenv('ORG_PURCHASES') or '',
+    ASSETS_DIR = os.getenv('ASSETS_DIR') or '',
+    ASSETS = os.getenv('ASSETS') or '',
+    ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
 
-    AI_RULES = os.getenv('AI_RULES') or '',
+    ORG_INBOX = os.getenv('ORG_INBOX') or '',
+    ORG_MAIN = os.getenv('ORG_MAIN') or '',
+    ORG_WORK = os.getenv('ORG_WORK') or '',
+    ORG_REFERENCES = os.getenv('ORG_REFERENCES') or '',
+    ORG_CALENDAR = os.getenv('ORG_CALENDAR') or '/home/celso/notes/0 org/calendar.org',
+
+    GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
   },
 }
+
+M.notes.ASSETS = M.notes.ASSETS:gsub(M.notes.NOTES .. '/', '')
 
 for k, v in pairs(M.notes) do
   if M.notes[k] == '' then

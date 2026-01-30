@@ -1,12 +1,12 @@
 {
   "console.log": {
     "prefix": "cl",
-    "body": ["console.log(\"🦎 ||| $1\", $2)"],
+    "body": ["console.log(\"🦎 YO GOVERNOR ||| $1\", $2)"],
     "description": "console.log"
   },
   "log.log": {
     "prefix": "l",
-    "body": ["this.logger.info(\"🦎 |||\", \"$1\", $2)"],
+    "body": ["this.logger.info(\"🦎 YO GOVERNOR |||\", \"$1\", $2)"],
     "description": "log"
   },
   "jsdoc": {

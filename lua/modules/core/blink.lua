@@ -16,6 +16,10 @@ return {
           and vim.g.completion
       end
 
+      opts.fuzzy = {
+        implementation = 'prefer_rust',
+      }
+
       opts.keymap = {
         preset = 'enter',
         ['<C-y>'] = { 'select_and_accept' },
@@ -35,6 +39,18 @@ return {
           },
         },
         documentation = { auto_show = true, window = { border = 'single' } },
+      }
+      opts.sources = {
+        per_filetype = {
+          org = { 'orgmode' },
+        },
+        providers = {
+          orgmode = {
+            name = 'Orgmode',
+            module = 'orgmode.org.autocompletion.blink',
+            fallbacks = { 'buffer' },
+          },
+        },
       }
 
       opts.snippets = {

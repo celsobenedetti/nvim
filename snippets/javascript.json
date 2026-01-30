@@ -1,0 +1,7 @@
+{
+  "console.log": {
+    "prefix": "clo",
+    "body": ["console.log(\"🦎 YO GOVERNOR ||| $1\", $2)"],
+    "description": "console.log"
+  }
+}
