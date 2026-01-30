@@ -4,6 +4,7 @@ local agenda_files = {
   vim.g.env.notes.ORG_INBOX,
   vim.g.env.notes.ORG_MAIN,
   vim.g.env.notes.ORG_WORK,
+  vim.g.env.notes.ORG_CALENDAR,
   vim.g.env.notes.ORG_REFERENCES .. '/*',
 }
 
@@ -176,7 +177,7 @@ return {
           -- },
           c = {
             description = 'quick capture',
-            template = '* %?\n %U',
+            template = '* %?',
             target = vim.g.env.notes.ORG_INBOX,
           },
         },
