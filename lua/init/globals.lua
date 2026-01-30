@@ -9,12 +9,20 @@ function Keys(str)
   return vim.api.nvim_replace_termcodes(str, false, false, true)
 end
 
+local cwd = require('lib.cwd')
 function Explorer()
   if vim.bo.filetype == 'snacks_picker_list' then
     vim.cmd('q')
     return
   end
-  Snacks.picker.resume({ source = 'explorer' })
+  Snacks.explorer({
+    cwd = cwd.cwd(),
+    hidden = cwd.is_current_file_in_repo({ 'dotfiles' }),
+    follow_file = true,
+  })
+  -- Snacks.picker.resume({
+  --   source = 'explorer',
+  -- })
 end
 
 vim.g.fn = {

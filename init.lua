@@ -2,7 +2,8 @@ require('init')
 
 require('lazy').setup({
   spec = {
-    { import = 'modules.core' },
+    { import = 'modules.base' }, -- base plugins, used in every "init.lua"
+    { import = 'modules.core' }, -- core plugins, used in the main "init.lua"
     { import = 'modules.git' },
     { import = 'modules.editor' },
     { import = 'modules.overseer' },

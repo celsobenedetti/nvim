@@ -9,56 +9,61 @@ return {
         enabled = false,
       })
     end,
-    -- stylua: ignore start
     keys = {
-      { '<C-\\>', function() require('sidekick.cli').toggle { name = tool } end, desc = 'Sidekick Toggle', mode = { 'n', 'x', 't' }, },
-      { 'gab', function() require('sidekick.cli').send { msg = '{file}', name = tool } end, desc = 'Send File', },
-      { 'ga.', function() require('sidekick.cli').send { msg = '{line}', name = tool } end, mode = { 'n' }, desc = 'Send This', },
-      { 'gav', function() require('sidekick.cli').send { msg = '{selection}', name = tool } end, mode = { 'x' }, desc = 'Send Visual Selection', },
-      { 'gap', function() require('sidekick.cli').prompt { name = tool } end, mode = { 'n', 'x' }, desc = 'Sidekick Select Prompt', },
-      -- { '<leader>at', function() require('sidekick.cli').send { msg = '{this}', name = tool } end, mode = { 'n' }, desc = 'Send This', },
-      { '<leader>ad', function() require('sidekick.cli').close() end, desc = 'Detach a CLI Session', },
-    -- stylua: ignore end
+      -- stylua: ignore start
+      { '<C-\\>', function() require('sidekick.cli').toggle { name = tool } end, desc = 'sidekick: Sidekick Toggle', mode = { 'n', 'x', 't' }, },
+      { 'gab', function() require('sidekick.cli').send { msg = '{file}', name = tool } end, desc = 'sidekick: Send File', },
+      { 'ga.', function() require('sidekick.cli').send { msg = '{line}', name = tool } end, mode = { 'n' }, desc = 'sidekick: Send This', },
+      { 'gav', function() require('sidekick.cli').send { msg = '{selection}', name = tool } end, mode = { 'x' }, desc = 'sidekick: Send Visual Selection', },
+      { 'gap', function() require('sidekick.cli').prompt { name = tool } end, mode = { 'n', 'x' }, desc = 'sidekick: Sidekick Select Prompt', },
+      { '<leader>ad', function() require('sidekick.cli').close() end, desc = 'sidekick: Detach a CLI Session', },
 
-      { '<C-k>', function() 
-        local start, finish = require('lib.visual').get_region()
-        Snacks.input.input({prompt="apply instructions to selection"}, function(prompt)
-          if not prompt or #prompt == 0 then return end
+      -- stylua: ignore end
 
-          local filepath = vim.fn.expand('%:.')
-          local selection = string.format("%s:%d-%d", filepath, start, finish)
-          require('sidekick.cli').send { msg = prompt .. '\n' .. selection , submit = true , name = tool }
-        end)
-      end, mode = { 'x' }, desc = 'sidekick: quick edit on visual selection', },
+      -- Cursor-like C-k
+      {
+        '<C-k>',
+        function()
+          local start, finish = require('lib.visual').get_region()
+          vim.ui.input({
+            prompt = string.format('%s apply instructions to lines %d-%d: ', tool, start, finish),
+          }, function(prompt)
+            if not prompt or #prompt == 0 then
+              return
+            end
+
+            local filepath = vim.fn.expand('%:.')
+            local selection = string.format('%s:%d-%d', filepath, start, finish)
+            require('sidekick.cli').send({ msg = prompt .. '\n' .. selection, submit = true, name = tool })
+          end)
+        end,
+        mode = { 'x' },
+        desc = 'sidekick: apply instructions to selection (Cursor C-k)',
+      },
+
+      {
+        '<tab>',
+        function()
+          if not require('sidekick').nes_jump_or_apply() then
+            return '<Tab>'
+          end
+        end,
+        expr = true,
+        desc = 'Goto/Apply Next Edit Suggestion',
+        mode = { 'n' },
+      },
     },
   },
   {
     'folke/snacks.nvim',
     optional = true,
-    opts = {
-      cli = {
-        mux = {
-          enabled = true,
-          backend = 'tmux',
-        },
-      },
-      -- picker = {
-      --   actions = {
-      --     sidekick_send = function(...)
-      --       return require('sidekick.cli.picker.snacks').send()
-      --     end,
-      --   },
-      --   win = {
-      --     input = {
-      --       keys = {
-      --         ['<a-a>'] = {
-      --           'sidekick_send',
-      --           mode = { 'n', 'i' },
-      --         },
-      --       },
-      --     },
-      --   },
-      -- },
-    },
+    -- opts = {
+    --   cli = {
+    --     mux = {
+    --       enabled = true,
+    --       backend = 'tmux',
+    --     },
+    --   },
+    -- },
   },
 }

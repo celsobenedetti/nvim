@@ -1,5 +1,6 @@
 vim.lsp.enable({
   'bashls',
+  -- 'copilot',
   'eslint',
   'gopls',
   'jsonls',

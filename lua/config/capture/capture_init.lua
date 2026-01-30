@@ -1,12 +1,10 @@
 vim.g.lazy_orgmode = false
 
-local mini = require('modules.core.mini')
 require('init')
 
 require('lazy').setup({
   spec = {
-    mini,
-    { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } }, -- no clue why this is needed tbh
+    { import = 'modules.base' },
     { import = 'modules.orgmode' },
     { import = 'modules.omarchy' },
     { 'folke/snacks.nvim', opts = { picker = {} } },

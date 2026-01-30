@@ -23,8 +23,7 @@ local M = {
     ORG_MAIN = os.getenv('ORG_MAIN') or '',
     ORG_WORK = os.getenv('ORG_WORK') or '',
     ORG_REFERENCES = os.getenv('ORG_REFERENCES') or '',
-
-    AI_RULES = os.getenv('AI_RULES') or '',
+    ORG_CALENDAR = os.getenv('ORG_CALENDAR') or '/home/celso/notes/0 org/calendar.org',
 
     GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
   },
