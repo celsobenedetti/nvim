@@ -4,10 +4,10 @@ vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- t
 -- stylua: ignore start
 vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(vim.g.hl.text.subtext, 'fg') })
 vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
-vim.api.nvim_set_hl( 0, 'TabLineSel', { bg = colors.get_color('StatusLine', 'bg') , bold = true, underline=true})
-vim.api.nvim_set_hl( 0, 'NonText', { link = "Comment"})
+vim.api.nvim_set_hl(0, 'TabLineSel', { bg = colors.get_color('StatusLine', 'bg') , bold = true, underline=true})
+vim.api.nvim_set_hl(0, 'NonText', { link = "Comment"})
 vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
-
+vim.api.nvim_set_hl(0, 'FlashMatch', { link = 'MiniHipatternsNote' })
 
 local hyperlink = { underline = true, fg = colors.get_color('@markup.link.label.markdown_inline', 'fg') }
 vim.api.nvim_set_hl(0, '@markup.link.label.markdown_inline', hyperlink)
