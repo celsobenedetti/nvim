@@ -48,7 +48,7 @@ return {
         desc = 'Go to Left tmux pane',
       },
       { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane' },
-      { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane' },
+      -- { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane' },
       { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane' },
 
       -- keymaps needed only when inside tmux tmux only

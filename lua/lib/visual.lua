@@ -59,6 +59,15 @@ local function replace_region_with_text(start, finish, new_lines)
   api.nvim_feedkeys(api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
 end
 
+--- get start line, and end line of the visual selection
+M.get_region = function()
+  local region, start, finish = get_visual_selection_region()
+  if not region or not start or not finish then
+    return nil, nil
+  end
+  return tonumber(start[1] + 1), tonumber(finish[1] + 1)
+end
+
 M.replace = function(new_text)
   local region, start, finish = get_visual_selection_region()
   if not region or not start or not finish then
