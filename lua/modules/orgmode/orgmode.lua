@@ -23,6 +23,24 @@ local agenda_views = {
           'priority-down',
         }, -- See all options available on org_agenda_sorting_strategy
       },
+      {
+        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
+        match = 'TODO="PROG"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+        org_agenda_overriding_header = 'In Progress',
+      },
+      {
+        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
+        match = 'TODO="NEXT"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+        org_agenda_overriding_header = 'Next',
+      },
+      {
+        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
+        match = 'TODO="WAITING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+        org_agenda_overriding_header = 'Waiting',
+      },
     },
   },
   n = {
@@ -30,13 +48,21 @@ local agenda_views = {
     types = {
       {
         type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = '-TODO="TODO"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-        org_agenda_sorting_strategy = {
-          'priority-down',
-          'todo-state-down',
-        }, -- See all options available on org_agenda_sorting_strategy
-        -- org_agenda_overriding_header = 'High priority todos',
-        -- org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
+        match = 'TODO="PROG"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+        org_agenda_overriding_header = 'In Progress',
+      },
+      {
+        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
+        match = 'TODO="NEXT"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+        org_agenda_overriding_header = 'Next',
+      },
+      {
+        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
+        match = 'TODO="WAITING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+        org_agenda_overriding_header = 'Waiting',
       },
     },
   },
