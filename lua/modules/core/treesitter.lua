@@ -5,8 +5,12 @@ vim.g.treesitter = {
     'go',
     'json',
     'markdown',
+    'javascript',
+    'jsx',
     'typescript',
+    'tsx',
     'vue',
+
     --- these look better without treesitter
     -- 'hmtl',
   },

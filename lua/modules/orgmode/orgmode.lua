@@ -175,7 +175,7 @@ return {
         -- org_agenda_start_on_weekday = 7, -- start on sunday
         notifications = { enabled = true },
         org_agenda_use_time_grid = false,
-        org_deadline_warning_days = 5,
+        org_deadline_warning_days = 7,
         org_agenda_custom_commands = agenda_views,
         org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
