@@ -11,35 +11,35 @@ local agenda_files = {
 --- @type table<string, OrgAgendaCustomCommand>
 local agenda_views = {
   T = {
-    description = 'today',
+    description = 'Engage',
     types = {
       {
         type = 'agenda',
-        -- match = '+PRIORITY="A"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
         org_agenda_span = 'day',
-        org_agenda_sorting_strategy = {
-          'time-up',
-          'todo-state-down',
-          'priority-down',
-        }, -- See all options available on org_agenda_sorting_strategy
+        org_agenda_sorting_strategy = { 'time-up', 'todo-state-down', 'priority-down' },
       },
       {
-        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = 'TODO="PROG"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'In Progress',
+        type = 'tags_todo',
+        match = 'TODO="PROG"',
       },
       {
-        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = 'TODO="NEXT"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'Next',
+        type = 'tags_todo',
+        match = 'TODO="NEXT"',
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
-        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = 'TODO="WAITING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'Waiting',
+        type = 'tags_todo',
+        match = 'TODO="WAITING"',
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+      },
+      {
+        org_agenda_overriding_header = 'Long going tasks',
+        type = 'tags_todo',
+        match = 'TODO="ACTIVE"',
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
     },
   },
@@ -47,20 +47,21 @@ local agenda_views = {
     description = 'next',
     types = {
       {
-        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = 'TODO="PROG"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        type = 'tags_todo',
+
+        match = 'TODO="PROG"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'In Progress',
       },
       {
-        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = 'TODO="NEXT"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        type = 'tags_todo',
+        match = 'TODO="NEXT"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'Next',
       },
       {
-        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = 'TODO="WAITING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        type = 'tags_todo',
+        match = 'TODO="WAITING"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'Waiting',
       },
@@ -80,7 +81,7 @@ local agenda_views = {
           'priority-down',
           'todo-state-down',
           'time-up',
-        }, -- See all options available on org_agenda_sorting_strategy
+        },
       },
     },
   },
@@ -225,14 +226,14 @@ return {
         },
 
         org_todo_keywords = {
-          'TODO(t)', -- Tasks that are not started and not planned. They could be the backlogs or the GTD’s someday/maybe. These tasks could be converted to NEXT during a review.
-          'UPCOMING(u)', -- events that are upcoming, not tasks
-          'PROJECT(s)', -- Projects that are started and in progress
-          'NEXT(n)', -- Tasks that are not started but planned to do as soon as I can. When there is no actionable PROG (e.g., blocked), I start one of those and convert it to PROG.
-          'WAITING(w)', -- Tasks that have been started, but are waiting on some update or time to lapse.
-          'PROG(p)', -- Tasks that are working in progress (open loops). I work on these tasks before starting another NEXT task to avoid too many open loops at any moment.
-          '|', -- Hold up
-          'CANCELLED(c)', -- Tasks that have I've decided not to do.
+          'TODO(t)', -- Actions that are not started and not planned. These are backlog.
+          'UPCOMING(u)', -- Events that are upcoming, not actions to take.
+          'ACTIVE(a)', -- Ongoing projects/tasks that span multiple days, and should not be considered as actions.
+          'NEXT(n)', -- Actions that are not started, but have been selected through planning to be engaged with next.
+          'WAITING(w)', -- Acions that are waiting on some hold up or time to lapse.
+          'PROG(p)', -- Actions that are currently WIP - these are the priorities.
+          '|',
+          'CANCELLED(c)', -- Actions that have not come to pass, or I have decided not to do.
           'DONE(d)', -- 😎👍
         },
       })
