@@ -36,9 +36,9 @@ local agenda_views = {
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
-        org_agenda_overriding_header = 'Long going tasks',
+        org_agenda_overriding_header = 'Long ongoing tasks/projects',
         type = 'tags_todo',
-        match = 'TODO="ACTIVE"',
+        match = 'TODO="ONGOING"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
     },
@@ -228,7 +228,7 @@ return {
         org_todo_keywords = {
           'TODO(t)', -- Actions that are not started and not planned. These are backlog.
           'UPCOMING(u)', -- Events that are upcoming, not actions to take.
-          'ACTIVE(a)', -- Ongoing projects/tasks that span multiple days, and should not be considered as actions.
+          'ONGOING(o)', -- Ongoing projects/tasks that span multiple days, and should not be considered as actions.
           'NEXT(n)', -- Actions that are not started, but have been selected through planning to be engaged with next.
           'WAITING(w)', -- Acions that are waiting on some hold up or time to lapse.
           'PROG(p)', -- Actions that are currently WIP - these are the priorities.
