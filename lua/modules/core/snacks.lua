@@ -8,22 +8,6 @@ local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
 end
 
-local function agenda()
-  require('lib.notes').focus_or_create_notes_tab(function()
-    if #vim.api.nvim_list_tabpages() > 1 then
-      vim.schedule(function()
-        vim.cmd('tabclose 1')
-      end)
-    end
-
-    vim.cmd(':Org agenda T')
-
-    vim.schedule(function()
-      vim.cmd('resize 90')
-    end)
-  end)
-end
-
 local function workspace()
   Snacks.picker.zoxide({
     confirm = {
@@ -202,7 +186,7 @@ return {
         ---@type snacks.dashboard.Item[]
         -- stylua: ignore start
         keys = {
-          { icon = '', key = 'a', desc = 'agenda', action = agenda },
+          { icon = '', key = 'a', desc = 'agenda', action = function () require('lib.startup.org.agenda_today') end },
           { icon = '', key = 'r', desc = 'restore', action = function()vim.cmd('AutoSession restore')end },
           { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
         },

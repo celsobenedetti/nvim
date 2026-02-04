@@ -107,7 +107,7 @@ local agenda_views = {
 local function set_highlights()
   vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
   vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
-  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'darkgray' })
+  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
 end
 
 local function set_keymaps()
@@ -229,18 +229,14 @@ return {
         },
       })
 
-      if highlight then
-        local ignore_colorschemes = {
-          'evergarden',
-        }
-
-        local colorscheme = require('lib.colors').omarchy_colorscheme().colorscheme
-        for _, c in ipairs(ignore_colorschemes) do
-          if c == colorscheme then
-            return
-          end
-        end
-
+      if
+        highlight
+        or vim.tbl_contains(
+          -- colorschemes to highlight
+          { 'koda' },
+          require('lib.colors').omarchy_colorscheme().colorscheme
+        )
+      then
         vim.schedule(set_highlights)
       end
       vim.schedule(set_keymaps)

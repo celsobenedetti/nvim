@@ -9,7 +9,15 @@ vim.api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("orgmode").action("org_ma
   { desc = 'org: change todo state' }
 )
 
-vim.api.nvim_buf_set_keymap(0, 'n', 'n', ':lua require("orgmode").action("org_mappings.add_note")<CR>',
+_G.org_n = _G.org_n or function()
+  if vim.v.hlsearch == 1 then
+    vim.cmd('normal! n')
+    return
+  end
+  require('orgmode').action('org_mappings.add_note')
+end
+
+vim.api.nvim_buf_set_keymap(0, 'n', 'n', ':lua _G.org_n()<CR>',
   { desc = 'org: add note' }
 )
 -- stylua: ignore end
