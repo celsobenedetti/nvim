@@ -8,6 +8,10 @@ vim.api.nvim_buf_set_keymap(0, 'n', '<leader>j', '<Cmd>lua require("orgmode").ac
 vim.api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("orgmode").action("org_mappings.todo_next_state")<CR>',
   { desc = 'org: change todo state' }
 )
+
+vim.api.nvim_buf_set_keymap(0, 'n', 'n', ':lua require("orgmode").action("org_mappings.add_note")<CR>',
+  { desc = 'org: add note' }
+)
 -- stylua: ignore end
 
 vim.api.nvim_create_autocmd('ModeChanged', {
