@@ -1,11 +1,12 @@
 local highlight = false
 
 local agenda_files = {
-  vim.g.env.notes.ORG_INBOX,
-  vim.g.env.notes.ORG_MAIN,
-  vim.g.env.notes.ORG_WORK,
-  vim.g.env.notes.ORG_CALENDAR,
-  vim.g.env.notes.ORG_REFERENCES .. '/*',
+  vim.g.env.org.INBOX,
+  vim.g.env.org.MAIN,
+  vim.g.env.org.WORK,
+  vim.g.env.org.CALENDAR,
+  vim.g.env.org.PURCHASES,
+  vim.g.env.org.REFERENCES .. '/*',
 }
 
 --- @type table<string, OrgAgendaCustomCommand>
@@ -22,6 +23,7 @@ local agenda_views = {
         org_agenda_overriding_header = 'In Progress',
         type = 'tags_todo',
         match = 'TODO="PROG"',
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
         org_agenda_overriding_header = 'Next',
@@ -163,7 +165,7 @@ return {
       require('orgmode').setup({
         org_agenda_files = agenda_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
-        org_default_notes_file = vim.g.env.notes.ORG_INBOX,
+        org_default_notes_file = vim.g.env.org.INBOX,
         org_priority_highest = 'A',
         org_priority_default = 'C',
         org_priority_lowest = 'C',
@@ -191,21 +193,10 @@ return {
         -- },
 
         org_capture_templates = {
-          -- w = {
-          --   description = 'Work task',
-          --   template = '* TODO %? :work:\n  %U',
-          --   target = vim.g.env.notes.ORG_WORK,
-          -- },
-          -- p = {
-          --   description = 'purchase',
-          --   template = '* TODO buy: %? :buy:\n  %U',
-          --   target = vim.g.env.notes.ORG_MAIN,
-          --   headline = 'purchases',
-          -- },
           c = {
             description = 'quick capture',
             template = '* %?',
-            target = vim.g.env.notes.ORG_INBOX,
+            target = vim.g.env.org.INBOX,
           },
         },
 

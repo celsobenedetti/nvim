@@ -19,13 +19,15 @@ local M = {
     ASSETS = os.getenv('ASSETS') or '',
     ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
 
-    ORG_INBOX = os.getenv('ORG_INBOX') or '',
-    ORG_MAIN = os.getenv('ORG_MAIN') or '',
-    ORG_WORK = os.getenv('ORG_WORK') or '',
-    ORG_REFERENCES = os.getenv('ORG_REFERENCES') or '',
-    ORG_CALENDAR = os.getenv('ORG_CALENDAR') or '/home/celso/notes/0 org/calendar.org',
-
     GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
+  },
+  org = {
+    INBOX = os.getenv('ORG_INBOX') or '',
+    MAIN = os.getenv('ORG_MAIN') or '',
+    WORK = os.getenv('ORG_WORK') or '',
+    REFERENCES = os.getenv('ORG_REFERENCES') or '',
+    CALENDAR = os.getenv('ORG_CALENDAR') or '',
+    PURCHASES = os.getenv('ORG_PURCHASES') or '/home/celso/notes/0 org/Purchases.org',
   },
 }
 
