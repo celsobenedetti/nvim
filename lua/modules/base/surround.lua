@@ -11,7 +11,7 @@ return {
         normal_cur = 'yss',
         normal_line = false,
         normal_cur_line = false,
-        visual = '<leader>s',
+        visual = 's',
         visual_line = 'gS',
         delete = 'ds',
         change = 'cs',
