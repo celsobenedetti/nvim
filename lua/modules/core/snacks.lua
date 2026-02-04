@@ -164,35 +164,6 @@ return {
         end,
       },
     },
-
-    dashboard = {
-      enabled = true,
-      sections = {
-        { section = 'keys', gap = 1, padding = 1 },
-      },
-      config = function()
-        -- dashboard buffer keymaps
-        vim.api.nvim_buf_set_keymap(0, 'n', 'f', ':lua Snacks.picker.files()<CR>', {})
-        vim.api.nvim_buf_set_keymap(0, 'n', 'p', ':lua Snacks.picker.files()<CR>', {})
-      end,
-      preset = {
-        header = '',
-        -- Defaults to a picker that supports `fzf-lua`, `telescope.nvim` and `mini.pick`
-        ---@type fun(cmd:string, opts:table)|nil
-        pick = nil,
-        -- Used by the `keys` section to show keymaps.
-        -- Set your custom keymaps here.
-        -- When using a function, the `items` argument are the default keymaps.
-        ---@type snacks.dashboard.Item[]
-        -- stylua: ignore start
-        keys = {
-          { icon = '', key = 'a', desc = 'agenda', action = function () require('lib.startup.org.agenda_today') end },
-          { icon = '', key = 'r', desc = 'restore', action = function()vim.cmd('AutoSession restore')end },
-          { icon = ' ', key = 'e', desc = 'edit', action = ':ene | startinsert' },
-        },
-        -- stylua: ignore end
-      },
-    },
   },
   keys = {
     -- stylua: ignore start
