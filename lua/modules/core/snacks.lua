@@ -64,6 +64,7 @@ return {
     picker = {
       enabled = true,
       exclude = vim.g.ignore.grep,
+      layout = 'ivy_split',
       win = {
         input = {
           keys = {
@@ -77,21 +78,6 @@ return {
         },
       },
       layouts = {
-        vscode = {
-          hidden = { 'preview' },
-          layout = {
-            backdrop = false,
-            row = 1,
-            width = 0.4,
-            min_width = 80,
-            height = 0.4,
-            border = 'single',
-            box = 'vertical',
-            { win = 'input', height = 1, border = true, title = '{title} {live} {flags}', title_pos = 'center' },
-            { win = 'list', border = 'hpad' },
-            { win = 'preview', title = '{preview}', border = true },
-          },
-        },
         select = {
           hidden = { 'preview' },
           layout = {
@@ -194,8 +180,8 @@ return {
 
 
     -- -- find
-    { '<leader>,', function() Snacks.picker.buffers() end, desc = 'snacks: Buffers', },
-    { '<leader>fB', function() Snacks.picker.buffers { hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
+    { '<leader>,', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
+    { '<leader><', function() Snacks.picker.buffers { layout="ivy_split",hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
     { '<C-p>', function() Snacks.picker.smart({layout="select", title=""}) end, desc = 'snacks: Smart picker', },
 
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
@@ -214,7 +200,7 @@ return {
     -- -- Grep
     { '<leader>/', function() Snacks.picker.lines() end, desc = 'snacks: Buffer Lines', },
     { '<leader>sB', function() Snacks.picker.grep_buffers({layout="ivy_split"}) end, desc = 'snacks: Grep Open Buffers', },
-    { '<leader>sp', function() Snacks.picker.lazy() end, desc = 'snacks: Search for Plugin Spec', },
+    { '<leader>sla', function() Snacks.picker.lazy() end, desc = 'snacks: Search for Plugin Spec', },
     -- search
     { '<leader>s"', function() Snacks.picker.registers() end, desc = 'snacks: Registers', },
     { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'snacks: Search History', },
@@ -222,11 +208,10 @@ return {
     { '<leader>sd', function() Snacks.picker.diagnostics() end, desc = 'snacks: Diagnostics', },
     { '<leader>sD', function() Snacks.picker.diagnostics_buffer() end, desc = 'snacks: Buffer Diagnostics', },
     { '<leader>sh', function() Snacks.picker.help() end, desc = 'snacks: Help Pages', },
-    { '<leader>sH', function() Snacks.picker.highlights() end, desc = 'snacks: Highlights', },
     { '<leader>si', function() Snacks.picker.icons() end, desc = 'snacks: Icons', },
     { '<leader>sj', function() Snacks.picker.jumps() end, desc = 'snacks: Jumps', },
     { '<leader>sk', function() Snacks.picker.keymaps() end, desc = 'snacks: Keymaps', },
-    { '<leader>sl', function() Snacks.picker.loclist() end, desc = 'snacks: Location List', },
+    { '<leader>slo', function() Snacks.picker.loclist() end, desc = 'snacks: Location List', },
     { '<leader>sM', function() Snacks.picker.man() end, desc = 'snacks: Man Pages', },
     { '<leader>sm', function() Snacks.picker.marks() end, desc = 'snacks: Marks', },
     { '<leader>pr', function() Snacks.picker.resume() end, desc = 'snacks: Resume', },
@@ -251,6 +236,8 @@ return {
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
     end, { desc = 'snacks: Git Browse (copy)', mode = { 'n', 'x' } }, },
+
+    { '<leader>sH', function() Snacks.picker.highlights({layout = { preview = 'main', layout = { box = 'vertical', backdrop = false, width = 0, height = 0.7, position = 'bottom', border = 'top', title = ' {title} {live} {flags}', title_pos = 'left', { win = 'input', height = 1, border = 'bottom' }, { box = 'horizontal', { win = 'list', border = 'none' }, { win = 'preview', title = '{preview}', width = 0.6, border = 'left' }, }, }, }}) end, desc = 'snacks: Highlights', },
     -- stylua: ignore end
   },
 }

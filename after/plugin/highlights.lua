@@ -8,6 +8,7 @@ vim.api.nvim_set_hl(0, 'TabLineSel', { bg = colors.get_color('StatusLine', 'bg')
 vim.api.nvim_set_hl(0, 'NonText', { link = "Comment"})
 vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FlashMatch', { link = 'MiniHipatternsNote' })
+vim.api.nvim_set_hl(0, 'BlinkCmpMenuBorder', { bg = 'none' })
 
 local hyperlink = { underline = true, fg = colors.get_color('@markup.link.label.markdown_inline', 'fg') }
 vim.api.nvim_set_hl(0, '@markup.link.label.markdown_inline', hyperlink)
