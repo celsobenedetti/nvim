@@ -66,114 +66,366 @@ local function set_keymaps()
   --- Text formatting
   --
   -- Normal mode
-  vim.keymap.set('n', '<C-b>', '<Plug>(MarkdownPlusBold)', { buffer = true })
-  vim.keymap.set('n', '<C-i>', '<Plug>(MarkdownPlusItalic)', { buffer = true })
-  -- vim.keymap.set('n', '<C-s>', '<Plug>(MarkdownPlusStrikethrough)') -- conflicts with sav, { buffer = true }e
-  -- vim.keymap.set('n', '<C-k>', '<Plug>(MarkdownPlusCode)') -- C-k is window movement, { buffer = true }t
-  vim.keymap.set('n', '<C-x>', '<Plug>(MarkdownPlusClearFormatting)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(0, 'n', '<C-b>', '<Plug>(MarkdownPlusBold)', { desc = 'MarkdownPlusBold' })
+  vim.api.nvim_buf_set_keymap(0, 'n', '<C-i>', '<Plug>(MarkdownPlusItalic)', { desc = 'MarkdownPlusItalic' })
+  -- vim.api.nvim_buf_set_keymap(0,'n', '<C-s>', '<Plug>(MarkdownPlusStrikethrough)') -- conflicts with sav, {  }e
+  -- vim.api.nvim_buf_set_keymap(0,'n', '<C-k>', '<Plug>(MarkdownPlusCode)') -- C-k is window movement, {  }t
+  -- vim.api.nvim_buf_set_keymap(
+  --   0,
+  --   'n',
+  --   '<C-x>',
+  --   '<Plug>(MarkdownPlusClearFormatting)',
+  --   { desc = 'MarkdownPlusClearFormatting' }
+  -- )
 
   -- Visual mode
-  vim.keymap.set('x', '<C-b>', '<Plug>(MarkdownPlusBold)', { buffer = true })
-  vim.keymap.set('x', '<C-i>', '<Plug>(MarkdownPlusItalic)', { buffer = true })
-  vim.keymap.set('x', '<C-s>', '<Plug>(MarkdownPlusStrikethrough)', { buffer = true })
-  -- vim.keymap.set('x', '<C-k>', '<Plug>(MarkdownPlusCode)', { buffer = true }) -- replaced by Cusor like C-k for opencode
-  vim.keymap.set('x', '<leader>mw', '<Plug>(MarkdownPlusCodeBlock)', { buffer = true })
-  vim.keymap.set('x', '<C-x>', '<Plug>(MarkdownPlusClearFormatting)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(0, 'x', '<C-b>', '<Plug>(MarkdownPlusBold)', { desc = 'MarkdownPlusBold' })
+  vim.api.nvim_buf_set_keymap(0, 'x', '<C-i>', '<Plug>(MarkdownPlusItalic)', { desc = 'MarkdownPlusItalic' })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'x',
+    '<C-s>',
+    '<Plug>(MarkdownPlusStrikethrough)',
+    { desc = 'MarkdownPlusStrikethrough' }
+  )
+  -- vim.api.nvim_buf_set_keymap(0,'x', '<C-k>', '<Plug>(MarkdownPlusCode)', {  }) -- replaced by Cusor like C-k for opencode
+  vim.api.nvim_buf_set_keymap(0, 'x', '<leader>mw', '<Plug>(MarkdownPlusCodeBlock)', { desc = 'MarkdownPlusCodeBlock' })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'x',
+    '<C-x>',
+    '<Plug>(MarkdownPlusClearFormatting)',
+    { desc = 'MarkdownPlusClearFormatting' }
+  )
 
   --- Headers & TOC
-  vim.keymap.set('n', 'gn', '<Plug>(MarkdownPlusNextHeader)', { buffer = true })
-  vim.keymap.set('n', 'gp', '<Plug>(MarkdownPlusPrevHeader)', { buffer = true })
-  vim.keymap.set('n', '<leader>h+', '<Plug>(MarkdownPlusPromoteHeader)', { buffer = true })
-  vim.keymap.set('n', '<leader>h-', '<Plug>(MarkdownPlusDemoteHeader)', { buffer = true })
-  vim.keymap.set('n', '<leader>ht', '<Plug>(MarkdownPlusGenerateTOC)', { buffer = true })
-  vim.keymap.set('n', '<leader>hu', '<Plug>(MarkdownPlusUpdateTOC)', { buffer = true })
-  vim.keymap.set('n', '<leader>hT', '<Plug>(MarkdownPlusOpenTocWindow)', { buffer = true })
-  -- vim.keymap.set('n', '<CR>', '<Plug>(MarkdownPlusFollowLink)') -- Follow TOC link -- interfeers with general <CR> behavio, { buffer = true }r
+  vim.api.nvim_buf_set_keymap(0, 'n', 'gn', '<Plug>(MarkdownPlusNextHeader)', { desc = 'MarkdownPlusNextHeader' })
+  vim.api.nvim_buf_set_keymap(0, 'n', 'gp', '<Plug>(MarkdownPlusPrevHeader)', { desc = 'MarkdownPlusPrevHeader' })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>h+',
+    '<Plug>(MarkdownPlusPromoteHeader)',
+    { desc = 'MarkdownPlusPromoteHeader' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>h-',
+    '<Plug>(MarkdownPlusDemoteHeader)',
+    { desc = 'MarkdownPlusDemoteHeader' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>ht',
+    '<Plug>(MarkdownPlusGenerateTOC)',
+    { desc = 'MarkdownPlusGenerateTOC' }
+  )
+  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>hu', '<Plug>(MarkdownPlusUpdateTOC)', { desc = 'MarkdownPlusUpdateTOC' })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>hT',
+    '<Plug>(MarkdownPlusOpenTocWindow)',
+    { desc = 'MarkdownPlusOpenTocWindow' }
+  )
+  -- vim.api.nvim_buf_set_keymap(0,'n', '<CR>', '<Plug>(MarkdownPlusFollowLink)') -- Follow TOC link -- interfeers with general <CR> behavio, {  }r
 
   --- Header levels (H1-H6)
   for i = 1, 6 do
-    vim.keymap.set('n', '<leader>' .. i, '<Plug>(MarkdownPlusHeader' .. i .. ')', { buffer = true })
+    vim.api.nvim_buf_set_keymap(
+      0,
+      'n',
+      '<leader>' .. i,
+      '<Plug>(MarkdownPlusHeader' .. i .. ')',
+      { desc = "MarkdownPlusHeader' .. i .. '" }
+    )
   end
   --
   -- --- Links
-  -- vim.keymap.set('n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)', { buffer = true })
-  vim.keymap.set('v', '<leader>li', '<Plug>(MarkdownPlusSelectionToLink)', { buffer = true })
-  vim.keymap.set('n', '<leader>le', '<Plug>(MarkdownPlusEditLink)', { buffer = true })
-  vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusConvertToReference)', { buffer = true })
-  vim.keymap.set('n', '<leader>ln', '<Plug>(MarkdownPlusConvertToInline)', { buffer = true })
-  vim.keymap.set('n', '<C-k>', '<Plug>(MarkdownPlusAutoLinkURL)', { buffer = true })
+  -- vim.api.nvim_buf_set_keymap(0,'n', '<leader>li', '<Plug>(MarkdownPlusInsertLink)', {  })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'v',
+    '<leader>li',
+    '<Plug>(MarkdownPlusSelectionToLink)',
+    { desc = 'MarkdownPlusSelectionToLink' }
+  )
+  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>le', '<Plug>(MarkdownPlusEditLink)', { desc = 'MarkdownPlusEditLink' })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>lr',
+    '<Plug>(MarkdownPlusConvertToReference)',
+    { desc = 'MarkdownPlusConvertToReference' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>ln',
+    '<Plug>(MarkdownPlusConvertToInline)',
+    { desc = 'MarkdownPlusConvertToInline' }
+  )
+  vim.api.nvim_buf_set_keymap(0, 'n', '<C-k>', '<Plug>(MarkdownPlusAutoLinkURL)', { desc = 'MarkdownPlusAutoLinkURL' })
 
   --- Images
-  vim.keymap.set('n', '<leader>mL', '<Plug>(MarkdownPlusInsertImage)', { buffer = true })
-  vim.keymap.set('v', '<leader>mL', '<Plug>(MarkdownPlusSelectionToImage)', { buffer = true })
-  vim.keymap.set('n', '<leader>mE', '<Plug>(MarkdownPlusEditImage)', { buffer = true })
-  vim.keymap.set('n', '<leader>mA', '<Plug>(MarkdownPlusToggleImageLink)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>mL',
+    '<Plug>(MarkdownPlusInsertImage)',
+    { desc = 'MarkdownPlusInsertImage' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'v',
+    '<leader>mL',
+    '<Plug>(MarkdownPlusSelectionToImage)',
+    { desc = 'MarkdownPlusSelectionToImage' }
+  )
+  vim.api.nvim_buf_set_keymap(0, 'n', '<leader>mE', '<Plug>(MarkdownPlusEditImage)', { desc = 'MarkdownPlusEditImage' })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>mA',
+    '<Plug>(MarkdownPlusToggleImageLink)',
+    { desc = 'MarkdownPlusToggleImageLink' }
+  )
   --
   -- --- List  Management
   -- Insert mode
-  vim.keymap.set('i', '<C-CR>', '<Plug>(MarkdownPlusListEnter)', { buffer = true })
-  vim.keymap.set('i', '<A-CR>', '<Plug>(MarkdownPlusListShiftEnter)', { buffer = true })
-  -- vim.keymap.set('i', '<C-]>', '<Plug>(MarkdownPlusListIndent)') -- conflicts with supermave, { buffer = true }n
-  -- vim.keymap.set('i', '<C-[>', '<Plug>(MarkdownPlusListOutdent)', { buffer = true })
-  vim.keymap.set('i', '<C-h>', '<Plug>(MarkdownPlusListBackspace)', { buffer = true })
-  -- vim.keymap.set('i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)') interfeer's with native C-, { buffer = true }t
+  vim.api.nvim_buf_set_keymap(0, 'i', '<C-CR>', '<Plug>(MarkdownPlusListEnter)', { desc = 'MarkdownPlusListEnter' })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'i',
+    '<A-CR>',
+    '<Plug>(MarkdownPlusListShiftEnter)',
+    { desc = 'MarkdownPlusListShiftEnter' }
+  )
+  -- vim.api.nvim_buf_set_keymap(0,'i', '<C-]>', '<Plug>(MarkdownPlusListIndent)') -- conflicts with supermave, {  }n
+  -- vim.api.nvim_buf_set_keymap(0,'i', '<C-[>', '<Plug>(MarkdownPlusListOutdent)', {  })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'i',
+    '<C-h>',
+    '<Plug>(MarkdownPlusListBackspace)',
+    { desc = 'MarkdownPlusListBackspace' }
+  )
+  -- vim.api.nvim_buf_set_keymap(0,'i', '<C-t>', '<Plug>(MarkdownPlusToggleCheckbox)') interfeer's with native C-, {  }t
 
   -- Normal mode
-  -- vim.keymap.set('n', '<leader>lr', '<Plug>(MarkdownPlusRenumberLists)', { buffer = true })
-  -- vim.keymap.set('n', '<leader>ld', '<Plug>(MarkdownPlusDebugLists)', { buffer = true })
-  -- vim.keymap.set('n', 'o', '<Plug>(MarkdownPlusNewListItemBelow)') -- the fuk is thi, { buffer = true }s
-  -- vim.keymap.set('n', 'O', '<Plug>(MarkdownPlusNewListItemAbove)', { buffer = true })
-  vim.keymap.set('n', '<leader>mx', '<Plug>(MarkdownPlusToggleCheckbox)', { buffer = true })
+  -- vim.api.nvim_buf_set_keymap(0,'n', '<leader>lr', '<Plug>(MarkdownPlusRenumberLists)', {  })
+  -- vim.api.nvim_buf_set_keymap(0,'n', '<leader>ld', '<Plug>(MarkdownPlusDebugLists)', {  })
+  -- vim.api.nvim_buf_set_keymap(0,'n', 'o', '<Plug>(MarkdownPlusNewListItemBelow)') -- the fuk is thi, {  }s
+  -- vim.api.nvim_buf_set_keymap(0,'n', 'O', '<Plug>(MarkdownPlusNewListItemAbove)', {  })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>mx',
+    '<Plug>(MarkdownPlusToggleCheckbox)',
+    { desc = 'MarkdownPlusToggleCheckbox' }
+  )
 
   -- Visual mode
-  vim.keymap.set('x', '<leader>mx', '<Plug>(MarkdownPlusToggleCheckbox)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'x',
+    '<leader>mx',
+    '<Plug>(MarkdownPlusToggleCheckbox)',
+    { desc = 'MarkdownPlusToggleCheckbox' }
+  )
 
   --- Quotes
   -- Normal mode
-  vim.keymap.set('n', '<C-q>', '<Plug>(MarkdownPlusToggleQuote)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(0, 'n', '<C-q>', '<Plug>(MarkdownPlusToggleQuote)', { desc = 'MarkdownPlusToggleQuote' })
   -- Visual mode
-  vim.keymap.set('x', '<C-q>', '<Plug>(MarkdownPlusToggleQuote)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(0, 'x', '<C-q>', '<Plug>(MarkdownPlusToggleQuote)', { desc = 'MarkdownPlusToggleQuote' })
 
   --- Callouts
   -- Normal mode - Insert callout
-  vim.keymap.set('n', '<leader>mc', '<Plug>(MarkdownPlusInsertCallout)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>mc',
+    '<Plug>(MarkdownPlusInsertCallout)',
+    { desc = 'MarkdownPlusInsertCallout' }
+  )
   --
   -- Visual mode - Wrap selection in callout
-  vim.keymap.set('x', '<leader>mc', '<Plug>(MarkdownPlusInsertCallout)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'x',
+    '<leader>mc',
+    '<Plug>(MarkdownPlusInsertCallout)',
+    { desc = 'MarkdownPlusInsertCallout' }
+  )
   -- Toggle callout type (cycle through types)
-  vim.keymap.set('n', '<leader>mC', '<Plug>(MarkdownPlusToggleCalloutType)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>mC',
+    '<Plug>(MarkdownPlusToggleCalloutType)',
+    { desc = 'MarkdownPlusToggleCalloutType' }
+  )
   -- Convert blockquote to callout
-  vim.keymap.set('n', '<leader>m>c', '<Plug>(MarkdownPlusConvertToCallout)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>m>c',
+    '<Plug>(MarkdownPlusConvertToCallout)',
+    { desc = 'MarkdownPlusConvertToCallout' }
+  )
   -- Convert callout to blockquote
-  vim.keymap.set('n', '<leader>m>b', '<Plug>(MarkdownPlusConvertToBlockquote)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>m>b',
+    '<Plug>(MarkdownPlusConvertToBlockquote)',
+    { desc = 'MarkdownPlusConvertToBlockquote' }
+  )
 
   --- Footnotes
-  vim.keymap.set('n', '<leader>fi', '<Plug>(MarkdownPlusFootnoteInsert)', { buffer = true })
-  vim.keymap.set('n', '<leader>fe', '<Plug>(MarkdownPlusFootnoteEdit)', { buffer = true })
-  vim.keymap.set('n', '<leader>fd', '<Plug>(MarkdownPlusFootnoteDelete)', { buffer = true })
-  vim.keymap.set('n', '<leader>fg', '<Plug>(MarkdownPlusFootnoteGotoDefinition)', { buffer = true })
-  vim.keymap.set('n', '<leader>fr', '<Plug>(MarkdownPlusFootnoteGotoReference)', { buffer = true })
-  vim.keymap.set('n', '<leader>fn', '<Plug>(MarkdownPlusFootnoteNext)', { buffer = true })
-  vim.keymap.set('n', '<leader>fp', '<Plug>(MarkdownPlusFootnotePrev)', { buffer = true })
-  vim.keymap.set('n', '<leader>fl', '<Plug>(MarkdownPlusFootnoteList)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fi',
+    '<Plug>(MarkdownPlusFootnoteInsert)',
+    { desc = 'MarkdownPlusFootnoteInsert' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fe',
+    '<Plug>(MarkdownPlusFootnoteEdit)',
+    { desc = 'MarkdownPlusFootnoteEdit' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fd',
+    '<Plug>(MarkdownPlusFootnoteDelete)',
+    { desc = 'MarkdownPlusFootnoteDelete' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fg',
+    '<Plug>(MarkdownPlusFootnoteGotoDefinition)',
+    { desc = 'MarkdownPlusFootnoteGotoDefinition' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fr',
+    '<Plug>(MarkdownPlusFootnoteGotoReference)',
+    { desc = 'MarkdownPlusFootnoteGotoReference' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fn',
+    '<Plug>(MarkdownPlusFootnoteNext)',
+    { desc = 'MarkdownPlusFootnoteNext' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fp',
+    '<Plug>(MarkdownPlusFootnotePrev)',
+    { desc = 'MarkdownPlusFootnotePrev' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>fl',
+    '<Plug>(MarkdownPlusFootnoteList)',
+    { desc = 'MarkdownPlusFootnoteList' }
+  )
 
   --- Tables
   -- Table operations with different prefix
-  vim.keymap.set('n', '<leader>Tc', '<Plug>(markdown-plus-table-create)', { buffer = true })
-  vim.keymap.set('n', '<leader>Tf', '<Plug>(markdown-plus-table-format)', { buffer = true })
-  vim.keymap.set('n', '<leader>Tn', '<Plug>(markdown-plus-table-normalize)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tc',
+    '<Plug>(markdown-plus-table-create)',
+    { desc = 'markdown-plus-table-create' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tf',
+    '<Plug>(markdown-plus-table-format)',
+    { desc = 'markdown-plus-table-format' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tn',
+    '<Plug>(markdown-plus-table-normalize)',
+    { desc = 'markdown-plus-table-normalize' }
+  )
 
   -- Row operations
-  vim.keymap.set('n', '<leader>Tir', '<Plug>(markdown-plus-table-insert-row-below)', { buffer = true })
-  vim.keymap.set('n', '<leader>TiR', '<Plug>(markdown-plus-table-insert-row-above)', { buffer = true })
-  vim.keymap.set('n', '<leader>Tdr', '<Plug>(markdown-plus-table-delete-row)', { buffer = true })
-  vim.keymap.set('n', '<leader>Tyr', '<Plug>(markdown-plus-table-duplicate-row)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tir',
+    '<Plug>(markdown-plus-table-insert-row-below)',
+    { desc = 'markdown-plus-table-insert-row-below' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>TiR',
+    '<Plug>(markdown-plus-table-insert-row-above)',
+    { desc = 'markdown-plus-table-insert-row-above' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tdr',
+    '<Plug>(markdown-plus-table-delete-row)',
+    { desc = 'markdown-plus-table-delete-row' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tyr',
+    '<Plug>(markdown-plus-table-duplicate-row)',
+    { desc = 'markdown-plus-table-duplicate-row' }
+  )
 
   -- Column operations
-  vim.keymap.set('n', '<leader>Tic', '<Plug>(markdown-plus-table-insert-column-right)', { buffer = true })
-  vim.keymap.set('n', '<leader>TiC', '<Plug>(markdown-plus-table-insert-column-left)', { buffer = true })
-  vim.keymap.set('n', '<leader>Tdc', '<Plug>(markdown-plus-table-delete-column)', { buffer = true })
-  vim.keymap.set('n', '<leader>Tyc', '<Plug>(markdown-plus-table-duplicate-column)', { buffer = true })
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tic',
+    '<Plug>(markdown-plus-table-insert-column-right)',
+    { desc = 'markdown-plus-table-insert-column-right' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>TiC',
+    '<Plug>(markdown-plus-table-insert-column-left)',
+    { desc = 'markdown-plus-table-insert-column-left' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tdc',
+    '<Plug>(markdown-plus-table-delete-column)',
+    { desc = 'markdown-plus-table-delete-column' }
+  )
+  vim.api.nvim_buf_set_keymap(
+    0,
+    'n',
+    '<leader>Tyc',
+    '<Plug>(markdown-plus-table-duplicate-column)',
+    { desc = 'markdown-plus-table-duplicate-column' }
+  )
 end
 
 --- main execution

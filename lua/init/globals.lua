@@ -43,6 +43,24 @@ vim.g.fn = {
   end,
 }
 
+_G.open_file_in = _G.open_file_in
+  or function(location)
+    local file = vim.fn.expand('<cfile>')
+    if file == '' then
+      return nil
+    end
+
+    if location == 'top_split' then
+      vim.cmd('wincmd k')
+    else
+      if location == 'first_tab' then
+        vim.cmd('tabfirst')
+      end
+    end
+
+    vim.cmd('edit ' .. vim.fn.fnameescape(file))
+  end
+
 vim.g.lazy_nvim_config = {
   performance = {
     rtp = {

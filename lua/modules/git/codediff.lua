@@ -135,6 +135,7 @@ return {
             prev_hunk = '[g', -- Jump to previous change
             next_file = ']b', -- Next file in explorer mode
             prev_file = '[b', -- Previous file in explorer mode
+            open_in_prev_tab = false,
           },
           explorer = {
             select = '<CR>', -- Open diff for selected file

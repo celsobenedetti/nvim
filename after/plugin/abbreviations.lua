@@ -4,12 +4,14 @@ local abbreviations = {
   WA = 'wa',
   Wq = 'wq',
   WQ = 'wq',
+  Wqa = 'wqa',
   Q = 'q',
   Qa = 'qa',
   Bd = 'bd',
   E = 'e',
   Tabclose = 'tabclose',
   Tabnew = 'tabnew',
+  Set = 'set',
 }
 
 for left, right in pairs(abbreviations) do

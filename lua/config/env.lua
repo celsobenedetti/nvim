@@ -3,6 +3,7 @@ local M = {
   work = {
     jira = os.getenv('WORK_JIRA') or '',
   },
+  JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN') or '',
 
   HOME = os.getenv('HOME') or '',
 
