@@ -14,5 +14,6 @@ return {
       cwd_change_handling = false, -- Automatically save/restore sessions when changing directories
       single_session_mode = false, -- Enable single session mode to keep all work in one session regardless of cwd changes. When enabled, prevents creation of separate sessions for different directories and maintains one unified session. Does not work with cwd_change_handling
     },
+    keys = { { '<leader>rs', ':AutoSession restore<CR>', desc = 'Restore session' } },
   },
 }
