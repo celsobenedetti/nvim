@@ -59,6 +59,12 @@ map('n', 'gA', function()
 end, {
   desc = 'launch a tmux window with `git add -p %`',
 })
+map('n', 'gC', function()
+  local cmd = 'commit.sh'
+  require('lib.tmux').new_window(cmd)
+end, {
+  desc = 'launch a tmux window with `commit.sh`',
+})
 
 -- NOTE: this is a pretty awesome keymap, but I'll try to avoid it and use default
 -- map('n', '<leader>B', function()
