@@ -1,7 +1,6 @@
 return {
 
   'folke/snacks.nvim',
-
   keys = {
     {
       '<leader>uz',
@@ -34,12 +33,12 @@ return {
     })
 
     opts.zen = opts.zen or {}
-    opts.zen.on_close = function()
-      require('twilight').toggle()
-    end
-    opts.zen.on_open = function()
-      require('twilight').toggle()
-    end
+    -- opts.zen.on_close = function()
+    --   require('twilight').toggle()
+    -- end
+    -- opts.zen.on_open = function()
+    --   require('twilight').toggle()
+    -- end
 
     opts.zen.show = {
       statusline = false, -- This hides the statusline (including lualine)
