@@ -1,5 +1,3 @@
-local strings = require('lib.strings')
-
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>silent w<cr><esc>', { desc = 'Save File' })
 
@@ -39,8 +37,19 @@ map('n', 'gy', function()
   local file = vim.fn.expand('%:p')
   file = file:gsub(' ', '\\ ')
   vim.fn.setreg('+', file)
-  Snacks.notify('Copied to clipboard: ' .. file)
+  Snacks.notify.info(string.format('Yanked:\n- `%s`', file), {
+    title = 'Clipboard',
+    icon = '',
+    style = 'fancy',
+  })
 end, { desc = 'Copy file path to clipboard' })
+
+map('n', 'gA', function()
+  local cmd = string.format('git add -p %s', vim.fn.expand('%'))
+  require('lib.tmux').new_window(cmd)
+end, {
+  desc = 'launch a tmux window with `git add -p %`',
+})
 
 -- NOTE: this is a pretty awesome keymap, but I'll try to avoid it and use default
 -- map('n', '<leader>B', function()
