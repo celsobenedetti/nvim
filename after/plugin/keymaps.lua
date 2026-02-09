@@ -1,6 +1,15 @@
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>silent w<cr><esc>', { desc = 'Save File' })
 
+map('n', '<C-c>', function()
+  local file = vim.fn.expand('%:p')
+  if file and file ~= '' then
+    vim.cmd('wq')
+  else
+    vim.cmd('q')
+  end
+end, { desc = 'C-c: write and quit' })
+
 -- lazy
 map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
