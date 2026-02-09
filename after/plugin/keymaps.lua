@@ -54,24 +54,15 @@ map('n', 'gy', function()
 end, { desc = 'Copy file path to clipboard' })
 
 map('n', 'gA', function()
-  local cmd = string.format('git add -p %s', vim.fn.expand('%'))
-  require('lib.tmux').new_window(cmd)
+  require('lib.tmux').neww(string.format('add.sh "%s"', vim.fn.expand('%')))
 end, {
-  desc = 'launch a tmux window with `git add -p %`',
+  desc = 'tmux: neww `add.sh %`',
 })
 map('n', 'gC', function()
-  local cmd = 'commit.sh'
-  require('lib.tmux').new_window(cmd)
+  require('lib.tmux').neww('commit.sh')
 end, {
-  desc = 'launch a tmux window with `commit.sh`',
+  desc = 'tmux: neww `commit.sh`',
 })
-
--- NOTE: this is a pretty awesome keymap, but I'll try to avoid it and use default
--- map('n', '<leader>B', function()
---   local conform = require('conform')
---   vim.cmd('.w !bash')
---   vim.schedule(conform.format)
--- end, { desc = 'Run current line as bash command' })
 
 map({ 'n', 'x', 'v' }, '<leader>sw', function()
   Snacks.picker.grep_word({ layout = 'ivy_split' })
