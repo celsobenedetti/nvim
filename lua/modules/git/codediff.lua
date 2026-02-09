@@ -91,9 +91,6 @@ end
 local function codefiff_cmd(cmd)
   return function()
     vim.cmd(cmd)
-    vim.defer_fn(function()
-      vim.g.fn.rename_tab(' git log')
-    end, 200)
   end
 end
 

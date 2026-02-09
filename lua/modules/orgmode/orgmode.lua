@@ -229,14 +229,14 @@ return {
         },
       })
 
-      local Events = require('orgmode.events')
-      Events.listen(Events.event.TodoChanged, function(ev)
-        -- Snacks.notify.info(vim.inspect(ev.headline:get_properties()))
-      end)
+      -- local Events = require('orgmode.events')
+      -- Events.listen(Events.event.TodoChanged, function(ev)
+      --   -- Snacks.notify.info(vim.inspect(ev.headline:get_properties()))
+      -- end)
 
-      Events.listen(Events.event.NoteAdded, function(ev)
-        -- Snacks.notify.info(vim.inspect(ev.note))
-      end)
+      -- Events.listen(Events.event.NoteAdded, function(ev)
+      --   -- Snacks.notify.info(vim.inspect(ev.note))
+      -- end)
 
       if
         highlight

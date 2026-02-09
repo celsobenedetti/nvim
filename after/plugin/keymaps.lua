@@ -4,10 +4,9 @@ map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>silent w<cr><esc>', { desc = 'Save Fi
 map('n', '<C-c>', function()
   local file = vim.fn.expand('%:p')
   if vim.bo.buftype ~= 'nofile' and file and file ~= '' then
-    vim.cmd('wq')
-  else
-    vim.cmd('q')
+    vim.cmd('silent w')
   end
+  vim.cmd('q')
 end, { desc = 'C-c: write and quit' })
 
 -- lazy
