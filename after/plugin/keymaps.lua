@@ -54,7 +54,8 @@ map('n', 'gy', function()
 end, { desc = 'Copy file path to clipboard' })
 
 map('n', 'gA', function()
-  require('lib.tmux').neww(string.format('add.sh "%s"', vim.fn.expand('%')))
+  local cmd = string.format('git add -p %s', vim.fn.expand('%'))
+  require('lib.tmux').neww(cmd)
 end, {
   desc = 'tmux: neww `add.sh %`',
 })
