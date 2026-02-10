@@ -99,6 +99,18 @@ return {
     'esmuellert/codediff.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
     cmd = 'CodeDiff',
+
+    keys = {
+      -- stylua: ignore start
+      { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'pickaxe: Git Search (Buffer)', },
+      { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
+      { '<leader>sgf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
+      { '<leader>sgl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
+      { '<leader>gl', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
+      { '<leader>gf', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
+      { 'gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
+      -- stylua: ignore end
+    },
     config = function()
       require('codediff').setup({
         -- Highlight configuration
@@ -132,7 +144,7 @@ return {
             prev_hunk = '[g', -- Jump to previous change
             next_file = ']b', -- Next file in explorer mode
             prev_file = '[b', -- Previous file in explorer mode
-            open_in_prev_tab = false,
+            open_in_prev_tab = 'gf',
           },
           explorer = {
             select = '<CR>', -- Open diff for selected file
@@ -150,17 +162,5 @@ return {
         end,
       })
     end,
-
-    keys = {
-      -- stylua: ignore start
-      { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'pickaxe: Git Search (Buffer)', },
-      { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
-      { '<leader>sgf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
-      { '<leader>sgl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
-      { '<leader>gl', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
-      { '<leader>gf', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
-      { 'gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
-      -- stylua: ignore end
-    },
   },
 }
