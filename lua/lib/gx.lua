@@ -77,7 +77,9 @@ M.normal = function()
     return
   end
 
-  vim.cmd('!xdg-open ' .. url)
+  url = url:gsub('#', '\\#') -- escape # to prevent alternate file
+
+  vim.cmd(string.format('!xdg-open "%s"', url))
 end
 
 M.visual = function()
