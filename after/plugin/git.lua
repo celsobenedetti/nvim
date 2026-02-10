@@ -7,12 +7,12 @@ end, {
   desc = 'git: tmux neww `add.sh %`',
 })
 map('n', 'gC', function()
-  tmux.neww('commit.sh -y')
+  tmux.neww('commit.sh')
 end, {
   desc = 'git: tmux neww `commit.sh`',
 })
 
-map('n', 'gs', function()
+map('n', '<leader>gs', function()
   local tabs = vim.api.nvim_list_tabpages()
   local ok, tabname = pcall(require, 'tabby.feature.tab_name')
   if not ok then
@@ -28,4 +28,8 @@ map('n', 'gs', function()
   end
 
   vim.cmd('CodeDiff')
-end, { desc = 'git: git status' })
+end, { desc = 'git: (codediff) git status' })
+
+map('n', 'gs', function()
+  Snacks.picker.git_status({ layout = 'ivy_split' })
+end, { desc = 'git: (snacks) git Status' })

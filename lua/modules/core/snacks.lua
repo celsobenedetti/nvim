@@ -191,7 +191,6 @@ return {
     -- -- git
     { '<leader>gd', function() Snacks.picker.git_diff() end, desc = 'snacks: Git Diff (hunks)', },
     { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
-    { '<leader>gs', function() Snacks.picker.git_status({layout="ivy_split"}) end, desc = 'snacks: Git Status', },
     { '<leader>gS', function() Snacks.picker.git_stash({layout="ivy_split"}) end, desc = 'snacks: Git Stash', },
     -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'snacks: GitHub Issues (open)', },
     -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'snacks: GitHub Issues (all)', },
