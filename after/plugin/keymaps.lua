@@ -52,18 +52,6 @@ map('n', 'gy', function()
   })
 end, { desc = 'Copy file path to clipboard' })
 
-map('n', 'gA', function()
-  local cmd = string.format('git add -p %s', vim.fn.expand('%'))
-  require('lib.tmux').neww(cmd)
-end, {
-  desc = 'tmux: neww `add.sh %`',
-})
-map('n', 'gC', function()
-  require('lib.tmux').neww('commit.sh')
-end, {
-  desc = 'tmux: neww `commit.sh`',
-})
-
 map({ 'n', 'x', 'v' }, '<leader>sw', function()
   Snacks.picker.grep_word({ layout = 'ivy_split' })
 end, { desc = 'Visual selection or word (Root Dir)' })
