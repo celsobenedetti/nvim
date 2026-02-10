@@ -1,5 +1,11 @@
 -- Save file
-map({ 'x', 'n', 'i', 's' }, '<C-s>', '<cmd>silent w<cr><esc>', { desc = 'Save File' })
+map({ 'x', 'n', 'i', 's' }, '<C-s>', function()
+  local file = vim.fn.expand('%:p')
+  if vim.bo.buftype ~= 'nofile' and vim.bo.buftype ~= 'nowrite' and file and file ~= '' then
+    vim.cmd('silent w')
+  end
+  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', false)
+end, { desc = 'Save File' })
 
 map('n', '<C-c>', function()
   local file = vim.fn.expand('%:p')
