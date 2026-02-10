@@ -4,8 +4,21 @@ map('n', 'ga', function()
   local cmd = string.format('git add -p %s', vim.fn.expand('%'))
   tmux.neww(cmd)
 end, {
-  desc = 'git: tmux neww `add.sh %`',
+  desc = 'git: tmux neww `git add -p %`',
 })
+
+map('n', 'gA', function()
+  tmux.neww('git add -p')
+end, {
+  desc = 'git: tmux neww `git add -p`',
+})
+
+map('n', 'gR', function()
+  tmux.neww('git restore -p')
+end, {
+  desc = 'git: tmux neww `git restore -p`',
+})
+
 map('n', 'gC', function()
   tmux.neww('commit.sh')
 end, {
