@@ -6,7 +6,6 @@ return {
   {
     'saghen/blink.cmp',
     dependencies = { 'nvim-mini/mini.snippets' },
-    build = 'cargo +nightly build --release',
     opts = function(_, opts)
       opts.enabled = function()
         return vim.bo.buftype ~= 'prompt'

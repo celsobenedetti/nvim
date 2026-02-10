@@ -37,12 +37,6 @@ local agenda_views = {
         match = 'TODO="WAITING"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
-      {
-        org_agenda_overriding_header = 'Long ongoing tasks/projects',
-        type = 'tags_todo',
-        match = 'TODO="ONGOING"',
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
-      },
     },
   },
   n = {
@@ -88,7 +82,7 @@ local agenda_views = {
     },
   },
   W = {
-    description = 'waiting',
+    description = 'WAITING',
     types = {
       {
         type = 'tags_todo', -- Type can be agenda | tags | tags_todo
@@ -99,6 +93,19 @@ local agenda_views = {
         }, -- See all options available on org_agenda_sorting_strategy
         -- org_agenda_overriding_header = 'High priority todos',
         -- org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
+      },
+    },
+  },
+  O = {
+    description = 'ONGOING',
+    types = {
+      {
+        type = 'tags_todo',
+        match = 'TODO="ONGOING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = {
+          'priority-down',
+          'todo-state-down',
+        }, -- See all options available on org_agenda_sorting_strategy
       },
     },
   },
