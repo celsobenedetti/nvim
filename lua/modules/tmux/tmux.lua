@@ -53,14 +53,15 @@ return {
 
       -- keymaps needed only when inside tmux tmux only
       -- { '<C-e>', Explorer, desc = 'Snacks: explorer' },
-      {
-        '<c-_>',
-        function()
-          Snacks.terminal.toggle()
-        end,
-        desc = 'snacks: toggle terminal',
-        mode = { 'n', 't' },
-      },
+      -- NOTE: disable snacks terminal for now
+      -- {
+      --   '<c-_>',
+      --   function()
+      --     Snacks.terminal.toggle()
+      --   end,
+      --   desc = 'snacks: toggle terminal',
+      --   mode = { 'n', 't' },
+      -- },
     },
   },
 }
