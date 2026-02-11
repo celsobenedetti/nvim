@@ -4,8 +4,11 @@ map('n', 'ga', function()
   local file = vim.fn.expand('%')
 
   local hunks = require('gitsigns').get_hunks(0)
-  if #hunks == 0 then
-    Snacks.notify.warn(string.format('No changes: `%s`', file), {
+
+  -- file is not in git
+  if hunks == nil then
+    vim.system({ 'git', 'add', file })
+    Snacks.notify.info(string.format('Added: `%s`', file), {
       title = 'Git',
       icon = '',
       style = 'fancy',
@@ -13,10 +16,8 @@ map('n', 'ga', function()
     return
   end
 
-  -- file is not in git
-  if hunks == nil then
-    vim.system({ 'git', 'add', file })
-    Snacks.notify.info(string.format('Added: `%s`', file), {
+  if #hunks == 0 then
+    Snacks.notify.warn(string.format('No changes: `%s`', file), {
       title = 'Git',
       icon = '',
       style = 'fancy',
