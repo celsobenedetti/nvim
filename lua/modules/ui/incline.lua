@@ -5,11 +5,11 @@ return {
     dependencies = { { 'nvim-mini/mini.icons', config = true } },
     config = function()
       local is_notes = require('lib.cwd').matches({ 'notes' })
-      if is_notes then
-        -- set winbar to render empty line above first line of file
-        -- this is done mostly because of obsidian notes, which don't contain a top level H1 by default
-        vim.opt.winbar = ' '
-      end
+      -- if is_notes then
+      -- set winbar to render empty line above first line of file
+      -- this is done mostly because of obsidian notes, which don't contain a top level H1 by default
+      vim.opt.winbar = ' '
+      -- end
 
       -- local helpers = require('incline.helpers')
       local devicons = require('nvim-web-devicons')
@@ -18,7 +18,8 @@ return {
           padding = 0,
           margin = { horizontal = 0 },
           placement = {
-            horizontal = is_notes and 'center' or 'right',
+            -- horizontal = is_notes and 'center' or 'right',
+            horizontal = 'center',
             vertical = 'top',
           },
           overlap = {
