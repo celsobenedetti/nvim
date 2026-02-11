@@ -1,6 +1,6 @@
 return {
   {
-    'vimpostor/vim-tpipeline',
+    'celsobenedetti/vim-tpipeline',
     event = 'VeryLazy',
     init = function()
       vim.schedule(function()

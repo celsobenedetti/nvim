@@ -46,10 +46,11 @@ return {
           return cmd('TmuxNavigateLeft')()
         end,
         desc = 'Go to Left tmux pane',
+        mode = { 'n', 'i', 't' },
       },
-      { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane' },
-      -- { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane' },
-      { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane' },
+      { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane', mode = { 'n', 'i', 't' } },
+      { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane', mode = { 'n', 'i', 't' } },
+      { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane', mode = { 'n', 'i', 't' } },
 
       -- keymaps needed only when inside tmux tmux only
       -- { '<C-e>', Explorer, desc = 'Snacks: explorer' },

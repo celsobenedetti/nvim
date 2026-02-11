@@ -13,7 +13,6 @@ map({ 'x', 'n', 'i', 's' }, '<C-s>', function()
   end
   vim.api.nvim_feedkeys(Keys('<esc>'), 'n', false)
 end, { desc = 'Save File' })
-
 map('n', '<C-c>', function()
   local file = vim.fn.expand('%:p')
   if should_write() then
@@ -26,8 +25,12 @@ end, { desc = 'C-c: write and quit' })
 map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
 -- tabs
-map('n', ']<tab>', ':tabnext<CR>', { desc = 'tab: next' })
-map('n', '[<tab>', ':tabprevious<CR>', { desc = 'tab: prev' })
+map({ 'n', 't', 'i' }, ']<tab>', function()
+  vim.cmd('tabnext')
+end, { desc = 'tab: next' })
+map({ 'n', 't', 'i' }, '[<tab>', function()
+  vim.cmd('tabprevious')
+end, { desc = 'tab: previous' })
 
 -- better j/k
 local jump = require('lib.jump')
