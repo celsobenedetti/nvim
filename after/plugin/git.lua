@@ -2,8 +2,19 @@ local tmux = require('lib.tmux')
 
 map('n', 'ga', function()
   local file = vim.fn.expand('%')
-  local is_file_in_git = require('gitsigns').get_hunks(0) ~= nil
-  if not is_file_in_git then
+
+  local hunks = require('gitsigns').get_hunks(0)
+  if #hunks == 0 then
+    Snacks.notify.warn(string.format('No changes: `%s`', file), {
+      title = 'Git',
+      icon = '',
+      style = 'fancy',
+    })
+    return
+  end
+
+  -- file is not in git
+  if hunks == nil then
     vim.system({ 'git', 'add', file })
     Snacks.notify.info(string.format('Added: `%s`', file), {
       title = 'Git',
