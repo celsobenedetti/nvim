@@ -112,8 +112,8 @@ local agenda_views = {
 }
 
 local function set_highlights()
-  vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = 'green' })
-  vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
+  vim.api.nvim_set_hl(0, '@org.keyword.done', { link = 'DiffViewFolderName' })
+  -- vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = 'red' })
   vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
 end
 
@@ -249,7 +249,7 @@ return {
         highlight
         or vim.tbl_contains(
           -- colorschemes to highlight
-          { 'koda' },
+          { 'koda', 'rose-pine-dawn' },
           require('lib.colors').omarchy_colorscheme().colorscheme
         )
       then

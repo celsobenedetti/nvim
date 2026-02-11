@@ -1,7 +1,14 @@
+local function should_write()
+  return vim.bo.buftype ~= 'nofile'
+    and vim.bo.buftype ~= 'nowrite'
+    and vim.bo.buftype ~= 'terminal'
+    and vim.fn.expand('%:p') ~= ''
+end
+
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', function()
   local file = vim.fn.expand('%:p')
-  if vim.bo.buftype ~= 'nofile' and vim.bo.buftype ~= 'nowrite' and file and file ~= '' then
+  if should_write() then
     vim.cmd('silent w')
   end
   vim.api.nvim_feedkeys(Keys('<esc>'), 'n', false)
@@ -9,7 +16,7 @@ end, { desc = 'Save File' })
 
 map('n', '<C-c>', function()
   local file = vim.fn.expand('%:p')
-  if vim.bo.buftype ~= 'nofile' and vim.bo.buftype ~= 'nowrite' and file and file ~= '' then
+  if should_write() then
     vim.cmd('silent w')
   end
   vim.cmd('q')
