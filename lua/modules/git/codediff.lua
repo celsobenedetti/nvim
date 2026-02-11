@@ -108,7 +108,7 @@ return {
       { '<leader>sgl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
       { '<leader>gl', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
       { '<leader>gf', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
-      { 'gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
+      { '<leader>gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
       -- stylua: ignore end
     },
     config = function()

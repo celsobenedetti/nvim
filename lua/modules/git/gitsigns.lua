@@ -3,6 +3,15 @@ return {
     'lewis6991/gitsigns.nvim',
     event = 'VeryLazy',
     keys = {
+
+      {
+        'gb',
+        function()
+          local gs = package.loaded.gitsigns
+          gs.blame_line()
+        end,
+        desc = 'gitsigns: stage buffer',
+      },
       {
         '<leader>gA',
         function()

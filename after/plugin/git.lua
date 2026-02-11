@@ -1,7 +1,19 @@
 local tmux = require('lib.tmux')
 
 map('n', 'ga', function()
-  local cmd = string.format('git add -p %s', vim.fn.expand('%'))
+  local file = vim.fn.expand('%')
+  local is_file_in_git = require('gitsigns').get_hunks(0) ~= nil
+  if not is_file_in_git then
+    vim.system({ 'git', 'add', file })
+    Snacks.notify.info(string.format('Added: `%s`', file), {
+      title = 'Git',
+      icon = '',
+      style = 'fancy',
+    })
+    return
+  end
+
+  local cmd = string.format('git add -p %s', file)
   tmux.neww(cmd)
 end, {
   desc = 'git: tmux neww `git add -p %`',
