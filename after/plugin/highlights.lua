@@ -63,3 +63,7 @@ vim.api.nvim_set_hl(0, 'PmenuSbar', { bg = 'none', fg = colors.get_color('PmenuS
 vim.api.nvim_set_hl(0, 'WinBarNC', { bg = 'none', fg = colors.get_color('WinBarNC', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBar', { bg = 'none', fg = colors.get_color('WinBar', 'fg') })
 vim.api.nvim_set_hl(0, 'FloatTitle', { bg = 'none', fg = colors.get_color('FloatTitle', 'fg') })
+
+-- necessary since "laststatus=3", and "laststatus=0" render statuslien between panes
+vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none', fg = colors.get_color('StatusLine', 'fg') })
+vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none', fg = colors.get_color('StatusLineNC', 'fg') })

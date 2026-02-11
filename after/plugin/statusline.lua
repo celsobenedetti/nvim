@@ -7,6 +7,7 @@
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = require('lib.strings').hl
+local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
 
 local modules = {
   _git_branch = function()
@@ -14,8 +15,7 @@ local modules = {
       return ''
     end
 
-    return ' '
-      .. hl(vim.g.hl.text.highlight, vim.g.icons.git.branch)
+    return hl(vim.g.hl.text.highlight, vim.g.icons.git.branch)
       .. hl(vim.g.hl.text.secondary, (vim.g.gitsigns_head or ''))
   end,
 
@@ -239,7 +239,6 @@ end
 ---@param segments string[]
 ---@param direction Direction
 local function _build_section(segments, direction)
-  local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
   local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
   local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
   local section = ''
@@ -272,7 +271,7 @@ function _G.MyStatusLine()
   local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
-  return left .. SPACE_BETWEEN .. right .. ' '
+  return LEFT_SEPARATOR .. left .. SPACE_BETWEEN .. right .. ' '
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
