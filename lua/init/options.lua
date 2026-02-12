@@ -51,7 +51,7 @@ vim.g.cmd = {
 vim.g.hl = {
   text = {
     highlight = 'Title',
-    secondary = '@lsp.type.parameter',
+    secondary = '@lsp.type.operator',
     subtext = '@comment',
     warn = 'WarningMsg',
   },
