@@ -26,25 +26,25 @@ map('n', 'ga', function()
   end
 
   local cmd = string.format('git add -p %s', file)
-  tmux.neww(cmd)
+  tmux.neww(cmd, { name = ' add' })
 end, {
   desc = 'git: tmux neww `git add -p %`',
 })
 
 map('n', 'gA', function()
-  tmux.neww('git add -p')
+  tmux.neww('git add -p', { name = ' add' })
 end, {
   desc = 'git: tmux neww `git add -p`',
 })
 
 map('n', 'gR', function()
-  tmux.neww('git restore -p')
+  tmux.neww('git restore -p', { name = ' restore' })
 end, {
   desc = 'git: tmux neww `git restore -p`',
 })
 
 map('n', 'gC', function()
-  tmux.neww('commit.sh')
+  tmux.neww('commit.sh', { name = ' commit' })
 end, {
   desc = 'git: tmux neww `commit.sh`',
 })
