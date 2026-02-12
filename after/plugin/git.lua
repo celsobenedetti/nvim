@@ -70,3 +70,5 @@ end, { desc = 'git: (codediff) git status' })
 map('n', 'gs', function()
   Snacks.picker.git_status({ layout = 'ivy_split' })
 end, { desc = 'git: (snacks) git Status' })
+
+map('n', 'gp', ':Compile git push<CR>', { desc = 'git: push' })
