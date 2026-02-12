@@ -25,7 +25,7 @@ map('n', 'ga', function()
     return
   end
 
-  local cmd = string.format('git add -p %s', file)
+  local cmd = string.format('git add -p "%s"', file)
   tmux.neww(cmd, { name = ' add' })
 end, {
   desc = 'git: tmux neww `git add -p %`',

@@ -193,39 +193,52 @@ local function setup_caching_and_updating()
     end,
   })
 
-  -- create scheduler to update some cached items periodically
-  local SHORT_INTERVAL = 2000
-  local timer = vim.uv.new_timer()
-  if timer then
-    timer:start(
-      SHORT_INTERVAL,
-      SHORT_INTERVAL,
-      vim.schedule_wrap(function()
-        local bufnr = vim.api.nvim_get_current_buf()
-        vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', modules._diagnostics())
-        vim.api.nvim_buf_set_var(bufnr, 'cached_git_status', modules._git_status())
+  -- Async, throttled branch status updates (avoid blocking UI with system())
+  local function async_git_count(cmd, cb)
+    vim.system({ 'bash', '-lc', cmd }, { text = true }, function(res)
+      local n = tonumber((res.stdout or ''):match('%d+')) or 0
+      vim.schedule(function()
+        pcall(cb, n)
       end)
-    )
+    end)
   end
 
-  local MEDIUM_INTERVAL = 5000
-  local big_timer = vim.uv.new_timer()
-  if big_timer then
-    big_timer:start(
-      SHORT_INTERVAL,
-      MEDIUM_INTERVAL,
-      vim.schedule_wrap(function()
-        vim.g.branch_commits_ahead_of_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_ahead_of_origin))
-        vim.g.branch_commits_behind_origin = tonumber(vim.fn.system(vim.g.cmd.git.commits_behind_origin))
-      end)
-    )
+  local _updating = false
+  local last_run = 0
+  local function update_branch_status()
+    if _updating then
+      return
+    end
+    _updating = true
+    async_git_count(vim.g.cmd.git.commits_ahead_of_origin, function(n)
+      vim.g.branch_commits_ahead_of_origin = n
+    end)
+    async_git_count(vim.g.cmd.git.commits_behind_origin, function(n)
+      vim.g.branch_commits_behind_origin = n
+      _updating = false
+    end)
   end
+
+  local function maybe_update_branch_status()
+    local now = (vim.uv or vim.loop).now()
+    if now - last_run < 60000 then -- throttle to once per minute
+      return
+    end
+    last_run = now
+    update_branch_status()
+  end
+
+  vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained' }, {
+    callback = function()
+      maybe_update_branch_status()
+    end,
+  })
 
   local MINUTE = 60000
   local minute_timer = vim.uv.new_timer()
   if minute_timer then
     minute_timer:start(
-      SHORT_INTERVAL,
+      MINUTE,
       MINUTE,
       vim.schedule_wrap(function()
         vim.g.time = modules._time()

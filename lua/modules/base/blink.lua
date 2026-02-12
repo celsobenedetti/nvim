@@ -7,6 +7,7 @@ return {
     'saghen/blink.cmp',
     dependencies = { 'nvim-mini/mini.snippets' },
     version = '1.*',
+    event = 'InsertEnter',
     opts = function(_, opts)
       opts.enabled = function()
         return vim.bo.buftype ~= 'prompt'
