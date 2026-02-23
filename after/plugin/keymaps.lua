@@ -45,6 +45,7 @@ map('n', 'l', fold.l, { desc = 'l: move right and unfold' })
 map('n', '<leader>R', function()
   vim.cmd(':w')
   vim.cmd(':e! %')
+  vim.cmd('norm zz')
 end, { desc = 'write and refresh buffer' })
 
 -- fs
