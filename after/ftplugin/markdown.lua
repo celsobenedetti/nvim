@@ -67,7 +67,7 @@ local function set_keymaps()
   --
   -- Normal mode
   vim.api.nvim_buf_set_keymap(0, 'n', '<C-b>', '<Plug>(MarkdownPlusBold)', { desc = 'MarkdownPlusBold' })
-  vim.api.nvim_buf_set_keymap(0, 'n', '<C-i>', '<Plug>(MarkdownPlusItalic)', { desc = 'MarkdownPlusItalic' })
+  -- vim.api.nvim_buf_set_keymap(0, 'n', '<C-i>', '<Plug>(MarkdownPlusItalic)', { desc = 'MarkdownPlusItalic' })
   -- vim.api.nvim_buf_set_keymap(0,'n', '<C-s>', '<Plug>(MarkdownPlusStrikethrough)') -- conflicts with sav, {  }e
   -- vim.api.nvim_buf_set_keymap(0,'n', '<C-k>', '<Plug>(MarkdownPlusCode)') -- C-k is window movement, {  }t
   -- vim.api.nvim_buf_set_keymap(
@@ -100,7 +100,7 @@ local function set_keymaps()
 
   --- Headers & TOC
   vim.api.nvim_buf_set_keymap(0, 'n', 'gn', '<Plug>(MarkdownPlusNextHeader)', { desc = 'MarkdownPlusNextHeader' })
-  vim.api.nvim_buf_set_keymap(0, 'n', 'gp', '<Plug>(MarkdownPlusPrevHeader)', { desc = 'MarkdownPlusPrevHeader' })
+  -- vim.api.nvim_buf_set_keymap(0, 'n', 'gp', '<Plug>(MarkdownPlusPrevHeader)', { desc = 'MarkdownPlusPrevHeader' })
   vim.api.nvim_buf_set_keymap(
     0,
     'n',

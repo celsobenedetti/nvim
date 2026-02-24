@@ -13,7 +13,7 @@ return {
       local theme = {
         fill = 'TabLineFill',
         head = 'TabLine',
-        current_tab = '@comment.note',
+        current_tab = 'TabLineSel',
         tab = 'TabLine',
         win = 'TabLine',
         tail = 'TabLine',

@@ -181,6 +181,7 @@ return {
 
     -- -- find
     { '<leader>,', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
+    { '<leader><leader>', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
     { '<leader><', function() Snacks.picker.buffers { layout="ivy_split",hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
     { '<C-p>', function() Snacks.picker.smart({layout="select", title=""}) end, desc = 'snacks: Smart picker', },
 

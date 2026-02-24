@@ -1,6 +1,7 @@
 return {
   {
     'blazkowolf/gruber-darker.nvim',
+    lazy = true,
     config = function()
       vim.schedule(function()
         vim.g.hl.text.secondary = '@string.special'

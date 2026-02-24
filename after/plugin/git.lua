@@ -1,7 +1,7 @@
 local tmux = require('lib.tmux')
 
 -- stylua: ignore start
-map('n', 'gC', function() tmux.neww('commit.sh', { name = ' commit' }) end, { desc = 'git: commit.sh' })
+map('n', 'gC', function() vim.cmd('Git commit') end, { desc = 'git: Git commit' })
 map('n', 'gA', function() vim.cmd('Git add -p') end, { desc = 'git: Git add -p`', })
 map('n', 'gR', function() tmux.neww('git restore -p', { name = ' restore' }) end, { desc = 'git: tmux neww `git restore -p`', })
 map('n', 'gs', function() Snacks.picker.git_status({ layout = 'ivy_split' }) end, { desc = 'git: (snacks) git Status' })
