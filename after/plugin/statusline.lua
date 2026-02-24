@@ -181,7 +181,7 @@ local function setup_caching_and_updating()
   })
 
   -- Cache diagnostics and status
-  vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'WinEnter' }, {
     callback = function()
       local bufnr = vim.api.nvim_get_current_buf()
       vim.defer_fn(function()
