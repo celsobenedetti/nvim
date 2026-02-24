@@ -12,6 +12,7 @@ local abbreviations = {
   Tabclose = 'tabclose',
   Tabnew = 'tabnew',
   Set = 'set',
+  git = 'Git',
 }
 
 for left, right in pairs(abbreviations) do

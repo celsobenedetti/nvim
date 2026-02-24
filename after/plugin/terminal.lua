@@ -46,5 +46,5 @@ vim.keymap.set('n', '<leader>te', function()
   -- if no terminal is open, open one
   vim.cmd('term')
 end, {
-  desc = 'terminal: friendly term',
+  desc = 'terminal: friendly term - resume or create terminal in current window',
 })
