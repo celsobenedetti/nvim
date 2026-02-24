@@ -100,7 +100,7 @@ return {
 
       sources = {
         explorer = {
-          auto_close = true,
+          auto_close = false,
           ignored = true,
           exclude = vim.g.ignore.explorer,
           win = {
