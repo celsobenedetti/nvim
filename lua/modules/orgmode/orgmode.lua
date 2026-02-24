@@ -1,12 +1,13 @@
 local highlight = false
 
 local agenda_files = {
-  vim.g.env.org.INBOX,
-  vim.g.env.org.MAIN,
-  vim.g.env.org.WORK,
-  vim.g.env.org.CALENDAR,
-  vim.g.env.org.PURCHASES,
+  vim.g.env.notes.ORG .. '/*',
   vim.g.env.org.REFERENCES .. '/*',
+  -- vim.g.env.org.INBOX,
+  -- vim.g.env.org.MAIN,
+  -- vim.g.env.org.WORK,
+  -- vim.g.env.org.CALENDAR,
+  -- vim.g.env.org.PURCHASES,
 }
 
 --- @type table<string, OrgAgendaCustomCommand>
@@ -237,7 +238,10 @@ return {
         },
       })
 
-      -- local Events = require('orgmode.events')
+      local Events = require('orgmode.events')
+      Events.listen(Events.event.ClockedIn, function(ev)
+        ev.headline:set_todo('PROG')
+      end)
       -- Events.listen(Events.event.TodoChanged, function(ev)
       --   -- Snacks.notify.info(vim.inspect(ev.headline:get_properties()))
       -- end)
