@@ -154,6 +154,8 @@ return {
         },
       })
 
+      vim.cmd.cnoreabbrev(('%s %s'):format('codediff', 'CodeDiff'))
+
       vim.api.nvim_create_autocmd('BufReadCmd', {
         group = vim.api.nvim_create_augroup('celso_codefiff', { clear = true }),
         pattern = 'vscodediff:///*',
