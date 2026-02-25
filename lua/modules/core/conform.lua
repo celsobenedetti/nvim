@@ -56,6 +56,7 @@ return {
         sh = { 'shfmt' },
         typescript = fmt_js,
         typescriptreact = fmt_js,
+        python = { 'black' },
         vue = fmt_js,
       },
       formatters = {

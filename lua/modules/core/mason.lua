@@ -14,6 +14,7 @@ return {
       require('mason-tool-installer').setup({
         ensure_installed = {
           'bash-language-server',
+          'black',
           'checkmake',
           'eslint-lsp',
           'gopls',
@@ -23,6 +24,8 @@ return {
           'ols',
           'oxlint',
           'prettier',
+          'pyright',
+          'ruff',
           'shellcheck',
           'shfmt',
           'stylua',
