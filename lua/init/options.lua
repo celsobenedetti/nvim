@@ -41,9 +41,12 @@ vim.g.icons = {
   },
 }
 
-vim.g.tmux = {
-  mappings = {
+vim.g.mappings = {
+  tmux = {
     ['<C-/>'] = '<C-_>',
+  },
+  ghostty = {
+    ['<C-S-N>'] = 'NOTES',
   },
 }
 

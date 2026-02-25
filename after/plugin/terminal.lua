@@ -93,8 +93,7 @@ local function toggle_terminal(close)
   vim.cmd('sp | b' .. terminal_bufnr .. ' | startinsert')
 end
 
--- tmux <C-/> mapping
-vim.keymap.set('n', vim.g.tmux.mappings['<C-/>'], function()
+vim.keymap.set('n', vim.g.mappings.tmux['<C-/>'], function()
   return toggle_terminal()
 end, { desc = 'Toggle terminal' })
-vim.keymap.set('t', vim.g.tmux.mappings['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 'Close terminal' })
+vim.keymap.set('t', vim.g.mappings.tmux['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 'Close terminal' })

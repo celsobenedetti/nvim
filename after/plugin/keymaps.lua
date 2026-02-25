@@ -82,24 +82,6 @@ local gx = require('lib.gx')
 vim.keymap.set('n', 'gx', gx.normal, { desc = 'gx: open link' })
 vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 
-vim.keymap.set('n', 'NOTES', function()
-  require('lib.notes').focus_or_create_notes_tab(function()
-    require('lib.git_grep_notes').git_grep_notes({
-      cwd = vim.g.env.notes.NOTES,
-      cmd = {
-        'rg',
-        '--no-heading',
-        '--line-number',
-        '-g',
-        '!' .. vim.g.env.notes.ASSETS_DIR .. '/*',
-        '-v',
-        vim.g.env.notes.GREP_IGNORE, -- No quotes needed here!
-        vim.g.env.notes.NOTES,
-      },
-    })
-  end)
-end, { desc = 'search all notes' })
-
 -- orgmode
 vim.keymap.set('n', '<leader>in', ':e' .. vim.g.env.org.INBOX .. '<cr>', { desc = 'org: refile file' })
 vim.keymap.set('n', '<leader>om', ':e' .. vim.g.env.org.MAIN .. '<cr>', { desc = 'org: main file' })
