@@ -52,12 +52,12 @@ return {
       { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane', mode = { 'n', 'i', 't' } },
       { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane', mode = { 'n', 'i', 't' } },
 
-      {
-        '<c-_>',
-        '<cmd>OverseerRun<cr>',
-        desc = 'overseer: run',
-        mode = { 'n', 't' },
-      },
+      -- {
+      --   '<c-_>',
+      --   '<cmd>OverseerRun<cr>',
+      --   desc = 'overseer: run',
+      --   mode = { 'n', 't' },
+      -- },
 
       -- keymaps needed only when inside tmux tmux only
       -- { '<C-e>', Explorer, desc = 'Snacks: explorer' },

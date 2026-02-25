@@ -41,6 +41,12 @@ vim.g.icons = {
   },
 }
 
+vim.g.tmux = {
+  mappings = {
+    ['<C-/>'] = '<C-_>',
+  },
+}
+
 vim.g.cmd = {
   git = {
     commits_ahead_of_origin = 'git rev-list --count HEAD ^origin/$(git branch --show-current)',
