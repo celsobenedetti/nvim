@@ -8,7 +8,14 @@ map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result
 
 map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
 
-map('t', '<esc><esc>', '<C-\\><C-n>', { desc = 'Escape insert mode in terminal' }) -- let me escape insert in terminal!
+-- sensible terminal mappings
+vim.keymap.set('t', '<esc><esc>', '<C-\\><C-n>') -- let me escape insert in terminal!
+vim.keymap.set('t', '<C-w>h', '<C-\\><C-n><C-w>h')
+vim.keymap.set('t', '<C-w>q', '<C-\\><C-n><C-w>q')
+vim.keymap.set('t', '<C-w>j', '<C-\\><C-n><C-w>j')
+vim.keymap.set('t', '<C-w>k', '<C-\\><C-n><C-w>k')
+vim.keymap.set('t', '<C-w>l', '<C-\\><C-n><C-w>l')
+vim.keymap.set('t', '<C-w>w', '<C-\\><C-n><C-w>w')
 
 -- -- Move Lines  -- replaced by mini.move
 -- map('n', '<A-j>', "<cmd>execute 'move .+' . v:count1<cr>==", { desc = 'Move Down' })

@@ -12,14 +12,10 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
-vim.api.nvim_create_autocmd('BufWinEnter', {
-  pattern = 'term://*',
-  group = augroup,
-  callback = function()
-    -- Insert mode when entering terminal window
-    vim.api.nvim_feedkeys(Keys('i<BS>'), 'n', true)
-  end,
-})
+-- Insert mode when entering terminal window
+-- stylua: ignore start
+vim.api.nvim_create_autocmd('WinEnter', { pattern = 'term://*', group = augroup, callback = function() vim.cmd('norm i') end, })
+-- stylua: ignore end
 
 -- -- allow ":wqa" with terminal open
 -- vim.api.nvim_create_autocmd('ExitPre', {
@@ -52,6 +48,7 @@ vim.keymap.set('n', '<leader>te', function()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' and terminal_is_available(buf) then
       vim.api.nvim_set_current_buf(buf)
+      vim.cmd('norm i')
       return
     end
   end
