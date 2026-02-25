@@ -33,25 +33,33 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
 --     end
 --   end,
 -- })
+--
 
--- FIX: should get the terminal buffer with the smallest name
--- the idea is to get a terminal with no commands running
--- if there is command running, should probably open a new terminal
---
--- vim.keymap.set('n', '<leader>te', function()
---   local buffers = vim.api.nvim_list_bufs()
---   for _, buf in ipairs(buffers) do
---     if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' then
---       vim.api.nvim_set_current_buf(buf)
---       return
---     end
---   end
---
---   -- if no terminal is open, open one
---   vim.cmd('term')
--- end, {
---   desc = 'terminal: friendly term - resume or create terminal in current window',
--- })
+-- Returns true if buffer is terminal, and has no running command
+-- https://github.com/neovim/neovim/issues/31313
+-- https://github.com/ilan-schemoul/nvim-config/commit/4e27ebabe9d4e819007c770800bac4d5903b8a8d
+local function terminal_is_available(buffer)
+  local is_terminal = vim.bo[buffer].buftype == 'terminal'
+  if not is_terminal then
+    return false
+  end
+  local channel = vim.bo[buffer].channel
+  local child_process = vim.api.nvim_get_proc_children(vim.fn.jobpid(channel))
+  return vim.tbl_count(child_process) == 0
+end
+
+vim.keymap.set('n', '<leader>te', function()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' and terminal_is_available(buf) then
+      vim.api.nvim_set_current_buf(buf)
+      return
+    end
+  end
+  -- no terminal available, create a new one
+  vim.cmd.term()
+end, {
+  desc = 'terminal: friendly term - resume or create terminal in current window',
+})
 
 -- taken from: https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local terminal_bufnr = 0

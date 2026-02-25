@@ -5,7 +5,7 @@ local function dotfiles()
 end
 
 local function cd()
-  Snacks.picker.zoxide({ confirm = { 'cd', 'close' }, title = 'cd (zoxide)' })
+  Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' })
 end
 
 local function workspace()
@@ -40,7 +40,13 @@ return {
     input = { enabled = false },
 
     notifier = {
+      top_down = true,
       enabled = true,
+      margin = {
+        top = 0,
+        right = 999, -- A large value to push it to the left edge
+        bottom = 0,
+      },
       filter = function(notification)
         local ignore = {
           'File is too large to send to server', -- thank you supermaven, please stfu
