@@ -49,7 +49,7 @@ return {
         mode = { 'n', 'i', 't' },
       },
       { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane', mode = { 'n', 'i', 't' } },
-      { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane', mode = { 'n', 'i', 't' } },
+      { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane', mode = { 'n', 't' } },
       { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane', mode = { 'n', 'i', 't' } },
 
       -- {

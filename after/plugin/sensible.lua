@@ -35,8 +35,10 @@ map({ 'n', 't' }, '<C-Down>', '<cmd>resize -2<cr>', { desc = 'Decrease Window He
 map({ 'n', 't' }, '<C-Left>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
 map({ 'n', 't' }, '<C-Right>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
 
--- Move to window using the <ctrl> hjkl keys
-map({ 'n', 'i', 't' }, '<C-h>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
-map({ 'n', 'i', 't' }, '<C-j>', '<C-w>j', { desc = 'Go to Lower Window', remap = true })
-map({ 'n', 'i', 't' }, '<C-k>', '<C-w>k', { desc = 'Go to Upper Window', remap = true })
-map({ 'n', 'i', 't' }, '<C-l>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
+if not os.getenv('TMUX') then
+  -- Move to window using the <ctrl> hjkl keys
+  map({ 'n', 'i', 't' }, '<C-h>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
+  map({ 'n', 'i', 't' }, '<C-j>', '<C-w>j', { desc = 'Go to Lower Window', remap = true })
+  map({ 'n', 'i', 't' }, '<C-k>', '<C-w>k', { desc = 'Go to Upper Window', remap = true })
+  map({ 'n', 't' }, '<C-l>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
+end

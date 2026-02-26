@@ -45,6 +45,7 @@ return {
   {
     'nvim-mini/mini.snippets',
     version = false,
+    lazy = false,
     config = function()
       local gen_loader = require('mini.snippets').gen_loader
       require('mini.snippets').setup({
