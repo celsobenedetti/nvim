@@ -40,13 +40,13 @@ return {
     input = { enabled = false },
 
     notifier = {
-      top_down = true,
+      top_down = false,
       enabled = true,
-      margin = {
-        top = 0,
-        right = 999, -- A large value to push it to the left edge
-        bottom = 0,
-      },
+      -- margin = {
+      --   top = 0,
+      --   right = 100, -- A large value to push it to the left edge
+      --   bottom = 0,
+      -- },
       filter = function(notification)
         local ignore = {
           'File is too large to send to server', -- thank you supermaven, please stfu
@@ -189,7 +189,7 @@ return {
     { '<leader>,', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
     { '<leader><leader>', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
     { '<leader><', function() Snacks.picker.buffers { layout="ivy_split",hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
-    { '<C-p>', function() Snacks.picker.smart({layout="select", title=""}) end, desc = 'snacks: Smart picker', },
+    { '<C-p>', function() Snacks.picker.smart({layout="select", title=""}) end, desc = 'snacks: Smart picker', mode = {'n', 't'} },
 
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
     { '<leader>sr', function() Snacks.picker.recent() end, desc = 'snacks: Recent', },

@@ -23,6 +23,7 @@ return {
       }
 
       local overrides_dark = {
+        ['Title'] = { link = 'Special' },
         ['@keyword'] = config.highlights.keyword,
         ['@constant'] = { fg = c.white },
         ['@annotation'] = { c.white, style = { 'bold' } },

@@ -60,7 +60,7 @@ vim.g.cmd = {
 vim.g.hl = {
   text = {
     highlight = 'Title',
-    secondary = '@string.special',
+    secondary = '@operator',
     subtext = '@comment',
     warn = 'WarningMsg',
   },

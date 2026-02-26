@@ -6,7 +6,8 @@
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
-local hl = require('lib.strings').hl
+local strings = require('lib.strings')
+local hl = strings.hl
 local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
 
 local modules = {
@@ -284,7 +285,13 @@ function _G.MyStatusLine()
   local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
-  return LEFT_SEPARATOR .. left .. SPACE_BETWEEN .. right .. ' '
+  return string.format(
+    '%s%s%s%s ',
+    os.getenv('TMUX') and LEFT_SEPARATOR or ' ',
+    left,
+    SPACE_BETWEEN,
+    right --
+  )
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
