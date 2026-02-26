@@ -3,61 +3,7 @@ return {
     'b0o/incline.nvim',
     enabled = vim.g.incline,
     dependencies = { { 'nvim-mini/mini.icons', config = true } },
-    config = function()
-      -- set winbar to render empty line above first line of file
-      -- this is done mostly because of obsidian notes, which don't contain a top level H1 by default
-      vim.opt.winbar = ' '
-
-      local devicons = require('nvim-web-devicons')
-      require('incline').setup({
-        window = {
-          padding = 0,
-          margin = { horizontal = 0 },
-          placement = {
-            -- horizontal = is_notes and 'center' or 'right',
-            horizontal = 'center',
-            vertical = 'top',
-          },
-          overlap = {
-            winbar = true,
-          },
-        },
-        ignore = {
-          buftypes = {
-            -- '',
-            'acwrite',
-            -- -- 'help',
-            'nofile',
-            'nowrite',
-            'quickfix',
-            'terminal',
-            'prompt',
-          },
-          filetypes = {},
-          floating_wins = true,
-          unlisted_buffers = false,
-          wintypes = 'special',
-        },
-        render = function(props)
-          local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
-          if filename == '' then
-            filename = '[No Name]'
-          end
-          local ft_icon, ft_color = devicons.get_icon_color(filename)
-          local modified = vim.bo[props.buf].modified
-          return {
-            ft_icon and {
-              ' ',
-              ft_icon,
-              ' ',
-              guifg = ft_color,
-            } or '',
-            { filename, gui = modified and 'bold,italic' or 'bold' },
-            ' ',
-          }
-        end,
-      })
-    end,
+    config = require('config.plugin.incline').config,
     event = 'VeryLazy',
   },
 }
