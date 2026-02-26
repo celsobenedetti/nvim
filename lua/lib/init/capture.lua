@@ -1,3 +1,5 @@
+local initial_window = vim.api.nvim_get_current_win()
+
 vim.g.lazy_orgmode = false
 
 require('init')
@@ -8,21 +10,25 @@ require('lazy').setup({
     { import = 'modules.orgmode' },
     { import = 'modules.omarchy' },
     { 'folke/snacks.nvim', opts = { picker = {} } },
-    {
-      'b0o/incline.nvim',
-      dependencies = { { 'nvim-mini/mini.icons', config = true } },
-      config = require('config.plugin.incline').config,
-      event = 'VeryLazy',
-    },
+    -- BUG: nvim orgmode C-c
+    -- {
+    --   'b0o/incline.nvim',
+    --   dependencies = { { 'nvim-mini/mini.icons', config = true } },
+    --   config = require('config.plugin.incline').config,
+    -- },
   },
   performance = vim.g.lazy_nvim_config.performance,
 })
 
-local initial_window = vim.api.nvim_get_current_win()
 vim.api.nvim_create_autocmd('FileType', {
+  desc = 'close initial window when capture buffer shows',
   pattern = 'org',
   callback = function()
     pcall(vim.api.nvim_win_close, initial_window, true)
   end,
 })
+
 Org.capture.c()
+
+vim.opt.number = false
+vim.opt.laststatus = 0

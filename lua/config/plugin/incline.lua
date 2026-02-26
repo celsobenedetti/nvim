@@ -3,7 +3,6 @@ return {
     -- set winbar to render empty line above first line of file
     -- this is done mostly because of obsidian notes, which don't contain a top level H1 by default
     vim.opt.winbar = ' '
-
     local devicons = require('nvim-web-devicons')
     require('incline').setup({
       window = {
@@ -46,16 +45,10 @@ return {
           filename = 'capture'
         end
 
-        return {
-          ft_icon and {
-            ' ',
-            ft_icon,
-            ' ',
-            guifg = ft_color,
-          } or '',
-          { filename, gui = modified and 'bold,italic' or 'bold' },
-          ' ',
-        }
+        local icon = ft_icon and { ' ', ft_icon, ' ', guifg = ft_color } or ''
+        local file = { filename, gui = modified and 'bold,italic' or 'bold' }
+
+        return { icon, file, ' ' }
       end,
     })
   end,
