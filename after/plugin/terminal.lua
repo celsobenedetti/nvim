@@ -12,25 +12,6 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
--- Insert mode when entering terminal window
--- stylua: ignore start
-vim.api.nvim_create_autocmd('WinEnter', { pattern = 'term://*', group = augroup, callback = function() vim.cmd('norm i') end, })
--- stylua: ignore end
-
--- -- allow ":wqa" with terminal open
--- vim.api.nvim_create_autocmd('ExitPre', {
---   pattern = '*',
---   group = augroup,
---   callback = function(_)
---     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
---       if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' then
---         vim.api.nvim_buf_delete(buf, { force = true })
---       end
---     end
---   end,
--- })
---
-
 -- Returns true if buffer is terminal, and has no running command
 -- https://github.com/neovim/neovim/issues/31313
 -- https://github.com/ilan-schemoul/nvim-config/commit/4e27ebabe9d4e819007c770800bac4d5903b8a8d
