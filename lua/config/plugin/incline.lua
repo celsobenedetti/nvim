@@ -42,7 +42,23 @@ return {
         local ft_icon, ft_color = devicons.get_icon_color(filename)
         local modified = vim.bo[props.buf].modified
         if filename == '0.org' then
-          filename = 'capture'
+          ft_icon = ''
+          filename = 'note'
+
+          if vim.b.capture_buffer ~= nil then
+            local first_line_of_buffer = vim.api.nvim_buf_get_lines(vim.b.capture_buffer, 0, 1, false)[1]
+            if first_line_of_buffer then
+              if first_line_of_buffer:match('TODO') or first_line_of_buffer:match('NEXT') then
+                ft_icon = ''
+                filename = 'action'
+              end
+
+              if first_line_of_buffer:match('UPCOMING') then
+                ft_icon = ''
+                filename = 'event'
+              end
+            end
+          end
         end
 
         local icon = ft_icon and { ' ', ft_icon, ' ', guifg = ft_color } or ''
