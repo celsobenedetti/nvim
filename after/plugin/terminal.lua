@@ -12,6 +12,23 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
+-- BUG: there is something of with this implementation, where I get error messages some times.
+-- besides this, there are some times where I don't want to insert
+vim.g.insert_when_entering_terminal = true
+vim.api.nvim_create_autocmd('WinEnter', {
+  desc = 'terminal: insert mode when entering terminal window',
+  pattern = 'term://*',
+  group = augroup,
+  callback = function()
+    local is_valid_win = vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative == '' -- is not valid window
+    if not vim.g.insert_when_entering_terminal or not is_valid_win then
+      return
+    end
+
+    vim.cmd('startinsert')
+  end,
+})
+
 -- Returns true if buffer is terminal, and has no running command
 -- https://github.com/neovim/neovim/issues/31313
 -- https://github.com/ilan-schemoul/nvim-config/commit/4e27ebabe9d4e819007c770800bac4d5903b8a8d
