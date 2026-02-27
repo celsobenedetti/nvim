@@ -14,6 +14,16 @@ local lib = {
     local child_process = vim.api.nvim_get_proc_children(vim.fn.jobpid(channel))
     return vim.tbl_count(child_process) == 0
   end,
+
+  startinsert = function()
+    if
+      not vim.g.insert_when_entering_terminal
+      or not vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative == '' -- is not valid window
+    then
+      return
+    end
+    vim.cmd('startinsert')
+  end,
 }
 
 -- friendly term - upsert terminal in current window (resume if available, create new otherwise)
@@ -21,7 +31,7 @@ vim.keymap.set('n', '<leader>te', function()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' and lib.terminal_is_available(buf) then
       vim.api.nvim_set_current_buf(buf)
-      vim.cmd('norm i')
+      lib.startinsert()
       return
     end
   end
@@ -41,11 +51,6 @@ local function toggle_terminal()
   })
 
   if float_term_bufnr <= 0 then
-    vim.api.nvim_create_autocmd('TermOpen', {
-      pattern = '*',
-      command = 'startinsert',
-      once = true,
-    })
     vim.cmd([[sp | term]])
     vim.cmd([[setlocal bufhidden=hide]])
     float_term_bufnr = vim.api.nvim_get_current_buf()
@@ -65,29 +70,14 @@ vim.keymap.set('t', vim.g.mappings.tmux['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 
 
 -- Autocmds
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
--- Set local settings for terminal buffers
+
 vim.api.nvim_create_autocmd('TermOpen', {
   group = augroup,
   callback = function()
     vim.opt_local.number = true
     vim.opt_local.scrolloff = 0
     vim.bo.filetype = 'terminal'
-    vim.cmd('startinsert')
-  end,
-})
-
-vim.api.nvim_create_autocmd('BufWinEnter', {
-  desc = 'terminal: insert mode when entering terminal window',
-  pattern = 'term://*',
-  group = augroup,
-  callback = function()
-    if
-      not vim.g.insert_when_entering_terminal
-      or not vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative == '' -- is not valid window
-    then
-      return
-    end
-    vim.cmd('startinsert')
+    lib.startinsert()
   end,
 })
 
@@ -96,8 +86,14 @@ vim.api.nvim_create_autocmd('TabNew', {
   pattern = '*',
   callback = function()
     if vim.api.nvim_get_current_buf() == float_term_bufnr then
-      Snacks.notify.info('detaching toggle term')
+      Snacks.notify.info('Detached', { title = 'Toggle term', icon = '', style = 'fancy' })
       float_term_bufnr = 0
     end
   end,
 })
+
+
+-- stylua: ignore start
+-- insert mode when entering terminal window
+vim.api.nvim_create_autocmd('BufWinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.startinsert, })
+vim.api.nvim_create_autocmd( 'WinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.startinsert, })

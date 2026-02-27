@@ -38,6 +38,7 @@
   "monokai-pro.nvim": { "branch": "master", "commit": "5b06ae0736813b1c65d76a4be9edbe92be0b9c74" },
   "namu.nvim": { "branch": "main", "commit": "e7afbdf63a75ace6ccc6202d58a4f6f9ac09db92" },
   "neogen": { "branch": "main", "commit": "23e7e9f883d01289ebd90e98025acc860ea26366" },
+  "neoscroll.nvim": { "branch": "master", "commit": "c8d29979cb0cb3a2437a8e0ae683fd82f340d3b8" },
   "nightfox.nvim": { "branch": "main", "commit": "ba47d4b4c5ec308718641ba7402c143836f35aa9" },
   "nui.nvim": { "branch": "main", "commit": "de740991c12411b663994b2860f1a4fd0937c130" },
   "nvim-autopairs": { "branch": "master", "commit": "59bce2eef357189c3305e25bc6dd2d138c1683f5" },
