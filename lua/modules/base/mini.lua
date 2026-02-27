@@ -26,7 +26,6 @@ return {
             { '%u[%l%d]+%f[^%l%d]', '%f[%S][%l%d]+%f[^%l%d]', '%f[%P][%l%d]+%f[^%l%d]', '^[%l%d]+%f[^%l%d]' },
             '^().*()$',
           },
-          -- g = LazyVim.mini.ai_buffer, -- buffer
           u = ai.gen_spec.function_call(), -- u for "Usage"
           U = ai.gen_spec.function_call({ name_pattern = '[%w_]' }), -- without dot in function name
           ['%'] = function()
@@ -37,11 +36,22 @@ return {
             }
             return { from = from, to = to }
           end,
+          -- quotes
+          ['q'] = {
+            {
+              "%b''",
+              '%b""',
+              '%b``',
+              --orgmode
+              '%b~~',
+              '%b==',
+            },
+            '^.().*().$',
+          },
         },
       })
     end,
   },
-
   {
     'nvim-mini/mini.snippets',
     version = false,
