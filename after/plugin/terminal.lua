@@ -76,7 +76,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
-vim.api.nvim_create_autocmd('WinEnter', {
+vim.api.nvim_create_autocmd('BufWinEnter', {
   desc = 'terminal: insert mode when entering terminal window',
   pattern = 'term://*',
   group = augroup,
