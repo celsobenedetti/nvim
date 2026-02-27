@@ -90,6 +90,15 @@ local function toggle_terminal(close)
 
   vim.cmd('sp | b' .. terminal_bufnr .. ' | startinsert')
 end
+vim.api.nvim_create_autocmd('TabNew', {
+  desc = '"detach" toggle term when opening new tab',
+  pattern = '*',
+  callback = function()
+    if vim.api.nvim_get_current_buf() == terminal_bufnr then
+      terminal_bufnr = 0
+    end
+  end,
+})
 
 vim.keymap.set('n', vim.g.mappings.tmux['<C-/>'], function()
   return toggle_terminal()
