@@ -45,14 +45,14 @@ return {
           filename = 'note'
 
           if vim.b.capture_buffer ~= nil then
-            local first_line_of_buffer = vim.api.nvim_buf_get_lines(vim.b.capture_buffer, 0, 1, false)[1]
-            if first_line_of_buffer then
-              if first_line_of_buffer:match('TODO') or first_line_of_buffer:match('NEXT') then
+            local l = vim.api.nvim_buf_get_lines(vim.b.capture_buffer, 0, 1, false)[1]
+            if l then
+              if l:match('TODO') or l:match('NEXT') or l:match('PROG') then
                 ft_icon = ''
                 filename = 'action'
               end
 
-              if first_line_of_buffer:match('UPCOMING') then
+              if l:match('UPCOMING') then
                 ft_icon = ''
                 filename = 'event'
               end

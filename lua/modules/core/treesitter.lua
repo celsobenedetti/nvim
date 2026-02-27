@@ -2,9 +2,11 @@ vim.g.treesitter = {
   --- filetypes to highlight with treesitter
   highlight = {
     'gitcommit',
-    'go',
     'json',
     'markdown',
+
+    'go',
+    'python',
     'javascript',
     'jsx',
     'typescript',
