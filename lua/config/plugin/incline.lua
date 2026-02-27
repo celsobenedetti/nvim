@@ -25,7 +25,6 @@ return {
           'nofile',
           'nowrite',
           'quickfix',
-          'terminal',
           'prompt',
         },
         filetypes = {},
@@ -59,6 +58,11 @@ return {
               end
             end
           end
+        end
+
+        if filename == 'bash' then
+          ft_icon = ''
+          filename = 'term'
         end
 
         local icon = ft_icon and { ' ', ft_icon, ' ', guifg = ft_color } or ''
