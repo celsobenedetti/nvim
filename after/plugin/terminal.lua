@@ -25,6 +25,8 @@ local lib = {
     end
     vim.cmd('startinsert')
   end,
+
+  buffers = require('lib.buffers'),
 }
 
 -- friendly term - upsert terminal in current window (resume if available, create new otherwise)
@@ -91,20 +93,37 @@ vim.api.nvim_create_autocmd('BufDelete', {
     if vim.api.nvim_get_current_buf() == float_term_bufnr then
       float_term_bufnr = 0
     end
+
+    -- close nvim if terminal is the last valid buffer
+    local valid_bufs = lib.buffers.get_valid_bufs()
+    if #valid_bufs == 1 then
+      if #vim.api.nvim_buf_get_name(valid_bufs[1]) == 0 then
+        vim.schedule(function()
+          vim.cmd('qa')
+        end)
+      end
+    end
   end,
 })
 
 vim.api.nvim_create_autocmd('ExitPre', {
   callback = function()
+    local term_bufs = {}
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' then
+        table.insert(term_bufs, buf)
+      end
+    end
+    if #term_bufs == 0 then
+      return
+    end
+
     local busy_terms = {}
-    local bufs = vim.api.nvim_list_bufs()
-    for _, buf in ipairs(bufs) do
-      if 'terminal' == vim.api.nvim_buf_get_option(buf, 'buftype') then
-        if lib.terminal_is_available(buf) then
-          vim.api.nvim_buf_delete(buf, { force = true })
-        else
-          table.insert(busy_terms, buf)
-        end
+    for _, buf in ipairs(term_bufs) do
+      if lib.terminal_is_available(buf) then
+        vim.api.nvim_buf_delete(buf, { force = true })
+      else
+        table.insert(busy_terms, buf)
       end
     end
 
