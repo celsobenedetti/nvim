@@ -12,6 +12,11 @@ map('n', 'ga', function()
 
   -- file is not in git
   if hunks == nil then
+    if vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'nofile' then
+      Snacks.notify.warn('not a git file', { title = 'Git', icon = '', style = 'fancy' })
+      return
+    end
+
     vim.system({ 'git', 'add', file })
     Snacks.notify.info(string.format('Added: `%s`', file), { title = 'Git', icon = '', style = 'fancy' })
     return
