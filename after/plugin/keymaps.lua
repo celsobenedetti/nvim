@@ -17,9 +17,7 @@ map('n', '<C-c>', function()
   if should_write() then
     vim.cmd('silent w')
   end
-  if vim.bo.buftype ~= 'terminal' then
-    vim.cmd('q')
-  end
+  vim.cmd('q')
 end, { desc = 'C-c: write and quit' })
 
 -- lazy

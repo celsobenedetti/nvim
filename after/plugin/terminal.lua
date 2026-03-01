@@ -8,7 +8,8 @@ local lib = {
   terminal_is_available = function(buffer)
     local is_terminal = vim.bo[buffer].buftype == 'terminal'
     if not is_terminal then
-      return false
+      Snacks.notify.error('terminal_is_available called on non terminal buffer')
+      return true
     end
     local channel = vim.bo[buffer].channel
     local child_process = vim.api.nvim_get_proc_children(vim.fn.jobpid(channel))
@@ -43,13 +44,6 @@ end, {
 
 -- taken from: https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
-  vim.api.nvim_create_autocmd('BufDelete', {
-    pattern = '<buffer>',
-    callback = function()
-      float_term_bufnr = 0
-    end,
-  })
-
   if float_term_bufnr <= 0 then
     vim.cmd([[sp | term]])
     vim.cmd([[setlocal bufhidden=hide]])
@@ -70,14 +64,13 @@ vim.keymap.set('t', vim.g.mappings.tmux['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 
 
 -- Autocmds
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
-
 vim.api.nvim_create_autocmd('TermOpen', {
   group = augroup,
   callback = function()
     vim.opt_local.number = true
     vim.opt_local.scrolloff = 0
     vim.bo.filetype = 'terminal'
-    lib.startinsert()
+    vim.schedule(lib.startinsert)
   end,
 })
 
@@ -91,6 +84,43 @@ vim.api.nvim_create_autocmd('TabNew', {
     end
   end,
 })
+
+vim.api.nvim_create_autocmd('BufDelete', {
+  pattern = 'term://*',
+  callback = function()
+    if vim.api.nvim_get_current_buf() == float_term_bufnr then
+      float_term_bufnr = 0
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd('ExitPre', {
+  callback = function()
+    local busy_terms = {}
+    local bufs = vim.api.nvim_list_bufs()
+    for _, buf in ipairs(bufs) do
+      if 'terminal' == vim.api.nvim_buf_get_option(buf, 'buftype') then
+        if lib.terminal_is_available(buf) then
+          vim.api.nvim_buf_delete(buf, { force = true })
+        else
+          table.insert(busy_terms, buf)
+        end
+      end
+    end
+
+    if #busy_terms > 0 then
+      local msg = string.format(
+        'there %s %d busy terminal%s',
+        #busy_terms > 1 and 'are' or 'is',
+        #busy_terms,
+        #busy_terms > 1 and 's' or ''
+      )
+      Snacks.notify.warn(msg, { title = 'Running commands', icon = '', style = 'fancy' })
+      vim.cmd.buffer(busy_terms[1])
+    end
+  end,
+})
+
 
 
 -- stylua: ignore start

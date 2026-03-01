@@ -1,10 +1,13 @@
+local wqa = 'silent! wqa'
+
 local abbreviations = {
   W = 'w',
   Wa = 'wa',
   WA = 'wa',
   Wq = 'wq',
   WQ = 'wq',
-  Wqa = 'wqa',
+  Wqa = wqa,
+  wqa = wqa,
   Q = 'q',
   Qa = 'qa',
   Bd = 'bd',
