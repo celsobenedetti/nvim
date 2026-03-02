@@ -4,6 +4,7 @@ map('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
 map('n', 'gC', function() vim.cmd('Git commit') end, { desc = 'git: Git commit' })
 map('n', 'gA', function() vim.cmd('Git add -p') end, { desc = 'git: Git add -p`', })
 map('n', 'gR', function() vim.cmd("Git restore -p") end, { desc = 'git: Git restore -p' })
+map('n', '<leader>gd', function() vim.cmd("CodeDiff") end, { desc = 'git: (codediff) git diff' })
 -- stylua: ignore end
 
 map('n', 'ga', function()

@@ -196,7 +196,6 @@ return {
     { '<leader>sR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'snacks: Recent (cwd)', },
     { '<leader>fp', function() Snacks.picker.projects() end, desc = 'snacks: Projects', },
     -- -- git
-    { '<leader>gd', function() Snacks.picker.git_diff() end, desc = 'snacks: Git Diff (hunks)', },
     { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
     { '<leader>gS', function() Snacks.picker.git_stash({layout="ivy_split"}) end, desc = 'snacks: Git Stash', },
     -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'snacks: GitHub Issues (open)', },
