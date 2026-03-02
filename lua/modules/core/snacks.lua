@@ -180,7 +180,7 @@ return {
 
     { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
     { '<leader>fe', function()Snacks.explorer()end, desc = 'snacks: explorer (fe)', },
-    { '<leader>sc', function() Snacks.picker.commands() end, desc = 'snacks: Commands', },
+    { '<leader>sc', function() Snacks.picker.commands({layout ="select"}) end, desc = 'snacks: Commands', },
     { '<leader>sC', function() Snacks.picker.command_history({layout="select" }) end, desc = 'snacks: Command History', },
     { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'snacks: snacks: References', },
 
@@ -242,7 +242,7 @@ return {
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
     end, { desc = 'snacks: Git Browse (copy)', mode = { 'n', 'x' } }, },
 
-    { '<leader>sH', function() Snacks.picker.highlights({layout = { preview = 'main', layout = { box = 'vertical', backdrop = false, width = 0, height = 0.7, position = 'bottom', border = 'top', title = ' {title} {live} {flags}', title_pos = 'left', { win = 'input', height = 1, border = 'bottom' }, { box = 'horizontal', { win = 'list', border = 'none' }, { win = 'preview', title = '{preview}', width = 0.6, border = 'left' }, }, }, }}) end, desc = 'snacks: Highlights', },
+    { '<leader>sH', function() Snacks.picker.highlights({layout = 'select'}) end, desc = 'snacks: Highlights', },
     -- stylua: ignore end
   },
 }
