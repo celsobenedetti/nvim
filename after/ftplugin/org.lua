@@ -8,7 +8,7 @@ vim.api.nvim_buf_set_keymap(0, 'n', '<leader>j', '<Cmd>lua require("orgmode").ac
 vim.api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("orgmode").action("org_mappings.todo_next_state")<CR>',
   { desc = 'org: change todo state' }
 )
-vim.api.nvim_buf_set_keymap(0, 'n', 're', ':lua require("telescope").extensions.orgmode.refile_heading()',
+vim.api.nvim_buf_set_keymap(0, 'n', 're', ':lua require("telescope").extensions.orgmode.refile_heading()<CR>',
   { desc = 'org: refile' }
 )
 

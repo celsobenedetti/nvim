@@ -69,6 +69,18 @@ local agenda_views = {
       },
     },
   },
+  t = {
+    description = 'todo',
+    types = {
+      {
+        type = 'tags_todo',
+
+        match = '-TODO="DONE"',
+        org_agenda_sorting_strategy = { 'todo-state-down' },
+        org_agenda_overriding_header = 'In Progress',
+      },
+    },
+  },
   p = {
     description = 'purchases',
     types = { { type = 'tags_todo', match = 'buy', org_agenda_sorting_strategy = { 'time-up' } } },
@@ -246,6 +258,7 @@ return {
       Events.listen(Events.event.ClockedIn, function(ev)
         ev.headline:set_todo('PROG')
       end)
+
       -- Events.listen(Events.event.TodoChanged, function(ev)
       --   -- Snacks.notify.info(vim.inspect(ev.headline:get_properties()))
       -- end)

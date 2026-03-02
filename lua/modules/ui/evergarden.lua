@@ -22,11 +22,14 @@ return {
         },
       }
 
-      local overrides_dark = {
-        ['Title'] = { link = 'Special' },
+      local global_overrides = {
         ['@keyword'] = config.highlights.keyword,
         ['@constant'] = { fg = c.white },
         ['@annotation'] = { c.white, style = { 'bold' } },
+        ['Title'] = { link = 'Special' },
+      }
+
+      local overrides_dark = vim.tbl_extend('force', global_overrides, {
         ['@attribute'] = { c.orange },
         ['@markup.italic'] = { c.lime, style = { 'italic' } },
         ['@markup.link.label.markdown_inline'] = { c.skye, style = { 'bold' } },
@@ -34,14 +37,14 @@ return {
         -- ['typescriptVariable'] = { c.orange },
         -- SpellBad = { style = { 'italic', 'underdotted' } },
         -- TabLineSel = { bg = c.inactivegray },
-      }
+      })
 
-      local overrides_light = {
+      local overrides_light = vim.tbl_extend('force', global_overrides, {
         ['WinSeparator'] = { fg = c.summer.surface2 },
         ['@keyword'] = { fg = c.summer.red, style = { 'nocombine' } },
         ['@constant'] = { fg = c.summer.text },
         ['@annotation'] = { c.summer.snow },
-      }
+      })
 
       local overrides = light and overrides_light or overrides_dark
 

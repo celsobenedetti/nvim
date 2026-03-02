@@ -68,6 +68,24 @@ map('n', 'gy', function()
   })
 end, { desc = 'Copy file path to clipboard' })
 
+map('v', 'gy', function()
+  local file = vim.fn.expand('%:.')
+  file = file:gsub(' ', '\\ ')
+  local start_line = vim.fn.line('v')
+  local end_line = vim.fn.line('.')
+  if start_line > end_line then
+    start_line, end_line = end_line, start_line
+  end
+  local text = string.format('%s:%d:%d', file, start_line, end_line)
+  vim.fn.setreg('+', text)
+  Snacks.notify.info(string.format('Yanked:\n- `%s`', text), {
+    title = 'Clipboard',
+    icon = '',
+    style = 'fancy',
+  })
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+end, { desc = 'Copy file path:line:line to clipboard' })
+
 map({ 'n', 'x', 'v' }, '<leader>sw', function()
   Snacks.picker.grep_word({ layout = 'ivy_split' })
 end, { desc = 'Visual selection or word (Root Dir)' })
