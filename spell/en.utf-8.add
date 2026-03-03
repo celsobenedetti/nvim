@@ -368,8 +368,8 @@ timeframe
 timeseries
 timestamp
 tmux
-to
-to/!
+#o
+#o/!
 todo
 treesitter
 tweak
@@ -415,3 +415,6 @@ const/!
 vim
 session/!
 NEXT/!
+es
+to/!
+Also/!

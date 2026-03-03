@@ -1,3 +1,7 @@
+local lib = {
+  org = require('lib.orgmode'),
+}
+
 local function should_write()
   return vim.bo.buftype ~= 'nofile'
     and vim.bo.buftype ~= 'nowrite'
@@ -106,3 +110,5 @@ vim.keymap.set('n', '<leader>ow', ':e' .. vim.g.env.org.WORK .. '<cr>', { desc =
 vim.keymap.set('n', 'ZZ', function()
   Snacks.notify.warn("Please don't use ZZ")
 end, { silent = true, desc = 'Disable ZZ' })
+
+vim.keymap.set('n', 'gn', lib.org.goto_current_task, { desc = 'org: goto current task' })

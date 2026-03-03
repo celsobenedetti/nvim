@@ -12,6 +12,7 @@ vim.g.treesitter = {
     'typescript',
     'tsx',
     'vue',
+    'yaml',
 
     --- these look better without treesitter
     -- 'hmtl',
