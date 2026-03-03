@@ -36,4 +36,9 @@ M.lint = {
   },
 }
 
+M.setup = function(overseer)
+  overseer.register_template(M.test)
+  overseer.register_template(M.lint)
+end
+
 return M
