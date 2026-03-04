@@ -2,6 +2,8 @@ vim.g.insert_when_entering_terminal = true
 local float_term_bufnr = 0
 
 local lib = {
+  buffers = require('lib.buffers'),
+
   -- Returns true if buffer is terminal, and has no running command
   -- https://github.com/neovim/neovim/issues/31313
   -- https://github.com/ilan-schemoul/nvim-config/commit/4e27ebabe9d4e819007c770800bac4d5903b8a8d
@@ -25,8 +27,6 @@ local lib = {
     end
     vim.cmd('startinsert')
   end,
-
-  buffers = require('lib.buffers'),
 }
 
 -- friendly term - upsert terminal in current window (resume if available, create new otherwise)
@@ -76,6 +76,19 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
+vim.api.nvim_create_autocmd('TermClose', {
+  desc = 'term: reset toggle term when closing term',
+  callback = function()
+    local bufs = lib.buffers.get_valid_bufs()
+    for _, buf in ipairs(bufs) do
+      if buf == float_term_bufnr then
+        return
+      end
+    end
+    float_term_bufnr = 0
+  end,
+  group = augroup,
+})
 vim.api.nvim_create_autocmd('TabNew', {
   desc = '"detach" toggle term when opening new tab',
   pattern = '*',
