@@ -1,22 +1,20 @@
 local function walk_in_codediff(picker, item)
   picker:close()
-  if item.commit then
-    local current_commit = item.commit
-
-    vim.fn.setreg('+', current_commit)
-    vim.notify('Copied: ' .. current_commit)
-    -- get parent / previous commit
-    local parent_commit = vim.trim(vim.fn.system('git rev-parse --short ' .. current_commit .. '^'))
-    parent_commit = parent_commit:match('[a-f0-9]+')
-    -- Check if command failed (e.g., Initial commit has no parent)
-    if vim.v.shell_error ~= 0 then
-      vim.notify('Cannot find parent (Root commit?)', vim.log.levels.WARN)
-      parent_commit = ''
-    end
-    local cmd = string.format('CodeDiff %s %s', parent_commit, current_commit)
-    vim.notify('Diffing: ' .. parent_commit .. ' -> ' .. current_commit)
-    vim.cmd(cmd)
+  if not item.commit then
+    return
   end
+  vim.fn.setreg('+', item.commit) -- copy sha to clipboard
+
+  local get_parent_commit = { 'git', 'rev-parse', '--short', item.commit .. '^' }
+  local result = vim.system(get_parent_commit):wait()
+  if result.code ~= 0 then
+    vim.notify('Cannot find parent (Root commit?)', vim.log.levels.WARN)
+    return
+  end
+
+  local parent = vim.trim(result.stdout):match('[a-f0-9]+')
+  Snacks.notify.info('git show ' .. item.commit, { title = 'Git', icon = '', style = 'fancy' })
+  vim.cmd(string.format('CodeDiff %s %s', parent, item.commit))
 end
 
 local function git_pickaxe(opts)
@@ -102,13 +100,13 @@ return {
 
     keys = {
       -- stylua: ignore start
+      { '<leader>gl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
+      { '<leader>gf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
+      { '<leader>gL', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
+      { '<leader>gF', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
+      { '<leader>gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
       { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'pickaxe: Git Search (Buffer)', },
       { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
-      { '<leader>sgf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
-      { '<leader>sgl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
-      { '<leader>gl', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
-      { '<leader>gf', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
-      { '<leader>gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
       -- stylua: ignore end
     },
     config = function()
