@@ -16,6 +16,9 @@ local abbreviations = {
   Tabnew = 'tabnew',
   Set = 'set',
   git = 'Git',
+  diff = 'CodeDiff',
+  codediff = 'CodeDiff',
+  Codediff = 'CodeDiff',
 }
 
 for left, right in pairs(abbreviations) do

@@ -15,6 +15,7 @@ local function walk_in_codediff(picker, item)
   local parent = vim.trim(result.stdout):match('[a-f0-9]+')
   Snacks.notify.info('git show ' .. item.commit, { title = 'Git', icon = '', style = 'fancy' })
   vim.cmd(string.format('CodeDiff %s %s', parent, item.commit))
+  vim.g.tabname = vim.g.icons.git.commit .. item.commit
 end
 
 local function git_pickaxe(opts)

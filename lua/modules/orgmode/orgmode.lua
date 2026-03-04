@@ -271,6 +271,7 @@ return {
         vim.schedule(set_highlights)
       end
       vim.schedule(set_keymaps)
+      vim.api.nvim_set_hl(0, '@org.headline.level1.org', { link = 'Special' })
     end,
   },
   {

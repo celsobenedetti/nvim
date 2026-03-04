@@ -25,6 +25,8 @@ vim.g.icons = {
     branch = ' ',
     ahead = '',
     behind = '',
+    git = ' ',
+    commit = ' ',
   },
   diagnostics = {
     error = ' ',

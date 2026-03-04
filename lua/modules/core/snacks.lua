@@ -228,7 +228,7 @@ return {
     { 'z=', function() Snacks.picker.spelling () end, desc = 'snacks: picker: spelling', },
 
 
-    { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'snacks: Lazygit (Root Dir)', },
+    -- { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'snacks: Lazygit (Root Dir)', },
     { '<leader>gG', function() Snacks.lazygit() end, desc = 'snacks: Lazygit (cwd)', },
     -- lsp
     { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'snacks: Next Reference', },

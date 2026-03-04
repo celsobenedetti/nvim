@@ -1,7 +1,7 @@
 return {
   work = {
-    edge_server = vim.g.env.WORK .. '/integrations-private',
-    airflow_pipeline = vim.g.env.WORK .. '/gva-etl-airflow-dags-pipeline',
+    edge_server = os.getenv('EDGE_SERVER') or '',
+    airflow_pipeline = os.getenv('AIRFLOW_PIPELINE') or '',
   },
   dont_format = {
     '.local/share/nvim/lazy', -- ~/.local/share/nvim/lazy

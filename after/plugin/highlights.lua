@@ -66,5 +66,6 @@ vim.api.nvim_set_hl(0, 'FloatTitle', { bg = 'none', fg = colors.get_color('Float
 
 -- necessary since "laststatus=3", and "laststatus=0" render statuslien between panes
 -- vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none', fg = colors.get_color('StatusLine', 'fg') })
+vim.api.nvim_set_hl(0, 'WinSeparator', { bg = 'none', fg = colors.get_color('WinSeparator', 'fg') })
 vim.api.nvim_set_hl(0, 'StatusLine', { link = 'WinSeparator' })
 vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none', fg = colors.get_color('StatusLineNC', 'fg') })
