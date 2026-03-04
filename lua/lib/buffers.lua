@@ -6,7 +6,7 @@ M.get_valid_bufs = function()
   for _, buf in ipairs(bufs) do
     if
       vim.api.nvim_get_option_value('buftype', { buf = buf }) ~= 'nofile'
-      and vim.api.nvim_get_option_value('buftype', { buf = buf }) ~= 'terminal'
+      -- and vim.api.nvim_get_option_value('buftype', { buf = buf }) ~= 'terminal'
     then
       table.insert(valid_bufs, buf)
     end

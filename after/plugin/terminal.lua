@@ -29,20 +29,22 @@ local lib = {
   end,
 }
 
--- friendly term - upsert terminal in current window (resume if available, create new otherwise)
-vim.keymap.set('n', '<leader>te', function()
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' and lib.terminal_is_available(buf) then
-      vim.api.nvim_set_current_buf(buf)
-      lib.startinsert()
-      return
+-- friendly term - upsert terminal in current window
+vim.keymap.set(
+  'n',
+  '<leader>te',
+  function()
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' and lib.terminal_is_available(buf) then
+        vim.api.nvim_set_current_buf(buf)
+        lib.startinsert()
+        return
+      end
     end
-  end
-  -- no terminal available, create a new one
-  vim.cmd.term()
-end, {
-  desc = 'terminal: friendly term - upsert terminal in current window (resume if available, create new otherwise)',
-})
+    vim.cmd.term()
+  end,
+  { desc = 'terminal: friendly term - upsert terminal in current window (resume if available, create new otherwise)' }
+)
 
 -- taken from: https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
@@ -67,6 +69,7 @@ vim.keymap.set('t', vim.g.mappings.tmux['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 
 -- Autocmds
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
 vim.api.nvim_create_autocmd('TermOpen', {
+  desc = 'term: setup new terminal',
   group = augroup,
   callback = function()
     vim.opt_local.number = true
@@ -89,8 +92,9 @@ vim.api.nvim_create_autocmd('TermClose', {
   end,
   group = augroup,
 })
+
 vim.api.nvim_create_autocmd('TabNew', {
-  desc = '"detach" toggle term when opening new tab',
+  desc = 'term: detach toggle term when sending it to new tab',
   pattern = '*',
   callback = function()
     if vim.api.nvim_get_current_buf() == float_term_bufnr then
@@ -100,26 +104,8 @@ vim.api.nvim_create_autocmd('TabNew', {
   end,
 })
 
-vim.api.nvim_create_autocmd('BufDelete', {
-  pattern = 'term://*',
-  callback = function()
-    if vim.api.nvim_get_current_buf() == float_term_bufnr then
-      float_term_bufnr = 0
-    end
-
-    -- close nvim if terminal is the last valid buffer
-    local valid_bufs = lib.buffers.get_valid_bufs()
-    if #valid_bufs == 1 then
-      if #vim.api.nvim_buf_get_name(valid_bufs[1]) == 0 then
-        vim.schedule(function()
-          vim.cmd('qa')
-        end)
-      end
-    end
-  end,
-})
-
 vim.api.nvim_create_autocmd('ExitPre', {
+  desc = 'term: cleanup idle terminal when exiting neovim',
   callback = function()
     local term_bufs = {}
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -152,7 +138,6 @@ vim.api.nvim_create_autocmd('ExitPre', {
     end
   end,
 })
-
 
 
 -- stylua: ignore start
