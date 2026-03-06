@@ -102,6 +102,7 @@ return {
     keys = {
       -- stylua: ignore start
       { '<leader>gl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
+      { '<leader>sc', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'git: search commit', },
       { '<leader>gf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
       { '<leader>gL', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
       { '<leader>gF', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },

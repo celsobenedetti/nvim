@@ -168,6 +168,20 @@ return {
   {
     'nvim-orgmode/orgmode',
     -- event = "VeryLazy",
+    dependencies = {
+      {
+        dir = '~/projects/nvim-orgmode-jira/',
+        dependencies = {
+          'nvim-orgmode/orgmode',
+        },
+        lazy = true,
+        -- opts = {
+        --   base_url = os.getenv('WORK_JIRA_BASE_URL'),
+        --   email = os.getenv('WORK_EMAIL'),
+        --   api_token = os.getenv('JIRA_API_TOKEN'),
+        -- },
+      },
+    },
     lazy = vim.g.lazy_orgmode == nil and true or vim.g.lazy_orgmode,
     cmd = { 'Org' },
     ft = { 'org', 'markdown' },
@@ -254,6 +268,12 @@ return {
         },
       })
 
+      require('orgmode-jira').setup({
+        base_url = os.getenv('WORK_JIRA_BASE_URL'),
+        email = os.getenv('WORK_EMAIL'),
+        api_token = os.getenv('JIRA_API_TOKEN'),
+      })
+
       local Events = require('orgmode.events')
       Events.listen(Events.event.ClockedIn, function(ev)
         ev.headline:set_todo('PROG')
@@ -264,7 +284,7 @@ return {
       -- end)
 
       -- Events.listen(Events.event.NoteAdded, function(ev)
-      --   -- Snacks.notify.info(vim.inspect(ev.note))
+      --   Snacks.notify.info(vim.inspect(ev.note))
       -- end)
 
       if vim.tbl_contains(colorschemes_to_highlight, require('lib.colors').omarchy_colorscheme().colorscheme) then

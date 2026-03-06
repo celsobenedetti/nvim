@@ -54,5 +54,6 @@ map('n', '<leader>gs', function()
     end
   end
 
+  vim.g.tabname = ' git status'
   vim.cmd('CodeDiff')
 end, { desc = 'git: (codediff) git status' })

@@ -27,6 +27,7 @@ vim.g.icons = {
     behind = '',
     git = ' ',
     commit = ' ',
+    diff = ' ',
   },
   diagnostics = {
     error = ' ',

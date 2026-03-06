@@ -180,7 +180,7 @@ return {
 
     { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
     { '<leader>fe', function()Snacks.explorer()end, desc = 'snacks: explorer (fe)', },
-    { '<leader>sc', function() Snacks.picker.commands({layout ="select"}) end, desc = 'snacks: Commands', },
+    { '<leader>co', function() Snacks.picker.commands({layout ="select"}) end, desc = 'snacks: Commands', },
     { '<leader>sC', function() Snacks.picker.command_history({layout="select" }) end, desc = 'snacks: Command History', },
     { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'snacks: snacks: References', },
 

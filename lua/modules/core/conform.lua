@@ -10,7 +10,7 @@ return {
     {
       '<leader>cF',
       function()
-        require('conform').format({ formatters = { 'injected' }, timeout_ms = 3000 })
+        require('conform').format({ timeout_ms = 3000 })
       end,
       mode = { 'n', 'x' },
       desc = 'Format Injected Langs',
@@ -56,7 +56,7 @@ return {
         sh = { 'shfmt' },
         typescript = fmt_js,
         typescriptreact = fmt_js,
-        python = { 'black' },
+        python = {},
         vue = fmt_js,
       },
       formatters = {
