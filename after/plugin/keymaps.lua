@@ -111,4 +111,4 @@ vim.keymap.set('n', 'ZZ', function()
   Snacks.notify.warn("Please don't use ZZ")
 end, { silent = true, desc = 'Disable ZZ' })
 
-vim.keymap.set('n', 'gn', lib.org.goto_current_task, { desc = 'org: goto current task' })
+vim.keymap.set('n', '<leader>gn', lib.org.goto_current_task, { desc = 'org: goto current task' })

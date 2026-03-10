@@ -44,7 +44,8 @@ vim.g.icons = {
   },
 }
 
-vim.g.mappings = {
+vim.g.key = {
+  ['<C-S-g>'] = '',
   tmux = {
     ['<C-/>'] = '<C-_>',
   },

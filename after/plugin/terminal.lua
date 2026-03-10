@@ -63,8 +63,8 @@ local function toggle_terminal()
   vim.cmd('sp | b' .. float_term_bufnr)
 end
 
-vim.keymap.set('n', vim.g.mappings.tmux['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
-vim.keymap.set('t', vim.g.mappings.tmux['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 'Close terminal' })
+vim.keymap.set('n', vim.g.key.tmux['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
+vim.keymap.set('t', vim.g.key.tmux['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 'Close terminal' })
 
 -- Autocmds
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
