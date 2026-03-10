@@ -8,10 +8,8 @@ vim.keymap.set('n', vim.g.key.ghostty['<C-S-N>'], function()
         'rg',
         '--no-heading',
         '--line-number',
-        -- '-g',
-        -- '!' .. vim.g.env.notes.ASSETS_DIR .. '/*',
         '-v',
-        vim.g.env.notes.GREP_IGNORE, -- No quotes needed here!
+        string.format('"%s"', vim.g.env.notes.GREP_IGNORE), -- quotes are indeed needed here for complex regex
         vim.g.env.notes.NOTES,
       },
     })
