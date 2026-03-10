@@ -44,6 +44,8 @@ vim.g.icons = {
   },
 }
 
+vim.g.notes_tabname = vim.g.icons.notes .. 'notes'
+
 vim.g.key = {
   ['<C-S-g>'] = '',
   tmux = {

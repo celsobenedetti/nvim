@@ -1,7 +1,5 @@
 local M = {}
 
-local TAB_NAME = 'notes'
-
 --- @param fn function? to be called after tab is created or focus
 M.focus_or_create_notes_tab = function(fn)
   local tab_id = -1
@@ -9,7 +7,7 @@ M.focus_or_create_notes_tab = function(fn)
   if has_tabby then
     local tabs = vim.api.nvim_list_tabpages()
     for _, tab in ipairs(tabs) do
-      if tab_name.get(tab):find(TAB_NAME) then
+      if tab_name.get(tab):find(vim.g.notes_tabname) then
         tab_id = tab
       end
     end
@@ -17,7 +15,7 @@ M.focus_or_create_notes_tab = function(fn)
 
   if tab_id == -1 then
     vim.cmd('tabnew')
-    vim.g.fn.rename_tab(vim.g.icons.notes .. TAB_NAME)
+    vim.g.fn.rename_tab(vim.g.notes_tabname)
     vim.cmd('lcd ' .. vim.g.env.notes.NOTES)
   else
     vim.api.nvim_set_current_win(vim.api.nvim_tabpage_get_win(tab_id))

@@ -7,6 +7,11 @@ vim.g.neovide_padding_bottom = 0
 vim.g.neovide_padding_right = 0
 vim.g.neovide_padding_left = 5
 
+local g_keys = vim.g.key
+g_keys.ghostty['<C-S-N>'] = '<S-Down>'
+g_keys.tmux['<C-/>'] = '<C-/>'
+vim.g.key = g_keys
+
 map('n', '<C-S-O>', function()
   vim.cmd('Namu symbols')
 end, { desc = 'LSP Symbols' })
@@ -38,3 +43,5 @@ local function close_all_buffers()
 end
 
 map({ 'n' }, 'ZQ', close_all_buffers, { desc = 'Terminal (Root Dir)' })
+
+vim.cmd.cd(vim.g.env.notes.NOTES)
