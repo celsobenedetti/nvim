@@ -171,15 +171,7 @@ return {
     dependencies = {
       {
         dir = '~/projects/nvim-orgmode-jira/',
-        dependencies = {
-          'nvim-orgmode/orgmode',
-        },
         lazy = true,
-        -- opts = {
-        --   base_url = os.getenv('WORK_JIRA_BASE_URL'),
-        --   email = os.getenv('WORK_EMAIL'),
-        --   api_token = os.getenv('JIRA_API_TOKEN'),
-        -- },
       },
     },
     lazy = vim.g.lazy_orgmode == nil and true or vim.g.lazy_orgmode,

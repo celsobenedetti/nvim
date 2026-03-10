@@ -6,5 +6,4 @@ vim.api.nvim_buf_set_keymap(
   { desc = 'gitcommit: cancel commit' }
 )
 
--- Insert mode when entering git commit
-vim.api.nvim_feedkeys(Keys('i<BS>'), 'n', true)
+vim.cmd('startinsert')
