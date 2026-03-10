@@ -286,12 +286,6 @@ return {
       vim.api.nvim_set_hl(0, '@org.headline.level1.org', { link = 'Special' })
     end,
   },
-  {
-    'akinsho/org-bullets.nvim',
-    config = function()
-      require('org-bullets').setup()
-    end,
-  },
 
   {
     'nvim-orgmode/telescope-orgmode.nvim',
