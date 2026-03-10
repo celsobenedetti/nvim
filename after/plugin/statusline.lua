@@ -268,6 +268,10 @@ local function _build_section(segments, direction)
 end
 
 function _G.MyStatusLine()
+  if vim.g.zen_mode then
+    return ''
+  end
+
   local branch = modules._git_branch()
   local branch_sync_status = modules._branch_sync_status()
   local file = vim.b.cached_file or modules._file()
