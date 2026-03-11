@@ -2,15 +2,30 @@ if not vim.g.neovide then
   return
 end
 
+vim.api.nvim_set_keymap(
+  'n',
+  '<C-=>',
+  ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>',
+  { silent = true }
+)
+vim.api.nvim_set_keymap(
+  'n',
+  '<C-->',
+  ':lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>',
+  { silent = true }
+)
+vim.api.nvim_set_keymap('n', '<C-0>', ':lua vim.g.neovide_scale_factor = 1<CR>', { silent = true })
+
 vim.g.neovide_padding_top = 1
 vim.g.neovide_padding_bottom = 0
 vim.g.neovide_padding_right = 0
 vim.g.neovide_padding_left = 5
 
-local g_keys = vim.g.key
-g_keys.ghostty['<C-S-N>'] = '<S-Down>'
-g_keys.tmux['<C-/>'] = '<C-/>'
-vim.g.key = g_keys
+local keys = vim.g.key
+keys.ghostty['<C-S-N>'] = '<S-Down>'
+keys.tmux['<C-/>'] = '<C-/>'
+keys['<C-S-g>'] = '<C-S-G>'
+vim.g.key = keys
 
 map('n', '<C-S-O>', function()
   vim.cmd('Namu symbols')

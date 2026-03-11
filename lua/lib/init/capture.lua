@@ -1,5 +1,3 @@
-local initial_window = vim.api.nvim_get_current_win()
-
 vim.g.lazy_orgmode = false
 
 require('init')
@@ -20,6 +18,7 @@ require('lazy').setup({
   performance = vim.g.lazy_nvim_config.performance,
 })
 
+local initial_window = vim.api.nvim_get_current_win()
 vim.api.nvim_create_autocmd('FileType', {
   desc = 'close initial window when capture buffer shows',
   pattern = 'org',
