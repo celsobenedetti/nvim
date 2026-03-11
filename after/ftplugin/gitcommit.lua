@@ -6,4 +6,6 @@ vim.api.nvim_buf_set_keymap(
   { desc = 'gitcommit: cancel commit' }
 )
 
-vim.cmd('startinsert')
+vim.schedule(function()
+  vim.cmd('startinsert')
+end)

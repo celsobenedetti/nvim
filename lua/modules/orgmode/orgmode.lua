@@ -269,15 +269,20 @@ return {
       local Events = require('orgmode.events')
       Events.listen(Events.event.ClockedIn, function(ev)
         ev.headline:set_todo('PROG')
+        vim.schedule(function()
+          local file = io.open('/tmp/org_current_task', 'w')
+          if file then
+            file:write(ev.headline:get_title())
+            file:close()
+          end
+        end)
       end)
 
-      -- Events.listen(Events.event.TodoChanged, function(ev)
-      --   -- Snacks.notify.info(vim.inspect(ev.headline:get_properties()))
-      -- end)
-
-      -- Events.listen(Events.event.NoteAdded, function(ev)
-      --   Snacks.notify.info(vim.inspect(ev.note))
-      -- end)
+      Events.listen(Events.event.ClockedOut, function(ev)
+        vim.schedule(function()
+          os.remove('/tmp/org_current_task')
+        end)
+      end)
 
       if vim.tbl_contains(colorschemes_to_highlight, require('lib.colors').omarchy_colorscheme().colorscheme) then
         vim.schedule(set_highlights)
