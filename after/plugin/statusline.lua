@@ -149,6 +149,27 @@ local modules = {
     return os.date('%H:%M')
   end,
 
+  _org_current_task = function()
+    if not vim.g.org_current_task or #vim.g.org_current_task == 0 then
+      local file = io.open('/tmp/org_current_task', 'r')
+      if file then
+        local content = file:read('*a')
+        file:close()
+        if content and #content > 0 then
+          vim.g.org_current_task = content
+        end
+      else
+        return ''
+      end
+    end
+
+    local current_task = (vim.g.org_current_task or '')
+    if #current_task > 22 then
+      current_task = strings.trim(current_task:sub(1, 22)) .. '...'
+    end
+    return hl(vim.g.hl.text.secondary, vim.g.icons.clock .. current_task)
+  end,
+
   _search_results = function()
     if vim.v.hlsearch == 1 then
       local sinfo = vim.fn.searchcount({ maxcount = 0 })
@@ -243,6 +264,7 @@ local function setup_caching_and_updating()
       MINUTE,
       vim.schedule_wrap(function()
         vim.g.time = modules._time()
+        vim.g.org_current_task = nil
       end)
     )
   end
@@ -284,9 +306,10 @@ function _G.MyStatusLine()
   local location = modules._location()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
   local search_results = modules._search_results()
+  local org_current_task = modules._org_current_task()
 
   local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics, search_results }, 'left')
-  local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
+  local right = _build_section({ org_current_task, macro, terminal, location, formatters, lsp, time }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
   return string.format(

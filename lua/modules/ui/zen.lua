@@ -1,3 +1,8 @@
+local function is_tmux()
+  local tmux = os.getenv('TMUX')
+  return tmux and tmux ~= ''
+end
+
 return {
 
   'folke/snacks.nvim',
@@ -39,13 +44,19 @@ return {
       on_open = function()
         require('twilight').enable()
         vim.g.zen_mode = true
-        vim.system({ 'tmux', 'set', 'status', 'off' }):wait()
+
         vim.cmd('norm zt')
+
+        if is_tmux() then
+          vim.system({ 'tmux', 'set', 'status', 'off' }):wait()
+        end
       end,
       on_close = function()
         require('twilight').disable()
         vim.g.zen_mode = false
-        vim.system({ 'tmux', 'set', 'status', 'on' }):wait()
+        if is_tmux() then
+          vim.system({ 'tmux', 'set', 'status', 'on' }):wait()
+        end
       end,
       show = {
         statusline = false, -- This hides the statusline (including lualine)

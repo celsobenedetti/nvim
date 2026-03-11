@@ -18,6 +18,7 @@ vim.g.icons = {
   lsp = ' ',
   format = ' ',
   notes = ' ',
+  clock = ' ',
   git = {
     added = ' +',
     modified = ' ~',
