@@ -1,3 +1,7 @@
+-- TODO: probably remove compile.nvim, as cool as it is
+if true then
+  return {}
+end
 -- plugin which emulates the features of Emacs' Compilation Mode.
 -- It allows you to run commands which are output into a special buffer,
 -- and then rerun that command over and over again as much as you need.
