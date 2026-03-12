@@ -21,7 +21,7 @@
   },
   "console.log": {
     "prefix": "cl",
-    "body": ["console.log(\"🦎 ||| $1\", $2)"],
+    "body": ["console.log(\"🦎 ___ $1\", $2)"],
     "description": "console.log"
   },
 
