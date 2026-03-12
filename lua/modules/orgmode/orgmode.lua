@@ -4,6 +4,7 @@ local colorschemes_to_highlight = {
   'flexoki-light',
   'vantablack',
 }
+local TMP_CURRENT_TASK_FILE = '/tmp/org_current_task'
 
 local agenda_files = {
   vim.g.env.notes.ORG .. '/*',
@@ -45,6 +46,7 @@ local agenda_views = {
       },
     },
   },
+
   n = {
     description = 'next',
     types = {
@@ -76,6 +78,18 @@ local agenda_views = {
         type = 'tags_todo',
 
         match = '-TODO="DONE"',
+        org_agenda_sorting_strategy = { 'todo-state-down' },
+        org_agenda_overriding_header = 'In Progress',
+      },
+    },
+  },
+
+  d = {
+    description = 'done',
+    types = {
+      {
+        type = 'tags',
+        match = '',
         org_agenda_sorting_strategy = { 'todo-state-down' },
         org_agenda_overriding_header = 'In Progress',
       },
@@ -166,13 +180,12 @@ end
 
 return {
   {
-    'nvim-orgmode/orgmode',
+    -- 'nvim-orgmode/orgmode',
     -- event = "VeryLazy",
+    dir = '~/projects/nvim-orgmode-celsobenedetti/',
     dependencies = {
-      {
-        dir = '~/projects/nvim-orgmode-jira/',
-        lazy = true,
-      },
+      { dir = '~/projects/nvim-orgmode-jira/', lazy = true },
+      { 'aaratha/org-cycle-lite.nvim' },
     },
     lazy = vim.g.lazy_orgmode == nil and true or vim.g.lazy_orgmode,
     cmd = { 'Org' },
@@ -213,16 +226,6 @@ return {
         org_agenda_custom_commands = agenda_views,
         org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
-        -- ui = {
-        --   virt_cookies = {
-        --     enabled = true,
-        --     type = '/',
-        --   },
-        --   -- folds = {
-        --   --   colored = false,
-        --   -- },
-        -- },
-
         org_capture_templates = {
           c = {
             description = 'quick capture',
@@ -260,19 +263,26 @@ return {
         },
       })
 
-      require('orgmode-jira').setup({
-        base_url = os.getenv('WORK_JIRA_BASE_URL'),
-        email = os.getenv('WORK_EMAIL'),
-        api_token = os.getenv('JIRA_API_TOKEN'),
+      -- orgmode plugins
+      require('org-cycle-lite').setup({
+        keymap = '<TAB>', -- Optional: change keymap
       })
+
+      -- require('orgmode-jira').setup({
+      --   base_url = os.getenv('WORK_JIRA_BASE_URL'),
+      --   email = os.getenv('WORK_EMAIL'),
+      --   api_token = os.getenv('JIRA_API_TOKEN'),
+      -- })
 
       local Events = require('orgmode.events')
       Events.listen(Events.event.ClockedIn, function(ev)
         ev.headline:set_todo('PROG')
         vim.schedule(function()
-          local file = io.open('/tmp/org_current_task', 'w')
+          vim.g.org_current_task = ev.headline:get_title()
+          local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
           if file then
             file:write(ev.headline:get_title())
+            file:write('\n' .. os.time())
             file:close()
           end
         end)
@@ -280,7 +290,8 @@ return {
 
       Events.listen(Events.event.ClockedOut, function(ev)
         vim.schedule(function()
-          os.remove('/tmp/org_current_task')
+          vim.g.org_current_task = nil
+          os.remove(TMP_CURRENT_TASK_FILE)
         end)
       end)
 
@@ -297,7 +308,7 @@ return {
     lazy = true,
     -- event = 'VeryLazy',
     dependencies = {
-      'nvim-orgmode/orgmode',
+      -- 'nvim-orgmode/orgmode',
       { 'nvim-telescope/telescope.nvim' },
     },
     config = function()

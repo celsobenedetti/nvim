@@ -54,49 +54,11 @@ return {
     end,
   },
 
-  -- QoL text editing utilities
+  -- lazy.nvim
   {
-    'yousefhadder/markdown-plus.nvim',
-    ft = { 'markdown', 'org' },
+    'antonk52/markdowny.nvim',
     config = function()
-      require('markdown-plus').setup({
-        keymaps = {
-          enabled = false, -- Disable all default keymaps
-        },
-      })
+      require('markdowny').setup()
     end,
   },
-  -- {
-  --   'iwe-org/iwe.nvim',
-  --   dependencies = {
-  --     'folke/snacks.nvim',
-  --   },
-  --   config = function()
-  --     require('iwe').setup({
-  --       lsp = {
-  --         cmd = { 'iwes' },
-  --         auto_format_on_save = false,
-  --         enable_inlay_hints = true,
-  --         debounce_text_changes = 500,
-  --       },
-  --       mappings = {
-  --         enable_markdown_mappings = false, -- Core markdown editing keybindings
-  --         enable_picker_keybindings = true, -- Set to true to enable gf, gs, ga, g/, gb, gR, go
-  --         enable_lsp_keybindings = false, -- Set to true to enable IWE-specific LSP keybindings
-  --         enable_preview_keybindings = false, -- Set to true to enable preview keybindings
-  --         leader = '<leader>',
-  --         localleader = '<localleader>',
-  --       },
-  --       picker = {
-  --         backend = 'snacks',
-  --         fallback_notify = true,
-  --       },
-  --       telescope = {
-  --         enabled = false,
-  --         setup_config = true,
-  --         load_extensions = { 'ui-select', 'emoji' },
-  --       },
-  --     })
-  --   end,
-  -- },
 }
