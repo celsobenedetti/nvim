@@ -42,6 +42,7 @@ return {
         documentation = { auto_show = true, window = { border = 'single' } },
       }
       opts.sources = {
+        default = { 'lsp', 'buffer', 'snippets', 'path' },
         per_filetype = {
           org = { 'orgmode' },
         },
