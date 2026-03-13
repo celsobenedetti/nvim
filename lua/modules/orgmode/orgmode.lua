@@ -141,6 +141,19 @@ local agenda_views = {
       },
     },
   },
+  c = {
+    description = 'calendar',
+    types = {
+      {
+        type = 'tags_todo',
+        match = 'TODO="UPCOMING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        org_agenda_sorting_strategy = {
+          'priority-down',
+          'todo-state-down',
+        }, -- See all options available on org_agenda_sorting_strategy
+      },
+    },
+  },
 }
 
 local function set_highlights()
