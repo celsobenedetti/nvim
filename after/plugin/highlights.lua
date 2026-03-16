@@ -14,12 +14,7 @@ local hyperlink = { underline = true, fg = colors.get_color('@markup.link.label.
 vim.api.nvim_set_hl(0, '@markup.link.label.markdown_inline', hyperlink)
 vim.api.nvim_set_hl(0, '@org.hyperlink.desc.org', hyperlink)
 vim.api.nvim_set_hl(0, '@org.drawer.org', { link = 'Normal' })
-
 -- stylua: ignore end
-
-if vim.g.neovide then
-  return
-end
 
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
