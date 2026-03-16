@@ -45,6 +45,7 @@ return {
         default = { 'lsp', 'buffer', 'snippets', 'path' },
         per_filetype = {
           org = { 'orgmode' },
+          mysql = { 'snippets', 'dadbod', 'buffer' },
         },
         providers = {
           orgmode = {
@@ -52,6 +53,8 @@ return {
             module = 'orgmode.org.autocompletion.blink',
             fallbacks = { 'buffer' },
           },
+
+          dadbod = { name = 'Dadbod', module = 'vim_dadbod_completion.blink' },
         },
       }
 
