@@ -163,7 +163,6 @@ return {
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
     -- { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'snacks: notification history', },
-    { vim.g.key['<C-S-g>'], function() Snacks.picker.grep({layout= "ivy_split"}) end, desc = 'snacks: grep', },
     { '<leader>rg', function() Snacks.picker.grep({layout= "ivy_split"}) end, desc = 'snacks: grep', },
     { '<leader>rG', function() Snacks.picker.grep({layout= "ivy_split", hidden = true}) end, desc = 'snacks: grep (all)', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'snacks: delete buffer', },

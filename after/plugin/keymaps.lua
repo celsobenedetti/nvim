@@ -1,5 +1,7 @@
 local lib = {
   org = require('lib.orgmode'),
+  grep = require('lib.grep'),
+  cwd = require('lib.cwd'),
 }
 
 local function should_write()
@@ -11,7 +13,6 @@ end
 
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', function()
-  local file = vim.fn.expand('%:p')
   if should_write() then
     vim.cmd('silent w')
   end
@@ -112,3 +113,19 @@ vim.keymap.set('n', 'ZZ', function()
 end, { silent = true, desc = 'Disable ZZ' })
 
 vim.keymap.set('n', '<leader>gn', lib.org.goto_current_task, { desc = 'org: goto current task' })
+
+vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
+  local cwd = lib.cwd.cwd()
+  lib.grep.pick({
+    cmd = {
+      'rg',
+      '--no-heading',
+      '--line-number',
+      -- '-g',
+      -- '!' .. vim.g.env.notes.ASSETS_DIR .. '/*',
+      '-v',
+      string.format('"%s"', vim.g.env.notes.GREP_IGNORE), -- quotes are indeed needed here for complex regex
+      cwd,
+    },
+  })
+end, { desc = 'rg current dir' })
