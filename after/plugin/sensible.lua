@@ -8,6 +8,9 @@ map('o', 'N', "'nN'[v:searchforward]", { expr = true, desc = 'Prev search result
 
 map('x', 'p', '"_dP', { desc = 'Paste without losing register' }) --hold on to register when pasting and replace text
 
+vim.keymap.set('i', '<C-e>', '<Esc>A', { remap = true })
+vim.keymap.set('i', '<C-a>', '<Esc>I', { remap = true })
+
 -- sensible terminal mappings
 vim.keymap.set('t', '<esc><esc>', '<C-\\><C-n>') -- let me escape insert in terminal!
 vim.keymap.set('t', '<C-w>', '<C-\\><C-n><C-w>') -- make C-w commands work like usual in the terminal
