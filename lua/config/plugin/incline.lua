@@ -40,6 +40,7 @@ return {
 
         local ft_icon, ft_color = devicons.get_icon_color(filename)
         local modified = vim.bo[props.buf].modified
+
         if filename == '0.org' then
           ft_icon = ''
           filename = 'note'
@@ -63,6 +64,10 @@ return {
         if filename == 'bash' then
           ft_icon = ''
           filename = 'term'
+        end
+
+        if filename:find('.md') then
+          filename = filename:gsub('.md', '')
         end
 
         local icon = ft_icon and { ' ', ft_icon, ' ', guifg = ft_color } or ''
