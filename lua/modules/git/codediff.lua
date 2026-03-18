@@ -3,6 +3,7 @@ local function walk_in_codediff(picker, item)
   if not item.commit then
     return
   end
+
   vim.fn.setreg('+', item.commit) -- copy sha to clipboard
 
   local get_parent_commit = { 'git', 'rev-parse', '--short', item.commit .. '^' }
@@ -16,6 +17,11 @@ local function walk_in_codediff(picker, item)
   Snacks.notify.info('git show ' .. item.commit, { title = 'Git', icon = '', style = 'fancy' })
   vim.cmd(string.format('CodeDiff %s %s', parent, item.commit))
   vim.g.tabname = vim.g.icons.git.commit .. item.commit
+
+  local pr_number = item.text:match('#(%d+)')
+  if pr_number ~= nil and pr_number ~= '' then
+    vim.g.tabname = string.format('%s #%s', vim.g.tabname, pr_number)
+  end
 end
 
 local function git_pickaxe(opts)

@@ -121,11 +121,9 @@ vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
       'rg',
       '--no-heading',
       '--line-number',
-      -- '-g',
-      -- '!' .. vim.g.env.notes.ASSETS_DIR .. '/*',
-      '-v',
-      string.format('"%s"', vim.g.env.notes.GREP_IGNORE), -- quotes are indeed needed here for complex regex
+      '.',
       cwd,
     },
+    cwd = cwd,
   })
 end, { desc = 'rg current dir' })

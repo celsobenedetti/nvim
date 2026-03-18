@@ -198,6 +198,7 @@ return {
     dir = '~/projects/nvim-orgmode-celsobenedetti/',
     dependencies = {
       -- { dir = '~/projects/nvim-orgmode-jira/', lazy = true },
+      { 'celsobenedetti/orgmode-keymaps.nvim', config = true },
       { 'aaratha/org-cycle-lite.nvim' },
     },
     lazy = vim.g.lazy_orgmode == nil and true or vim.g.lazy_orgmode,

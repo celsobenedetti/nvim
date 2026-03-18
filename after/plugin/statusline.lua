@@ -9,6 +9,7 @@ local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local strings = require('lib.strings')
 local hl = strings.hl
 local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
+local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
 
 local modules = {
   _git_branch = function()
@@ -253,7 +254,6 @@ end
 ---@param segments string[]
 ---@param direction Direction
 local function _build_section(segments, direction)
-  local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
   local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
   local section = ''
   for i, segment in pairs(segments) do
@@ -290,11 +290,12 @@ function _G.MyStatusLine()
   local SPACE_BETWEEN = '%=' --- :h statusline
 
   return string.format(
-    '%s%s%s%s ',
+    '%s%s%s%s%s',
     os.getenv('TMUX') and LEFT_SEPARATOR or ' ',
     left,
     SPACE_BETWEEN,
-    right --
+    right,
+    #right > 0 and RIGHT_SEPARATOR or ''
   )
 end
 

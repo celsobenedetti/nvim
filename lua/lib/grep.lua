@@ -28,7 +28,7 @@ M.pick = function(opts)
     })
   end
   Snacks.picker.pick({
-    title = 'grep notes',
+    title = 'grep ' .. (opts.cwd or ''),
     items = items,
     cwd = opts.cwd or '.',
     layout = 'ivy_split',
