@@ -68,6 +68,7 @@ vim.g.cmd = {
 vim.g.hl = {
   text = {
     highlight = 'Title',
+    bold = '@text.strong',
     secondary = '@operator',
     subtext = '@comment',
     warn = 'WarningMsg',
@@ -116,7 +117,9 @@ vim.g.root = {
   vue = 'vite.config.ts',
 }
 
+vim.g.statusline_show_filepath = true
 vim.g.statusline_show_position = false
+vim.g.statusline_show_time = false
 
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200

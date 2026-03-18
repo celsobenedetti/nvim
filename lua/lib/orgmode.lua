@@ -1,10 +1,16 @@
 local M = {}
 
+local lib = {
+  notes = require('lib.notes'),
+}
+
 M.goto_current_task = function()
-  local org = require('orgmode')
-  org.clock:org_clock_goto()
-  vim.schedule(function()
-    vim.cmd('normal zt')
+  lib.notes.focus_or_create_notes_tab(function()
+    local org = require('orgmode')
+    org.clock:org_clock_goto()
+    vim.schedule(function()
+      vim.cmd('normal zt')
+    end)
   end)
 end
 

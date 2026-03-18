@@ -37,6 +37,9 @@ local modules = {
   end,
 
   _file = function()
+    if not vim.g.statusline_show_filepath then
+      return ''
+    end
     vim.b.relative_file = vim.fn.expand('%:.')
     local icon = ''
     if has_icons then

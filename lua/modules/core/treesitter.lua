@@ -2,15 +2,16 @@ vim.g.treesitter = {
   --- filetypes to highlight with treesitter
   highlight = {
     'gitcommit',
-    'json',
-    'markdown',
-
     'go',
-    'python',
     'javascript',
+    'json',
     'jsx',
-    'typescript',
+    'lua',
+    'markdown',
+    'python',
+    'sql',
     'tsx',
+    'typescript',
     'vue',
     'yaml',
 
@@ -18,6 +19,25 @@ vim.g.treesitter = {
     -- 'hmtl',
   },
 }
+vim.g.treesitter.ensure_installed = vim.tbl_extend('force', vim.g.treesitter.highlight, {
+  'bash',
+  'c',
+  'diff',
+  'html',
+  'jsdoc',
+  'lua',
+  'luadoc',
+  'luap',
+  'markdown_inline',
+  'printf',
+  'python',
+  'query',
+  'regex',
+  'toml',
+  'vim',
+  'vimdoc',
+  'xml',
+})
 
 return {
   -- Treesitter is a new parser generator tool that we can
@@ -39,34 +59,7 @@ return {
     cmd = { 'TSUpdate', 'TSInstall', 'TSLog', 'TSUninstall' },
     config = function()
       -- NOTE: setup function not needed when using default options
-      require('nvim-treesitter').install({
-        'bash',
-        'c',
-        'diff',
-        'html',
-        'gitcommit',
-        'go',
-        'javascript',
-        'jsdoc',
-        'json',
-        'lua',
-        'luadoc',
-        'luap',
-        'markdown',
-        'markdown_inline',
-        'printf',
-        'python',
-        'query',
-        'regex',
-        'toml',
-        'tsx',
-        'typescript',
-        'vim',
-        'vimdoc',
-        'vue',
-        'xml',
-        'yaml',
-      })
+      require('nvim-treesitter').install(vim.g.treesitter.ensure_installed)
       vim.wo.foldmethod = 'expr'
       vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
       vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"

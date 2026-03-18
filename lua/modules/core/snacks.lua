@@ -167,7 +167,6 @@ return {
     { '<leader>rG', function() Snacks.picker.grep({layout= "ivy_split", hidden = true}) end, desc = 'snacks: grep (all)', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'snacks: delete buffer', },
     { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
-    { '<leader>of', function() Snacks.picker.files { cwd = '~/notes', title = ' Org Files', ft = 'org' } end, desc = 'snacks: search orgifles', },
     { '<leader>sn', notes, desc = 'snacks: search all notes', },
     { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
     { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'snacks: Rename File', },
