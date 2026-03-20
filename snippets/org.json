@@ -9,10 +9,10 @@
     "prefix": "t",
     "body": ["- [ ] $1"]
   },
-  "id": {
-    "description": "id property",
-    "prefix": "id",
-    "body": [":PROPERTIES:", ":${2:ID}: $1", ":END:"]
+  "drawer": {
+    "description": "drawer",
+    "prefix": "dr",
+    "body": [":${3:PROPERTIES}:", "${2::ID:} $1", ":${4:END}:"]
   },
   "link": {
     "description": "link",

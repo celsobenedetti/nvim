@@ -38,6 +38,9 @@ vim.g.fn = {
       return
     end
     vim.ui.input({ prompt = 'rename Tab: ' }, function(input)
+      if not input or #input == 0 then
+        return
+      end
       require('tabby').tab_rename(input)
     end)
   end,

@@ -14,9 +14,10 @@ M.focus_or_create_notes_tab = function(fn)
   end
 
   if tab_id == -1 then
-    vim.cmd('tabnew')
+    vim.cmd.tabnew()
     vim.g.fn.rename_tab(vim.g.notes_tabname)
-    vim.cmd('lcd ' .. vim.g.env.notes.NOTES)
+    vim.cmd.lcd(vim.g.env.notes.NOTES)
+    vim.cmd.tabmove('$')
   else
     vim.api.nvim_set_current_win(vim.api.nvim_tabpage_get_win(tab_id))
   end
