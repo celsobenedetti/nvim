@@ -117,23 +117,18 @@ return {
       { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
       -- stylua: ignore end
     },
-    config = function()
-      require('codediff').setup({
+    config = function(_, opts)
+      opts = opts or {}
+      opts.highlights = vim.tbl_deep_extend('force', opts.highlights or {}, {
+        -- Character-level: accepts highlight group names or hex colors
+        -- If specified, these override char_brightness calculation
+        char_insert = nil, -- Character-level insertions (nil = auto-derive)
+        char_delete = nil, -- Character-level deletions (nil = auto-derive)
+        char_brightness = nil, -- Auto-adjust based on your colorscheme
+      })
+
+      require('codediff').setup(vim.tbl_deep_extend('force', opts, {
         -- Highlight configuration
-        highlights = {
-          -- Line-level: accepts highlight group names or hex colors (e.g., "#2ea043")
-          line_insert = 'DiffAdd', -- Line-level insertions
-          line_delete = 'DiffDelete', -- Line-level deletions
-
-          -- Character-level: accepts highlight group names or hex colors
-          -- If specified, these override char_brightness calculation
-          char_insert = nil, -- Character-level insertions (nil = auto-derive)
-          char_delete = nil, -- Character-level deletions (nil = auto-derive)
-
-          -- Brightness multiplier (only used when char_insert/char_delete are nil)
-          -- nil = auto-detect based on background (1.4 for dark, 0.92 for light)
-          char_brightness = nil, -- Auto-adjust based on your colorscheme
-        },
 
         -- Diff view behavior
         diff = {
@@ -159,7 +154,7 @@ return {
             refresh = 'R', -- Refresh git status
           },
         },
-      })
+      }))
 
       vim.cmd.cnoreabbrev(('%s %s'):format('codediff', 'CodeDiff'))
 

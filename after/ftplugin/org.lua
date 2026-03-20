@@ -20,7 +20,7 @@ _G.org_n = _G.org_n or function()
   require('orgmode').action('org_mappings.add_note')
 end
 
-vim.api.nvim_buf_set_keymap(0, 'n', 'n', ':lua _G.org_n()<CR>',
+vim.api.nvim_buf_set_keymap(0, 'n', '<leader>n', ':lua _G.org_n()<CR>',
   { desc = 'org: add note' }
 )
 vim.api.nvim_buf_set_keymap(0, 'n', 'X', ':lua require("orgmode").action("clock.org_clock_cancel")<CR>',
