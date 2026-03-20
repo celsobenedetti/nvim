@@ -23,11 +23,19 @@ return {
         line = function(line)
           return {
             line.tabs().foreach(function(tab)
+              local icon = tab.number() == 1 and ' ' or ''
+
+              tab.wins().foreach(function(win)
+                local bu = vim.bo[win.buf().id]
+                local ft = bu.filetype or ''
+                if ft == 'octo' or ft == 'octo_panel' then
+                  icon = ' '
+                end
+              end)
+
               local hl = tab.is_current() and theme.current_tab or theme.tab
               return {
-                -- line.sep(vim.g.icons.separator.right, hl, theme.fill),
-                -- tab.is_current() and '' or '󰆣',
-                tab.number() == 1 and ' ' or '',
+                icon,
                 tab.name(),
                 line.sep(' ', hl, theme.fill),
                 hl = hl,

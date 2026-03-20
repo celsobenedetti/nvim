@@ -13,9 +13,12 @@ return {
       vim.schedule(function()
         local colors = require('deepwhite.colors').get_colors({})
 
+        vim.api.nvim_set_hl(0, 'ColorColumn', { bg = 'None' })
         vim.api.nvim_set_hl(0, 'Constant', { bg = colors['base6'] })
         vim.api.nvim_set_hl(0, 'String', { fg = colors['green'] })
         vim.api.nvim_set_hl(0, 'GitSignsAdd', { fg = colors['green'], bg = 'None' })
+        vim.api.nvim_set_hl(0, 'GitSignsChange', { fg = colors['orange'], bg = 'None' })
+        vim.api.nvim_set_hl(0, 'GitSignsDelete', { fg = colors['red'], bg = 'None' })
         vim.api.nvim_set_hl(0, 'GitSignsStagedAdd', { fg = colors['light_green'], bg = 'None' })
         vim.api.nvim_set_hl(0, 'GitSignsStagedChange', { fg = colors['light_orange'], bg = 'None' })
         vim.api.nvim_set_hl(0, 'GitSignsStagedDelete', { fg = colors['light_red'], bg = 'None' })

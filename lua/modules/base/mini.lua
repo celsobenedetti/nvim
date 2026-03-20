@@ -43,6 +43,8 @@ return {
               '%b""',
               '%b``',
               '%b**',
+
+              -- TODO: this should only apply to org files
               --orgmode
               '%b~~',
               '%b==',

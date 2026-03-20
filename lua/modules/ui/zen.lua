@@ -42,7 +42,6 @@ return {
     --- @type snacks.zen.Config
     opts.zen = {
       on_open = function()
-        require('twilight').enable()
         vim.g.zen_mode = true
 
         vim.cmd('norm zt')
@@ -52,7 +51,6 @@ return {
         end
       end,
       on_close = function()
-        require('twilight').disable()
         vim.g.zen_mode = false
         if is_tmux() then
           vim.system({ 'tmux', 'set', 'status', 'on' }):wait()
@@ -62,18 +60,17 @@ return {
         statusline = false, -- This hides the statusline (including lualine)
         tabline = false, -- This also hides the tabline
       },
+      toggles = {
+        dim = false,
+        git_signs = false,
+        snacks_main = true,
+        snacks_indent = true,
+        snacks = {
+          indent = true,
+        },
+        -- diagnostics = false,
+        -- inlay_hints = false,
+      },
     }
-
-    -- opts.zen.opts.zen.toggles = {
-    --   dim = false,
-    --   git_signs = false,
-    --   snacks_main = true,
-    --   snacks_indent = true,
-    --   snacks = {
-    --     indent = true,
-    --   },
-    --   -- diagnostics = false,
-    --   -- inlay_hints = false,
-    -- }
   end,
 }
