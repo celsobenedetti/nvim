@@ -1,6 +1,8 @@
 local colors = require('lib.colors')
 vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- transparency changes -----------
 
+vim.api.nvim_set_hl(0, 'TextSecondary', { fg = vim.g.colors.secondary or vim.g.colors.fg })
+
 -- stylua: ignore start
 -- vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(vim.g.hl.text.subtext, 'fg') })
 -- vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })

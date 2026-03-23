@@ -52,10 +52,11 @@ return {
             'if_statement',
             'for_statement',
             'subsection',
-            'drawer',
+            'property_drawer',
           },
           field_blocks = {
             'subsection',
+            'property_drawer',
           },
         },
       }

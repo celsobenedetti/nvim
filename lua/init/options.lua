@@ -66,9 +66,10 @@ vim.g.cmd = {
 
 vim.g.hl = {
   text = {
+    text = '@text',
     highlight = 'Title',
     bold = '@text.strong',
-    secondary = '@operator',
+    secondary = 'TextSecondary',
     subtext = '@comment',
     warn = 'WarningMsg',
   },
