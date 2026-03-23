@@ -20,7 +20,9 @@ return {
         invert_tabline = false,
         inverse = true, -- invert background for search, diffs, statuslines and errors
         contrast = '', -- can be "hard", "soft" or empty string
-        overrides = {},
+        overrides = {
+          DiffAdd = { bg = '#333e34' },
+        },
         dim_inactive = false,
         transparent_mode = false,
         palette_overrides = {

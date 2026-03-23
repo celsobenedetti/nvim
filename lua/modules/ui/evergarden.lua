@@ -5,8 +5,6 @@ return {
     lazy = true,
     config = function(_, opts)
       local should_override = true
-      -- TODO: get colors from plugin itself
-      local c = require('config.colors').evergarden -- colors
       local lib_colors = require('lib.colors')
       local colorscheme = lib_colors.omarchy_colorscheme()
       if colorscheme.colorscheme ~= 'evergarden' and colorscheme.colorscheme ~= 'evergarden-summer' then
@@ -14,36 +12,47 @@ return {
       end
       local light = colorscheme.colorscheme_plugin.opts.theme.variant == 'summer'
 
+      local colors = vim.g.colors
+      colors.white = '#F8F9E8'
+      colors.red = colors.color1
+      colors.yellow = colors.color3
+      colors.gray = colors.color8
+      colors.lime = colors.color2
+      colors.orange = '#F7A182'
+      colors.skye = colors.color0
+      colors.secondary = colors.color7
+      vim.g.colors = colors
+
       local config = {
         highlights = {
-          keyword = { fg = c.red, style = { 'nocombine' } },
-          type = { c.yellow, style = { 'nocombine' } },
-          comment = { fg = c.gray, style = { 'italic' } },
+          keyword = { fg = vim.g.colors.red, style = { 'nocombine' } },
+          type = { vim.g.colors.yellow, style = { 'nocombine' } },
+          comment = { fg = vim.g.colors.gray, style = { 'italic' } },
         },
       }
 
       local global_overrides = {
         ['@keyword'] = config.highlights.keyword,
-        ['@constant'] = { fg = c.white },
-        ['@annotation'] = { c.white, style = { 'bold' } },
+        ['@constant'] = { fg = vim.g.colors.white },
+        ['@annotation'] = { vim.g.colors.white, style = { 'bold' } },
         ['Title'] = { link = 'Special' },
       }
 
       local overrides_dark = vim.tbl_extend('force', global_overrides, {
-        ['@attribute'] = { c.orange },
-        ['@markup.italic'] = { c.lime, style = { 'italic' } },
-        ['@markup.link.label.markdown_inline'] = { c.skye, style = { 'bold' } },
+        ['@attribute'] = { vim.g.colors.orange },
+        ['@markup.italic'] = { vim.g.colors.lime, style = { 'italic' } },
+        ['@markup.link.label.markdown_inline'] = { vim.g.colors.skye, style = { 'bold' } },
 
-        -- ['typescriptVariable'] = { c.orange },
+        -- ['typescriptVariable'] = { vim.g.colors.orange },
         -- SpellBad = { style = { 'italic', 'underdotted' } },
-        -- TabLineSel = { bg = c.inactivegray },
+        -- TabLineSel = { bg = vim.g.colors.inactivegray },
       })
 
       local overrides_light = vim.tbl_extend('force', global_overrides, {
-        ['WinSeparator'] = { fg = c.summer.surface2 },
-        ['@keyword'] = { fg = c.summer.red, style = { 'nocombine' } },
-        ['@constant'] = { fg = c.summer.text },
-        ['@annotation'] = { c.summer.snow },
+        -- ['WinSeparator'] = { fg = vim.g.colors.summer.surface2 },
+        -- ['@keyword'] = { fg = vim.g.colors.summer.red, style = { 'nocombine' } },
+        -- ['@constant'] = { fg = vim.g.colors.summer.text },
+        -- ['@annotation'] = { vim.g.colors.summer.snow },
       })
 
       local overrides = light and overrides_light or overrides_dark

@@ -12,10 +12,6 @@ if file then
   file:close()
 end
 
-colors.lightgray = colors.foreground or colors.color7
-colors.darkgray = colors.background or colors.color0
-colors.gray = colors.foreground or colors.color7
-colors.white = colors.foreground or colors.color7
 colors.bg = colors.background or colors.color0
 colors.fg = colors.foreground or colors.color7
 colors.secondary = colors.color3
