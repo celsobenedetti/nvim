@@ -1,6 +1,3 @@
--- local bg = '#232A2E' -- evergarden
-local bg = '#FAF2EB' -- deepwhite
-
 return {
   {
     'folke/snacks.nvim',
@@ -63,7 +60,7 @@ return {
         },
       }
 
-      vim.api.nvim_set_hl(0, 'SnacksDim', { bg = 'none', fg = bg })
+      vim.api.nvim_set_hl(0, 'SnacksDim', { bg = 'none', fg = vim.g.colors.bg })
     end,
   },
 }

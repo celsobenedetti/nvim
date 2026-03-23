@@ -12,7 +12,6 @@ vim.o.relativenumber = false
 
 vim.g.env = require('config.env')
 vim.g.dirs = require('config.dirs')
-vim.g.colors = require('config.colors').default
 
 vim.g.icons = {
   lsp = ' ',
