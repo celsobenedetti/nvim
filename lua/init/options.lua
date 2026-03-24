@@ -54,6 +54,7 @@ vim.g.key = {
   },
   ghostty = {
     ['<C-S-N>'] = 'NOTES',
+    ['<C-;>'] = '♦',
   },
 }
 

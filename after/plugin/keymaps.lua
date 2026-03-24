@@ -114,6 +114,24 @@ end, { silent = true, desc = 'Disable ZZ' })
 
 vim.keymap.set('n', '<leader>gn', lib.org.goto_current_task, { desc = 'org: goto current task' })
 
+vim.keymap.set('n', vim.g.key.ghostty['<C-;>'], function()
+  vim.ui.input({ prompt = 'run command in new tab: ' }, function(input)
+    if not input or #input == 0 then
+      return
+    end
+
+    local tabname = input
+    Snacks.notify.info(tabname)
+    if tabname:find('gh') ~= nil then
+      tabname = ' ' .. tabname
+    end
+
+    vim.cmd.tabnew()
+    vim.cmd.term(input)
+    vim.g.fn.rename_tab(tabname)
+  end)
+end, { desc = 'Open terminal in new tab' })
+
 vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
   local cwd = lib.cwd.cwd()
   lib.grep.pick({
