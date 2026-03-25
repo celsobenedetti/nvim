@@ -22,12 +22,15 @@ return {
       colors.light_purple = '#EDD4FA' -- hsv(280, 15%, 98%)
       colors.light_pink = '#FAD4ED' -- hsv(320, 15%, 98%)
       colors.light_red = '#FAD4D4' -- hsv(360, 15%, 98%)
+      colors.light_gray = '#E6E4DF'
       colors.secondary = '#595855'
+
       vim.g.colors = colors
 
       vim.schedule(function()
         vim.api.nvim_set_hl(0, 'ColorColumn', { bg = 'None' })
-        vim.api.nvim_set_hl(0, 'Constant', { bg = 'None' })
+        -- vim.api.nvim_set_hl(0, 'Constant', { bg = 'None' })
+        -- vim.api.nvim_set_hl(0, 'Statement', { bg = colors.light_red })
         vim.api.nvim_set_hl(0, 'String', { fg = colors['green'] })
         vim.api.nvim_set_hl(0, 'GitSignsAdd', { fg = colors['green'], bg = 'None' })
         vim.api.nvim_set_hl(0, 'GitSignsChange', { fg = colors['orange'], bg = 'None' })

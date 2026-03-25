@@ -411,7 +411,7 @@ keybindings
 keybindings
 secret
 linkedin
-const/!
+#onst/!
 vim
 session/!
 NEXT/!
@@ -421,3 +421,4 @@ Also/!
 if/!
 mongo_filter/!
 flat_bot_gva_id/!
+const/!
