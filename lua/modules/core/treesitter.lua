@@ -33,6 +33,7 @@ vim.g.treesitter.ensure_installed = vim.tbl_extend('force', vim.g.treesitter.hig
   'python',
   'query',
   'regex',
+  'sql',
   'toml',
   'vim',
   'vimdoc',
