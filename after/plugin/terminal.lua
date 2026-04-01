@@ -49,7 +49,7 @@ vim.keymap.set(
 -- taken from: https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
   if float_term_bufnr <= 0 then
-    vim.cmd([[sp | term]])
+    vim.cmd([[botright sp | term]])
     vim.cmd([[setlocal bufhidden=hide]])
     float_term_bufnr = vim.api.nvim_get_current_buf()
     return
@@ -60,7 +60,7 @@ local function toggle_terminal()
     vim.cmd(win .. 'close')
     return
   end
-  vim.cmd('sp | b' .. float_term_bufnr)
+  vim.cmd('botright sp | b' .. float_term_bufnr)
 end
 
 vim.keymap.set('n', vim.g.key.tmux['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
