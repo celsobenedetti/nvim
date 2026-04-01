@@ -57,3 +57,46 @@ map('n', '<leader>gs', function()
   vim.g.tabname = ' git status'
   vim.cmd('CodeDiff')
 end, { desc = 'git: (codediff) git status' })
+
+-- git: CodeDiff with branch picker
+map('n', '<leader>gd', function()
+  local branches = vim.fn.systemlist('git branch --sort=-committerdate')
+  if vim.v.shell_error ~= 0 then
+    Snacks.notify.error('Not a git repository')
+    return
+  end
+
+  local items = {}
+  for _, branch in ipairs(branches) do
+    local name = branch:match('^%s*%*?%s*(.+)$')
+    if name then
+      local is_current = branch:match('^%s*%*') ~= nil
+      table.insert(items, {
+        text = name,
+        current = is_current,
+      })
+    end
+  end
+
+  if #items == 0 then
+    Snacks.notify.warn('No branches found')
+    return
+  end
+
+  Snacks.picker.pick({
+    layout = 'select',
+    title = 'git diff: compare branch with HEAD',
+    items = items,
+    format = function(item)
+      if item.current then
+        return { { '* ', 'DiagnosticOk' }, { item.text } }
+      end
+      return { { '  ' }, { item.text } }
+    end,
+    confirm = function(picker, item)
+      picker:close()
+      vim.g.tabname = string.format('%sgit diff %s HEAD', vim.g.icons.git.diff, item.text)
+      vim.cmd(string.format('CodeDiff %s HEAD', item.text))
+    end,
+  })
+end, { desc = 'CodeDiff: compare branch with HEAD' })
