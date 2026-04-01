@@ -16,7 +16,8 @@ local abbreviations = {
   Tabnew = 'tabnew',
   Set = 'set',
   git = 'Git',
-  diff = 'CodeDiff',
+  dif = 'CodeDiff',
+  Diff = 'CodeDiff',
   codediff = 'CodeDiff',
   Codediff = 'CodeDiff',
 }

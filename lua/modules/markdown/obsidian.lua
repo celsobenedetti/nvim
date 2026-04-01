@@ -32,7 +32,7 @@ return {
     'obsidian-nvim/obsidian.nvim',
     version = '*', -- recommended, use latest release instead of latest commit
     vscode = false,
-    lazy = false,
+    cwd = vim.g.env.notes.NOTES,
     keys = {
       {
         '<leader>zz',

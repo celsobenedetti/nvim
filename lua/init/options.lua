@@ -141,7 +141,7 @@ vim.opt.fillchars = { eob = ' ' }
 
 -- only set clipboard if not in ssh, to make sure the OSC 52
 -- integration works automatically.
-vim.opt.clipboard = vim.env.SSH_CONNECTION and '' or 'unnamedplus' -- Sync with system clipboard
+vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
 vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.conceallevel = 2 -- Hide * markup for bold and italic, but not markers with substitutions
 vim.opt.confirm = true -- Confirm to save changes before exiting modified buffer

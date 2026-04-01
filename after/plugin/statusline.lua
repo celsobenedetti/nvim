@@ -194,7 +194,7 @@ local function setup_caching_and_updating()
           vim.api.nvim_buf_set_var(bufnr, 'cached_diagnostics', modules._diagnostics())
           vim.api.nvim_buf_set_var(bufnr, 'cached_git_status', modules._git_status())
         end)
-      end, 300)
+      end, 100)
     end,
   })
 
@@ -271,6 +271,11 @@ local function _build_section(segments, direction)
 end
 
 function _G.MyStatusLine()
+  -- return default statusline if big file
+  if vim.bo.filetype == 'dbout' then
+    return ' %f'
+  end
+
   if vim.g.zen_mode then
     return ''
   end
