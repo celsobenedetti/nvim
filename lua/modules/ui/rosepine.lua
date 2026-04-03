@@ -1,3 +1,7 @@
+if 'rose-pine-dawn' ~= require('lib.colors').omarchy_colorscheme().colorscheme then
+  return {}
+end
+
 return {
   {
     'rose-pine/neovim',
@@ -5,6 +9,8 @@ return {
       require('rose-pine').setup({
         highlight_groups = {
           TabLine = { bg = 'gold' },
+          String = { fg = vim.g.colors.accent },
+          ['@variable'] = { link = 'Normal' },
         },
       })
 

@@ -28,10 +28,10 @@ return {
       vim.g.colors = colors
 
       vim.schedule(function()
-        vim.api.nvim_set_hl(0, 'ColorColumn', { bg = 'None' })
+        -- vim.api.nvim_set_hl(0, 'ColorColumn', { bg = 'None' })
         -- vim.api.nvim_set_hl(0, 'Constant', { bg = 'None' })
         -- vim.api.nvim_set_hl(0, 'Statement', { bg = colors.light_red })
-        vim.api.nvim_set_hl(0, 'String', { fg = colors['green'] })
+        -- vim.api.nvim_set_hl(0, 'String', { fg = colors['green'] })
         vim.api.nvim_set_hl(0, 'GitSignsAdd', { fg = colors['green'], bg = 'None' })
         vim.api.nvim_set_hl(0, 'GitSignsChange', { fg = colors['orange'], bg = 'None' })
         vim.api.nvim_set_hl(0, 'GitSignsDelete', { fg = colors['red'], bg = 'None' })
@@ -40,6 +40,9 @@ return {
         vim.api.nvim_set_hl(0, 'GitSignsStagedDelete', { fg = colors['light_red'], bg = 'None' })
         vim.api.nvim_set_hl(0, 'EchoNotificationInfo', { fg = colors['base0'] })
         vim.api.nvim_set_hl(0, 'NotificationError', { fg = colors['base0'] })
+        vim.api.nvim_set_hl(0, 'GitConflictAncestor', { bg = '#FAD4ED' })
+        vim.api.nvim_set_hl(0, 'GitConflictCurrent', { bg = '#C8FAFA' })
+        vim.api.nvim_set_hl(0, 'GitConflictIncoming', { bg = '#D4FAD4' })
       end)
     end,
     dependencies = {

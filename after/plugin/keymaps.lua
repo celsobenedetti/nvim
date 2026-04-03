@@ -120,11 +120,13 @@ vim.keymap.set('n', vim.g.key.ghostty['<C-;>'], function()
       return
     end
 
+    local icon = ' '
     local tabname = input
     Snacks.notify.info(tabname)
     if tabname:find('gh') ~= nil then
-      tabname = ' ' .. tabname
+      icon = ' '
     end
+    tabname = icon .. tabname
 
     vim.cmd.tabnew()
     vim.cmd.term(input)

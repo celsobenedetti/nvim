@@ -14,6 +14,6 @@ end
 
 colors.bg = colors.background or colors.color0
 colors.fg = colors.foreground or colors.color7
-colors.secondary = colors.color3
+colors.secondary = colors.color8
 
 vim.g.colors = colors

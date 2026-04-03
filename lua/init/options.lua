@@ -1,4 +1,3 @@
-vim.g.colorscheme = 'omarchy'
 vim.g.supermaven = true
 vim.g.autoformat = true
 vim.g.completion = true

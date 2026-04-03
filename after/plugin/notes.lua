@@ -10,7 +10,8 @@ vim.keymap.set('n', vim.g.key.ghostty['<C-S-N>'], function()
         'rg',
         '--no-heading',
         '--line-number',
-        -- '-g',
+        '-g',
+        '!.archives',
         -- '!' .. vim.g.env.notes.ASSETS_DIR .. '/*',
         '-v',
         string.format('"%s"', vim.g.env.notes.GREP_IGNORE), -- quotes are indeed needed here for complex regex
