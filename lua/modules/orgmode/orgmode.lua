@@ -287,19 +287,27 @@ return {
       --   email = os.getenv('WORK_EMAIL'),
       --   api_token = os.getenv('JIRA_API_TOKEN'),
       -- })
+      --
+      local clock_in_current_task = function(ev)
+        vim.g.org_current_task = ev.headline:get_title()
+        local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
+        if file then
+          file:write(ev.headline:get_title())
+          file:write('\n' .. os.time())
+          file:close()
+        end
+      end
 
       local Events = require('orgmode.events')
       Events.listen(Events.event.ClockedIn, function(ev)
-        ev.headline:set_todo('PROG')
-        vim.schedule(function()
-          vim.g.org_current_task = ev.headline:get_title()
-          local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
-          if file then
-            file:write(ev.headline:get_title())
-            file:write('\n' .. os.time())
-            file:close()
-          end
-        end)
+        vim.schedule(clock_in_current_task)
+
+        -- set to prog unless it's a log heading
+        if not vim.iter(ev.headline:get_tags()):find(function(t)
+          return t == 'log'
+        end) then
+          ev.headline:set_todo('PROG')
+        end
       end)
 
       Events.listen(Events.event.ClockedOut, function(ev)
