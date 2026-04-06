@@ -1,6 +1,8 @@
 return {
   {
     'folke/trouble.nvim',
+    -- NOTE: maybe I don't need trouble 2026-04-05
+    enabled = false,
     cmd = { 'Trouble' },
     opts = {
       modes = {
