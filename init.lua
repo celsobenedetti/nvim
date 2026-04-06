@@ -1,5 +1,3 @@
-require('vim._core.ui2').enable()
-
 require('init')
 
 require('lazy').setup({

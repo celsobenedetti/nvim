@@ -18,6 +18,7 @@ return {
           'checkmake',
           'eslint-lsp',
           'gopls',
+          'goimports',
           'js-debug-adapter',
           'json-lsp',
           'lua-language-server',

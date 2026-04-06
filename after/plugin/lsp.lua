@@ -1,3 +1,7 @@
+if not vim.g.lsp then
+  return
+end
+
 vim.lsp.enable({
   'bashls',
   -- 'copilot',
@@ -60,5 +64,3 @@ map('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'LSP: Next Error' })
 map('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'LSP: Prev Error' })
 map('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'LSP: Next Warning' })
 map('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'LSP: Prev Warning' })
-
-Snacks.toggle.inlay_hints():map('<leader>uh')

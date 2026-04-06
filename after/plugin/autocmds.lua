@@ -16,7 +16,7 @@ local groups = {
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = groups.highlight_on_yank,
   callback = function()
-    (vim.hl or vim.highlight).on_yank()
+    vim.hl.on_yank()
   end,
 })
 

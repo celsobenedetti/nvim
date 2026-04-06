@@ -1,6 +1,8 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
+require('vim._core.ui2').enable()
+
 require('init.lazy')
 require('init.colors')
 require('init.globals')

@@ -134,6 +134,9 @@ vim.keymap.set('n', vim.g.key.ghostty['<C-;>'], function()
   end)
 end, { desc = 'Open terminal in new tab' })
 
+-- Insert mode: Ctrl+B to go back one character (shell-like behavior)
+map('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
+
 vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
   local cwd = lib.cwd.cwd()
   lib.grep.pick({
@@ -159,7 +162,8 @@ vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
       '!*.txt',
       '-g',
       '!*.key',
-      '.',
+      '-v',
+      'ARCHIVE_OLPATH',
       cwd,
     },
     cwd = cwd,

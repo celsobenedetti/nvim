@@ -1,6 +1,6 @@
 local ok, schemastore = pcall(require, 'schemastore')
 if not ok then
-  return
+  return {}
 end
 
 return {

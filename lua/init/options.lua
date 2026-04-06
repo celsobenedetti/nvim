@@ -1,3 +1,4 @@
+vim.g.lsp = true
 vim.g.supermaven = true
 vim.g.autoformat = true
 vim.g.completion = true
@@ -168,7 +169,12 @@ vim.opt.scrolloff = 4 -- Lines of context
 vim.opt.sessionoptions = { 'buffers', 'curdir', 'tabpages', 'winsize', 'help', 'globals', 'skiprtp', 'folds' }
 vim.opt.shiftround = true -- Round indent
 vim.opt.shiftwidth = 2 -- Size of an indent
-vim.opt.shortmess:append({ W = true, I = true, c = true, C = true })
+vim.opt.shortmess:append({
+  W = true,
+  I = false, -- disable intro screen
+  c = true,
+  C = true,
+})
 vim.opt.showmode = false -- Dont show mode since we have a statusline
 vim.opt.sidescrolloff = 8 -- Columns of context
 
