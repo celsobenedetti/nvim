@@ -289,19 +289,20 @@ return {
       -- })
       --
       local clock_in_current_task = function(ev)
-        vim.g.org_current_task = ev.headline:get_title()
-        local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
-        if file then
-          file:write(ev.headline:get_title())
-          file:write('\n' .. os.time())
-          file:close()
-        end
+        vim.schedule(function()
+          vim.g.org_current_task = ev.headline:get_title()
+          local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
+          if file then
+            file:write(ev.headline:get_title())
+            file:write('\n' .. os.time())
+            file:close()
+          end
+        end)
       end
 
       local Events = require('orgmode.events')
       Events.listen(Events.event.ClockedIn, function(ev)
-        vim.schedule(clock_in_current_task)
-
+        clock_in_current_task(ev)
         -- set to prog unless it's a log heading
         if not vim.iter(ev.headline:get_tags()):find(function(t)
           return t == 'log'
