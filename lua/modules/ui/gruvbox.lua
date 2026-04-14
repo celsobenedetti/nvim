@@ -1,3 +1,7 @@
+if 'gruvbox' ~= require('lib.colors').omarchy_colorscheme().colorscheme then
+  return {}
+end
+
 return {
   {
     'ellisonleao/gruvbox.nvim',

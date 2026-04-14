@@ -1,3 +1,7 @@
+if 'evergarden' ~= require('lib.colors').omarchy_colorscheme().colorscheme then
+  return {}
+end
+
 return {
   {
     'https://codeberg.org/evergarden/nvim',
@@ -21,6 +25,7 @@ return {
       colors.orange = '#F7A182'
       colors.skye = colors.color0
       colors.secondary = colors.color7
+      colors.mantle = '#1c2225'
       vim.g.colors = colors
 
       local config = {
@@ -42,6 +47,7 @@ return {
         ['@attribute'] = { vim.g.colors.orange },
         ['@markup.italic'] = { vim.g.colors.lime, style = { 'italic' } },
         ['@markup.link.label.markdown_inline'] = { vim.g.colors.skye, style = { 'bold' } },
+        ['TreesitterContext'] = { bg = vim.g.colors.mantle },
 
         -- ['typescriptVariable'] = { vim.g.colors.orange },
         -- SpellBad = { style = { 'italic', 'underdotted' } },

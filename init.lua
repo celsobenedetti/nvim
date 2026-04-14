@@ -3,7 +3,7 @@ require('init')
 require('lazy').setup({
   spec = {
     { import = 'modules.base' }, -- hard requirements throught the config
-    { import = 'modules.core' }, -- plugins for core functionality
+    { import = 'modules.core' }, -- plugins for core coding functionality
     { import = 'modules.git' },
     { import = 'modules.editor' },
     { import = 'modules.overseer' },

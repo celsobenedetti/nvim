@@ -179,6 +179,19 @@ return {
     },
   },
   keys = {
+
+    {
+      '<C-p>',
+      function()
+        Snacks.picker.smart({
+          layout = 'select',
+          title = '',
+          hidden = cwd.cwd():find('dotfiles'),
+        })
+      end,
+      desc = 'snacks: Smart picker',
+      mode = { 'n' },
+    },
     -- stylua: ignore start
     -- TODO: figure out cwd in terminal, if opening file with different cwd from root
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
@@ -209,7 +222,6 @@ return {
     { '<leader>,', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
     { '<leader><leader>', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
     { '<leader><', function() Snacks.picker.buffers { layout="ivy_split",hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
-    { '<C-p>', function() Snacks.picker.smart({layout="select", title=""}) end, desc = 'snacks: Smart picker', mode = {'n'} },
 
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
     { '<leader>sr', function() Snacks.picker.recent() end, desc = 'snacks: Recent', },

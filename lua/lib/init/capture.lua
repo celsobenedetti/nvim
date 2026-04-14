@@ -34,3 +34,7 @@ vim.opt.number = false
 vim.opt.laststatus = 0
 
 vim.api.nvim_set_hl(0, 'Title', { link = 'Special' })
+
+vim.opt.shortmess:append({
+  I = true, -- disable intro screen
+})

@@ -66,3 +66,8 @@ vim.api.nvim_set_hl(0, 'FloatTitle', { bg = 'none', fg = colors.get_color('Float
 vim.api.nvim_set_hl(0, 'WinSeparator', { bg = 'none', fg = colors.get_color('WinSeparator', 'fg') })
 vim.api.nvim_set_hl(0, 'StatusLine', { link = 'WinSeparator' })
 vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none', fg = colors.get_color('StatusLineNC', 'fg') })
+
+vim.api.nvim_set_hl(0, 'SatelliteBar', { bg = 'none', fg = colors.get_color('SatelliteBar', 'fg') })
+vim.api.nvim_set_hl(0, 'SatelliteCursor', { bg = 'none', fg = 'none' })
+vim.api.nvim_set_hl(0, 'ColorColumn', { bg = 'none', fg = 'none' })
+vim.api.nvim_set_hl(0, 'CursorColumn', { bg = 'none', fg = 'none' })

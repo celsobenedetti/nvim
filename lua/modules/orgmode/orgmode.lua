@@ -1,4 +1,5 @@
 local colorschemes_to_highlight = {
+  'default',
   'koda',
   'rose-pine-dawn',
   'flexoki-light',
@@ -158,8 +159,8 @@ local agenda_views = {
 
 local function set_highlights()
   vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
-  vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@comment.todo' })
-  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'gray' })
+  vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
+  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
 end
 
 local function set_keymaps()
