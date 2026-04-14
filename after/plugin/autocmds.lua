@@ -10,6 +10,7 @@ local groups = {
   highlight_on_yank = augroup('highlight_on_yank'),
   on_macro = augroup('macros'),
   disable_comment_continuation = augroup('disable_comment_continuation'),
+  equalize_windows = augroup('equalize_windows'),
 }
 
 -- Highlight on yank
@@ -109,5 +110,13 @@ vim.api.nvim_create_autocmd('LspProgress', {
 
     io.stdout:write(osc_seq)
     io.stdout:flush()
+  end,
+})
+
+-- Equalize windows on resize
+vim.api.nvim_create_autocmd('VimResized', {
+  group = groups.equalize_windows,
+  callback = function()
+    vim.cmd('wincmd =')
   end,
 })
