@@ -29,8 +29,8 @@ return {
         vim.cmd('DBUI')
         tabname = vim.g.icons.db .. tabname
         vim.g.fn.rename_tab(tabname)
-        vim.system({ 'tmux', 'rename-window', tabname })
       end, { nargs = 1 })
+
       vim.cmd.cnoreabbrev('db Db')
       vim.cmd.cnoreabbrev('DB Db')
     end,
