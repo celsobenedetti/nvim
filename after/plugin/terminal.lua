@@ -1,33 +1,8 @@
 vim.g.insert_when_entering_terminal = true
 local float_term_bufnr = 0
 
-local lib = {
-  buffers = require('lib.buffers'),
-
-  -- Returns true if buffer is terminal, and has no running command
-  -- https://github.com/neovim/neovim/issues/31313
-  -- https://github.com/ilan-schemoul/nvim-config/commit/4e27ebabe9d4e819007c770800bac4d5903b8a8d
-  terminal_is_available = function(buffer)
-    local is_terminal = vim.bo[buffer].buftype == 'terminal'
-    if not is_terminal then
-      Snacks.notify.error('terminal_is_available called on non terminal buffer')
-      return true
-    end
-    local channel = vim.bo[buffer].channel
-    local child_process = vim.api.nvim_get_proc_children(vim.fn.jobpid(channel))
-    return vim.tbl_count(child_process) == 0
-  end,
-
-  startinsert = function()
-    if
-      not vim.g.insert_when_entering_terminal
-      or not vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative == '' -- is not valid window
-    then
-      return
-    end
-    vim.cmd('startinsert')
-  end,
-}
+local lib = require('lib.term')
+lib.buffers = require('lib.buffers')
 
 -- friendly term - upsert terminal in current window
 vim.keymap.set(

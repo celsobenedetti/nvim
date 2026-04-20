@@ -2,7 +2,21 @@ local lib = {
   org = require('lib.orgmode'),
   grep = require('lib.grep'),
   cwd = require('lib.cwd'),
+  term = require('lib.term'),
 }
+
+local should_quit = function()
+  if not lib.term.is_term() then
+    return true
+  end
+
+  if not lib.term.terminal_is_available() then
+    Snacks.notify.warn('Terminal is busy, not quitting')
+    return false
+  end
+
+  return true
+end
 
 local function should_write()
   return vim.bo.buftype ~= 'nofile'
@@ -18,11 +32,14 @@ map({ 'x', 'n', 'i', 's' }, '<C-s>', function()
   end
   vim.api.nvim_feedkeys(Keys('<esc>'), 'n', false)
 end, { desc = 'Save File' })
+
 map('n', '<C-c>', function()
   if should_write() then
     vim.cmd('silent w')
   end
-  vim.cmd('q')
+  if should_quit() then
+    vim.cmd('q')
+  end
 end, { desc = 'C-c: write and quit' })
 
 -- lazy
