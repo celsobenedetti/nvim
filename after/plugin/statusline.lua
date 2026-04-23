@@ -272,7 +272,7 @@ end
 
 function _G.MyStatusLine()
   -- return default statusline if big file
-  if vim.bo.filetype == 'dbout' then
+  if not vim.g.statusline or vim.bo.filetype == 'dbout' then
     return hl(vim.g.hl.text.secondary, ' %f')
   end
 

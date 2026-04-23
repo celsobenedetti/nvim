@@ -1,5 +1,16 @@
 -- TODO: refactor: create "tmux_keymap" util function to set keymap if/if not tmux
 local tmux = os.getenv('TMUX')
+
+--- workspace keymap: open new tmux window running workspace.sh
+--- works in/out of tmux
+local function workspace()
+  if tmux and tmux ~= '' then
+    vim.cmd('silent! !tmux neww -n workspace ~/scripts/workspace.sh')
+  else
+    vim.cmd('silent! !~/scripts/workspace.sh &')
+  end
+end
+
 if not tmux or tmux == '' then
   -- keymaps that only should be available outside tmux
   -- TODO: have a tmux version of this using "set in allacritty"
@@ -8,6 +19,9 @@ if not tmux or tmux == '' then
   end, { desc = 'Overseer toggle' })
 
   map('n', '<C-S-d>', ':DapViewToggle<CR>', { desc = 'Overseer toggle' })
+
+  -- workspace keymap: available outside tmux too
+  map({ 'n', 'i', 't' }, '<A-f>', workspace, { desc = 'workspace: open' })
 
   -- return plugin so it is not cleaned up by lazy
   return { 'christoomey/vim-tmux-navigator', lazy = true }
@@ -36,6 +50,12 @@ return {
     'christoomey/vim-tmux-navigator',
     event = 'VeryLazy',
     keys = {
+      {
+        '<A-f>',
+        workspace,
+        desc = 'workspace: open',
+        mode = { 'n', 'i', 't' },
+      },
       {
         '<C-h>',
         function()

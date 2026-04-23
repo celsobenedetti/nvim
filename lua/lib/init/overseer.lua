@@ -2,6 +2,7 @@ require('init')
 
 require('lazy').setup({
   spec = {
+    { import = 'modules.base' },
     { import = 'modules.overseer' },
     { import = 'modules.omarchy' },
     { 'folke/snacks.nvim', opts = { picker = {} } },
