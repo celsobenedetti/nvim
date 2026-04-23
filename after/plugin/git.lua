@@ -60,7 +60,7 @@ end, { desc = 'git: (codediff) git status' })
 
 -- git: CodeDiff with branch picker
 map('n', '<leader>gd', function()
-  local branches = vim.fn.systemlist('git branch --sort=-committerdate')
+  local branches = vim.fn.systemlist('git branch -a --sort=-committerdate')
   if vim.v.shell_error ~= 0 then
     Snacks.notify.error('Not a git repository')
     return
