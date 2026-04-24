@@ -35,6 +35,10 @@ local function toggle_terminal()
     vim.cmd(win .. 'close')
     return
   end
+  if not vim.api.nvim_buf_is_valid(float_term_bufnr) then
+    float_term_bufnr = 0
+    return
+  end
   vim.cmd('botright sp | b' .. float_term_bufnr)
 end
 
