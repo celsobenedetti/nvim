@@ -120,3 +120,16 @@ vim.api.nvim_create_autocmd('VimResized', {
     vim.cmd('wincmd =')
   end,
 })
+
+-- delete qf entry on <dd>
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'qf',
+  callback = function()
+    vim.keymap.set('n', 'dd', function()
+      local qf_list = vim.fn.getqflist()
+      table.remove(qf_list, vim.fn.line('.'))
+      vim.fn.setqflist(qf_list, 'r')
+      vim.cmd('copen') -- Refresh the window
+    end, { buffer = true })
+  end,
+})
