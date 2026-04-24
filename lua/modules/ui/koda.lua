@@ -1,3 +1,7 @@
+if 'koda' ~= require('lib.colors').omarchy_colorscheme().colorscheme then
+  return {}
+end
+
 return {
   {
     'oskarnurm/koda.nvim',

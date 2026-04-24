@@ -1,3 +1,7 @@
+if 'white' ~= require('lib.colors').omarchy_colorscheme().colorscheme then
+  return {}
+end
+
 return {
   'bjarneo/white.nvim',
   priority = 1000,
