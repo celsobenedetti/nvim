@@ -62,6 +62,7 @@
   "tabby.nvim": { "branch": "main", "commit": "3c130e1fcb598ce39a9c292847e32d7c3987cf11" },
   "telescope-orgmode.nvim": { "branch": "main", "commit": "0a9872f7932bcf4d08a8278b1493119ffcdc83c6" },
   "telescope.nvim": { "branch": "master", "commit": "028d9a0695a0cc4cfa893889f8c408ed7ccc8adc" },
+  "terms.nvim": { "branch": "master", "commit": "b22c3c989e403274e158bdf307e634614e4b2aa4" },
   "todo-comments.nvim": { "branch": "main", "commit": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668" },
   "trouble.nvim": { "branch": "main", "commit": "bd67efe408d4816e25e8491cc5ad4088e708a69a" },
   "vim-dadbod": { "branch": "master", "commit": "6d1d41da4873a445c5605f2005ad2c68c99d8770" },
@@ -70,6 +71,5 @@
   "vim-fugitive": { "branch": "master", "commit": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0" },
   "vim-tmux-navigator": { "branch": "master", "commit": "e41c431a0c7b7388ae7ba341f01a0d217eb3a432" },
   "vim-tpipeline": { "branch": "master", "commit": "145f26c4089d925532311aa08dec00006d2ad866" },
-  "vim-wakatime": { "branch": "master", "commit": "0d5dbdb1918e9fe352f2bbc64c93765290e042db" },
-  "white.nvim": { "branch": "main", "commit": "e3c3c3cc4b943b521032299e4f9b0d84a02e06d1" }
+  "vim-wakatime": { "branch": "master", "commit": "0d5dbdb1918e9fe352f2bbc64c93765290e042db" }
 }

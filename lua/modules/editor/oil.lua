@@ -10,6 +10,13 @@ function _G.get_oil_winbar()
   end
 end
 
+local function open_in_snacks_explorer()
+  local dir = require('oil').get_current_dir(0)
+  if dir then
+    Snacks.explorer({ cwd = dir })
+  end
+end
+
 return {
   'stevearc/oil.nvim',
   ---@module 'oil'
@@ -21,6 +28,7 @@ return {
       ['<C-p>'] = false,
       ['<C-s>'] = false,
       ['gp'] = 'actions.preview',
+      ['ge'] = open_in_snacks_explorer,
     },
 
     win_options = {

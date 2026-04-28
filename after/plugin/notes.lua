@@ -3,7 +3,7 @@ local lib = {
   grep = require('lib.grep'),
 }
 
-vim.keymap.set('n', vim.g.key.ghostty['<C-S-N>'], function()
+vim.keymap.set('n', vim.g.key['<C-S-N>'], function()
   lib.notes.focus_or_create_notes_tab(function()
     lib.grep.pick({
       cmd = {

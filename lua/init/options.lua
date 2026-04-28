@@ -48,16 +48,24 @@ vim.g.icons = {
 
 vim.g.notes_tabname = vim.g.icons.notes .. 'notes'
 
-vim.g.key = {
-  ['<C-S-g>'] = '',
-  tmux = {
-    ['<C-/>'] = '<C-_>',
-  },
-  ghostty = {
-    ['<C-S-N>'] = 'NOTES',
-    ['<C-;>'] = '♦',
-  },
+local keys = {
+  ['<C-S-g>'] = '<C-S-g>',
+  ['<C-/>'] = '<C-/>',
+  ['<C-S-N>'] = '<S-Down>',
+  ['<C-;>'] = '<C-;>',
 }
+
+if os.getenv('TMUX') then
+  keys['<C-/>'] = '<C-_>'
+  keys['<C-S-g>'] = ''
+end
+
+if os.getenv('GHOSTTY_BIN_DIR') then
+  keys['<C-S-N>'] = 'NOTES'
+  keys['<C-;>'] = '♦'
+end
+
+vim.g.key = keys
 
 vim.g.cmd = {
   git = {

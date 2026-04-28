@@ -131,7 +131,7 @@ end, { silent = true, desc = 'Disable ZZ' })
 
 vim.keymap.set('n', '<leader>gn', lib.org.goto_current_task, { desc = 'org: goto current task' })
 
-vim.keymap.set('n', vim.g.key.ghostty['<C-;>'], function()
+vim.keymap.set('n', vim.g.key['<C-;>'], function()
   vim.ui.input({ prompt = 'run command in new tab: ' }, function(input)
     if not input or #input == 0 then
       return

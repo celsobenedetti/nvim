@@ -8,7 +8,7 @@ local colorschemes_to_highlight = {
 local TMP_CURRENT_TASK_FILE = '/tmp/org_current_task'
 
 local agenda_files = {
-  vim.g.env.notes.NOTES .. '/*/*',
+  vim.g.env.notes.NOTES .. '/**/*',
 }
 
 --- @type table<string, OrgAgendaCustomCommand>
