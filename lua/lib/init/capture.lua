@@ -30,6 +30,16 @@ vim.api.nvim_create_autocmd('FileType', {
 
 Org.capture.c()
 
+vim.keymap.set('n', 'R', function()
+  local orgmode = require('orgmode')
+  if orgmode.capture then
+    orgmode.capture:refile_to_destination():next(function()
+      vim.cmd.write()
+      vim.cmd.quit()
+    end)
+  end
+end)
+
 vim.opt.number = false
 vim.opt.laststatus = 0
 
