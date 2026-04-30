@@ -154,7 +154,6 @@ local agenda_views = {
 local function set_highlights()
   vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
   vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
-  vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
 end
 
 local function set_keymaps()
@@ -214,6 +213,10 @@ return {
       { '<leader>ocw', ':Org capture w<CR>', desc = 'Org: Today agenda' },
     },
     config = function()
+      local lib = {
+        colors = require('lib.colors'),
+      }
+
       -- Setup orgmode
       require('orgmode').setup({
         org_agenda_files = agenda_files,
@@ -313,11 +316,15 @@ return {
         end)
       end)
 
-      if vim.tbl_contains(colorschemes_to_highlight, require('lib.colors').omarchy_colorscheme().colorscheme) then
+      if vim.tbl_contains(colorschemes_to_highlight, lib.colors.omarchy_colorscheme().colorscheme) then
         vim.schedule(set_highlights)
       end
       vim.schedule(set_keymaps)
-      vim.api.nvim_set_hl(0, '@org.headline.level1.org', { link = 'Special' })
+      vim.schedule(function()
+        vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
+        vim.api.nvim_set_hl(0, '@org.headline.level1.org', { link = 'Special' })
+        vim.api.nvim_set_hl(0, '@org.drawer.org', { link = 'Comment' })
+      end)
     end,
   },
 

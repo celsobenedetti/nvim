@@ -15,11 +15,11 @@ local relative_jump_with_mark = function(key)
 end
 
 M.up = function()
-  relative_jump_with_mark('k')
+  relative_jump_with_mark('gk')
 end
 
 M.down = function()
-  relative_jump_with_mark('j')
+  relative_jump_with_mark('gj')
 end
 
 M.diagnostic_goto = function(next, severity)

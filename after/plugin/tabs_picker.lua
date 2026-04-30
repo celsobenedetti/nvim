@@ -1,5 +1,4 @@
 -- https://gist.github.com/cameronr/68b2f9f73b54d72bf992eb4c956f0c13
-local Snacks = require('snacks')
 
 local M = {}
 

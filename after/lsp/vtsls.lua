@@ -66,6 +66,11 @@ local config = {
     end, {
       desc = 'File References',
     })
+
+    vim.api.nvim_create_user_command('TSImports', function()
+      vim.schedule(lsp.action['source.organizeImports'])
+    end, {})
+
     vim.keymap.set('n', '<leader>oi', lsp.action['source.organizeImports'], { desc = 'Organize Imports' })
     vim.keymap.set('n', '<leader>ru', lsp.action['source.removeUnused.ts'], { desc = 'Remove unused imports' })
     vim.keymap.set('n', '<leader>fa', lsp.action['source.fixAll.ts'], { desc = 'Fix all diagnostics' })

@@ -3,8 +3,8 @@
 ## Rules
 
 ### Research and document neovim APIs
-- first research the local help docs in: `/usr/share/nvim/runtime/doc/`
-- then the web [Neovim API Reference](https://neovim.io/doc/user/api.html) if needed.
+Before implementation, research the local help docs in: `/usr/local/share/nvim/runtime/doc`
+Or web references if needed: [Neovim API Reference](https://neovim.io/doc/user/api.html).
 - ALWAYS populate your findings in a `docs` file.
 
 ### Favor simplicity and standard features over new features and over engineering
