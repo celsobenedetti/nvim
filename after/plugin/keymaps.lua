@@ -161,6 +161,8 @@ vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
       'rg',
       '--no-heading',
       '--line-number',
+      '--max-filesize',
+      '1M',
       '-g',
       '!*.min.js',
       '-g',
