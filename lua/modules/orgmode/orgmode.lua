@@ -36,8 +36,8 @@ local agenda_views = {
       {
         org_agenda_overriding_header = 'Waiting',
         type = 'tags_todo',
-        match = 'TODO="WAITING"',
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+        match = 'TODO="WAITING"|TODO="ONGOING"',
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-up' },
       },
     },
   },
@@ -54,7 +54,7 @@ local agenda_views = {
       },
       {
         type = 'tags_todo',
-        match = 'TODO="NEXT"',
+        match = 'TODO="NEXT"|TODO="ONGOING"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'Next',
       },
@@ -301,10 +301,11 @@ return {
       local Events = require('orgmode.events')
       Events.listen(Events.event.ClockedIn, function(ev)
         clock_in_current_task(ev)
-        -- set to prog unless it's a log heading
-        if not vim.iter(ev.headline:get_tags()):find(function(t)
-          return t == 'log'
-        end) then
+        if
+          not vim.iter(ev.headline:get_tags()):find(function(t)
+            return t == 'log' or t == 'books'
+          end)
+        then
           ev.headline:set_todo('PROG')
         end
       end)
@@ -328,42 +329,44 @@ return {
     end,
   },
 
-  {
-    'nvim-orgmode/telescope-orgmode.nvim',
-    lazy = true,
-    -- event = 'VeryLazy',
-    dependencies = {
-      -- 'nvim-orgmode/orgmode',
-      { 'nvim-telescope/telescope.nvim', lazy = true },
-    },
-    config = function()
-      require('telescope').load_extension('orgmode')
-    end,
-
-    keys = {
-      {
-        '<leader>re',
-        function()
-          require('telescope').extensions.orgmode.refile_heading()
-        end,
-        desc = 'org: refile heading',
-      },
-      {
-        '<leader>osh',
-        function()
-          require('telescope').extensions.orgmode.search_headings()
-        end,
-        desc = 'org: search headings',
-      },
-      {
-        '<leader>toi',
-        function()
-          require('telescope').extensions.orgmode.insert_link()
-        end,
-        desc = 'org: insert link to heading',
-      },
-    },
-  },
+  -- NOTE: trying to ditch telescope-orgmode, rely instead on native org-refile with blink
+  -- 2026-05-03
+  -- {
+  --   'nvim-orgmode/telescope-orgmode.nvim',
+  --   lazy = true,
+  --   -- event = 'VeryLazy',
+  --   dependencies = {
+  --     -- 'nvim-orgmode/orgmode',
+  --     { 'nvim-telescope/telescope.nvim', lazy = true },
+  --   },
+  --   config = function()
+  --     require('telescope').load_extension('orgmode')
+  --   end,
+  --
+  --   keys = {
+  --     {
+  --       '<leader>re',
+  --       function()
+  --         require('telescope').extensions.orgmode.refile_heading()
+  --       end,
+  --       desc = 'org: refile heading',
+  --     },
+  --     {
+  --       '<leader>osh',
+  --       function()
+  --         require('telescope').extensions.orgmode.search_headings()
+  --       end,
+  --       desc = 'org: search headings',
+  --     },
+  --     {
+  --       '<leader>toi',
+  --       function()
+  --         require('telescope').extensions.orgmode.insert_link()
+  --       end,
+  --       desc = 'org: insert link to heading',
+  --     },
+  --   },
+  -- },
 
   {
     'saghen/blink.cmp',

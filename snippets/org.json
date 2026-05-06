@@ -12,7 +12,7 @@
   "drawer": {
     "description": "drawer",
     "prefix": "dr",
-    "body": [":${3:properties}:", "${2::ID:} $1", ":${4:end}:"]
+    "body": [":${3:properties}:", "${2::ID:} $1", ":end:"]
   },
   "link": {
     "description": "link",
