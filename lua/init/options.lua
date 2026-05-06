@@ -145,8 +145,14 @@ vim.opt.spellfile = vim.fn.expand('~/.config/nvim/spell/en.utf-8.add')
 vim.o.spellcapcheck = ''
 vim.opt.autowrite = true -- Enable autowrite
 
--- disable EOF tilde
-vim.opt.fillchars = { eob = ' ' }
+vim.opt.fillchars = {
+  fold = ' ',
+  foldopen = '▾',
+  foldclose = '▸',
+  foldinner = ' ',
+  foldsep = ' ',
+  -- eob = ' ', disable EOF tilde
+}
 
 -- only set clipboard if not in ssh, to make sure the OSC 52
 -- integration works automatically.
