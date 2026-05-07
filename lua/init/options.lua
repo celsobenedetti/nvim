@@ -151,7 +151,7 @@ vim.opt.fillchars = {
   foldclose = '▸',
   foldinner = ' ',
   foldsep = ' ',
-  -- eob = ' ', disable EOF tilde
+  eob = ' ', -- disable EOF tilde
 }
 
 -- only set clipboard if not in ssh, to make sure the OSC 52

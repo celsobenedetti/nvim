@@ -267,7 +267,7 @@ return {
     { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'snacks: Prev Reference', },
     -- TODO: decide which of these is good
     -- { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'snacks: Git Blame Line' }, },
-    -- { 'gl', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
+    { 'gL', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
     { 'gB', function() Snacks.gitbrowse();  end, { desc = 'snacks: Git Browse (open)' }, },
     { 'gY', function()
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
