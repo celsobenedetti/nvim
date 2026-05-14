@@ -24,15 +24,17 @@ vim.keymap.set(
 -- taken from: https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
   if float_term_bufnr <= 0 then
-    vim.cmd([[botright sp | term]])
-    vim.cmd([[setlocal bufhidden=hide]])
+    local target_height = math.max(20, math.floor(vim.fn.winheight(0) * 0.5))
+    vim.cmd('botright sp | term')
+    vim.cmd.resize(target_height)
+    vim.cmd.setlocal('bufhidden=hide')
     float_term_bufnr = vim.api.nvim_get_current_buf()
     return
   end
 
   local win = vim.fn.bufwinnr(float_term_bufnr)
   if win > -1 then
-    vim.cmd(win .. 'close')
+    vim.cmd.win('close')
     return
   end
   if not vim.api.nvim_buf_is_valid(float_term_bufnr) then
