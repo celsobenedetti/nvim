@@ -23,8 +23,8 @@ vim.keymap.set(
 
 -- taken from: https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
+  local target_height = math.max(20, math.floor(vim.fn.winheight(0) * 0.5))
   if float_term_bufnr <= 0 then
-    local target_height = math.max(20, math.floor(vim.fn.winheight(0) * 0.5))
     vim.cmd('botright sp | term')
     vim.cmd.resize(target_height)
     vim.cmd.setlocal('bufhidden=hide')
@@ -42,6 +42,7 @@ local function toggle_terminal()
     return
   end
   vim.cmd('botright sp | b' .. float_term_bufnr)
+  vim.cmd.resize(target_height)
 end
 
 vim.keymap.set('n', vim.g.key['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
