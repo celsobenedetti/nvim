@@ -1,17 +1,21 @@
+--
+local lib = {
+  visual = require('lib.visual'),
+  tmux = require('lib.tmux'),
+}
+--
 -- TODO: refactor: create "tmux_keymap" util function to set keymap if/if not tmux
-local tmux = os.getenv('TMUX')
-
 --- workspace keymap: open new tmux window running workspace.sh
 --- works in/out of tmux
 local function workspace()
-  if tmux and tmux ~= '' then
+  if not lib.tmux.active() then
     vim.cmd('silent! !tmux neww -n workspace ~/scripts/workspace.sh')
   else
     vim.cmd('silent! !~/scripts/workspace.sh &')
   end
 end
 
-if not tmux or tmux == '' then
+if not lib.tmux.active() then
   -- keymaps that only should be available outside tmux
   -- TODO: have a tmux version of this using "set in allacritty"
   map('n', '<C-S-P>', function()
@@ -71,6 +75,23 @@ return {
       { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane', mode = { 'n', 'i', 't' } },
       { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane', mode = { 'n', 't' } },
       { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane', mode = { 'n', 'i', 't' } },
+
+      {
+        '<C-k>',
+        function()
+          local selection = lib.visual.get_selection()
+
+          vim.api.nvim_feedkeys(Keys('<Esc>'), 'n', true)
+          if not selection or selection == '' then
+            return
+          end
+
+          local escaped = selection:gsub("'", "'\\''")
+          lib.tmux.send_text(escaped)
+        end,
+        desc = 'Send visual selection to right tmux pane',
+        mode = 'v',
+      },
 
       -- {
       --   '<c-_>',

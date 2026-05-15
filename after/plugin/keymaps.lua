@@ -3,6 +3,7 @@ local lib = {
   grep = require('lib.grep'),
   cwd = require('lib.cwd'),
   term = require('lib.term'),
+  tmux = require('lib.tmux'),
 }
 
 local should_quit = function()
@@ -100,6 +101,7 @@ map('v', 'gy', function()
   end
   local text = string.format('%s:%d:%d', file, start_line, end_line)
   vim.fn.setreg('+', text)
+  lib.tmux.send_text(text)
   Snacks.notify.info(string.format('Yanked:\n- `%s`', text), {
     title = 'Clipboard',
     icon = '',

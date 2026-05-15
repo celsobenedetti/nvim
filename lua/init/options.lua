@@ -57,7 +57,6 @@ local keys = {
 
 if os.getenv('TMUX') then
   keys['<C-/>'] = '<C-_>'
-  keys['<C-S-g>'] = ''
 end
 
 if os.getenv('GHOSTTY_BIN_DIR') then
