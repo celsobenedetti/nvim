@@ -21,12 +21,14 @@ M.neww = function(cmd, opts)
 end
 
 M.send_text = function(text)
-  if not M.active() then
-    return
-  end
+  vim.schedule(function()
+    if not M.active() then
+      return
+    end
 
-  vim.cmd(string.format("!tmux send-keys -t '{right-of}' '%s '", text))
-  vim.cmd('!tmux select-pane -t 1')
+    vim.cmd(string.format("!tmux send-keys -t '{right-of}' '%s '", text))
+    vim.cmd('!tmux select-pane -t 1')
+  end)
 end
 
 return M
