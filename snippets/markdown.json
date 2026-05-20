@@ -22,6 +22,11 @@
   "frontmatter": {
     "description": "YAML frontmatter with topics",
     "prefix": "---",
-    "body": ["---", "${1:topics}:", "  - [[${2:seeds}]]", "---"]
+    "body": ["---", "${1:topics}:", "  - \"[[${2:seed}]]\"", "---"]
+  },
+  "image": {
+    "description": "image",
+    "prefix": "img",
+    "body": ["![[${1}]]"]
   }
 }
