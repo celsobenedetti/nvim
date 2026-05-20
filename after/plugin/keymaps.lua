@@ -94,26 +94,20 @@ end, { desc = 'Copy file path to clipboard' })
 map('v', 'gy', function()
   local file = vim.fn.expand('%:.')
   file = file:gsub(' ', '\\ ')
-  -- Use visual selection marks '< and '> which are always set after visual mode
-  local start_line = vim.fn.line("'<")
-  local end_line = vim.fn.line("'>")
-  -- Safety check: ensure marks are valid (not 0)
-  if start_line == 0 then
-    start_line = vim.fn.line('.')
-  end
-  if end_line == 0 then
-    end_line = vim.fn.line('.')
-  end
+  local start_line = vim.fn.line('v')
+  local end_line = vim.fn.line('.')
   if start_line > end_line then
     start_line, end_line = end_line, start_line
   end
   local text = string.format('%s:%d:%d', file, start_line, end_line)
   vim.fn.setreg('+', text)
+  lib.tmux.send_text(text)
   Snacks.notify.info(string.format('Yanked:\n- `%s`', text), {
     title = 'Clipboard',
     icon = '',
     style = 'fancy',
   })
+  vim.api.nvim_input('<Esc>')
 end, { desc = 'Copy file path:line:line to clipboard' })
 
 map({ 'n', 'x', 'v' }, '<leader>sw', function()

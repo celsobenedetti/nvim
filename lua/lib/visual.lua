@@ -56,7 +56,7 @@ end
 local function replace_region_with_text(start, finish, new_lines)
   local bufnr = 0
   api.nvim_buf_set_lines(bufnr, start[1], finish[1] + 1, false, new_lines)
-  api.nvim_feedkeys(api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+  vim.api.nvim_input('<Esc>')
 end
 
 --- get start line, and end line of the visual selection
