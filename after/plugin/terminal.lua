@@ -32,9 +32,9 @@ local function toggle_terminal()
     return
   end
 
-  local win = vim.fn.bufwinnr(float_term_bufnr)
-  if win > -1 then
-    vim.cmd.win('close')
+  local winnr = vim.fn.bufwinnr(float_term_bufnr)
+  if winnr > -1 then
+    vim.api.nvim_win_close(vim.fn.win_getid(winnr), true)
     return
   end
   if not vim.api.nvim_buf_is_valid(float_term_bufnr) then
