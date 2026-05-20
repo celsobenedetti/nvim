@@ -26,8 +26,8 @@ M.send_text = function(text)
       return
     end
 
-    vim.cmd(string.format("!tmux send-keys -t '{right-of}' '%s '", text))
-    vim.cmd('!tmux select-pane -t 1')
+    vim.cmd(string.format("silent! !tmux send-keys -t '{right-of}' '%s '", text))
+    vim.cmd('silent! !tmux select-pane -t 1')
   end)
 end
 
