@@ -20,8 +20,8 @@
     "body": ["> [!$1]", "> $2"]
   },
   "frontmatter": {
-    "description": "YAML frontmatter",
+    "description": "YAML frontmatter with topics",
     "prefix": "---",
-    "body": ["---", "tags:", "  - $1", "---"]
+    "body": ["---", "${1:topics}:", "  - [[${2:seeds}]]", "---"]
   }
 }
