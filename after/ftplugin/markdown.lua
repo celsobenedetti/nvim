@@ -64,5 +64,24 @@ end
 
 vim.opt.wrap = true -- disable wrap
 
+-- follow wiki links with enter (only in notes dir)
+local notes = vim.g.env and vim.g.env.notes
+if notes then
+  local filepath = vim.fn.expand('%:p')
+  if filepath:find(notes.NOTES, 1, true) == 1 or filepath:find(notes.ZK, 1, true) == 1 then
+    vim.keymap.set('n', '<CR>', function()
+      local line = vim.api.nvim_get_current_line()
+      local col = vim.api.nvim_win_get_cursor(0)[2]
+      if line:sub(1, col + 1):find('[[', 1, true) and line:sub(col + 2):find(']]', 1, true) then
+        pcall(function()
+          require('obsidian').open()
+        end)
+        return
+      end
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'n', false)
+    end, { buffer = true, desc = 'follow link' })
+  end
+end
+
 vim.schedule(fold_frontmatter)
 vim.schedule(highlight_tags)
