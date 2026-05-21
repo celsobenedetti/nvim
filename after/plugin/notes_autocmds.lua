@@ -6,5 +6,3 @@ if not require('lib.cwd').matches({ 'notes' }) then
 end
 
 vim.g.fn.rename_tab(vim.g.icons.notes .. 'notes')
-
-vim.keymap.set('n', '<leader>A', ':Org agenda T<CR>')

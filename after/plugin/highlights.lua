@@ -1,3 +1,7 @@
+if vim.g.colorscheme == 'default' then
+  return
+end
+
 local colors = require('lib.colors')
 vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- transparency changes -----------
 

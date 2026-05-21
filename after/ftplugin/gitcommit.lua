@@ -7,5 +7,6 @@ vim.api.nvim_buf_set_keymap(
 )
 
 vim.schedule(function()
+  vim.cmd('normal! gg')
   vim.cmd('startinsert')
 end)
