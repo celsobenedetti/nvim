@@ -27,4 +27,8 @@ M.focus_or_create_notes_tab = function(fn)
   end
 end
 
+M.is_notes_dir = function()
+  return vim.fn.getcwd():find(vim.g.env.notes.NOTES)
+end
+
 return M

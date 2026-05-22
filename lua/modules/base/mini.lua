@@ -37,20 +37,13 @@ return {
             return { from = from, to = to }
           end,
           -- quotes
-          ['q'] = {
-            {
-              "%b''",
-              '%b""',
-              '%b``',
-              '%b**',
-
-              -- TODO: this should only apply to org files
-              --orgmode
-              '%b~~',
-              '%b==',
-            },
-            '^.().*().$',
-          },
+          ['q'] = function()
+            local patterns = { "%b''", '%b""', '%b``' }
+            if vim.bo.filetype == 'org' then
+              vim.list_extend(patterns, { '%b**', '%b~~', '%b==' })
+            end
+            return { patterns, '^.().*().$' }
+          end,
         },
       })
     end,
