@@ -7,6 +7,7 @@ vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- t
 
 vim.api.nvim_set_hl(0, 'TextSecondary', { fg = vim.g.colors.secondary or vim.g.colors.fg })
 
+
 -- stylua: ignore start
 -- vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(vim.g.hl.text.subtext, 'fg') })
 -- vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
@@ -74,3 +75,9 @@ vim.api.nvim_set_hl(0, 'SatelliteBar', { bg = 'none', fg = colors.get_color('Sat
 vim.api.nvim_set_hl(0, 'SatelliteCursor', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'ColorColumn', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'CursorColumn', { bg = 'none', fg = 'none' })
+
+vim.api.nvim_set_hl(0, 'DiagnosticSignError', { bg = 'none', fg = 'none' })
+vim.api.nvim_set_hl(0, 'DiagnosticSignHint', { bg = 'none', fg = 'none' })
+vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', { bg = 'none', fg = 'none' })
+vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = 'none' })
+vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = 'none' })
