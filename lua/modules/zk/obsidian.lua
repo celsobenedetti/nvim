@@ -96,7 +96,7 @@ return {
       { '<leader>n', create_note_from_selection, mode = 'v', desc = 'Create note from selection' },
     }
   end,
-  opts = function()
+  config = function()
     local env = notes_env()
     if not env or not env.NOTES then
       return {}
@@ -105,12 +105,11 @@ return {
     local notes = env.NOTES
     local inbox_subdir = env.OBSIDIAN_INBOX:gsub(notes .. '/', '')
 
-    return {
+    require('obsidian').setup({
       legacy_commands = false,
       workspaces = {
         { name = 'notes', path = notes },
         { name = 'archives', path = env.ARCHIVES },
-        { name = 'zk', path = env.ZK },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
@@ -153,7 +152,13 @@ return {
           insert_link = '<C-l>',
         },
       },
-    }
+    })
+
+    vim.api.nvim_set_hl(
+      0,
+      'ObsidianRefText',
+      { bg = 'none', fg = vim.g.colors.links or vim.g.colors.purple or vim.g.colors.primary, underline = true }
+    )
   end,
   dependencies = {
     'nvim-lua/plenary.nvim',

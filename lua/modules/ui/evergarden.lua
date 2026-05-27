@@ -26,6 +26,8 @@ return {
       colors.skye = colors.color0
       colors.secondary = colors.color7
       colors.mantle = '#1c2225'
+      colors.blue = '#B2CAED'
+      colors.purple = '#D2BDF3'
       vim.g.colors = colors
 
       local config = {
