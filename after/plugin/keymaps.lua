@@ -29,6 +29,7 @@ end
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', function()
   if should_write() then
+    vim.cmd('silent e')
     vim.cmd('silent w')
   end
   vim.api.nvim_feedkeys(Keys('<esc>'), 'n', false)
@@ -65,10 +66,16 @@ map('n', 'h', fold.h, { desc = 'h: move left or fold' })
 map('n', 'l', fold.l, { desc = 'l: move right and unfold' })
 
 map('n', '<leader>R', function()
-  vim.cmd(':w')
-  vim.cmd(':e! %')
-  vim.cmd('norm zz')
-end, { desc = 'write and refresh buffer' })
+  local fname = vim.fn.expand('%:p')
+  if fname == '' then
+    return
+  end
+  local disk_mtime = vim.fn.getftime(fname)
+  if disk_mtime <= (vim.b._file_mtime or 0) then
+    vim.cmd(':w')
+    vim.cmd('norm zz')
+  end
+end, { desc = 'write buffer if not outdated' })
 
 -- fs
 local fs = require('lib.fs')
@@ -100,13 +107,12 @@ map('v', 'gy', function()
     start_line, end_line = end_line, start_line
   end
   local text = string.format('%s:%d:%d', file, start_line, end_line)
-  vim.fn.setreg('+', text)
-  lib.tmux.send_text(text)
-  Snacks.notify.info(string.format('Yanked:\n- `%s`', text), {
-    title = 'Clipboard',
-    icon = '',
-    style = 'fancy',
-  })
+  if lib.tmux.active() then
+    lib.tmux.send_text(text)
+  else
+    vim.fn.setreg('+', text)
+    Snacks.notify.info(string.format('Yanked:\n- `%s`', text), { title = 'Clipboard', icon = '', style = 'fancy' })
+  end
   vim.api.nvim_input('<Esc>')
 end, { desc = 'Copy file path:line:line to clipboard' })
 

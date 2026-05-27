@@ -11,6 +11,7 @@ local groups = {
   on_macro = augroup('macros'),
   disable_comment_continuation = augroup('disable_comment_continuation'),
   equalize_windows = augroup('equalize_windows'),
+  file_mtime = augroup('file_mtime'),
 }
 
 -- Highlight on yank
@@ -118,6 +119,17 @@ vim.api.nvim_create_autocmd('VimResized', {
   group = groups.equalize_windows,
   callback = function()
     vim.cmd('wincmd =')
+  end,
+})
+
+-- track file mtime per buffer for outdated detection
+vim.api.nvim_create_autocmd({ 'BufRead', 'BufWritePost' }, {
+  group = groups.file_mtime,
+  callback = function()
+    local fname = vim.fn.expand('%:p')
+    if fname ~= '' then
+      vim.b._file_mtime = vim.fn.getftime(fname)
+    end
   end,
 })
 
