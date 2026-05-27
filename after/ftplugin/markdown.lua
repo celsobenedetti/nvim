@@ -20,6 +20,29 @@ local function fold_frontmatter()
   end)
 end
 
+local function setup_folding()
+  vim.wo.foldmethod = 'expr'
+  vim.wo.foldlevel = 1
+  vim.wo.foldenable = true
+
+  function _G.__md_foldexpr()
+    local lnum = vim.v.lnum
+    local s, e = vim.b._fm_start, vim.b._fm_end
+    if s and e then
+      if lnum == s then
+        return '>2'
+      elseif lnum == e then
+        return '<2'
+      elseif lnum > s and lnum < e then
+        return '2'
+      end
+    end
+    return vim.treesitter.foldexpr()
+  end
+
+  vim.wo.foldexpr = 'v:lua.__md_foldexpr()'
+end
+
 -- create custom highlight group for markdown #tags
 -- namespace code to ensure higlights only apply to markdown windows, even after markdown ftplugin is loaded
 local function highlight_tags()
@@ -68,7 +91,7 @@ vim.opt.wrap = true -- disable wrap
 local notes = vim.g.env and vim.g.env.notes
 if notes then
   local filepath = vim.fn.expand('%:p')
-  if filepath:find(notes.NOTES, 1, true) == 1 or filepath:find(notes.ZK, 1, true) == 1 then
+  if filepath:find(notes.NOTES, 1, true) == 1 then
     vim.keymap.set('n', '<CR>', function()
       local line = vim.api.nvim_get_current_line()
       local col = vim.api.nvim_win_get_cursor(0)[2]
@@ -84,4 +107,5 @@ if notes then
 end
 
 vim.schedule(fold_frontmatter)
+vim.schedule(setup_folding)
 vim.schedule(highlight_tags)
