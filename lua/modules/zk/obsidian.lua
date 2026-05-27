@@ -17,29 +17,50 @@ local function create_note_from_selection()
     :save({
       path = vim.g.env.notes.OBSIDIAN_INBOX .. '/' .. title .. '.md',
       insert_frontmatter = false,
-      update_content = function()
-        return {
-          '#seed',
-        }
-      end,
+      -- update_content = function()
+      --   return { '#seed' }
+      -- end,
     })
 
   visual.replace('[[' .. title .. ']]')
 end
 
+local function notes_env()
+  if not vim.g.env or not vim.g.env.notes then
+    return nil
+  end
+  return vim.g.env.notes
+end
+
 return {
-  {
-    'obsidian-nvim/obsidian.nvim',
-    version = '*', -- recommended, use latest release instead of latest commit
-    vscode = false,
-    cwd = vim.g.env.notes.NOTES,
-    keys = {
+  'obsidian-nvim/obsidian.nvim',
+  version = '*',
+  vscode = false,
+  event = function()
+    local env = notes_env()
+    if not env or not env.NOTES then
+      return {}
+    end
+    return {
+      'BufReadPre ' .. env.NOTES .. '/**/*',
+      'BufNewFile ' .. env.NOTES .. '/**/*',
+    }
+  end,
+  keys = function()
+    local env = notes_env()
+    if not env or not env.NOTES then
+      return {}
+    end
+    local notes = env.NOTES
+    local icons = (vim.g.icons or {}).notes or ''
+
+    return {
       {
         '<leader>zz',
         function()
           Snacks.picker.files({
-            title = vim.g.icons.notes .. 'notes',
-            cwd = vim.g.env.notes.NOTES,
+            title = icons .. 'notes',
+            cwd = notes,
             confirm = function(picker, item)
               picker:close()
               require('lib.notes').focus_or_create_notes_tab(function()
@@ -54,8 +75,8 @@ return {
         '<leader>zZ',
         function()
           Snacks.picker.grep({
-            cwd = vim.g.env.notes.NOTES,
-            title = vim.g.icons.notes .. 'search through notes',
+            cwd = notes,
+            title = icons .. 'search through notes',
             confirm = function(_, item)
               require('lib.notes').focus_or_create_notes_tab(function()
                 vim.cmd('e ' .. item.file)
@@ -65,116 +86,76 @@ return {
         end,
         desc = 'Grep through notes',
       },
+      { '<leader>oO', '<cmd>Obsidian open<CR>', desc = 'Open in Obsidian' },
+      { '<leader>ob', '<cmd>Obsidian backlinks<CR>', desc = 'Backlinks' },
+      { '<leader>od', '<cmd>Obsidian dailies<CR>', desc = 'Daily notes' },
+      { '<leader>ol', '<cmd>Obsidian links<CR>', desc = 'Links in note' },
+      { '<leader>ch', '<cmd>Obsidian check<CR>', desc = 'Health check' },
+      { '<leader>oR', '<cmd>Obsidian rename<CR>', desc = 'Rename note' },
+      { '<leader>toc', '<cmd>Obsidian toc<CR>', desc = 'Table of contents' },
+      { '<leader>n', create_note_from_selection, mode = 'v', desc = 'Create note from selection' },
+    }
+  end,
+  opts = function()
+    local env = notes_env()
+    if not env or not env.NOTES then
+      return {}
+    end
 
-      -- stylua: ignore start
-      { '<leader>oO', ':Obsidian open<CR>' },
-      { '<leader>ob', ':Obsidian backlinks<CR>' },
-      { '<leader>od', ':Obsidian dailies<CR>' },
-      { '<leader>ol', ':Obsidian links<CR>' },
-      -- { '<leader>ot', ':ObsidianTags<CR>' },
-      { '<leader>ch', ':Obsidian check<CR>' },
-      { '<leader>oR', ':Obsidian rename<CR>' },
-      { '<leader>toc', ':Obsidian toc<CR>' },
-      { '<leader>n', create_note_from_selection, mode = 'v', },
-    },
-    -- cond = function()
-    --   if require('lib.cwd').matches({ 'journals' }) then
-    --     return false
-    --   end
-    --
-    --   local path = vim.fn.expand('%:p')
-    --   local is_templates = path:find('templates')
-    --   local has_env = vim.g.env.notes.NOTES
-    --
-    --   return has_env and not is_templates
-    -- end,
-    config = function()
-      if not vim.g.env.notes.NOTES then
-        return
-      end
+    local notes = env.NOTES
+    local inbox_subdir = env.OBSIDIAN_INBOX:gsub(notes .. '/', '')
 
-      require('obsidian').setup({
-        daily_notes = {
-          folder = 'daily',
-          -- template = 'daily',
+    return {
+      legacy_commands = false,
+      workspaces = {
+        { name = 'notes', path = notes },
+        { name = 'archives', path = env.ARCHIVES },
+        { name = 'zk', path = env.ZK },
+      },
+      notes_subdir = inbox_subdir,
+      new_notes_location = 'notes_subdir',
+      daily_notes = {
+        folder = 'daily',
+      },
+      templates = {
+        folder = env.ASSETS .. '/templates',
+        date_format = '%F',
+        time_format = '%H:%M',
+      },
+      frontmatter = {
+        enabled = false,
+      },
+      attachments = {
+        folder = env.ATTACHMENTS,
+        confirm_img_paste = true,
+      },
+      completion = {
+        blink = true,
+        min_chars = 2,
+      },
+      ui = {
+        enable = false,
+      },
+      note_id_func = function(title, path)
+        if title then
+          return title
+        end
+        if path then
+          return path.stem or path.name or path.filename
+        end
+        Snacks.notify.error('BUG: BAD_ID')
+        return 'BUG: BAD_ID'
+      end,
+      picker = {
+        name = 'snacks.pick',
+        note_mappings = {
+          new = '<C-x>',
+          insert_link = '<C-l>',
         },
-        templates = {
-          folder = vim.g.env.notes.ASSETS .. '/templates',
-          date_format = '%F',
-          time_format = '%H:%M',
-        },
-        frontmatter = {
-          enabled = false,
-          func = require('obsidian.builtin').frontmatter,
-          sort = { 'id', 'aliases', 'tags' },
-        },
-        legacy_commands = false,
-        notes_subdir = vim.g.env.notes.OBSIDIAN_INBOX:gsub(vim.g.env.notes.NOTES .. '/', ''),
-        new_notes_location = 'notes_subdir',
-        workspaces = {
-          -- { name = 'notes', path = vim.g.env.notes.NOTES },
-          -- { name = 'archives', path = vim.g.env.notes.ARCHIVES },
-          { name = 'zk', path = vim.g.env.notes.ZK },
-        },
-
-        attachments = {
-          folder = vim.g.env.notes.ATTACHMENTS,
-          img_name_func = function()
-            return string.format('Pasted image %s', os.date('%Y%m%d%H%M%S'))
-          end,
-          confirm_img_paste = true,
-        },
-
-        completion = {
-          -- Enables completion using nvim_cmp
-          nvim_cmp = false,
-          -- Enables completion using blink.cmp
-          blink = true,
-          -- Trigger completion at 2 chars.
-          min_chars = 2,
-        },
-        ui = {
-          enable = false,
-          -- checkboxes = {
-          --   [" "] = { char = "󰄱", hl_groupth
-          --   = "ObsidianTodo" },
-          --   [">"] = { char = "", hl_group = "ObsidianRightArrow" },
-          --   ["~"] = { char = "x", hl_group = "ObsidianTilde" },
-          --   ["x"] = { char = "✔", hl_group = "ObsidianDone" },
-          -- },
-        },
-
-        --- @param title string|?
-        --- @param path obsidian.Path|?
-        note_id_func = function(title, path)
-          if title ~= nil then
-            return title
-          end
-
-          if path ~= nil then
-            return path.stem or path.name or path.filename
-          end
-
-          Snacks.notify.error('BUG: BAD_ID')
-          return 'BUG: BAD_ID'
-        end,
-
-        picker = {
-          -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
-          name = 'snacks.pick',
-          -- Optional, configure key mappings for the picker. These are the defaults.
-          -- Not all pickers support all mappings.
-          note_mappings = {
-            -- Create a new note from your query.
-            new = '<C-x>',
-            -- Insert a link to the selected note.
-            insert_link = '<C-l>',
-          },
-        },
-      })
-    end,
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
+      },
+    }
+  end,
+  dependencies = {
+    'nvim-lua/plenary.nvim',
   },
 }
