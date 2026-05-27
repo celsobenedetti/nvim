@@ -1,46 +1,47 @@
 local function fold_frontmatter()
-  vim.schedule(function()
-    local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---')
-    if not has_frontmatter then
-      return
+  local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---')
+  if not has_frontmatter then
+    return
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(0, 1, -1, false)
+  local end_of_frontmatter = 1
+
+  for i, line in ipairs(lines) do
+    if line:match('^---') then
+      end_of_frontmatter = i + 1
+      break
     end
+  end
 
-    local lines = vim.api.nvim_buf_get_lines(0, 1, -1, false)
-    local end_of_frontmatter = 1
-
-    for i, line in ipairs(lines) do
-      if line:match('^---') then
-        end_of_frontmatter = i + 1
-        break
-      end
-    end
-
-    vim.opt.foldmethod = 'manual'
-    vim.api.nvim_command('1,' .. end_of_frontmatter .. 'fold')
-  end)
+  vim.opt.foldmethod = 'manual'
+  vim.api.nvim_command('1,' .. end_of_frontmatter .. 'fold')
 end
 
 local function setup_folding()
-  vim.wo.foldmethod = 'expr'
-  vim.wo.foldlevel = 1
-  vim.wo.foldenable = true
+  vim.schedule(fold_frontmatter)
+  vim.schedule(function()
+    vim.wo.foldmethod = 'expr'
+    vim.wo.foldlevel = 1
+    vim.wo.foldenable = true
 
-  function _G.__md_foldexpr()
-    local lnum = vim.v.lnum
-    local s, e = vim.b._fm_start, vim.b._fm_end
-    if s and e then
-      if lnum == s then
-        return '>2'
-      elseif lnum == e then
-        return '<2'
-      elseif lnum > s and lnum < e then
-        return '2'
+    function _G.__md_foldexpr()
+      local lnum = vim.v.lnum
+      local s, e = vim.b._fm_start, vim.b._fm_end
+      if s and e then
+        if lnum == s then
+          return '>2'
+        elseif lnum == e then
+          return '<2'
+        elseif lnum > s and lnum < e then
+          return '2'
+        end
       end
+      return vim.treesitter.foldexpr()
     end
-    return vim.treesitter.foldexpr()
-  end
 
-  vim.wo.foldexpr = 'v:lua.__md_foldexpr()'
+    vim.wo.foldexpr = 'v:lua.__md_foldexpr()'
+  end)
 end
 
 -- create custom highlight group for markdown #tags
@@ -106,6 +107,5 @@ if notes then
   end
 end
 
-vim.schedule(fold_frontmatter)
 vim.schedule(setup_folding)
 vim.schedule(highlight_tags)
