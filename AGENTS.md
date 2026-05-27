@@ -1,17 +1,21 @@
-# AGENTS.md - Neovim Configuration Development Guidelines
+# Neovim configuration
 
-## Rules
+This codebase is a Neovim configuration symlinked to `~/.config/nvim`.
+It uses [lazy.nvim](~/.local/share/nvim/lazy/lazy.nvim/README.md) to configure external plugins.
 
-### Research and document neovim APIs
+## Research and document neovim APIs
 Before implementation, research the local help docs in: `/usr/local/share/nvim/runtime/doc`
 Or web references if needed: [Neovim API Reference](https://neovim.io/doc/user/api.html).
 - ALWAYS populate your findings in a `docs` file.
 
-### Favor simplicity and standard features over new features and over engineering
+### external plugins
+If task pertains to particular external plugins, you can research the code in `~/.local/share/nvim/lazy/{plugin_name}`
+
+## Favor simplicity and standard neovim features over custom solutions and over engineering
 
 Before implementing features research if Vim / Neovim have native ways to achieve the goal.
 This involves reducing complexity throughout the config.
 ALWAYS ask for clarification if unclear.
 
-### Favor Neovim Lua APIs over Vimscript
+## Favor Neovim Lua APIs over Vimscript
 For all new feature we do implement, avoid Vimscript and use the Neovim Lua APIs.
