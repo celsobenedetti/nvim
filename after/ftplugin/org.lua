@@ -8,9 +8,6 @@ vim.api.nvim_buf_set_keymap(0, 'n', '<leader>j', '<Cmd>lua require("orgmode").ac
 vim.api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("orgmode").action("org_mappings.todo_next_state")<CR>',
   { desc = 'org: change todo state' }
 )
-vim.api.nvim_buf_set_keymap(0, 'n', 're', ':lua require("telescope").extensions.orgmode.refile_heading()<CR>',
-  { desc = 'org: refile' }
-)
 
 _G.org_n = _G.org_n or function()
   if vim.v.hlsearch == 1 then
@@ -26,6 +23,14 @@ vim.api.nvim_buf_set_keymap(0, 'n', '<leader>n', ':lua _G.org_n()<CR>',
 vim.api.nvim_buf_set_keymap(0, 'n', 'X', ':lua require("orgmode").action("clock.org_clock_cancel")<CR>',
   { desc = 'org: cancel clock' }
 )
+vim.keymap.set('n', 'R', function()
+  local orgmode = require('orgmode')
+  if orgmode.capture then
+    orgmode.capture:refile_to_destination():next(function()
+      vim.cmd.write()
+    end)
+  end
+end)
 -- stylua: ignore end
 
 vim.api.nvim_create_autocmd('ModeChanged', {

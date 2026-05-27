@@ -34,7 +34,10 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.b.capture_buffer = vim.api.nvim_get_current_buf()
     -- Override orgmode's C-c mapping with wqa behavior (defer to ensure it runs after orgmode setup)
     vim.schedule(function()
-      vim.keymap.set('n', '<C-c>', '<cmd>wqa<cr>', { buffer = true, noremap = true, silent = true, nowait = true })
+      vim.keymap.set('n', '<C-c>', function()
+        vim.cmd.write()
+        vim.cmd.quit()
+      end, { buffer = true, noremap = true, silent = true, nowait = true })
     end)
   end,
 })

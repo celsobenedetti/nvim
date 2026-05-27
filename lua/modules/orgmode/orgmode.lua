@@ -329,45 +329,6 @@ return {
     end,
   },
 
-  -- NOTE: trying to ditch telescope-orgmode, rely instead on native org-refile with blink
-  -- 2026-05-03
-  -- {
-  --   'nvim-orgmode/telescope-orgmode.nvim',
-  --   lazy = true,
-  --   -- event = 'VeryLazy',
-  --   dependencies = {
-  --     -- 'nvim-orgmode/orgmode',
-  --     { 'nvim-telescope/telescope.nvim', lazy = true },
-  --   },
-  --   config = function()
-  --     require('telescope').load_extension('orgmode')
-  --   end,
-  --
-  --   keys = {
-  --     {
-  --       '<leader>re',
-  --       function()
-  --         require('telescope').extensions.orgmode.refile_heading()
-  --       end,
-  --       desc = 'org: refile heading',
-  --     },
-  --     {
-  --       '<leader>osh',
-  --       function()
-  --         require('telescope').extensions.orgmode.search_headings()
-  --       end,
-  --       desc = 'org: search headings',
-  --     },
-  --     {
-  --       '<leader>toi',
-  --       function()
-  --         require('telescope').extensions.orgmode.insert_link()
-  --       end,
-  --       desc = 'org: insert link to heading',
-  --     },
-  --   },
-  -- },
-
   {
     'saghen/blink.cmp',
     opts = function(_, opts)
