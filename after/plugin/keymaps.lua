@@ -29,8 +29,7 @@ end
 -- Save file
 map({ 'x', 'n', 'i', 's' }, '<C-s>', function()
   if should_write() then
-    vim.cmd('silent e')
-    vim.cmd('silent w')
+    vim.cmd('silent w!')
   end
   vim.api.nvim_feedkeys(Keys('<esc>'), 'n', false)
 end, { desc = 'Save File' })
