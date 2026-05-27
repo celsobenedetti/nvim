@@ -134,7 +134,7 @@ return {
         min_chars = 2,
       },
       ui = {
-        enable = false,
+        enable = true,
       },
       note_id_func = function(title, path)
         if title then
