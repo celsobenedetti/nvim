@@ -1,21 +1,22 @@
 local function fold_frontmatter()
-  local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---')
+  local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---$')
   if not has_frontmatter then
     return
   end
+
+  vim.wo.foldmethod = 'manual'
 
   local lines = vim.api.nvim_buf_get_lines(0, 1, -1, false)
   local end_of_frontmatter = 1
 
   for i, line in ipairs(lines) do
-    if line:match('^---') then
+    if line:match('^---$') then
       end_of_frontmatter = i + 1
       break
     end
   end
 
   vim.schedule(function()
-    vim.opt.foldmethod = 'manual'
     vim.api.nvim_command('1,' .. end_of_frontmatter .. ' fold')
   end)
 end
@@ -42,6 +43,7 @@ local function setup_folding()
     end
 
     vim.wo.foldexpr = 'v:lua.__md_foldexpr()'
+    vim.schedule(fold_frontmatter)
   end)
 end
 
@@ -108,8 +110,5 @@ if notes then
   end
 end
 
-if vim.b.relative_file then
-  vim.schedule(setup_folding)
-  vim.schedule(highlight_tags)
-  vim.schedule(fold_frontmatter)
-end
+vim.schedule(setup_folding)
+vim.schedule(highlight_tags)

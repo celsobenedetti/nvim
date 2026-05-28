@@ -4,9 +4,10 @@ This codebase is a Neovim configuration symlinked to `~/.config/nvim`.
 It uses [lazy.nvim](~/.local/share/nvim/lazy/lazy.nvim/README.md) to configure external plugins.
 
 ## Research and document neovim APIs
-Before implementation, research the local help docs in: `/usr/local/share/nvim/runtime/doc`
-Or web references if needed: [Neovim API Reference](https://neovim.io/doc/user/api.html).
-- ALWAYS populate your findings in a `docs` file.
+nvim help docs located in: `/usr/local/share/nvim/runtime/doc`
+if needed: [Neovim API web reference Reference](https://neovim.io/doc/user/api.html).
+
+ALWAYS populate your findings in a `docs` file.
 
 ### external plugins
 If task pertains to particular external plugins, you can research the code in `~/.local/share/nvim/lazy/{plugin_name}`
