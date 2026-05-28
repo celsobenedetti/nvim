@@ -1,11 +1,26 @@
 return {
+  -- {
+  --   'hedyhli/outline.nvim',
+  --   keys = {
+  --     { '<leader>out', ':Outline<CR>', desc = 'Toggle Outline' },
+  --   },
+  --   config = function()
+  --     require('outline').setup({})
+  --   end,
+  -- },
   {
-    'hedyhli/outline.nvim',
-    keys = {
-      { '<leader>out', ':Outline<CR>', desc = 'Toggle Outline' },
+    'stevearc/aerial.nvim',
+    opts = {
+      layout = {
+        default_direction = 'prefer_left',
+      },
     },
-    config = function()
-      require('outline').setup({})
-    end,
+    keys = {
+      { '<leader>out', ':AerialToggle<CR>', desc = 'Toggle Outline' },
+    },
+    -- dependencies = {
+    --   'nvim-treesitter/nvim-treesitter',
+    --   'nvim-tree/nvim-web-devicons',
+    -- },
   },
 }

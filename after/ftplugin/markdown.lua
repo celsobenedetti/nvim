@@ -1,3 +1,5 @@
+vim.opt_local.number = false
+
 local function fold_frontmatter()
   local has_frontmatter = vim.api.nvim_buf_get_lines(0, 0, -1, false)[1]:match('^---$')
   if not has_frontmatter then

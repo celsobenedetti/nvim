@@ -1,13 +1,17 @@
 return {
   config = function()
+    if not vim.g.incline and vim.bo.filetype ~= 'markdown' then
+      return
+    end
     -- set winbar to render empty line above first line of file
     -- this is done mostly because of obsidian notes, which don't contain a top level H1 by default
     vim.opt.winbar = ' '
     local devicons = require('nvim-web-devicons')
+
     require('incline').setup({
       window = {
         padding = 0,
-        margin = { horizontal = 0 },
+        margin = { horizontal = 0, vertical = 1 },
         placement = {
           -- horizontal = is_notes and 'center' or 'right',
           horizontal = 'center',
