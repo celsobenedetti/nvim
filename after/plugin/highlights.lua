@@ -77,3 +77,9 @@ vim.api.nvim_set_hl(0, 'DiagnosticSignHint', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = 'none' })
+
+vim.api.nvim_set_hl(
+  0,
+  '@markup.link.label.markdown_inline',
+  { bg = 'none', fg = colors.get_color('@markup.link.label.markdown_inline', 'fg'), italic = true }
+)

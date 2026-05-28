@@ -1,4 +1,10 @@
-if 'evergarden' ~= require('lib.colors').omarchy_colorscheme().colorscheme then
+local lib = {
+  colors = require('lib.colors'),
+}
+
+local curr = lib.colors.omarchy_colorscheme()
+
+if 'evergarden' ~= curr.colorscheme then
   return {}
 end
 
@@ -9,26 +15,26 @@ return {
     lazy = true,
     config = function(_, opts)
       local should_override = true
-      local lib_colors = require('lib.colors')
-      local colorscheme = lib_colors.omarchy_colorscheme()
-      if colorscheme.colorscheme ~= 'evergarden' and colorscheme.colorscheme ~= 'evergarden-summer' then
+      if curr.colorscheme ~= 'evergarden' and curr.colorscheme ~= 'evergarden-summer' then
         return {}
       end
-      local light = colorscheme.colorscheme_plugin.opts.theme.variant == 'summer'
+      local light = curr.colorscheme_plugin.opts.theme.variant == 'summer'
 
-      local colors = vim.g.colors
-      colors.white = '#F8F9E8'
-      colors.red = colors.color1
-      colors.yellow = colors.color3
-      colors.gray = colors.color8
-      colors.lime = colors.color2
-      colors.orange = '#F7A182'
-      colors.skye = colors.color0
-      colors.secondary = colors.color7
-      colors.mantle = '#1c2225'
-      colors.blue = '#B2CAED'
-      colors.purple = '#D2BDF3'
-      vim.g.colors = colors
+      lib.colors.update({
+        white = '#F8F9E8',
+        red = vim.g.colors.color1,
+        yellow = vim.g.colors.color3,
+        gray = vim.g.colors.color8,
+        lime = vim.g.colors.color2,
+        orange = '#F7A182',
+        skye = vim.g.colors.color0,
+        secondary = vim.g.colors.color7,
+        mantle = '#1c2225',
+        blue = '#B2CAED',
+        purple = '#D2BDF3',
+        green = '#CBE3B3',
+        links = vim.g.colors.accent,
+      })
 
       local config = {
         highlights = {

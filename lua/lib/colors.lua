@@ -23,4 +23,14 @@ M.omarchy_colorscheme = function()
   }
 end
 
+--- updates vim.g.colors
+---@param new_colors k,v table for vim.g.colors
+M.update = function(new_colors)
+  local colors = vim.g.colors
+  for k, v in pairs(new_colors) do
+    colors[k] = v
+  end
+  vim.g.colors = colors
+end
+
 return M

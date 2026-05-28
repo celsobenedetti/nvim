@@ -66,7 +66,7 @@ M.normal = function()
   end
 
   ---@type string
-  local url = line:match('https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]')
+  local url = line:match('https?://[-A-Za-z0-9+&@#/%%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%%=~_|]')
   if not url or #url == 0 then
     Snacks.notify('no url found in line')
     return

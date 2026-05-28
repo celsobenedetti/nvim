@@ -14,12 +14,13 @@ local function fold_frontmatter()
     end
   end
 
-  vim.opt.foldmethod = 'manual'
-  vim.api.nvim_command('1,' .. end_of_frontmatter .. 'fold')
+  vim.schedule(function()
+    vim.opt.foldmethod = 'manual'
+    vim.api.nvim_command('1,' .. end_of_frontmatter .. ' fold')
+  end)
 end
 
 local function setup_folding()
-  vim.schedule(fold_frontmatter)
   vim.schedule(function()
     vim.wo.foldmethod = 'expr'
     vim.wo.foldlevel = 1
@@ -107,5 +108,8 @@ if notes then
   end
 end
 
-vim.schedule(setup_folding)
-vim.schedule(highlight_tags)
+if vim.b.relative_file then
+  vim.schedule(setup_folding)
+  vim.schedule(highlight_tags)
+  vim.schedule(fold_frontmatter)
+end

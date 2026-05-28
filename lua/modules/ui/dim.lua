@@ -1,3 +1,27 @@
+local highlights_to_hide = {
+  'ObsidianRefText',
+}
+
+local saved_highlights = {}
+
+local function toggle_highlights(hide)
+  if hide then
+    for _, name in ipairs(highlights_to_hide) do
+      local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
+      if ok and hl and not vim.tbl_isempty(hl) then
+        saved_highlights[name] = vim.deepcopy(hl)
+        vim.api.nvim_set_hl(0, name, { fg = 'none', bg = 'none' })
+      end
+    end
+  else
+    for name, hl in pairs(saved_highlights) do
+      hl.default = nil
+      vim.api.nvim_set_hl(0, name, hl)
+    end
+    saved_highlights = {}
+  end
+end
+
 return {
   {
     'folke/snacks.nvim',
@@ -10,6 +34,7 @@ return {
             Snacks.dim.disable()
             Snacks.indent.enable()
             vim.cmd('Gitsigns attach')
+            toggle_highlights(false)
           else
             Snacks.indent.disable()
             Snacks.dim.enable({
@@ -19,6 +44,7 @@ return {
               },
             })
             vim.cmd('Gitsigns detach')
+            toggle_highlights(true)
           end
         end,
         desc = 'toggle dim',
@@ -39,7 +65,7 @@ return {
           enabled = true,
           injections = true,
           blocks = {
-            enabled = false, -- enable to use the following blocks
+            enabled = false,
             'function_declaration',
             'function_definition',
             'method_declaration',
@@ -61,7 +87,15 @@ return {
         },
       }
 
-      vim.api.nvim_set_hl(0, 'SnacksDim', { bg = 'none', fg = vim.g.colors.bg })
+      vim.api.nvim_set_hl(0, 'SnacksDim', {
+        bg = 'none',
+        fg = vim.g.colors.bg,
+        bold = false,
+        italic = false,
+        underline = false,
+        undercurl = false,
+        strikethrough = false,
+      })
     end,
   },
 }
