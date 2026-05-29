@@ -108,7 +108,42 @@ return {
         desc = 'Toggle Obsidian UI',
       },
       { '<leader>oO', '<cmd>Obsidian open<CR>', desc = 'Open in Obsidian' },
-      { '<leader>ob', '<cmd>Obsidian backlinks<CR>', desc = 'Backlinks' },
+      {
+        '<leader>ob',
+        function()
+          local path = vim.fn.expand('%:p')
+          if path == '' then
+            return
+          end
+          local Note = require('obsidian.note')
+          local ok, note = pcall(function()
+            return Note.from_file(path)
+          end)
+          if not ok or not note then
+            return
+          end
+          local matches = note:backlinks({})
+          if not matches or #matches == 0 then
+            vim.notify('No backlinks found', vim.log.levels.INFO)
+            return
+          end
+          local items = vim
+            .iter(matches)
+            :map(function(m)
+              return {
+                filename = tostring(m.path),
+                lnum = m.line,
+                col = (m.start or 0) + 1,
+                text = m.text,
+              }
+            end)
+            :totable()
+          vim.fn.setqflist(items, 'r')
+          vim.cmd('copen')
+        end,
+        desc = 'Backlinks to quickfix',
+      },
+      { '<leader>oB', '<cmd>Obsidian backlinks<CR>', desc = 'Backlinks' },
       { '<leader>od', '<cmd>Obsidian dailies<CR>', desc = 'Daily notes' },
       { '<leader>ol', '<cmd>Obsidian links<CR>', desc = 'Links in note' },
       { '<leader>ch', '<cmd>Obsidian check<CR>', desc = 'Health check' },
