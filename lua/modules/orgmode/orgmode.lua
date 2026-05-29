@@ -66,12 +66,11 @@ local agenda_views = {
       },
     },
   },
-  t = {
-    description = 'todo',
+  b = {
+    description = 'backlog',
     types = {
       {
         type = 'tags_todo',
-
         match = '-TODO="DONE"',
         org_agenda_sorting_strategy = { 'todo-state-down' },
         org_agenda_overriding_header = 'In Progress',
@@ -79,17 +78,6 @@ local agenda_views = {
     },
   },
 
-  d = {
-    description = 'done',
-    types = {
-      {
-        type = 'tags',
-        match = '',
-        org_agenda_sorting_strategy = { 'todo-state-down' },
-        org_agenda_overriding_header = 'In Progress',
-      },
-    },
-  },
   p = {
     description = 'purchases',
     types = { { type = 'tags_todo', match = 'buy', org_agenda_sorting_strategy = { 'time-up' } } },
@@ -143,8 +131,7 @@ local agenda_views = {
         type = 'tags_todo',
         match = 'TODO="UPCOMING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
         org_agenda_sorting_strategy = {
-          'priority-down',
-          'todo-state-down',
+          'timestamp-down',
         }, -- See all options available on org_agenda_sorting_strategy
       },
     },

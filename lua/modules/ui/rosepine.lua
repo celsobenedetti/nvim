@@ -8,7 +8,7 @@ return {
     config = function()
       require('rose-pine').setup({
         highlight_groups = {
-          TabLine = { bg = 'gold' },
+          TabLineSel = { bg = '#286983', fg = '#faf4ed' },
           String = { fg = vim.g.colors.accent },
           ['@variable'] = { link = 'Normal' },
           ['@org.agenda.scheduled'] = { link = 'Normal' },
