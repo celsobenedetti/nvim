@@ -1,6 +1,7 @@
 local wqa = 'silent! wqa'
 
 local abbreviations = {
+  ['in'] = ':e ~/notes/org/inbox.org',
   W = 'w',
   Wa = 'wa',
   WA = 'wa',
