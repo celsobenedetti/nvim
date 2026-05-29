@@ -1,10 +1,5 @@
 return {
   config = function()
-    if not vim.g.incline and vim.bo.filetype ~= 'markdown' then
-      return
-    end
-    -- set winbar to render empty line above first line of file
-    -- this is done mostly because of obsidian notes, which don't contain a top level H1 by default
     vim.opt.winbar = ' '
     local devicons = require('nvim-web-devicons')
 
@@ -13,7 +8,6 @@ return {
         padding = 0,
         margin = { horizontal = 0, vertical = 1 },
         placement = {
-          -- horizontal = is_notes and 'center' or 'right',
           horizontal = 'center',
           vertical = 'top',
         },
@@ -23,9 +17,7 @@ return {
       },
       ignore = {
         buftypes = {
-          -- '',
           'acwrite',
-          -- -- 'help',
           'nofile',
           'nowrite',
           'quickfix',
@@ -37,6 +29,9 @@ return {
         wintypes = 'special',
       },
       render = function(props)
+        if vim.bo[props.buf].filetype ~= 'markdown' then
+          return ' '
+        end
         local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
         if filename == '' then
           filename = '[No Name]'
