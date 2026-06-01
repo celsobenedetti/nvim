@@ -124,6 +124,17 @@ local agenda_views = {
       },
     },
   },
+  d = {
+    description = 'DONE',
+    types = {
+      {
+        type = 'tags',
+        match = 'TODO="DONE"',
+        org_agenda_sorting_strategy = { 'time-up' },
+        org_agenda_overriding_header = 'Done',
+      },
+    },
+  },
   c = {
     description = 'calendar',
     types = {
