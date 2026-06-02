@@ -145,7 +145,42 @@ return {
       },
       { '<leader>oB', '<cmd>Obsidian backlinks<CR>', desc = 'Backlinks' },
       { '<leader>od', '<cmd>Obsidian dailies<CR>', desc = 'Daily notes' },
-      { '<leader>ol', '<cmd>Obsidian links<CR>', desc = 'Links in note' },
+      { '<leader>oL', '<cmd>Obsidian links<CR>', desc = 'Links in note' },
+      {
+        '<leader>ol',
+        function()
+          local path = vim.fn.expand('%:p')
+          if path == '' then
+            return
+          end
+          local Note = require('obsidian.note')
+          local ok, note = pcall(function()
+            return Note.from_file(path)
+          end)
+          if not ok or not note then
+            return
+          end
+          local matches = note:links()
+          if not matches or #matches == 0 then
+            vim.notify('No links found', vim.log.levels.INFO)
+            return
+          end
+          local items = vim
+            .iter(matches)
+            :map(function(m)
+              return {
+                filename = path,
+                lnum = m.line,
+                col = (m.start or 0) + 1,
+                text = m.link,
+              }
+            end)
+            :totable()
+          vim.fn.setqflist(items, 'r')
+          vim.cmd('copen')
+        end,
+        desc = 'Links to quickfix',
+      },
       { '<leader>ch', '<cmd>Obsidian check<CR>', desc = 'Health check' },
       { '<leader>oR', '<cmd>Obsidian rename<CR>', desc = 'Rename note' },
       { '<leader>toc', '<cmd>Obsidian toc<CR>', desc = 'Table of contents' },
