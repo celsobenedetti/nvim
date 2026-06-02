@@ -14,4 +14,8 @@ M.get_valid_bufs = function()
   return valid_bufs
 end
 
+M.is_file = function()
+  return vim.bo.buftype ~= 'nofile' and vim.bo.buftype ~= 'nowrite'
+end
+
 return M

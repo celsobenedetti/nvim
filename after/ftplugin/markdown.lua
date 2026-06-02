@@ -1,3 +1,10 @@
+local lib = {
+  buf = require('lib.buffers'),
+}
+if not lib.buf.is_file() then
+  return
+end
+
 vim.opt_local.number = false
 
 local function fold_frontmatter()
@@ -89,10 +96,6 @@ local function highlight_tags()
   apply_ns()
 end
 
---- main execution
-
-vim.opt.wrap = true -- disable wrap
-
 -- follow wiki links with enter (only in notes dir)
 local notes = vim.g.env and vim.g.env.notes
 if notes then
@@ -112,5 +115,6 @@ if notes then
   end
 end
 
+vim.opt.wrap = true -- disable wrap
 vim.schedule(setup_folding)
 vim.schedule(highlight_tags)
