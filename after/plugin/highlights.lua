@@ -13,7 +13,7 @@ vim.api.nvim_set_hl(0, 'TextSecondary', { fg = vim.g.colors.secondary or vim.g.c
 -- vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
 -- vim.api.nvim_set_hl(0, 'TabLineSel', { bg = colors.get_color('StatusLine', 'bg') , bold = true, underline=true})
 vim.api.nvim_set_hl(0, 'NonText', { link = "Comment"})
-vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
+-- vim.api.nvim_set_hl(0, 'Folded', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FlashMatch', { link = 'MiniHipatternsNote' })
 vim.api.nvim_set_hl(0, 'BlinkCmpMenuBorder', { bg = 'none' })
 
