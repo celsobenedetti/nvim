@@ -113,9 +113,10 @@ local modules = {
     return hl(vim.g.hl.text.highlight, vim.g.icons.format) .. hl(vim.g.hl.text.secondary, result)
   end,
 
-  _diagnostics = function()
+  _diagnostics = function(bufnr)
+    bufnr = bufnr or vim.api.nvim_get_current_buf()
     local count = { 0, 0, 0, 0 } -- error, warn, info, hint
-    for _, diagnostic in pairs(vim.diagnostic.get(vim.api.nvim_get_current_buf())) do
+    for _, diagnostic in pairs(vim.diagnostic.get(bufnr)) do
       count[diagnostic.severity] = count[diagnostic.severity] + 1
     end
     local result = ''
@@ -185,8 +186,15 @@ local function setup_caching_and_updating()
     end,
   })
 
-  -- Cache diagnostics and status
-  vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'WinEnter' }, {
+  -- Cache diagnostics when LSP publishes them (async-safe, for any buffer)
+  vim.api.nvim_create_autocmd('DiagnosticChanged', {
+    callback = function(args)
+      vim.api.nvim_buf_set_var(args.buf, 'cached_diagnostics', modules._diagnostics(args.buf))
+    end,
+  })
+
+  -- Cache diagnostics, git status on UI/input events (fallback)
+  vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'WinEnter', 'BufWritePost' }, {
     callback = function()
       local bufnr = vim.api.nvim_get_current_buf()
       vim.defer_fn(function()
