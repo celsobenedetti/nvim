@@ -56,44 +56,27 @@ local function setup_folding()
   end)
 end
 
--- create custom highlight group for markdown #tags
--- namespace code to ensure higlights only apply to markdown windows, even after markdown ftplugin is loaded
-local function highlight_tags()
+-- create custom highlight groups for markdown
+-- namespace is per-window; toggle via BufEnter/WinEnter so non-markdown windows never see it
+local function setup_markdown_hl()
   local ns = vim.api.nvim_create_namespace('ft_markdown_local_hl')
   vim.cmd('syntax match MarkdownTag /#[a-zA-Z0-9_-]\\+/')
   vim.api.nvim_set_hl(ns, 'MarkdownTag', { link = 'BlinkCmpScrollBarThumb' })
+  vim.api.nvim_set_hl(ns, 'Folded', { bg = 'none' })
 
-  -- apply highlight namespace only for markdown windows
-  local bufnr = vim.api.nvim_get_current_buf()
-  local group = vim.api.nvim_create_augroup('markdown_local_hl_' .. bufnr, { clear = true })
-
-  local function apply_ns()
-    local ok = pcall(vim.api.nvim_win_set_hl_ns, 0, ns)
-    if not ok and vim.api.nvim_set_hl_ns then
-      pcall(vim.api.nvim_set_hl_ns, ns)
-    end
-  end
-
-  local function reset_ns()
-    local ok = pcall(vim.api.nvim_win_set_hl_ns, 0, 0)
-    if not ok and vim.api.nvim_set_hl_ns then
-      pcall(vim.api.nvim_set_hl_ns, 0)
-    end
-  end
-
-  vim.api.nvim_create_autocmd('BufWinEnter', {
-    buffer = bufnr,
+  local group = vim.api.nvim_create_augroup('markdown_local_hl', { clear = true })
+  vim.api.nvim_create_autocmd({ 'BufEnter', 'WinEnter' }, {
+    pattern = '*',
     group = group,
-    callback = apply_ns,
+    callback = function()
+      if vim.bo.filetype == 'markdown' then
+        vim.api.nvim_win_set_hl_ns(0, ns)
+      else
+        vim.api.nvim_win_set_hl_ns(0, 0)
+      end
+    end,
   })
-
-  vim.api.nvim_create_autocmd('BufWinLeave', {
-    buffer = bufnr,
-    group = group,
-    callback = reset_ns,
-  })
-  -- set for the current window now
-  apply_ns()
+  vim.api.nvim_win_set_hl_ns(0, ns)
 end
 
 -- follow wiki links with enter (only in notes dir)
@@ -117,4 +100,4 @@ end
 
 vim.opt.wrap = true -- disable wrap
 vim.schedule(setup_folding)
-vim.schedule(highlight_tags)
+vim.schedule(setup_markdown_hl)
