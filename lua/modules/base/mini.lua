@@ -59,7 +59,7 @@ return {
           gen_loader.from_lang(),
         },
         mappings = {
-          expand = '<C-l>',
+          expand = '<C-L>',
           jump_next = '<C-l>',
           jump_prev = '<C-h>',
           stop = '<esc>',

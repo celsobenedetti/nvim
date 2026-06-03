@@ -23,3 +23,6 @@ require('lazy').setup({
   },
   performance = vim.g.lazy_nvim_config.performance,
 })
+
+vim.cmd.packadd('cfilter')
+vim.cmd.packadd('nvim.undotree')
