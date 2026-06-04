@@ -223,10 +223,6 @@ return {
         folder = env.ATTACHMENTS,
         confirm_img_paste = true,
       },
-      completion = {
-        blink = true,
-        min_chars = 2,
-      },
       ui = {
         enable = true,
         enabled = true,
