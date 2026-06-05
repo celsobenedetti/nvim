@@ -1,3 +1,25 @@
+local keys = {
+  ['<C-S-g>'] = '<C-S-g>',
+  ['<C-/>'] = '<C-/>',
+  ['<C-S-N>'] = '<S-Down>',
+  ['<C-;>'] = '<C-;>',
+  ['<C-tab>'] = '<C-tab>',
+  ['<C-S-tab>'] = '<C-S-tab>',
+}
+
+if os.getenv('TMUX') then
+  keys['<C-/>'] = '<C-_>'
+end
+
+if os.getenv('GHOSTTY_BIN_DIR') then
+  keys['<C-S-N>'] = 'NOTES'
+  keys['<C-;>'] = '♦'
+  keys['<C-tab>'] = 'TABNEXT'
+  keys['<C-S-tab>'] = 'TABPREV'
+end
+
+vim.g.key = keys
+
 local lib = {
   org = require('lib.orgmode'),
   grep = require('lib.grep'),
@@ -53,6 +75,13 @@ end, { desc = 'tab: next' })
 map({ 'n', 't', 'i' }, '[<tab>', function()
   vim.cmd('tabprevious')
 end, { desc = 'tab: previous' })
+
+map({ 'n', 't', 'i' }, vim.g.key['<C-tab>'], function()
+  vim.cmd('tabnext')
+end, { desc = 'tab: next (ctrl)' })
+map({ 'n', 't', 'i' }, vim.g.key['<C-S-tab>'], function()
+  vim.cmd('tabprevious')
+end, { desc = 'tab: previous (ctrl)' })
 
 -- better j/k
 local jump = require('lib.jump')
