@@ -81,6 +81,8 @@ map({ 'n', 't', 'i' }, vim.g.key['<C-S-tab>'], function()
   vim.cmd('tabprevious')
 end, { desc = 'tab: previous (ctrl)' })
 
+map('c', '', '', { desc = 'cmd: edit in prompt (similar behavior to <C-f>)' })
+
 -- better j/k
 local jump = require('lib.jump')
 map('n', 'k', jump.up)
