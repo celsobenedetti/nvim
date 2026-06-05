@@ -2,7 +2,6 @@ local keys = {
   ['<C-S-g>'] = '<C-S-g>',
   ['<C-/>'] = '<C-/>',
   ['<C-S-N>'] = '<S-Down>',
-  ['<C-;>'] = '<C-;>',
   ['<C-tab>'] = '<C-tab>',
   ['<C-S-tab>'] = '<C-S-tab>',
 }
@@ -13,7 +12,6 @@ end
 
 if os.getenv('GHOSTTY_BIN_DIR') then
   keys['<C-S-N>'] = 'NOTES'
-  keys['<C-;>'] = '♦'
   keys['<C-tab>'] = 'TABNEXT'
   keys['<C-S-tab>'] = 'TABPREV'
 end
@@ -166,26 +164,6 @@ vim.keymap.set('n', 'ZZ', function()
 end, { silent = true, desc = 'Disable ZZ' })
 
 vim.keymap.set('n', '<leader>gn', lib.org.goto_current_task, { desc = 'org: goto current task' })
-
-vim.keymap.set('n', vim.g.key['<C-;>'], function()
-  vim.ui.input({ prompt = 'run command in new tab: ' }, function(input)
-    if not input or #input == 0 then
-      return
-    end
-
-    local icon = ' '
-    local tabname = input
-    Snacks.notify.info(tabname)
-    if tabname:find('gh') ~= nil then
-      icon = ' '
-    end
-    tabname = icon .. tabname
-
-    vim.cmd.tabnew()
-    vim.cmd.term(input)
-    vim.g.fn.rename_tab(tabname)
-  end)
-end, { desc = 'Open terminal in new tab' })
 
 -- Insert mode: Ctrl+B to go back one character (shell-like behavior)
 map('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
