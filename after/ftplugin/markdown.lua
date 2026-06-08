@@ -98,6 +98,49 @@ if notes then
   end
 end
 
+local function change_heading_level(delta)
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local line = lines[lnum]
+  local heading_chars = line:match('^(#+)%s')
+  if not heading_chars then
+    return
+  end
+  local heading_level = #heading_chars
+
+  if delta < 0 and heading_level == 1 then
+    return
+  end
+
+  local end_line = #lines
+  for l = lnum + 1, end_line do
+    local lvl_match = lines[l]:match('^(#+)%s')
+    if lvl_match and #lvl_match <= heading_level then
+      end_line = l - 1
+      break
+    end
+  end
+
+  vim.api.nvim_buf_call(0, function()
+    for l = lnum, end_line do
+      local lvl_match = lines[l]:match('^(#+)%s')
+      if lvl_match then
+        local lvl = #lvl_match
+        local new_level = lvl + delta
+        local prefix = string.rep('#', new_level)
+        vim.api.nvim_buf_set_lines(0, l - 1, l, false, { prefix .. lines[l]:sub(lvl + 1) })
+      end
+    end
+  end)
+end
+
+vim.keymap.set('n', '>s', function()
+  change_heading_level(1)
+end, { buffer = true, desc = 'increase heading level' })
+vim.keymap.set('n', '<s', function()
+  change_heading_level(-1)
+end, { buffer = true, desc = 'decrease heading level' })
+
 vim.opt.wrap = true -- disable wrap
 vim.schedule(setup_folding)
 vim.schedule(setup_markdown_hl)
