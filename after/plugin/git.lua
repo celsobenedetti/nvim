@@ -36,7 +36,7 @@ map('n', 'ga', function()
     return
   end
 
-  vim.cmd('Git add -p %')
+  vim.cmd('tab Git add -p %')
 end, { desc = 'git: git add -p current file' })
 
 map('n', '<leader>gs', function()
