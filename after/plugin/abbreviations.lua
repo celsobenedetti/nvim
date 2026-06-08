@@ -1,7 +1,6 @@
 local wqa = 'silent! wqa'
 
 local abbreviations = {
-  ['in'] = ':e ~/notes/org/inbox.org',
   W = 'w',
   Wa = 'wa',
   WA = 'wa',
@@ -22,6 +21,11 @@ local abbreviations = {
   codediff = 'CodeDiff',
   Codediff = 'CodeDiff',
 }
+
+if vim.env.ORG_INBOX then
+  abbreviations['in'] = string.format(':e %s', vim.env.ORG_INBOX)
+  abbreviations['inbox'] = string.format(':e %s', vim.env.ORG_INBOX)
+end
 
 for left, right in pairs(abbreviations) do
   vim.cmd.cnoreabbrev(('%s %s'):format(left, right))
