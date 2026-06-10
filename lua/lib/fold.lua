@@ -18,6 +18,7 @@ end
 M.l = function()
   if vim.fn.foldclosed('.') ~= -1 then
     vim.cmd('normal! zo')
+    vim.cmd('normal! zz')
   end
   vim.cmd('normal! l')
 end
