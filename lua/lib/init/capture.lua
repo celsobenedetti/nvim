@@ -1,5 +1,6 @@
 vim.g.lazy_orgmode = false
 vim.g.lsp = false
+vim.g.capture = true
 require('init')
 
 require('lazy').setup({
@@ -35,8 +36,7 @@ vim.api.nvim_create_autocmd('FileType', {
     -- Override orgmode's C-c mapping with wqa behavior (defer to ensure it runs after orgmode setup)
     vim.schedule(function()
       vim.keymap.set('n', '<C-c>', function()
-        vim.cmd.write()
-        vim.cmd.quit()
+        vim.cmd('wq!')
       end, { buffer = true, noremap = true, silent = true, nowait = true })
     end)
   end,

@@ -23,9 +23,12 @@ vim.api.nvim_buf_set_keymap(0, 'n', '<leader>n', ':lua _G.org_n()<CR>',
 vim.api.nvim_buf_set_keymap(0, 'n', 'X', ':lua require("orgmode").action("clock.org_clock_cancel")<CR>',
   { desc = 'org: cancel clock' }
 )
-vim.keymap.set('n', 'R', function()
-  require('orgmode').action('capture.refile_headline_to_destination')
-end, { desc = 'org: refile headline' })
+
+if not vim.g.capture then
+  vim.keymap.set('n', 'R', function()
+    require('orgmode').action('capture.refile_headline_to_destination')
+  end, { desc = 'org: refile headline' })
+end
 -- stylua: ignore end
 
 vim.api.nvim_create_autocmd('ModeChanged', {
