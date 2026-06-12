@@ -106,6 +106,17 @@ return {
       cyclic = true,
     })
 
+    local LOG_LEVELS = augend.constant.new({
+      elements = {
+        'DEBUG',
+        'INFO',
+        'WARN',
+        'ERROR',
+      },
+      word = true,
+      cyclic = true,
+    })
+
     return {
       dials_by_ft = {
         css = 'css',
@@ -131,6 +142,7 @@ return {
           weekdays,
           months,
           logLevels,
+          LOG_LEVELS,
           capitalized_boolean,
           augend.constant.alias.bool, -- boolean value (true <-> false)
           logical_alias,

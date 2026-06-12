@@ -11,6 +11,17 @@ require('lazy').setup({
     { import = 'modules.zk' },
     { import = 'modules.orgmode' },
     { import = 'modules.omarchy' },
+    {
+      dir = '~/projects/annotations.nvim/',
+      'celsobenedetti/annotations.nvim',
+      config = function()
+        require('annotations').setup({ notify_level = vim.log.levels.WARN })
+      end,
+      keys = {
+        { 'H', ':<c-u>AnnotationsAdd<CR>', mode = 'x' },
+      },
+      cmd = { 'AnnotationsToggle', 'AnnotationsSidebar' },
+    },
   },
   change_detection = { notify = false },
   defaults = {

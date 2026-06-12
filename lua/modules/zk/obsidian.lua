@@ -2,6 +2,10 @@ local strings = require('lib.strings')
 local visual = require('lib.visual')
 
 local function create_note_from_selection()
+  if vim.bo.filetype ~= 'markdown' then
+    return
+  end
+
   local text = visual.get_selection()
   if not text or #text == 0 then
     return

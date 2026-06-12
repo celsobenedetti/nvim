@@ -1,4 +1,5 @@
 {
+  "HighStr.nvim": { "branch": "main", "commit": "1cb5e030bb16df52c8428b53dc235466a4eb1d01" },
   "SchemaStore.nvim": { "branch": "main", "commit": "0f3cd0e584b4ed221fc44eee5b0b6ce335f7e263" },
   "aerial.nvim": { "branch": "master", "commit": "28fe6e822ae344544c379d60fcb13c9519a1f08a" },
   "bamboo.nvim": { "branch": "master", "commit": "1309bc88bffcf1bedc3e84e7fa9004de93da774a" },
@@ -6,7 +7,6 @@
   "codediff.nvim": { "branch": "main", "commit": "5d6aa753797a0ebda14dd769ed03d12a320d689b" },
   "conform.nvim": { "branch": "master", "commit": "619363c30309d29ffa631e67c8183f2a72caa373" },
   "csvview.nvim": { "branch": "main", "commit": "5c22774c3ecc7f8883af5d143b366e45b1f0875d" },
-  "decisive.nvim": { "branch": "main", "commit": "3bdee1e650a5ed39f24042ca293f49bb01bcc5c3" },
   "dial.nvim": { "branch": "master", "commit": "f2634758455cfa52a8acea6f142dcd6271a1bf57" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "dropbar.nvim": { "branch": "master", "commit": "808ba31cde89aec8833e9789f5e04557cd31c9e1" },

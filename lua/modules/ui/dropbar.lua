@@ -20,7 +20,7 @@ return {
         sources = function(buf, _)
           local sources = require('dropbar.sources')
           local utils = require('dropbar.utils')
-          if vim.bo[buf].ft == 'markdown' then
+          if vim.bo[buf].ft == 'markdown' or vim.bo[buf].buftype == 'nofile' then
             return {}
           end
           if vim.bo[buf].buftype == 'terminal' then

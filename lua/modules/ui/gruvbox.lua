@@ -41,6 +41,8 @@ return {
       local colors = vim.g.colors
       colors.secondary = '#a4a4a4'
       vim.g.colors = colors
+
+      vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = '#a9b665' })
     end,
   },
 }
