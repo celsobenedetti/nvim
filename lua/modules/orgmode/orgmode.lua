@@ -150,8 +150,17 @@ local agenda_views = {
 }
 
 local function set_highlights()
-  vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
-  vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
+  if vim.g.colors.done then
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = vim.g.colors.done })
+  else
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
+  end
+
+  if vim.g.colors.todo then
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = vim.g.colors.todo })
+  else
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
+  end
 end
 
 local function set_keymaps()

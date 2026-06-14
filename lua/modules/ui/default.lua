@@ -10,7 +10,6 @@ vim.api.nvim_set_hl(0, '@markup.strong', { fg = '#f4d88c', bold = true })
 vim.api.nvim_set_hl(0, 'TabLineSel', { bg = vim.g.colors.accent, fg = vim.g.colors.bg })
 vim.api.nvim_set_hl(0, '@org.priority.highest', { bg = vim.g.colors.color3, fg = vim.g.colors.bg })
 vim.api.nvim_set_hl(0, '@org.agenda.scheduled_past', { fg = vim.g.colors.color2 })
-vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = vim.g.colors.color4 })
 
 vim.api.nvim_set_hl(0, '@markup.heading.1.markdown', { fg = vim.g.colors.color1, bold = true })
 vim.api.nvim_set_hl(0, '@markup.heading.2.markdown', { fg = vim.g.colors.color2, bold = true })
@@ -20,6 +19,7 @@ vim.api.nvim_set_hl(0, '@markup.heading.5.markdown', { fg = vim.g.colors.color5,
 vim.api.nvim_set_hl(0, '@markup.heading.6.markdown', { fg = vim.g.colors.color6, bold = true })
 
 lib.colors.update({
+  done = vim.g.colors.color4,
   links = '#83efef',
 })
 
