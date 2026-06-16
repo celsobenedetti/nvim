@@ -62,7 +62,6 @@ local function setup_markdown_hl()
   local ns = vim.api.nvim_create_namespace('ft_markdown_local_hl')
   vim.cmd('syntax match MarkdownTag /#[a-zA-Z0-9_-]\\+/')
   vim.api.nvim_set_hl(ns, 'MarkdownTag', { link = 'BlinkCmpScrollBarThumb' })
-  vim.api.nvim_set_hl(ns, 'Folded', { bg = 'none' })
 
   local group = vim.api.nvim_create_augroup('markdown_local_hl', { clear = true })
   vim.api.nvim_create_autocmd({ 'BufEnter', 'WinEnter' }, {

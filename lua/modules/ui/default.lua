@@ -21,6 +21,7 @@ vim.api.nvim_set_hl(0, '@markup.heading.6.markdown', { fg = vim.g.colors.color6,
 lib.colors.update({
   done = vim.g.colors.color4,
   links = '#83efef',
+  folded = '#1C2225',
 })
 
 return {}

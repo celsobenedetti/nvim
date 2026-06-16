@@ -83,3 +83,7 @@ vim.api.nvim_set_hl(
   '@markup.link.label.markdown_inline',
   { bg = 'none', fg = colors.get_color('@markup.link.label.markdown_inline', 'fg'), italic = true }
 )
+
+if vim.g.colors.folded then
+  vim.api.nvim_set_hl(0, 'Folded', { bg = vim.g.colors.folded })
+end
