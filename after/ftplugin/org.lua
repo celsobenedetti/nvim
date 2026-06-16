@@ -1,7 +1,51 @@
+-- Follow Obsidian-style [[wikilinks]] from org files into the markdown vault.
+-- obsidian.nvim only auto-attaches to markdown/quarto buffers, but its link
+-- resolution is plain-text (not tied to the markdown parser), so we reuse it for
+-- org files that live inside a configured workspace. Returns true if it handled
+-- a wikilink, false otherwise (so callers can fall back to orgmode).
+local function obsidian_follow_wikilink()
+  local notes = vim.g.env and vim.g.env.notes
+  if not notes or not notes.NOTES then
+    return false
+  end
+  local filepath = vim.fn.expand('%:p')
+  if filepath == '' or filepath:find(notes.NOTES, 1, true) ~= 1 then
+    return false
+  end
+  local ok, api = pcall(require, 'obsidian.api')
+  -- cursor_link() only matches when the cursor sits on a [[wikilink]]/[md](link).
+  if not ok or not api.cursor_link() then
+    return false
+  end
+  return pcall(function()
+    api.follow_link()
+  end)
+end
+
+-- Let obsidian.nvim's gf/includeexpr resolve [[wikilinks]] in org buffers, and
+-- attach the in-process obsidian-ls LSP so blink can offer [[ completion. The
+-- LSP completion path is line-text based, not markdown-specific.
+do
+  local notes = vim.g.env and vim.g.env.notes
+  local filepath = vim.fn.expand('%:p')
+  if notes and notes.NOTES and filepath ~= '' and filepath:find(notes.NOTES, 1, true) == 1 then
+    vim.b.obsidian_buffer = true
+    vim.bo.includeexpr = "v:lua.require('obsidian.link').includeexpr(v:fname)"
+    pcall(function()
+      require('obsidian.lsp').start(vim.api.nvim_get_current_buf())
+    end)
+  end
+end
+
+-- gd: follow a [[wikilink]] to its markdown note, else orgmode go-to-definition.
+vim.keymap.set('n', 'gd', function()
+  if obsidian_follow_wikilink() then
+    return
+  end
+  require('orgmode').action('org_mappings.open_at_point')
+end, { buffer = true, desc = 'org: follow [[wikilink]] / go to definition' })
+
 -- stylua: ignore start
-vim.api.nvim_buf_set_keymap(0, 'n', 'gd', ':lua require("orgmode").action("org_mappings.open_at_point")<CR>',
-  { desc = 'org: go to definition (go to heading)' }
-)
 vim.api.nvim_buf_set_keymap(0, 'n', '<leader>j', '<Cmd>lua require("orgmode").action("org_mappings.insert_heading_respect_content")<CR>',
   { desc = 'org: insert headline (respect content)' }
 )
