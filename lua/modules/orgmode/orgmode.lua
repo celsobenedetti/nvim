@@ -17,6 +17,12 @@ local agenda_views = {
     description = 'Engage',
     types = {
       {
+        org_agenda_overriding_header = 'Projects',
+        type = 'tags_todo',
+        match = 'projects-TODO="TODO"',
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+      },
+      {
         type = 'agenda',
         org_agenda_span = 'day',
         org_agenda_sorting_strategy = { 'time-up', 'todo-state-down', 'priority-down' },
@@ -24,19 +30,19 @@ local agenda_views = {
       {
         org_agenda_overriding_header = 'In Progress',
         type = 'tags_todo',
-        match = 'TODO="PROG"',
+        match = 'TODO="PROG"-project',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
         org_agenda_overriding_header = 'Next',
         type = 'tags_todo',
-        match = 'TODO="NEXT"',
+        match = 'TODO="NEXT"-project',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
         org_agenda_overriding_header = 'Waiting',
         type = 'tags_todo',
-        match = 'TODO="WAITING"|TODO="ONGOING"',
+        match = '(TODO="WAITING"|TODO="ONGOING")-project',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-up' },
       },
     },
