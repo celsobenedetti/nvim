@@ -136,7 +136,7 @@ map('v', 'gy', function()
   end
   local text = string.format('%s:%d:%d', file, start_line, end_line)
   if lib.tmux.active() then
-    lib.tmux.send_text(text)
+    lib.tmux.send_text(' ' .. text)
   else
     vim.fn.setreg('+', text)
     Snacks.notify.info(string.format('Yanked:\n- `%s`', text), { title = 'Clipboard', icon = '', style = 'fancy' })
