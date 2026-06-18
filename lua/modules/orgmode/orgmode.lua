@@ -19,7 +19,7 @@ local agenda_views = {
       {
         org_agenda_overriding_header = 'Projects',
         type = 'tags_todo',
-        match = 'projects-TODO="TODO"',
+        match = 'TODO="PROJECT"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
@@ -30,19 +30,19 @@ local agenda_views = {
       {
         org_agenda_overriding_header = 'In Progress',
         type = 'tags_todo',
-        match = 'TODO="PROG"-project',
+        match = 'TODO="PROG"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
         org_agenda_overriding_header = 'Next',
         type = 'tags_todo',
-        match = 'TODO="NEXT"-project',
+        match = 'TODO="NEXT"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
         org_agenda_overriding_header = 'Waiting',
         type = 'tags_todo',
-        match = '(TODO="WAITING"|TODO="ONGOING")-project',
+        match = 'TODO="WAITING"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-up' },
       },
     },
@@ -60,7 +60,7 @@ local agenda_views = {
       },
       {
         type = 'tags_todo',
-        match = 'TODO="NEXT"|TODO="ONGOING"',
+        match = 'TODO="NEXT"|TODO="PROJECT"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
         org_agenda_overriding_header = 'Next',
       },
@@ -84,10 +84,6 @@ local agenda_views = {
     },
   },
 
-  p = {
-    description = 'purchases',
-    types = { { type = 'tags_todo', match = 'buy', org_agenda_sorting_strategy = { 'time-up' } } },
-  },
   w = {
     description = 'Work tasks',
     types = {
@@ -117,12 +113,12 @@ local agenda_views = {
       },
     },
   },
-  O = {
-    description = 'ONGOING',
+  p = {
+    description = 'PROJECT',
     types = {
       {
         type = 'tags_todo',
-        match = 'TODO="ONGOING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
+        match = 'TODO="PROJECT"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
         org_agenda_sorting_strategy = {
           'priority-down',
           'todo-state-down',
@@ -278,10 +274,10 @@ return {
         org_todo_keywords = {
           'TODO(t)', -- Actions that are not started and not planned. These are backlog.
           'UPCOMING(u)', -- Events that are upcoming, not actions to take.
-          'ONGOING(o)', -- Ongoing projects/tasks that span multiple days, and should not be considered as actions.
+          'PROJECT(p)', -- Ongoing projects/tasks that span multiple days, and should not be considered as actions.
           'NEXT(n)', -- Actions that are not started, but have been selected through planning to be engaged with next.
           'WAITING(w)', -- Acions that are waiting on some hold up or time to lapse.
-          'PROG(p)', -- Actions that are currently WIP - these are the priorities.
+          'PROG(s)', -- Actions that are currently WIP - these are the priorities.
           '|',
           'CANCELLED(c)', -- Actions that have not come to pass, or I have decided not to do.
           'DONE(d)', -- 😎👍

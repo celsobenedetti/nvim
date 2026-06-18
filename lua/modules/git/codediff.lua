@@ -137,6 +137,13 @@ return {
           layout = 'inline',
         },
 
+        -- Explorer (file tree) configuration
+        explorer = {
+          view_mode = 'tree', -- Show directory tree instead of flat list
+          flatten_dirs = true, -- Compress single-child directory chains
+          indent_markers = true, -- Show tree connectors (│, ├, └)
+        },
+
         -- Keymaps in diff view
         keymaps = {
           view = {
@@ -157,6 +164,19 @@ return {
       }))
 
       vim.cmd.cnoreabbrev(('%s %s'):format('codediff', 'CodeDiff'))
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'CodeDiffOpen',
+        group = vim.api.nvim_create_augroup('celso_codediff_fold', { clear = true }),
+        callback = function(ev)
+          local data = ev.data
+          if not data or not data.tabpage then return end
+          if not vim.api.nvim_tabpage_is_valid(data.tabpage) then return end
+          for _, win in ipairs(vim.api.nvim_tabpage_list_wins(data.tabpage)) do
+            vim.wo[win].foldenable = false
+          end
+        end,
+      })
 
       vim.api.nvim_create_autocmd('BufReadCmd', {
         group = vim.api.nvim_create_augroup('celso_codefiff', { clear = true }),
