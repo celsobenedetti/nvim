@@ -93,15 +93,15 @@ return {
       {
         '<leader>md',
         function()
-          local ui_opts = Obsidian and Obsidian.opts.ui
+          local ui_opts = Obsidian and Obsidian.opts and Obsidian.opts.ui
           if not ui_opts then
             return
           end
           ui_opts.enable = not ui_opts.enable
-          local ns = vim.api.nvim_create_namespace('ObsidianUI')
           if ui_opts.enable then
             require('obsidian.ui').update()
           else
+            local ns = vim.api.nvim_create_namespace('ObsidianUI')
             for _, buf in ipairs(vim.api.nvim_list_bufs()) do
               if vim.api.nvim_buf_is_valid(buf) then
                 vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
