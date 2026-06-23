@@ -250,7 +250,7 @@ return {
         org_capture_templates = {
           c = {
             description = 'quick capture',
-            template = '* %?\n  %u',
+            template = '* %?\n%u',
             target = vim.g.env.org.INBOX,
           },
         },

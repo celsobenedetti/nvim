@@ -12,7 +12,6 @@ local M = {
     OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
     ORG = os.getenv('ORG') or '',
     PROJECTS = os.getenv('PROJECTS') or '',
-    RESOURCES = os.getenv('RESOURCES') or '',
     ARCHIVES = os.getenv('ARCHIVES') or '',
 
     ASSETS_DIR = os.getenv('ASSETS_DIR') or '',

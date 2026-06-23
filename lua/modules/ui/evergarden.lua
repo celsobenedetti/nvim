@@ -34,6 +34,7 @@ return {
         purple = '#D2BDF3',
         green = '#CBE3B3',
         links = vim.g.colors.accent,
+        folded = '#1C2225',
       })
 
       local config = {
