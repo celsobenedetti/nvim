@@ -20,6 +20,11 @@ return {
       end
       local light = curr.colorscheme_plugin.opts.theme.variant == 'summer'
 
+      local folded = '#1C2225'
+      if light then
+        folded = '#e6e1d3'
+      end
+
       lib.colors.update({
         white = '#F8F9E8',
         red = vim.g.colors.color1,
@@ -34,7 +39,7 @@ return {
         purple = '#D2BDF3',
         green = '#CBE3B3',
         links = vim.g.colors.accent,
-        folded = '#1C2225',
+        folded = folded,
       })
 
       local config = {
@@ -47,12 +52,12 @@ return {
 
       local global_overrides = {
         ['@keyword'] = config.highlights.keyword,
-        ['@constant'] = { fg = vim.g.colors.white },
-        ['@annotation'] = { vim.g.colors.white, style = { 'bold' } },
         ['Title'] = { link = 'Special' },
       }
 
       local overrides_dark = vim.tbl_extend('force', global_overrides, {
+        ['@annotation'] = { vim.g.colors.white, style = { 'bold' } },
+        ['@constant'] = { fg = vim.g.colors.white },
         ['@attribute'] = { vim.g.colors.orange },
         ['@markup.italic'] = { vim.g.colors.lime, style = { 'italic' } },
         ['@markup.link.label.markdown_inline'] = { vim.g.colors.skye, style = { 'bold' } },
