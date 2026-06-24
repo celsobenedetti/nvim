@@ -1,0 +1,6 @@
+require('lib.notes').focus_or_create_notes_tab(function()
+  vim.cmd(':Org agenda C')
+  vim.schedule(function()
+    vim.cmd('wincmd k | close')
+  end)
+end)
