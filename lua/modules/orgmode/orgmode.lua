@@ -1,18 +1,25 @@
-local colorschemes_to_highlight = {
-  'default',
-  'koda',
-  'rose-pine-dawn',
-  'flexoki-light',
-  'vantablack',
-}
-local TMP_CURRENT_TASK_FILE = '/tmp/org_current_task'
-
-local agenda_files = {
-  vim.g.env.notes.NOTES .. '/**/*',
-}
-
 --- @type table<string, OrgAgendaCustomCommand>
 local agenda_views = {
+  C = {
+    description = 'curriculum',
+    types = {
+      -- Actions: everything in the curriculum with an active TODO state.
+      {
+        type = 'tags_todo',
+        match = 'curriculum',
+        org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' },
+        org_agenda_overriding_header = 'Curriculum — Actions',
+      },
+      -- Topics: the domains map (level 1) plus notable sub-areas (level 2),
+      -- excluding any heading carrying a TODO state (those live in Actions)
+      -- and anything explicitly hidden with the :noagenda: blacklist tag.
+      {
+        type = 'tags',
+        match = 'curriculum+LEVEL<=2-noagenda/-TODO-NEXT-WAITING-PROG-PROJECT-UPCOMING-DONE-CANCELLED',
+        org_agenda_overriding_header = 'Curriculum — Topics',
+      },
+    },
+  },
   T = {
     description = 'Engage',
     types = {
@@ -48,84 +55,6 @@ local agenda_views = {
     },
   },
 
-  n = {
-    description = 'next',
-    types = {
-      {
-        type = 'tags_todo',
-
-        match = 'TODO="PROG"',
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
-        org_agenda_overriding_header = 'In Progress',
-      },
-      {
-        type = 'tags_todo',
-        match = 'TODO="NEXT"|TODO="PROJECT"',
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
-        org_agenda_overriding_header = 'Next',
-      },
-      {
-        type = 'tags_todo',
-        match = 'TODO="WAITING"',
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
-        org_agenda_overriding_header = 'Waiting',
-      },
-    },
-  },
-  b = {
-    description = 'backlog',
-    types = {
-      {
-        type = 'tags_todo',
-        match = '-TODO="DONE"',
-        org_agenda_sorting_strategy = { 'todo-state-down' },
-        org_agenda_overriding_header = 'In Progress',
-      },
-    },
-  },
-
-  w = {
-    description = 'Work tasks',
-    types = {
-      {
-        type = 'tags_todo',
-        match = 'work',
-        org_agenda_sorting_strategy = {
-          'priority-down',
-          'todo-state-down',
-          'time-up',
-        },
-      },
-    },
-  },
-  W = {
-    description = 'WAITING',
-    types = {
-      {
-        type = 'tags_todo', -- Type can be agenda | tags | tags_todo
-        match = 'TODO="WAITING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-        org_agenda_sorting_strategy = {
-          'priority-down',
-          'todo-state-down',
-        }, -- See all options available on org_agenda_sorting_strategy
-        -- org_agenda_overriding_header = 'High priority todos',
-        -- org_agenda_todo_ignore_deadlines = 'far', -- Ignore all deadlines that are too far in future (over org_deadline_warning_days). Possible values: all | near | far | past | future
-      },
-    },
-  },
-  p = {
-    description = 'PROJECT',
-    types = {
-      {
-        type = 'tags_todo',
-        match = 'TODO="PROJECT"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
-        org_agenda_sorting_strategy = {
-          'priority-down',
-          'todo-state-down',
-        }, -- See all options available on org_agenda_sorting_strategy
-      },
-    },
-  },
   d = {
     description = 'DONE',
     types = {
@@ -144,31 +73,24 @@ local agenda_views = {
         type = 'tags_todo',
         match = 'TODO="UPCOMING"', --Same as providing a "Match:" for tags view <leader>oa + m, See: https://orgmode.org/manual/Matching-tags-and-properties.html
         org_agenda_sorting_strategy = {
-          'timestamp-down',
+          'time-up',
         }, -- See all options available on org_agenda_sorting_strategy
       },
     },
   },
-  C = {
-    description = 'curriculum',
-    types = {
-      -- Actions: everything in the curriculum with an active TODO state.
-      {
-        type = 'tags_todo',
-        match = 'curriculum',
-        org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' },
-        org_agenda_overriding_header = 'Curriculum — Actions',
-      },
-      -- Areas: the domains map (level 1) plus notable sub-areas (level 2),
-      -- excluding any heading carrying a TODO state (those live in Actions)
-      -- and anything explicitly hidden with the :noagenda: blacklist tag.
-      {
-        type = 'tags',
-        match = 'curriculum+LEVEL<=2-noagenda/-TODO-NEXT-WAITING-PROG-PROJECT-UPCOMING-DONE-CANCELLED',
-        org_agenda_overriding_header = 'Curriculum — Areas',
-      },
-    },
-  },
+}
+
+local colorschemes_to_highlight = {
+  'default',
+  'koda',
+  'rose-pine-dawn',
+  'flexoki-light',
+  'vantablack',
+}
+local TMP_CURRENT_TASK_FILE = '/tmp/org_current_task'
+
+local agenda_files = {
+  vim.g.env.notes.NOTES .. '/**/*',
 }
 
 local function set_highlights()
