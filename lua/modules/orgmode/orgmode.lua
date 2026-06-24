@@ -195,8 +195,8 @@ local function set_keymaps()
 end
 
 return {
+  -- 'nvim-orgmode/orgmode',
   {
-    -- 'nvim-orgmode/orgmode',
     -- event = "VeryLazy",
     dir = '~/projects/nvim-orgmode-celsobenedetti/',
     dependencies = {
@@ -312,7 +312,7 @@ return {
         clock_in_current_task(ev)
         if
           not vim.iter(ev.headline:get_tags()):find(function(t)
-            return t == 'log' or t == 'books'
+            return t == 'log' or t == 'books' or t == 'music'
           end)
         then
           ev.headline:set_todo('PROG')

@@ -6,9 +6,11 @@ local M = {
   JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN') or '',
 
   HOME = os.getenv('HOME') or '',
+  quartz = 'http://localhost:42069',
 
   notes = {
     NOTES = os.getenv('NOTES') or '',
+    OBSIDIAN_VAULT = os.getenv('OBSIDIAN_VAULT') or '',
     OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
     ORG = os.getenv('ORG') or '',
     PROJECTS = os.getenv('PROJECTS') or '',

@@ -29,33 +29,18 @@ local function create_note_from_selection()
   visual.replace('[[' .. title .. ']]')
 end
 
-local function notes_env()
-  if not vim.g.env or not vim.g.env.notes then
-    return nil
-  end
-  return vim.g.env.notes
-end
-
 return {
   'obsidian-nvim/obsidian.nvim',
   version = '*',
   vscode = false,
   event = function()
-    local env = notes_env()
-    if not env or not env.NOTES then
-      return {}
-    end
     return {
-      'BufReadPre ' .. env.NOTES .. '/**/*',
-      'BufNewFile ' .. env.NOTES .. '/**/*',
+      'BufReadPre ' .. vim.g.env.notes.NOTES .. '/**/*',
+      'BufNewFile ' .. vim.g.env.notes.NOTES .. '/**/*',
     }
   end,
   keys = function()
-    local env = notes_env()
-    if not env or not env.NOTES then
-      return {}
-    end
-    local notes = env.NOTES
+    local vault = vim.g.env.notes.OBSIDIAN_VAULT
     local icons = (vim.g.icons or {}).notes or ''
 
     return {
@@ -64,7 +49,7 @@ return {
         function()
           Snacks.picker.files({
             title = icons .. 'notes',
-            cwd = notes,
+            cwd = vault,
             confirm = function(picker, item)
               picker:close()
               require('lib.notes').focus_or_create_notes_tab(function()
@@ -79,7 +64,7 @@ return {
         '<leader>zZ',
         function()
           Snacks.picker.grep({
-            cwd = notes,
+            cwd = vault,
             title = icons .. 'search through notes',
             confirm = function(_, item)
               require('lib.notes').focus_or_create_notes_tab(function()
@@ -202,19 +187,13 @@ return {
     }
   end,
   config = function()
-    local env = notes_env()
-    if not env or not env.NOTES then
-      return {}
-    end
-
-    local notes = env.NOTES
-    local inbox_subdir = env.OBSIDIAN_INBOX:gsub(notes .. '/', '')
+    local vault = vim.g.env.notes.OBSIDIAN_VAULT
+    local inbox_subdir = vim.g.env.notes.OBSIDIAN_INBOX:gsub(vault .. '/', '')
 
     require('obsidian').setup({
       legacy_commands = false,
       workspaces = {
-        { name = 'notes', path = notes },
-        { name = 'archives', path = env.ARCHIVES },
+        { name = 'obsidian', path = vault },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
@@ -222,7 +201,7 @@ return {
         folder = 'daily',
       },
       templates = {
-        folder = env.ASSETS .. '/templates',
+        folder = vim.g.env.notes.ASSETS .. '/templates',
         date_format = '%F',
         time_format = '%H:%M',
         substitutions = {},
@@ -234,7 +213,7 @@ return {
         enabled = false,
       },
       attachments = {
-        folder = env.ATTACHMENTS,
+        folder = vim.g.env.notes.ATTACHMENTS,
         confirm_img_paste = true,
       },
       ui = {
@@ -262,6 +241,7 @@ return {
           ObsidianBlockID = { italic = true, fg = '#89ddff' },
           ObsidianHighlightText = { bg = '#75662e' },
         },
+        -- checkboxes = { },
       },
       picker = {
         name = 'snacks.pick',
