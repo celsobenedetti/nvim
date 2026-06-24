@@ -152,11 +152,20 @@ local agenda_views = {
   C = {
     description = 'curriculum',
     types = {
+      -- Actions: everything in the curriculum with an active TODO state.
       {
         type = 'tags_todo',
         match = 'curriculum',
-        org_agenda_sorting_strategy = { 'todo-state-down' },
-        org_agenda_overriding_header = 'Curriculum',
+        org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' },
+        org_agenda_overriding_header = 'Curriculum — Actions',
+      },
+      -- Areas: the domains map (level 1) plus notable sub-areas (level 2),
+      -- excluding any heading carrying a TODO state (those live in Actions)
+      -- and anything explicitly hidden with the :noagenda: blacklist tag.
+      {
+        type = 'tags',
+        match = 'curriculum+LEVEL<=2-noagenda/-TODO-NEXT-WAITING-PROG-PROJECT-UPCOMING-DONE-CANCELLED',
+        org_agenda_overriding_header = 'Curriculum — Areas',
       },
     },
   },
