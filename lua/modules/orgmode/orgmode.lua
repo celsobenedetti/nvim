@@ -149,6 +149,17 @@ local agenda_views = {
       },
     },
   },
+  C = {
+    description = 'curriculum',
+    types = {
+      {
+        type = 'tags_todo',
+        match = 'curriculum',
+        org_agenda_sorting_strategy = { 'todo-state-down' },
+        org_agenda_overriding_header = 'Curriculum',
+      },
+    },
+  },
 }
 
 local function set_highlights()
@@ -218,6 +229,15 @@ return {
         end,
         desc = 'Org: agenda today',
       },
+      {
+        '<leader>C',
+        function()
+          require('lib.notes').focus_or_create_notes_tab(function()
+            vim.cmd(':Org agenda C')
+          end)
+        end,
+        desc = 'Org: agenda curriculum',
+      },
       { '<leader>oct', ':Org capture t<CR>', desc = 'Org: Today agenda' },
       { '<leader>ocw', ':Org capture w<CR>', desc = 'Org: Today agenda' },
     },
@@ -274,10 +294,10 @@ return {
         org_todo_keywords = {
           'TODO(t)', -- Actions that are not started and not planned. These are backlog.
           'UPCOMING(u)', -- Events that are upcoming, not actions to take.
-          'PROJECT(p)', -- Ongoing projects/tasks that span multiple days, and should not be considered as actions.
           'NEXT(n)', -- Actions that are not started, but have been selected through planning to be engaged with next.
           'WAITING(w)', -- Acions that are waiting on some hold up or time to lapse.
           'PROG(s)', -- Actions that are currently WIP - these are the priorities.
+          'PROJECT(p)', -- Ongoing projects/tasks that span multiple days, and should not be considered as actions.
           '|',
           'CANCELLED(c)', -- Actions that have not come to pass, or I have decided not to do.
           'DONE(d)', -- 😎👍

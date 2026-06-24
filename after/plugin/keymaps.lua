@@ -180,6 +180,8 @@ vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
       '--max-filesize',
       '1M',
       '-g',
+      '!.git*',
+      '-g',
       '!*.min.js',
       '-g',
       '!pnpm-lock.yaml',
