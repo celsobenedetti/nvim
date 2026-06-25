@@ -24,15 +24,15 @@ local agenda_views = {
     description = 'Engage',
     types = {
       {
+        type = 'agenda',
+        org_agenda_span = 'day',
+        org_agenda_sorting_strategy = { 'time-up', 'todo-state-down', 'priority-down' },
+      },
+      {
         org_agenda_overriding_header = 'Projects',
         type = 'tags_todo',
         match = 'TODO="PROJECT"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
-      },
-      {
-        type = 'agenda',
-        org_agenda_span = 'day',
-        org_agenda_sorting_strategy = { 'time-up', 'todo-state-down', 'priority-down' },
       },
       {
         org_agenda_overriding_header = 'In Progress',

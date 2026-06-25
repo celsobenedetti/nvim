@@ -125,6 +125,54 @@ return {
         },
       },
 
+      -- Scoped to the `overseer_template` select picker (OverseerRun). Adds a
+      -- key to launch the highlighted command in a `tmux new-window` instead of
+      -- running it through an overseer task.
+      kinds = {
+        overseer_template = {
+          win = {
+            input = {
+              keys = {
+                ['<c-t>'] = { 'run_in_tmux', mode = { 'n', 'i' } },
+              },
+            },
+          },
+          actions = {
+            run_in_tmux = function(picker, item)
+              local tmpl = item and item.item
+              if not tmpl then
+                return
+              end
+              picker:close()
+              -- Build the task (resolving cmd/cwd/env) but don't start it.
+              require('overseer').run_task({ name = tmpl.name, autostart = false }, function(task, err)
+                if not task then
+                  Snacks.notify.error('Overseer: ' .. (err or 'could not build task'))
+                  return
+                end
+                local cmd = task.cmd
+                if type(cmd) == 'table' then
+                  cmd = table.concat(cmd, ' ')
+                end
+                local args = { 'tmux', 'new-window', '-c', task.cwd or vim.fn.getcwd() }
+                for k, v in pairs(task.env or {}) do
+                  vim.list_extend(args, { '-e', string.format('%s=%s', k, v) })
+                end
+                table.insert(args, cmd)
+                task:dispose(true) -- drop the unstarted task from the task list
+                vim.system(args, { text = true }, function(out)
+                  if out.code ~= 0 then
+                    vim.schedule(function()
+                      Snacks.notify.error('tmux: ' .. (out.stderr ~= '' and out.stderr or 'new-window failed'))
+                    end)
+                  end
+                end)
+              end)
+            end,
+          },
+        },
+      },
+
       sources = {
         explorer = {
           auto_close = false,
