@@ -16,6 +16,7 @@ return {
           'bash-language-server',
           'black',
           'checkmake',
+          'deno',
           'eslint-lsp',
           'gopls',
           'goimports',

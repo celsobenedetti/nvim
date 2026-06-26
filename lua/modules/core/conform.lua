@@ -32,9 +32,6 @@ return {
         if not vim.g.autoformat then
           return nil
         end
-        if vim.bo.filetype == 'markdown' then
-          return nil
-        end
 
         return {
           lsp_format = 'fallback',
@@ -54,6 +51,7 @@ return {
         lua = { 'stylua' },
         odin = { 'odinfmt' },
         sh = { 'shfmt' },
+        markdown = { 'deno_fmt' },
         typescript = fmt_js,
         typescriptreact = fmt_js,
         python = { 'black' },
