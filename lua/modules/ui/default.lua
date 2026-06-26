@@ -22,6 +22,7 @@ lib.colors.update({
   done = vim.g.colors.color4,
   links = '#83efef',
   folded = '#1C2225',
+  colorcolumn = '#1C2225',
 })
 
 return {}

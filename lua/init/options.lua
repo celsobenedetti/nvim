@@ -10,6 +10,7 @@ vim.g.statusline = true
 vim.o.background = 'dark'
 vim.o.cmdheight = 0 -- Height of the command bar
 vim.o.relativenumber = false
+vim.g.colorcolumn = 80 -- column highlighted by the colorcolumn toggle (<leader>u|)
 
 vim.g.env = require('config.env')
 vim.g.dirs = require('config.dirs')

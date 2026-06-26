@@ -35,6 +35,10 @@ M.statusline_show_time = function()
   vim.g.statusline_show_time = not vim.g.statusline_show_time
 end
 
+M.colorcolumn = function()
+  vim.wo.colorcolumn = vim.wo.colorcolumn == '' and tostring(vim.g.colorcolumn) or ''
+end
+
 -- toggles
 -- stylua: ignore start
 map('n', '<leader>tc', M.completion, { desc = 'toggle: completion' })
@@ -42,7 +46,9 @@ map('n', '<leader>ts', M.supermaven, { desc = 'toggle: supermaven' })
 map('n', '<leader>uf', M.autoformat, { desc = 'toggle: autoformat' })
 map('n', '<leader>tp', M.statusline_show_position, { desc = 'toggle: show position in statusline' })
 map('n', '<leader>ut', M.statusline_show_time, { desc = 'toggle: show time in statusline' })
+
 map('n', '<leader>tf', M.statusline_show_filepath, { desc = 'toggle: show filepath in statusline' })
+map('n', '<leader>tC', M.colorcolumn, { desc = 'toggle: colorcolumn' })
 
 
 if Snacks then
