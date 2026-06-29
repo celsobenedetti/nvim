@@ -44,22 +44,22 @@ return {
     local icons = (vim.g.icons or {}).notes or ''
 
     return {
-      {
-        '<leader>zz',
-        function()
-          Snacks.picker.files({
-            title = icons .. 'notes',
-            cwd = vault,
-            confirm = function(picker, item)
-              picker:close()
-              require('lib.notes').focus_or_create_notes_tab(function()
-                vim.cmd('e ' .. item.file)
-              end)
-            end,
-          })
-        end,
-        desc = 'search notes',
-      },
+      -- {
+      --   '<leader>zz',
+      --   function()
+      --     Snacks.picker.files({
+      --       title = icons .. 'notes',
+      --       cwd = vault,
+      --       confirm = function(picker, item)
+      --         picker:close()
+      --         require('lib.notes').focus_or_create_notes_tab(function()
+      --           vim.cmd('e ' .. item.file)
+      --         end)
+      --       end,
+      --     })
+      --   end,
+      --   desc = 'search notes',
+      -- },
       {
         '<leader>zZ',
         function()

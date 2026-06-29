@@ -19,5 +19,17 @@ return {
         })
       end,
     },
+
+    {
+      '<leader>zz',
+      function()
+        require('fzf-lua').files({
+          cwd = '~/notes/obsidian/',
+          profile = 'fzf-vim',
+          previewer = false,
+          winopts = { height = 0.4, width = 0.6 },
+        })
+      end,
+    },
   },
 }
