@@ -228,18 +228,18 @@ return {
   },
   keys = {
 
-    {
-      '<C-p>',
-      function()
-        Snacks.picker.smart({
-          layout = 'select',
-          title = '',
-          hidden = cwd.cwd():find('dotfiles'),
-        })
-      end,
-      desc = 'snacks: Smart picker',
-      mode = { 'n' },
-    },
+    -- {
+    --   '<C-p>',
+    --   function()
+    --     Snacks.picker.smart({
+    --       layout = 'select',
+    --       title = '',
+    --       hidden = cwd.cwd():find('dotfiles'),
+    --     })
+    --   end,
+    --   desc = 'snacks: Smart picker',
+    --   mode = { 'n' },
+    -- },
     -- stylua: ignore start
     -- TODO: figure out cwd in terminal, if opening file with different cwd from root
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
