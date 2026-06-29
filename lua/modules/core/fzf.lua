@@ -12,10 +12,15 @@ return {
     {
       '<c-p>',
       function()
-        require('fzf-lua').files({
+        local cols = vim.o.columns
+          local max_cols = 120
+          require('fzf-lua').files({
           profile = 'fzf-vim',
           previewer = false,
-          winopts = { height = 0.4, width = 0.6 },
+          winopts = {
+            height = 0.4,
+            width = cols <= max_cols and 1.0 or (max_cols / cols),
+          },
         })
       end,
     },
