@@ -190,8 +190,8 @@ return {
         org_startup_indented = true,
         org_adapt_indentation = false, -- left flush
         org_id_link_to_org_use_id = true,
-        calendar_week_start_day = 0,
-        -- org_agenda_start_on_weekday = 7, -- start on sunday
+        calendar_week_start_day = 1,
+        org_agenda_start_on_weekday = 7, -- start on sunday
         notifications = { enabled = true },
         org_agenda_use_time_grid = false,
         org_deadline_warning_days = 7,
