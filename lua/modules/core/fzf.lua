@@ -13,10 +13,9 @@ return {
       '<c-p>',
       function()
         require('fzf-lua').files({
-          profile = 'ivy',
-          fzf_opts = {
-            ['--layout'] = 'default',
-          },
+          profile = 'fzf-vim',
+          previewer = false,
+          winopts = { height = 0.4, width = 0.6 },
         })
       end,
     },
