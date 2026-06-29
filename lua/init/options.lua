@@ -141,6 +141,7 @@ vim.opt.fillchars = {
 vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
 vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.conceallevel = 2 -- Hide * markup for bold and italic, but not markers with substitutions
+-- vim.opt.concealcursor = 'i' -- Conceal on cursor line in normal mode
 vim.opt.confirm = true -- Confirm to save changes before exiting modified buffer
 vim.opt.cursorline = true -- Enable highlighting of the current line
 vim.opt.expandtab = true -- Use spaces instead of tabs

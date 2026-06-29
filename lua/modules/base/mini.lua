@@ -1,14 +1,5 @@
 return {
 
-  {
-    'nvim-mini/mini.pick',
-    version = false,
-    config = true,
-    keys = {
-      { '<c-p>', ":Pick files tool='git'<CR>" },
-    },
-  },
-
   -- editing
   {
     'nvim-mini/mini.move',
