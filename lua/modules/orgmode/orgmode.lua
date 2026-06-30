@@ -15,7 +15,7 @@ local agenda_views = {
       -- and anything explicitly hidden with the :noagenda: blacklist tag.
       {
         type = 'tags',
-        match = 'curriculum+LEVEL<=2-noagenda/-TODO-NEXT-WAITING-PROG-PROJECT-UPCOMING-DONE-CANCELLED',
+        match = 'curriculum+LEVEL<=3-noagenda/-TODO-NEXT-WAITING-PROG-PROJECT-UPCOMING-DONE-CANCELLED',
         org_agenda_overriding_header = 'Curriculum — Topics',
       },
     },
