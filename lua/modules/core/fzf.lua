@@ -7,6 +7,14 @@ return {
     ---@diagnostic disable: missing-fields
     local opts = {}
     require('fzf-lua').setup(opts)
+
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'fzf',
+      callback = function()
+        vim.opt_local.number = false
+        vim.opt_local.relativenumber = false
+      end,
+    })
   end,
   keys = {
     {
