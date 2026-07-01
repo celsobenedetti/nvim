@@ -1,11 +1,11 @@
 local lib = {
   notes = require('lib.notes'),
-  grep = require('lib.grep'),
+  fzf = require('lib.fzf'),
 }
 
 vim.keymap.set('n', vim.g.key['<C-S-N>'], function()
   lib.notes.focus_or_create_notes_tab(function()
-    lib.grep.pick({
+    lib.fzf({
       cmd = {
         'rg',
         '--no-heading',

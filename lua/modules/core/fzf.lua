@@ -13,8 +13,8 @@ return {
       '<c-p>',
       function()
         local cols = vim.o.columns
-          local max_cols = 120
-          require('fzf-lua').files({
+        local max_cols = 120
+        require('fzf-lua').files({
           profile = 'fzf-vim',
           previewer = false,
           winopts = {

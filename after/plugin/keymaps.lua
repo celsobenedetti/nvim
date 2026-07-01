@@ -20,7 +20,7 @@ vim.g.key = keys
 
 local lib = {
   org = require('lib.orgmode'),
-  grep = require('lib.grep'),
+  fzf = require('lib.fzf'),
   cwd = require('lib.cwd'),
   term = require('lib.term'),
   tmux = require('lib.tmux'),
@@ -172,7 +172,7 @@ map('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
 
 vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
   local cwd = lib.cwd.cwd()
-  lib.grep.pick({
+  lib.fzf({
     cmd = {
       'rg',
       '--no-heading',
