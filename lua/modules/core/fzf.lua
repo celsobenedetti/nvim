@@ -50,6 +50,37 @@ return {
         require('fzf-lua').files({
           profile = 'fzf-vim',
           previewer = false,
+          -- also list directories alongside files
+          cmd = 'fd --color=never --type f --type l --type d --hidden --follow --exclude .git',
+          actions = (function()
+            -- Selecting a directory: `:e $dir`
+            -- this is needed becuase fzf-lua's default file actions use bufadd(),
+            -- which skips oil's netrw hijack, so directories would open as empty buffers.
+            local function dir_or(default_action, splitcmd)
+              return function(selected, opts)
+                local fzfpath = require('fzf-lua.path')
+                if #selected == 1 then
+                  local entry = fzfpath.entry_to_file(selected[1], opts, opts._uri)
+                  local full = entry.path
+                  if full and not fzfpath.is_absolute(full) then
+                    full = fzfpath.join({ opts.cwd or opts._cwd or vim.uv.cwd(), full })
+                  end
+                  if full and vim.fn.isdirectory(full) == 1 then
+                    if splitcmd then
+                      vim.cmd(splitcmd)
+                    end
+                    return vim.cmd.e(full)
+                  end
+                end
+                return require('fzf-lua.actions')[default_action](selected, opts)
+              end
+            end
+            return {
+              ['enter'] = dir_or('file_edit_or_qf'),
+              ['ctrl-s'] = dir_or('file_split', 'split'),
+              ['ctrl-v'] = dir_or('file_vsplit', 'vsplit'),
+            }
+          end)(),
           winopts = {
             height = 0.4,
             width = cols <= max_cols and 1.0 or (max_cols / cols),
