@@ -1,12 +1,19 @@
-local function walk_in_codediff(picker, item)
-  picker:close()
-  if not item.commit then
+-- lazily grab fzf-lua so requiring this module doesn't force-load it
+local function fzf()
+  return require('fzf-lua')
+end
+
+--- Open a CodeDiff of `commit` against its parent and name the tab.
+---@param commit string short/long sha
+---@param text? string full entry text, sniffed for a `#PR` number
+local function open_codediff(commit, text)
+  if not commit or commit == '' then
     return
   end
 
-  vim.fn.setreg('+', item.commit) -- copy sha to clipboard
+  vim.fn.setreg('+', commit) -- copy sha to clipboard
 
-  local get_parent_commit = { 'git', 'rev-parse', '--short', item.commit .. '^' }
+  local get_parent_commit = { 'git', 'rev-parse', '--short', commit .. '^' }
   local result = vim.system(get_parent_commit):wait()
   if result.code ~= 0 then
     vim.notify('Cannot find parent (Root commit?)', vim.log.levels.WARN)
@@ -14,13 +21,43 @@ local function walk_in_codediff(picker, item)
   end
 
   local parent = vim.trim(result.stdout):match('[a-f0-9]+')
-  Snacks.notify.info('git show ' .. item.commit, { title = 'Git', icon = '', style = 'fancy' })
-  vim.cmd(string.format('CodeDiff %s %s', parent, item.commit))
-  vim.g.tabname = vim.g.icons.git.commit .. item.commit
+  Snacks.notify.info('git show ' .. commit, { title = 'Git', icon = '', style = 'fancy' })
+  vim.cmd(string.format('CodeDiff %s %s', parent, commit))
+  vim.g.tabname = vim.g.icons.git.commit .. commit
 
-  local pr_number = item.text:match('#(%d+)')
+  local pr_number = text and text:match('#(%d+)')
   if pr_number ~= nil and pr_number ~= '' then
     vim.g.tabname = string.format('%s #%s', vim.g.tabname, pr_number)
+  end
+end
+
+--- Snacks picker `confirm` (still used by git_pickaxe).
+local function walk_in_codediff(picker, item)
+  picker:close()
+  if item.commit then
+    open_codediff(item.commit, item.text)
+  end
+end
+
+--- fzf-lua action: the commit sha is the first token of the entry (git log /
+--- bcommits / blame all lead with it); strip ANSI and a blame boundary `^`.
+local function fzf_codediff(selected)
+  local line = selected and selected[1]
+  if not line then
+    return
+  end
+  line = fzf().utils.strip_ansi_coloring(line)
+  local commit = (line:match('%S+') or ''):gsub('^%^', '')
+  open_codediff(commit, line)
+end
+
+--- git_commits/git_bcommits/git_blame with our CodeDiff action bound to <CR>;
+--- other default actions (e.g. ctrl-y = yank sha) survive the merge.
+---@param picker 'git_commits'|'git_bcommits'|'git_blame'
+---@param o? table extra fzf-lua opts
+local function codediff_picker(picker, o)
+  return function()
+    fzf()[picker](vim.tbl_deep_extend('force', { actions = { enter = fzf_codediff } }, o or {}))
   end
 end
 
@@ -107,12 +144,12 @@ return {
 
     keys = {
       -- stylua: ignore start
-      { '<leader>gl', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'pickaxe: find_git_log', },
-      { '<leader>sc', function() Snacks.picker.git_log({ confirm = walk_in_codediff, layout="ivy_split" }) end, desc = 'git: search commit', },
-      { '<leader>gf', function() Snacks.picker.git_log_file({ confirm = walk_in_codediff, layout="ivy_split", title="git log -- ".. vim.fn.expand("%:.") }) end, desc = 'pickaxe: find_git_log_file', },
+      { '<leader>gl', codediff_picker('git_commits'), desc = 'pickaxe: find_git_log', },
+      { '<leader>sc', codediff_picker('git_commits'), desc = 'git: search commit', },
+      { '<leader>gf', codediff_picker('git_bcommits', { follow = true }), desc = 'pickaxe: find_git_log_file', },
       { '<leader>gL', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
       { '<leader>gF', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
-      { '<leader>gb', function() Snacks.picker.git_log_line({confirm = walk_in_codediff}) end, { desc = 'snacks: Git Blame Line' }, },
+      { '<leader>gb', codediff_picker('git_blame'), desc = 'fzf: Git Blame Line', },
       { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'pickaxe: Git Search (Buffer)', },
       { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
       -- stylua: ignore end
@@ -170,8 +207,12 @@ return {
         group = vim.api.nvim_create_augroup('celso_codediff_fold', { clear = true }),
         callback = function(ev)
           local data = ev.data
-          if not data or not data.tabpage then return end
-          if not vim.api.nvim_tabpage_is_valid(data.tabpage) then return end
+          if not data or not data.tabpage then
+            return
+          end
+          if not vim.api.nvim_tabpage_is_valid(data.tabpage) then
+            return
+          end
           for _, win in ipairs(vim.api.nvim_tabpage_list_wins(data.tabpage)) do
             vim.wo[win].foldenable = false
           end
