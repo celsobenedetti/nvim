@@ -18,10 +18,6 @@ end
 if not lib.tmux.active() then
   -- keymaps that only should be available outside tmux
   -- TODO: have a tmux version of this using "set in allacritty"
-  map('n', '<C-S-P>', function()
-    Snacks.picker.keymaps()
-  end, { desc = 'Overseer toggle' })
-
   map('n', '<C-S-d>', ':DapViewToggle<CR>', { desc = 'Overseer toggle' })
 
   -- workspace keymap: available outside tmux too

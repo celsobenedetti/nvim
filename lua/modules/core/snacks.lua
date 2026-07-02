@@ -24,10 +24,6 @@ local function workspace()
   })
 end
 
-local function notes()
-  Snacks.picker.files({ cwd = '~/notes', title = 'notes', layout = 'ivy_split' })
-end
-
 return {
   'folke/snacks.nvim',
   lazy = false,
@@ -245,67 +241,30 @@ return {
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
     -- { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'snacks: notification history', },
-    { '<leader>rg', function() Snacks.picker.grep({layout= "ivy_split"}) end, desc = 'snacks: grep', },
-    { '<leader>rG', function() Snacks.picker.grep({layout= "ivy_split", hidden = true}) end, desc = 'snacks: grep (all)', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'snacks: delete buffer', },
     { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
-    { '<leader>sn', notes, desc = 'snacks: search all notes', },
-    { '<leader>fF', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
     { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'snacks: Rename File', },
     { '<leader>lgl', function() Snacks.lazygit.log() end, desc = 'snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'snacks: Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'snacks: delete all buffers', },
     { '<leader>cd', cd, desc = 'snacks: zoxide (cd)', },
     { '<leader>ws', workspace, desc = 'snacks: workspace (zoxide)', },
-    { '<leader>zo', function()Snacks.picker.zoxide({title="session (zoxide)"})end, desc = 'snacks: zoxide (session)', },
 
     { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
     { '<leader>fe', function()Snacks.explorer()end, desc = 'snacks: explorer (fe)', },
-    { '<leader>co', function() Snacks.picker.commands({layout ="select"}) end, desc = 'snacks: Commands', },
-    { '<leader>sC', function() Snacks.picker.command_history({layout="select" }) end, desc = 'snacks: Command History', },
-    { 'grs', function() Snacks.picker.lsp_references() end, nowait = true, desc = 'snacks: snacks: References', },
 
 
-    -- -- find
-    { '<leader>,', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
-    { '<leader><leader>', function() Snacks.picker.buffers({layout="ivy_split"}) end, desc = 'snacks: Buffers', },
-    { '<leader><', function() Snacks.picker.buffers { layout="ivy_split",hidden = true, nofile = true } end, desc = 'snacks: Buffers (all)', },
-
-    { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'snacks: Find Files (git-files)', },
-    { '<leader>sr', function() Snacks.picker.recent() end, desc = 'snacks: Recent', },
-    { '<leader>sR', function() Snacks.picker.recent { filter = { cwd = true } } end, desc = 'snacks: Recent (cwd)', },
-    { '<leader>fp', function() Snacks.picker.projects() end, desc = 'snacks: Projects', },
     -- -- git
+    { '<leader>fp', function() Snacks.picker.projects() end, desc = 'snacks: Projects', },
     { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
-    { '<leader>gS', function() Snacks.picker.git_stash({layout="ivy_split"}) end, desc = 'snacks: Git Stash', },
     -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'snacks: GitHub Issues (open)', },
     -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'snacks: GitHub Issues (all)', },
     { '<leader>gp', function() Snacks.picker.gh_pr() end, desc = 'snacks: GitHub Pull Requests (open)', },
     { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'snacks: GitHub Pull Requests (all)', },
     -- -- Grep
-    { '<leader>/', function() Snacks.picker.lines() end, desc = 'snacks: Buffer Lines', },
-    { '<leader>sB', function() Snacks.picker.grep_buffers({layout="ivy_split"}) end, desc = 'snacks: Grep Open Buffers', },
     { '<leader>sla', function() Snacks.picker.lazy() end, desc = 'snacks: Search for Plugin Spec', },
     -- search
-    { '<leader>s"', function() Snacks.picker.registers() end, desc = 'snacks: Registers', },
-    { '<leader>s/', function() Snacks.picker.search_history() end, desc = 'snacks: Search History', },
-    { '<leader>sa', function() Snacks.picker.autocmds() end, desc = 'snacks: Autocmds', },
-    { '<leader>sd', function() Snacks.picker.diagnostics_buffer() end, desc = 'snacks: Buffer Diagnostics', },
-    { '<leader>sD', function() Snacks.picker.diagnostics() end, desc = 'snacks: Diagnostics', },
-    { '<leader>sh', function() Snacks.picker.help() end, desc = 'snacks: Help Pages', },
     { '<leader>si', function() Snacks.picker.icons() end, desc = 'snacks: Icons', },
-    { '<leader>sj', function() Snacks.picker.jumps() end, desc = 'snacks: Jumps', },
-    { '<leader>sk', function() Snacks.picker.keymaps() end, desc = 'snacks: Keymaps', },
-    { '<leader>slo', function() Snacks.picker.loclist() end, desc = 'snacks: Location List', },
-    { '<leader>sM', function() Snacks.picker.man() end, desc = 'snacks: Man Pages', },
-    { '<leader>sm', function() Snacks.picker.marks() end, desc = 'snacks: Marks', },
-    { '<leader>pr', function() Snacks.picker.resume() end, desc = 'snacks: Resume', },
-    { '<leader>sq', function() Snacks.picker.qflist() end, desc = 'snacks: Quickfix List', },
-    { '<leader>su', function() Snacks.picker.undo() end, desc = 'snacks: Undotree', },
-    -- ui
-    { '<leader>uC', function() Snacks.picker.colorschemes() end, desc = 'snacks: Colorschemes', },
-    { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols {} end, desc = 'snacks: LSP Workspace Symbols', },
-    { 'z=', function() Snacks.picker.spelling () end, desc = 'snacks: picker: spelling', },
 
 
     { '<leader>gG', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'snacks: Lazygit (Root Dir)', },
@@ -322,7 +281,6 @@ return {
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
     end, { desc = 'snacks: Git Browse (copy)', mode = { 'n', 'x' } }, },
 
-    { '<leader>sH', function() Snacks.picker.highlights({layout = 'select'}) end, desc = 'snacks: Highlights', },
     -- stylua: ignore end
   },
 }

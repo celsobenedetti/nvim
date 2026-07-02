@@ -144,12 +144,17 @@ map('v', 'gy', function()
   vim.api.nvim_input('<Esc>')
 end, { desc = 'Copy file path:line:line to clipboard' })
 
-map({ 'n', 'x', 'v' }, '<leader>sw', function()
-  Snacks.picker.grep_word({ layout = 'ivy_split' })
-end, { desc = 'Visual selection or word (Root Dir)' })
-map({ 'n', 'x', 'v' }, '<leader>sW', function()
-  Snacks.picker.grep_word({ root = false })
-end, { desc = 'Visual selection or word (Root Dir)' })
+local function grep_word()
+  local fzf = require('fzf-lua')
+  local mode = vim.fn.mode()
+  if mode == 'v' or mode == 'V' or mode == '\22' then
+    fzf.grep_visual()
+  else
+    fzf.grep_cword()
+  end
+end
+map({ 'n', 'x', 'v' }, '<leader>sw', grep_word, { desc = 'fzf: Visual selection or word' })
+map({ 'n', 'x', 'v' }, '<leader>sW', grep_word, { desc = 'fzf: Visual selection or word' })
 
 -- gx
 local gx = require('lib.gx')
