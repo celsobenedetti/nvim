@@ -1,10 +1,10 @@
 -- lazily grab fzf-lua so requiring this (lazy=false) module doesn't force-load it
-local function fzf()
+local function fzf_lua()
   return require('fzf-lua')
 end
 
 local function notes()
-  fzf().files({ cwd = '~/notes' })
+  fzf_lua().files({ cwd = '~/notes' })
 end
 
 return {
@@ -16,7 +16,7 @@ return {
     ---@type fzf-lua.Config|{}
     ---@diagnostic disable: missing-fields
     local opts = {
-      'ivy', -- bottom-split UI, closest match to the old Snacks `ivy_split`
+      'ivy',
       winopts = {
         -- draw a border around the picker (the `ivy` profile is borderless by default)
         border = 'rounded',
@@ -51,7 +51,16 @@ return {
           profile = 'fzf-vim',
           previewer = false,
           -- also list directories alongside files
-          cmd = 'fd --color=never --type f --type l --type d --hidden --follow --exclude .git',
+          cmd = string.gsub(
+            [[
+            fd --color=never --type f --type l --type d --hidden --follow
+          --exclude .git
+          --exclude quartz/content
+          --exclude .vault
+          ]],
+            '\n',
+            ' '
+          ),
           actions = (function()
             -- Selecting a directory: `:e $dir`
             -- this is needed becuase fzf-lua's default file actions use bufadd(),
@@ -104,41 +113,41 @@ return {
 
     -- stylua: ignore start
     -- -- find
-    { '<leader>,', function() fzf().buffers() end, desc = 'fzf: Buffers', },
-    { '<leader><leader>', function() fzf().buffers() end, desc = 'fzf: Buffers', },
-    { '<leader><', function() fzf().buffers({ show_unlisted = true }) end, desc = 'fzf: Buffers (all)', },
-    { '<leader>co', function() fzf().commands({profile = "fzf-vim"}) end, desc = 'fzf: Commands', },
-    { '<leader>zo', function() fzf().zoxide() end, desc = 'fzf: zoxide (session)', },
-    { '<leader>fF', function() fzf().git_files() end, desc = 'fzf: Find Files (git-files)', },
-    { '<leader>rg', function() fzf().live_grep() end, desc = 'fzf: grep', },
-    { '<leader>rG', function() fzf().live_grep({ hidden = true, no_ignore = true }) end, desc = 'fzf: grep (all)', },
-    { '<leader>sC', function() fzf().command_history({profile = "fzf-vim" }) end, desc = 'fzf: Command History', },
-    { 'grs', function() fzf().lsp_references() end, nowait = true, desc = 'fzf: References', },
-    { '<leader>fg', function() fzf().git_files() end, desc = 'fzf: Find Files (git-files)', },
-    { '<leader>sr', function() fzf().oldfiles() end, desc = 'fzf: Recent', },
-    { '<leader>sR', function() fzf().oldfiles({ cwd_only = true }) end, desc = 'fzf: Recent (cwd)', },
-    { '<leader>gS', function() fzf().git_stash() end, desc = 'fzf: Git Stash', },
-    { '<leader>/', function() fzf().blines() end, desc = 'fzf: Buffer Lines', },
-    { '<leader>sB', function() fzf().lines() end, desc = 'fzf: Grep Open Buffers', },
-    { '<leader>s"', function() fzf().registers() end, desc = 'fzf: Registers', },
-    { '<leader>s/', function() fzf().search_history() end, desc = 'fzf: Search History', },
-    { '<leader>sa', function() fzf().autocmds() end, desc = 'fzf: Autocmds', },
-    { '<leader>sd', function() fzf().diagnostics_document() end, desc = 'fzf: Buffer Diagnostics', },
-    { '<leader>sD', function() fzf().diagnostics_workspace() end, desc = 'fzf: Diagnostics', },
-    { '<leader>sh', function() fzf().helptags() end, desc = 'fzf: Help Pages', },
-    { '<leader>sj', function() fzf().jumps() end, desc = 'fzf: Jumps', },
-    { '<leader>sk', function() fzf().keymaps() end, desc = 'fzf: Keymaps', },
-    { '<leader>slo', function() fzf().loclist() end, desc = 'fzf: Location List', },
-    { '<leader>sM', function() fzf().manpages() end, desc = 'fzf: Man Pages', },
-    { '<leader>sm', function() fzf().marks() end, desc = 'fzf: Marks', },
-    { '<leader>pr', function() fzf().resume() end, desc = 'fzf: Resume', },
-    { '<leader>sq', function() fzf().quickfix() end, desc = 'fzf: Quickfix List', },
-    { '<leader>su', function() fzf().undotree() end, desc = 'fzf: Undotree', },
+    { '<leader>,', function() fzf_lua().buffers() end, desc = 'fzf: Buffers', },
+    { '<leader><leader>', function() fzf_lua().buffers() end, desc = 'fzf: Buffers', },
+    { '<leader><', function() fzf_lua().buffers({ show_unlisted = true }) end, desc = 'fzf: Buffers (all)', },
+    { '<leader>co', function() fzf_lua().commands({profile = "fzf-vim"}) end, desc = 'fzf: Commands', },
+    { '<leader>zo', function() fzf_lua().zoxide() end, desc = 'fzf: zoxide (session)', },
+    { '<leader>fF', function() fzf_lua().git_files() end, desc = 'fzf: Find Files (git-files)', },
+    { '<leader>rg', function() fzf_lua().live_grep() end, desc = 'fzf: grep', },
+    { '<leader>rG', function() fzf_lua().live_grep({ hidden = true, no_ignore = true }) end, desc = 'fzf: grep (all)', },
+    { '<leader>sC', function() fzf_lua().command_history({profile = "fzf-vim" }) end, desc = 'fzf: Command History', },
+    { 'grs', function() fzf_lua().lsp_references() end, nowait = true, desc = 'fzf: References', },
+    { '<leader>fg', function() fzf_lua().git_files() end, desc = 'fzf: Find Files (git-files)', },
+    { '<leader>sr', function() fzf_lua().oldfiles() end, desc = 'fzf: Recent', },
+    { '<leader>sR', function() fzf_lua().oldfiles({ cwd_only = true }) end, desc = 'fzf: Recent (cwd)', },
+    { '<leader>gS', function() fzf_lua().git_stash() end, desc = 'fzf: Git Stash', },
+    { '<leader>/', function() fzf_lua().blines() end, desc = 'fzf: Buffer Lines', },
+    { '<leader>sB', function() fzf_lua().lines() end, desc = 'fzf: Grep Open Buffers', },
+    { '<leader>s"', function() fzf_lua().registers() end, desc = 'fzf: Registers', },
+    { '<leader>s/', function() fzf_lua().search_history() end, desc = 'fzf: Search History', },
+    { '<leader>sa', function() fzf_lua().autocmds() end, desc = 'fzf: Autocmds', },
+    { '<leader>sd', function() fzf_lua().diagnostics_document() end, desc = 'fzf: Buffer Diagnostics', },
+    { '<leader>sD', function() fzf_lua().diagnostics_workspace() end, desc = 'fzf: Diagnostics', },
+    { '<leader>sh', function() fzf_lua().helptags() end, desc = 'fzf: Help Pages', },
+    { '<leader>sj', function() fzf_lua().jumps() end, desc = 'fzf: Jumps', },
+    { '<leader>sk', function() fzf_lua().keymaps() end, desc = 'fzf: Keymaps', },
+    { '<leader>slo', function() fzf_lua().loclist() end, desc = 'fzf: Location List', },
+    { '<leader>sM', function() fzf_lua().manpages() end, desc = 'fzf: Man Pages', },
+    { '<leader>sm', function() fzf_lua().marks() end, desc = 'fzf: Marks', },
+    { '<leader>pr', function() fzf_lua().resume() end, desc = 'fzf: Resume', },
+    { '<leader>sq', function() fzf_lua().quickfix() end, desc = 'fzf: Quickfix List', },
+    { '<leader>su', function() fzf_lua().undotree() end, desc = 'fzf: Undotree', },
     -- ui
-    { '<leader>uC', function() fzf().colorschemes() end, desc = 'fzf: Colorschemes', },
-    { '<leader>sS', function() fzf().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },
-    { 'z=', function() fzf().spell_suggest() end, desc = 'fzf: spelling', },
-    { '<leader>sH', function() fzf().highlights() end, desc = 'fzf: Highlights', },
+    { '<leader>uC', function() fzf_lua().colorschemes() end, desc = 'fzf: Colorschemes', },
+    { '<leader>sS', function() fzf_lua().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },
+    { 'z=', function() fzf_lua().spell_suggest() end, desc = 'fzf: spelling', },
+    { '<leader>sH', function() fzf_lua().highlights() end, desc = 'fzf: Highlights', },
     { '<leader>sn', notes, desc = 'snacks: search all notes', },
   },
 }
