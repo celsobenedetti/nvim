@@ -185,9 +185,52 @@ end
 -- Picker
 ---------------------------------------------------------------------------
 
+--- Recover the item behind a fzf line via its hidden `<index>\t` prefix.
+---@param items table[]
+---@param line? string
+local function line_to_item(items, line)
+  local idx = line and tonumber(line:match('^(%d+)'))
+  return idx and items[idx] or nil
+end
+
+--- Send the selected (or all, via ctrl-a) entries to the quickfix list.
+---@param items table[]
+---@param selected string[]
+local function send_to_qf(items, selected)
+  local qf = {}
+  for _, line in ipairs(selected or {}) do
+    local item = line_to_item(items, line)
+    if item then
+      qf[#qf + 1] = {
+        filename = item.filename,
+        lnum = item.line_number or 1,
+        col = 1,
+        text = fzf().utils.strip_ansi_coloring(line:gsub('^%d+\t', '')),
+      }
+    end
+  end
+  if #qf == 0 then
+    return
+  end
+  vim.fn.setqflist({}, ' ', { title = 'Org headings', items = qf })
+  vim.cmd('copen')
+end
+
 --- Run the static-item picker.
----@param o { items: table[], entries: string[], prompt: string, title: string, on_confirm: fun(item: table) }
+---@param o { items: table[], entries: string[], prompt: string, title: string, on_confirm: fun(item: table), multi?: boolean, actions?: table<string, function> }
 local function pick(o)
+  local actions = {
+    ['default'] = function(selected)
+      local item = line_to_item(o.items, selected and selected[1])
+      if item then
+        o.on_confirm(item)
+      end
+    end,
+  }
+  for key, fn in pairs(o.actions or {}) do
+    actions[key] = fn
+  end
+
   fzf().fzf_exec(o.entries, {
     prompt = o.prompt,
     _org_items = o.items,
@@ -201,18 +244,12 @@ local function pick(o)
       ['--delimiter'] = '[\t]',
       ['--with-nth'] = '2..',
       ['--ansi'] = true,
+      ['--multi'] = o.multi or nil,
     },
+    -- Deep-merged over the global keymap (opts win), so this only adds ctrl-a.
+    keymap = o.multi and { fzf = { ['ctrl-a'] = 'select-all' } } or nil,
     winopts = { title = o.title },
-    actions = {
-      ['default'] = function(selected)
-        local line = selected and selected[1]
-        local idx = line and tonumber(line:match('^(%d+)'))
-        local item = idx and o.items[idx]
-        if item then
-          o.on_confirm(item)
-        end
-      end,
-    },
+    actions = actions,
   })
 end
 
@@ -232,6 +269,12 @@ function M.search_headings(opts)
     entries = entries,
     prompt = 'Headlines> ',
     title = 'Org Headlines',
+    multi = true, -- ctrl-a: select all
+    actions = {
+      ['alt-q'] = function(selected) -- send selection to the quickfix list
+        send_to_qf(items, selected)
+      end,
+    },
     on_confirm = function(item)
       vim.cmd("normal! m'") -- push to the jumplist first
       if vim.fn.fnamemodify(item.filename, ':p') ~= vim.fn.expand('%:p') then
