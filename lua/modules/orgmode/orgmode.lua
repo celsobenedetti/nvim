@@ -152,6 +152,20 @@ return {
     keys = {
       { '<leader>oim', ':Org indent_mode<CR>', desc = 'org: toggle indent_mode' },
       {
+        '<leader>os',
+        function()
+          require('lib.org_fzf').search_headings()
+        end,
+        desc = 'org: search headings (fzf)',
+      },
+      {
+        '<leader>re',
+        function()
+          require('lib.org_fzf').refile_heading()
+        end,
+        desc = 'org: refile heading (fzf)',
+      },
+      {
         '<leader>T',
         function()
           require('lib.notes').focus_or_create_notes_tab(function()
