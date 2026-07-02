@@ -16,6 +16,7 @@ local abbreviations = {
   Tabnew = 'tabnew',
   Set = 'set',
   git = 'Git',
+  commit = 'tab Git commit',
   dif = 'CodeDiff',
   Diff = 'CodeDiff',
   codediff = 'CodeDiff',
