@@ -17,16 +17,19 @@ return {
     ---@diagnostic disable: missing-fields
     local opts = {
       'ivy', -- bottom-split UI, closest match to the old Snacks `ivy_split`
+      winopts = {
+        -- draw a border around the picker (the `ivy` profile is borderless by default)
+        border = 'rounded',
+        preview = { border = 'rounded' },
+      },
       keymap = {
         fzf = {
           ['ctrl-a'] = 'select-all', -- mark every result (then <a-q> to send all to qf)
         },
       },
-      actions = {
-        files = {
-          ['alt-q'] = fzf.actions.file_sel_to_qf, -- send marked items to quickfix
-        },
-      },
+      -- NOTE: don't set `actions.files` here — it REPLACES fzf-lua's default file
+      -- actions (losing `enter`=file_edit_or_qf and the ctrl-s/v/t splits). `alt-q`
+      -- → send-to-quickfix is already the built-in default.
     }
     fzf.setup(opts)
 
