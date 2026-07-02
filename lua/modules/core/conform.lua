@@ -51,7 +51,7 @@ return {
         lua = { 'stylua' },
         odin = { 'odinfmt' },
         sh = { 'shfmt' },
-        markdown = { 'prettier' },
+        markdown = { 'deno_fmt' },
         typescript = fmt_js,
         typescriptreact = fmt_js,
         python = { 'black' },
