@@ -206,9 +206,9 @@ return {
         time_format = '%H:%M',
         substitutions = {},
       },
-      note = {
-        template = 'Empty.md',
-      },
+      -- note = {
+      --   template = 'Empty.md',
+      -- },
       frontmatter = {
         enabled = false,
       },
