@@ -1,18 +1,18 @@
 -- stylua: ignore start
 map('n', 'gs', function() require("fzf-lua").git_status() end, { desc = 'git: (snacks) git Status' })
 map('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
-map('n', 'gA', function() vim.cmd('Git add -p') end, { desc = 'git: Git add -p`', })
-map('n', 'gR', function() vim.cmd("Git restore -p %") end, { desc = 'git: Git restore -p %' })
+map('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
+map('n', 'gR', function() vim.cmd("tab Git restore -p %") end, { desc = 'git: Git restore -p %' })
 -- stylua: ignore end
 
 map('n', 'gC', function()
   local result = vim.system({ 'git', 'diff', '--staged', '--name-only' }):wait()
   local has_staged = result.stdout ~= nil and result.stdout ~= ''
-  if has_staged then
-    vim.cmd('Git commit')
-  else
-    vim.cmd('Git commit --amend')
+  local cmd = 'tab Git commit'
+  if not has_staged then
+    cmd = cmd .. ' --amend'
   end
+  vim.cmd(cmd)
 end, { desc = 'git: Git commit (or amend if nothing staged)' })
 
 map('n', 'ga', function()
