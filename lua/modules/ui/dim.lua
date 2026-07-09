@@ -31,11 +31,13 @@ return {
         function()
           MiniHipatterns.toggle()
           if Snacks.dim.enabled then
+            vim.wo.number = true
             Snacks.dim.disable()
             Snacks.indent.enable()
             vim.cmd('Gitsigns attach')
             toggle_highlights(false)
           else
+            vim.wo.number = false
             Snacks.indent.disable()
             Snacks.dim.enable({
               scope = {
