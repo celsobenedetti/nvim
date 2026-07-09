@@ -13,6 +13,7 @@ vim.lsp.enable({
   'org',
   'pyright',
   -- 'tailwindcss',
+  'tinymist',
   'vtsls',
   'vue_ls',
 })

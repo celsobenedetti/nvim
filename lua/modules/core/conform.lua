@@ -56,6 +56,7 @@ return {
         typescriptreact = fmt_js,
         python = { 'black' },
         vue = fmt_js,
+        typst = { 'typstyle' },
       },
       formatters = {
         goimports = { prepend_args = { '-local', 'github.com/celsobenedetti/' } },

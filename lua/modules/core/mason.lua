@@ -32,6 +32,8 @@ return {
           'shfmt',
           'stylua',
           'typescript-language-server',
+          'tinymist',
+          'typstyle',
           'vtsls',
           'vue-language-server',
         },
