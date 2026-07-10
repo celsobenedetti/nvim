@@ -12,5 +12,6 @@ return {
   },
   disable_eslint_lsp = {
     'integrations',
+    'notes',
   },
 }
