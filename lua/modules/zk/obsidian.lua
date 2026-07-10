@@ -201,7 +201,7 @@ return {
         folder = 'daily',
       },
       templates = {
-        folder = vim.g.env.notes.ASSETS .. '/templates',
+        folder = vim.g.env.notes.ASSETS_DIR .. '/templates',
         date_format = '%F',
         time_format = '%H:%M',
         substitutions = {},
