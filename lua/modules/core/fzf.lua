@@ -54,8 +54,12 @@ return {
           cmd = string.gsub(
             [[
             fd --color=never --type f --type l --type d --hidden --follow
+          --no-ignore
           --exclude .git
+          --exclude node_modules
+          --exclude public
           --exclude quartz/content
+          --exclude quartz/.quartz
           --exclude .vault
           ]],
             '\n',

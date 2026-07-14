@@ -165,6 +165,7 @@ vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 vim.keymap.set('n', '<leader>in', ':e' .. vim.g.env.org.INBOX .. '<cr>', { desc = 'org: refile file' })
 vim.keymap.set('n', '<leader>oo', ':e' .. vim.g.env.org.MAIN .. '<cr>', { desc = 'org: actions file' })
 vim.keymap.set('n', '<leader>ow', ':e' .. vim.g.env.org.WORK .. '<cr>', { desc = 'org: work file' })
+vim.keymap.set('n', '<leader>occ', ':Org capture c<cr>', { desc = 'org: capture c' })
 
 vim.keymap.set('n', 'ZZ', function()
   Snacks.notify.warn("Please don't use ZZ")
