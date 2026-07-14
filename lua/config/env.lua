@@ -11,6 +11,7 @@ local M = {
   notes = {
     NOTES = os.getenv('NOTES') or '',
     OBSIDIAN_VAULT = os.getenv('OBSIDIAN_VAULT') or '',
+    OBSIDIAN_VAULT_PRIVATE = os.getenv('OBSIDIAN_VAULT_PRIVATE') or '',
     OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
     ORG = os.getenv('ORG') or '',
     PROJECTS = os.getenv('PROJECTS') or '',
@@ -32,7 +33,8 @@ local M = {
   },
 }
 
-M.notes.ASSETS = M.notes.ASSETS:gsub(M.notes.NOTES .. '/', '')
+-- Keep full absolute path; do not strip NOTES prefix
+-- M.notes.ASSETS = M.notes.ASSETS:gsub(M.notes.NOTES .. '/', '')
 
 for k, v in pairs(M.notes) do
   if M.notes[k] == '' then

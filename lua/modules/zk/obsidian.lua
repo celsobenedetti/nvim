@@ -193,7 +193,8 @@ return {
     require('obsidian').setup({
       legacy_commands = false,
       workspaces = {
-        { name = 'obsidian', path = vault },
+        { name = 'garden', path = vault },
+        { name = 'private', path = vim.g.env.notes.OBSIDIAN_VAULT_PRIVATE },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
@@ -201,7 +202,7 @@ return {
         folder = 'daily',
       },
       templates = {
-        folder = vim.g.env.notes.ASSETS_DIR .. '/templates',
+        folder = 'templates',
         date_format = '%F',
         time_format = '%H:%M',
         substitutions = {},
