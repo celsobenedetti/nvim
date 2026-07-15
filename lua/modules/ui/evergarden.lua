@@ -53,6 +53,8 @@ return {
       local global_overrides = {
         ['@keyword'] = config.highlights.keyword,
         ['Title'] = { link = 'Special' },
+        ['@diff.add'] = { link = 'CodeDiffCharInsert' },
+        ['@diff.delete'] = { link = 'CodeDiffCharDelete' },
       }
 
       local overrides_dark = vim.tbl_extend('force', global_overrides, {
