@@ -267,8 +267,8 @@ return {
     { '<leader>si', function() Snacks.picker.icons() end, desc = 'snacks: Icons', },
 
 
-    { '<leader>gG', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'snacks: Lazygit (Root Dir)', },
-    { '<leader>gg', function() Snacks.lazygit() end, desc = 'snacks: Lazygit (cwd)', },
+    { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'snacks: Lazygit (Root Dir)', },
+    { '<leader>gG', function() Snacks.lazygit() end, desc = 'snacks: Lazygit (cwd)', },
     -- lsp
     { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'snacks: Next Reference', },
     { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'snacks: Prev Reference', },
