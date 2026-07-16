@@ -137,10 +137,11 @@ local function set_keymaps()
 end
 
 return {
-  -- 'nvim-orgmode/orgmode',
   {
+    'celsobenedetti/orgmode',
+    branch = 'WIP',
     -- event = "VeryLazy",
-    dir = '~/projects/nvim-orgmode-celsobenedetti/',
+    -- dir = '~/projects/nvim-orgmode-celsobenedetti/',
     dependencies = {
       -- { dir = '~/projects/nvim-orgmode-jira/', lazy = true },
       { 'celsobenedetti/orgmode-keymaps.nvim', config = true },
@@ -266,7 +267,7 @@ return {
       --   end)
       -- end
       --
-      -- local Events = require('orgmode.events')
+      local Events = require('orgmode.events')
       -- Events.listen(Events.event.ClockedIn, function(ev)
       --   clock_in_current_task(ev)
       --   if

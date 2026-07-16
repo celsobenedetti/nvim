@@ -29,9 +29,6 @@ return {
         wintypes = 'special',
       },
       render = function(props)
-        if vim.bo[props.buf].filetype ~= 'markdown' then
-          return ' '
-        end
         local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
         if filename == '' then
           filename = '[No Name]'
@@ -65,9 +62,9 @@ return {
           filename = 'term'
         end
 
-        if filename:find('.md') then
-          filename = filename:gsub('.md', '')
-        end
+        -- if filename:find('.md') then
+        --   filename = filename:gsub('.md', '')
+        -- end
 
         local icon = ft_icon and { ' ', ft_icon, ' ', guifg = ft_color } or ''
         local file = { filename, gui = modified and 'bold,italic' or 'bold' }

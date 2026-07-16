@@ -182,6 +182,7 @@ vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
     cmd = {
       'rg',
       '--no-heading',
+      '--no-ignore',
       '--line-number',
       '--max-filesize',
       '1M',

@@ -37,10 +37,12 @@ return {
     return {
       'BufReadPre ' .. vim.g.env.notes.NOTES .. '/**/*',
       'BufNewFile ' .. vim.g.env.notes.NOTES .. '/**/*',
+      'BufReadPre ' .. vim.g.env.notes.OBSIDIAN_VAULT_WORK .. '/**/*',
+      'BufNewFile ' .. vim.g.env.notes.OBSIDIAN_VAULT_WORK .. '/**/*',
     }
   end,
   keys = function()
-    local vault = vim.g.env.notes.OBSIDIAN_VAULT
+    local vault = vim.g.env.notes.NOTES
     local icons = (vim.g.icons or {}).notes or ''
 
     return {
@@ -187,14 +189,14 @@ return {
     }
   end,
   config = function()
-    local vault = vim.g.env.notes.OBSIDIAN_VAULT
+    local vault = vim.g.env.notes.NOTES
     local inbox_subdir = vim.g.env.notes.OBSIDIAN_INBOX:gsub(vault .. '/', '')
 
     require('obsidian').setup({
       legacy_commands = false,
       workspaces = {
         { name = 'garden', path = vault },
-        { name = 'private', path = vim.g.env.notes.OBSIDIAN_VAULT_PRIVATE },
+        { name = 'work', path = vim.g.env.notes.OBSIDIAN_VAULT_WORK },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
