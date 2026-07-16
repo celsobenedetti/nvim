@@ -192,11 +192,13 @@ return {
     local vault = vim.g.env.notes.NOTES
     local inbox_subdir = vim.g.env.notes.OBSIDIAN_INBOX:gsub(vault .. '/', '')
 
+    local Path = require('obsidian.path')
+
     require('obsidian').setup({
       legacy_commands = false,
       workspaces = {
         { name = 'garden', path = vault },
-        { name = 'work', path = vim.g.env.notes.OBSIDIAN_VAULT_WORK },
+        { name = 'work', path = vim.g.env.notes.PRIVATE_NOTES },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
@@ -265,6 +267,20 @@ return {
         return 'BUG: BAD_ID'
       end,
     })
+
+    -- Fix the work workspace root to the actual vault directory
+    -- (path is PRIVATE_NOTES for workspace detection, but the vault root
+    -- must be OBSIDIAN_VAULT_WORK so operations like daily notes,
+    -- templates, and LSP use the correct directory)
+    for _, ws in ipairs(Obsidian.workspaces) do
+      if ws.name == 'work' then
+        ws.root = Path.new(vim.g.env.notes.OBSIDIAN_VAULT_WORK):resolve({ strict = true })
+        if Obsidian.workspace and Obsidian.workspace.name == 'work' then
+          Obsidian.dir = ws.root
+        end
+        break
+      end
+    end
 
     vim.api.nvim_set_hl(0, 'ObsidianRefText', {
       bg = 'none',
