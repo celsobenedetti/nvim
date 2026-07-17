@@ -2,6 +2,7 @@ return {
   {
     'celsobenedetti/vim-tpipeline',
     event = 'VeryLazy',
+    enabled = false,
     init = function()
       vim.schedule(function()
         vim.cmd([[

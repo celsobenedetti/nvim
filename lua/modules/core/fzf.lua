@@ -58,8 +58,6 @@ return {
           --exclude .git
           --exclude node_modules
           --exclude public
-          --exclude quartz/content
-          --exclude quartz/.quartz
           --exclude .vault
           ]],
             '\n',
@@ -151,7 +149,7 @@ return {
     { '<leader>uC', function() fzf_lua().colorschemes() end, desc = 'fzf: Colorschemes', },
     { '<leader>sS', function() fzf_lua().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },
     { 'z=', function() fzf_lua().spell_suggest() end, desc = 'fzf: spelling', },
-    { '<leader>sH', function() fzf_lua().highlights() end, desc = 'fzf: Highlights', },
+    { '<leader>sH', function() Snacks.picker.highlights() end, desc = 'fzf: Highlights', },
     { '<leader>sn', notes, desc = 'snacks: search all notes', },
   },
 }
