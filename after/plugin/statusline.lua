@@ -5,11 +5,16 @@
 ---  main  󰢱 after/plugin/statusline.lua +3 ~1 -1   5  1  1                                                       stylua   lua_ls
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
+---
+---
+---
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local strings = require('lib.strings')
 local hl = strings.hl
 local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
 local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
+local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
+local RIGHT_SUFFIX = ' ' -- #right > 0 and RIGHT_SEPARATOR or ''
 
 local modules = {
   _git_branch = function()
@@ -27,12 +32,12 @@ local modules = {
       branch_status = ' ' .. vim.g.icons.git.behind .. vim.g.branch_commits_behind_origin
     end
     if vim.g.branch_commits_ahead_of_origin and vim.g.branch_commits_ahead_of_origin > 0 then
-      if branch_status == '' then
-        branch_status = ' '
-      end
       branch_status = branch_status .. vim.g.icons.git.ahead .. vim.g.branch_commits_ahead_of_origin
     end
 
+    if #branch_status == 0 then
+      return ''
+    end
     return hl(vim.g.hl.text.secondary, branch_status)
   end,
 
@@ -267,12 +272,16 @@ end
 local function _build_section(segments, direction)
   local separator = direction == 'left' and LEFT_SEPARATOR or RIGHT_SEPARATOR
   local section = ''
-  for i, segment in pairs(segments) do
-    if #segment > 0 then
-      if i > 1 and #section > 0 then
+  local has_content = false
+  for _, segment in ipairs(segments) do
+    local include = #segment > 0 and segment ~= ' '
+
+    if include then
+      if has_content then
         section = section .. separator
       end
       section = section .. segment
+      has_content = true
     end
   end
   return section
@@ -305,14 +314,7 @@ function _G.MyStatusLine()
   local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
-  return string.format(
-    '%s%s%s%s%s',
-    os.getenv('TMUX') and LEFT_SEPARATOR or ' ',
-    left,
-    SPACE_BETWEEN,
-    right,
-    #right > 0 and RIGHT_SEPARATOR or ''
-  )
+  return string.format('%s%s%s%s%s', LEFT_PREFIX, left, SPACE_BETWEEN, right, RIGHT_SUFFIX)
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
