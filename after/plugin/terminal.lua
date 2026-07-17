@@ -46,7 +46,11 @@ local function toggle_terminal()
 end
 
 vim.keymap.set('n', vim.g.key['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
-vim.keymap.set('t', vim.g.key['<C-/>'], '<C-\\><C-n><C-w>c', { desc = 'Close terminal' })
+vim.keymap.set('t', vim.g.key['<C-/>'], function()
+  if vim.api.nvim_get_current_buf() == float_term_bufnr then
+    vim.api.nvim_input('<C-\\><C-n><C-w>c')
+  end
+end, { desc = 'Close toggle terminal' })
 
 -- Autocmds
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
