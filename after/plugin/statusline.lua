@@ -310,8 +310,9 @@ function _G.MyStatusLine()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
   local search_results = modules._search_results()
 
-  local left = _build_section({ branch .. branch_sync_status, file .. git_status, diagnostics, search_results }, 'left')
-  local right = _build_section({ macro, terminal, location, formatters, lsp, time }, 'right')
+  local left = _build_section({ file .. git_status, diagnostics, search_results }, 'left')
+  local right =
+    _build_section({ macro, terminal, location, formatters, lsp, time, branch .. ' ' .. branch_sync_status }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
   return string.format('%s%s%s%s%s', LEFT_PREFIX, left, SPACE_BETWEEN, right, RIGHT_SUFFIX)
