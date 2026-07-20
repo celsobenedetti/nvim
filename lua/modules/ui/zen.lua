@@ -1,8 +1,3 @@
-local function is_tmux()
-  local tmux = os.getenv('TMUX')
-  return tmux and tmux ~= ''
-end
-
 return {
 
   'folke/snacks.nvim',
@@ -47,17 +42,10 @@ return {
         vim.cmd('norm zt')
 
         vim.api.nvim_set_hl(0, 'Folded', { fg = vim.g.colors.bg, bg = 'none' })
-
-        if is_tmux() then
-          vim.system({ 'tmux', 'set', 'status', 'off' }):wait()
-        end
       end,
       on_close = function()
         vim.g.zen_mode = false
         vim.api.nvim_set_hl(0, 'Folded', { link = 'Normal' })
-        if is_tmux() then
-          vim.system({ 'tmux', 'set', 'status', 'on' }):wait()
-        end
       end,
       show = {
         statusline = false, -- This hides the statusline (including lualine)
