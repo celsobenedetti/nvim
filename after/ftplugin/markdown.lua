@@ -140,6 +140,75 @@ vim.keymap.set('n', '<s', function()
   change_heading_level(-1)
 end, { buffer = true, desc = 'decrease heading level' })
 
+local function add_reference()
+  local url = vim.trim(vim.fn.getreg('+'))
+  if not url:match('^https?://[%-%w+&@#/%%?=~_|!:,.;]*[%-%w+&@#/%%=~_|]$') then
+    Snacks.notify.warn('Clipboard does not contain a URL', { title = 'Reference' })
+    return
+  end
+
+  vim.ui.input({ prompt = 'Reference title: ' }, function(title)
+    if not title or title == '' then
+      return
+    end
+
+    local entry = string.format('- "[%s](%s)"', title, url)
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+    if not (lines[1] and lines[1]:match('^---%s*$')) then
+      local new_lines = { '---', 'references:', entry, '---' }
+      if lines[1] and lines[1] ~= '' then
+        table.insert(new_lines, '')
+      end
+      vim.api.nvim_buf_set_lines(0, 0, 0, false, new_lines)
+      return
+    end
+
+    local fm_end
+    for i = 2, #lines do
+      if lines[i]:match('^---%s*$') then
+        fm_end = i
+        break
+      end
+    end
+
+    if not fm_end then
+      Snacks.notify.warn('Frontmatter has no closing "---"', { title = 'Reference' })
+      return
+    end
+
+    local ref_line
+    for i = 2, fm_end - 1 do
+      if lines[i]:match('^references:%s*$') then
+        ref_line = i
+        break
+      end
+    end
+
+    if not ref_line then
+      vim.api.nvim_buf_set_lines(0, fm_end - 1, fm_end - 1, false, { 'references:', entry })
+      return
+    end
+
+    local insert_at = ref_line
+    for i = ref_line + 1, fm_end - 1 do
+      if lines[i]:match('^%s*%-') then
+        insert_at = i
+      else
+        break
+      end
+    end
+    vim.api.nvim_buf_set_lines(0, insert_at, insert_at, false, { entry })
+  end)
+end
+
+vim.api.nvim_buf_create_user_command(
+  0,
+  'Reference',
+  add_reference,
+  { desc = 'add clipboard URL as a reference in frontmatter' }
+)
+
 vim.opt.wrap = true -- disable wrap
 vim.schedule(setup_folding)
 vim.schedule(setup_markdown_hl)
