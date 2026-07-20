@@ -33,6 +33,7 @@ return {
   'obsidian-nvim/obsidian.nvim',
   version = '*',
   vscode = false,
+  cmd = { 'Obsidian' },
   event = function()
     return {
       'BufReadPre ' .. vim.g.env.notes.NOTES .. '/**/*',
@@ -203,7 +204,7 @@ return {
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
       daily_notes = {
-        folder = 'daily',
+        folder = 'garden/daily',
       },
       templates = {
         folder = 'templates',
