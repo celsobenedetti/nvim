@@ -29,6 +29,9 @@ return {
         wintypes = 'special',
       },
       render = function(props)
+        if vim.bo[props.buf].filetype ~= 'markdown' then
+          return ' '
+        end
         local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
         if filename == '' then
           filename = '[No Name]'
