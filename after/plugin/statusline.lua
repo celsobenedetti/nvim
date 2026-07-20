@@ -45,11 +45,15 @@ local modules = {
     if not vim.g.statusline_show_filepath then
       return ''
     end
-    vim.b.relative_file = vim.fn.expand('%:.')
+    local filename = vim.fn.expand('%:.')
+    vim.b.relative_file = filename
 
-    local file = hl(vim.g.hl.text.secondary, vim.b.relative_file)
+    if vim.bo.filetype == 'git' and filename:find('tmp') then
+      filename = ' git command result'
+      -- get latest command in command history:
+    end
 
-    return file
+    return hl(vim.g.hl.text.secondary, filename)
   end,
 
   _file_icon = function()
