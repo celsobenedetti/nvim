@@ -46,16 +46,32 @@ local modules = {
       return ''
     end
     vim.b.relative_file = vim.fn.expand('%:.')
-    local icon = ''
-    if has_icons then
-      local ft_icon, ft_color = devicons.get_icon(vim.b.relative_file)
-      if ft_icon then
-        icon = hl(ft_color, ft_icon) .. ' '
-      end
-    end
 
     local file = hl(vim.g.hl.text.secondary, vim.b.relative_file)
-    return icon .. '' .. file
+
+    return file
+  end,
+
+  _file_icon = function()
+    if not vim.g.statusline_show_filepath then
+      return ''
+    end
+    local icon = ''
+    local color = ''
+    if vim.bo.filetype == 'terminal' then
+      icon = ''
+      color = vim.g.hl.text.text
+    end
+
+    if icon == '' and has_icons then
+      local filename = vim.fn.expand('%:.')
+      local ft_icon, ft_color = devicons.get_icon(filename)
+      if ft_icon then
+        icon = ft_icon
+        color = ft_color
+      end
+    end
+    return hl(color, icon) .. ' '
   end,
 
   _git_status = function()
@@ -300,6 +316,7 @@ function _G.MyStatusLine()
   local branch = modules._git_branch()
   local branch_sync_status = modules._branch_sync_status()
   local file = vim.b.cached_file or modules._file()
+  local file_icon = modules._file_icon()
   local git_status = vim.b.cached_git_status or modules._git_status()
   local diagnostics = vim.b.cached_diagnostics or modules._diagnostics()
   local lsp = vim.b.cached_lsps or modules._lsps()
@@ -310,7 +327,7 @@ function _G.MyStatusLine()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
   local search_results = modules._search_results()
 
-  local left = _build_section({ file .. git_status, diagnostics, search_results }, 'left')
+  local left = _build_section({ file_icon .. file .. git_status, diagnostics, search_results }, 'left')
   local right =
     _build_section({ macro, terminal, location, formatters, lsp, time, branch .. ' ' .. branch_sync_status }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
