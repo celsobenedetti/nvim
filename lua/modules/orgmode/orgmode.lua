@@ -268,6 +268,10 @@ return {
       -- end
       --
       local Events = require('orgmode.events')
+
+      Events.listen(Events.event.NoteAdded, function(ev)
+        vim.cmd('wa')
+      end)
       -- Events.listen(Events.event.ClockedIn, function(ev)
       --   clock_in_current_task(ev)
       --   if
