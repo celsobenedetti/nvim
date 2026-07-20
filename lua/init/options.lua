@@ -13,7 +13,21 @@ vim.o.relativenumber = false
 vim.g.colorcolumn = 80 -- column highlighted by the colorcolumn toggle (<leader>u|)
 
 vim.g.env = require('config.env')
-vim.g.dirs = require('config.dirs')
+
+-- table extend dirs
+vim.g.dirs = vim.tbl_deep_extend('force', require('config.dirs'), {
+  format_with_eslint = {
+    'ecommerce',
+  },
+  disable_eslint_lsp = {
+    'integrations',
+    'notes',
+    'dotfiles',
+  },
+  dont_format = {
+    '.local/share/nvim/lazy', -- ~/.local/share/nvim/lazy
+  },
+})
 
 vim.g.icons = {
   lsp = ' ',
