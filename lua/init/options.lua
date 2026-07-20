@@ -31,7 +31,7 @@ vim.g.dirs = vim.tbl_deep_extend('force', require('config.dirs'), {
 
 vim.g.icons = {
   lsp = ' ',
-  format = ' ',
+  format = '', -- ' ',
   notes = ' ',
   clock = ' ',
   db = ' ',
