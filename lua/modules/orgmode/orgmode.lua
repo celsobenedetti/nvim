@@ -255,34 +255,34 @@ return {
         keymap = '<TAB>', -- Optional: change keymap
       })
 
-      -- local clock_in_current_task = function(ev)
-      --   vim.schedule(function()
-      --     vim.g.org_current_task = ev.headline:get_title()
-      --     local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
-      --     if file then
-      --       file:write(ev.headline:get_title())
-      --       file:write('\n' .. os.time())
-      --       file:close()
-      --     end
-      --   end)
-      -- end
-      --
+      local clock_in_current_task = function(ev)
+        vim.schedule(function()
+          vim.g.org_current_task = ev.headline:get_title()
+          local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
+          if file then
+            file:write(ev.headline:get_title())
+            file:write('\n' .. os.time())
+            file:close()
+          end
+          -- if
+          --   not vim.iter(ev.headline:get_tags()):find(function(t)
+          --     return t == 'log' or t == 'books' or t == 'music'
+          --   end)
+          -- then
+          --   ev.headline:set_todo('PROG')
+          -- end
+        end)
+      end
+
       local Events = require('orgmode.events')
 
       Events.listen(Events.event.NoteAdded, function(ev)
         vim.cmd('wa')
       end)
-      -- Events.listen(Events.event.ClockedIn, function(ev)
-      --   clock_in_current_task(ev)
-      --   if
-      --     not vim.iter(ev.headline:get_tags()):find(function(t)
-      --       return t == 'log' or t == 'books' or t == 'music'
-      --     end)
-      --   then
-      --     ev.headline:set_todo('PROG')
-      --   end
-      -- end)
-      --
+      Events.listen(Events.event.ClockedIn, function(ev)
+        clock_in_current_task(ev)
+      end)
+
       Events.listen(Events.event.ClockedOut, function(ev)
         vim.schedule(function()
           vim.g.org_current_task = nil
