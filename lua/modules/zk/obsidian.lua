@@ -190,7 +190,7 @@ return {
     }
   end,
   config = function()
-    local vault = vim.g.env.notes.NOTES
+    local vault = vim.g.env.notes.OBSIDIAN_VAULT
     local inbox_subdir = vim.g.env.notes.OBSIDIAN_INBOX:gsub(vault .. '/', '')
 
     local Path = require('obsidian.path')
@@ -204,7 +204,7 @@ return {
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
       daily_notes = {
-        folder = 'garden/daily',
+        folder = 'daily',
       },
       templates = {
         folder = 'templates',
@@ -219,7 +219,7 @@ return {
         enabled = false,
       },
       attachments = {
-        folder = vim.g.env.notes.ATTACHMENTS,
+        folder = 'attachments',
         confirm_img_paste = true,
       },
       ui = {
@@ -250,7 +250,7 @@ return {
         -- checkboxes = { },
       },
       picker = {
-        name = 'snacks.pick',
+        name = 'fzf-lua',
         note_mappings = {
           new = '<C-x>',
           insert_link = '<C-l>',
