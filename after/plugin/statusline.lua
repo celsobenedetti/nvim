@@ -150,7 +150,7 @@ local modules = {
   if count[3] > 0 then result = result .. hl('DiagnosticInfo', vim.g.icons.diagnostics.info .. tostring(count[3]) .. ' ') end
   if count[4] > 0 then result = result .. hl('DiagnosticHint', vim.g.icons.diagnostics.hint .. tostring(count[4]) .. ' ') end
     -- stylua: ignore end
-    return result
+    return strings.trim(result)
   end,
 
   _macro = function()
@@ -331,16 +331,15 @@ function _G.MyStatusLine()
   local search_results = modules._search_results()
 
   local _file = ''
-  if #git_status > 0 then
-    _file = file_icon .. file .. git_status
-  end
+  -- if #git_status > 0 then
+  --   _file = file_icon .. file .. git_status
+  -- end
 
   local left = _build_section({
-    _file,
     search_results,
   }, 'left')
   local right = _build_section({
-    diagnostics,
+    git_status .. '  ' .. diagnostics,
     macro,
     terminal,
     location,
