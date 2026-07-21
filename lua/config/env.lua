@@ -10,7 +10,6 @@ local M = {
 
   notes = {
     NOTES = os.getenv('NOTES') or '',
-    PRIVATE_NOTES = os.getenv('PRIVATE_NOTES') or '',
     OBSIDIAN_VAULT = os.getenv('OBSIDIAN_VAULT') or '',
     OBSIDIAN_VAULT_WORK = os.getenv('OBSIDIAN_VAULT_WORK') or '',
     OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',

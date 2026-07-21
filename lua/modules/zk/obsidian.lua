@@ -199,7 +199,7 @@ return {
       legacy_commands = false,
       workspaces = {
         { name = 'garden', path = vault },
-        { name = 'work', path = vim.g.env.notes.PRIVATE_NOTES },
+        { name = 'work', path = vim.g.env.notes.OBSIDIAN_VAULT_WORK },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
