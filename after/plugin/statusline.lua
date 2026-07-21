@@ -333,9 +333,7 @@ function _G.MyStatusLine()
     file_status = -search_results .. ' ' .. file_status
   end
 
-  local left = _build_section({
-    file .. file_status,
-  }, 'left')
+  -- local left = _build_section({ file .. file_status }, 'left')
   local right = _build_section({
     macro,
     terminal,
@@ -347,7 +345,7 @@ function _G.MyStatusLine()
   }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
-  return string.format('%s%s%s%s%s', LEFT_PREFIX, left, SPACE_BETWEEN, right, RIGHT_SUFFIX)
+  return string.format('%s%s', SPACE_BETWEEN, right)
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
