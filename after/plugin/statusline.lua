@@ -56,7 +56,7 @@ local modules = {
     return hl(vim.g.hl.text.secondary, filename)
   end,
 
-  _file_icon = function()
+  _filetype = function()
     if not vim.g.statusline_show_filepath then
       return ''
     end
@@ -75,7 +75,9 @@ local modules = {
         color = ft_color
       end
     end
-    return hl(color, icon) .. ' '
+
+    local result = vim.bo.filetype .. ' ' .. icon
+    return hl(color, result)
   end,
 
   _git_status = function()
@@ -332,10 +334,11 @@ function _G.MyStatusLine()
   if #diagnostics > 0 then
     file_status = file_status .. '  ' .. diagnostics
   end
+  if search_results and #search_results > 0 then
+    file_status = -search_results .. ' ' .. file_status
+  end
 
-  local left = _build_section({
-    search_results,
-  }, 'left')
+  local left = '' --  _build_section({}, 'left')
   local right = _build_section({
     file_status,
     macro,
