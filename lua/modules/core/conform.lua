@@ -57,6 +57,7 @@ return {
         python = { 'black' },
         vue = fmt_js,
         typst = { 'typstyle' },
+        org = { 'org-fmt' },
       },
       formatters = {
         goimports = { prepend_args = { '-local', 'github.com/celsobenedetti/' } },
@@ -68,6 +69,7 @@ return {
             PRETTIERD_LOCAL_PRETTIER_ONLY = 'true',
           },
         },
+        ['org-fmt'] = { command = 'org-fmt' },
       },
     })
   end,
