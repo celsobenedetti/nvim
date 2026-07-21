@@ -93,16 +93,15 @@ local modules = {
       result = result .. hl('GitSignsAdd', vim.g.icons.git.added .. added)
     end
     if modified > 0 then
-      --
       result = result .. hl('GitSignsChange', vim.g.icons.git.modified .. modified)
     end
     if removed > 0 then
       result = result .. hl('GitSignsDelete', vim.g.icons.git.removed .. removed)
     end
-    return result
-    -- LSP clients attached to buffer
+    return strings.trim(result)
   end,
 
+  -- LSP clients attached to buffer
   _lsps = function()
     local bufnr = vim.api.nvim_get_current_buf()
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
@@ -331,9 +330,25 @@ function _G.MyStatusLine()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
   local search_results = modules._search_results()
 
-  local left = _build_section({ file_icon .. file .. git_status, diagnostics, search_results }, 'left')
-  local right =
-    _build_section({ macro, terminal, location, formatters, lsp, time, branch .. ' ' .. branch_sync_status }, 'right')
+  local _file = ''
+  if #git_status > 0 then
+    _file = file_icon .. file .. git_status
+  end
+
+  local left = _build_section({
+    _file,
+    search_results,
+  }, 'left')
+  local right = _build_section({
+    diagnostics,
+    macro,
+    terminal,
+    location,
+    formatters,
+    lsp,
+    time,
+    branch .. ' ' .. branch_sync_status,
+  }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
   return string.format('%s%s%s%s%s', LEFT_PREFIX, left, SPACE_BETWEEN, right, RIGHT_SUFFIX)
