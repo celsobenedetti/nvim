@@ -321,7 +321,7 @@ function _G.MyStatusLine()
   local git_status = vim.b.cached_git_status or modules._git_status()
   local diagnostics = vim.b.cached_diagnostics or modules._diagnostics()
   local lsp = vim.b.cached_lsps or modules._lsps()
-  local formatters = vim.b.cached_formatters or modules._formatters()
+  -- local formatters = vim.b.cached_formatters or modules._formatters()
   local macro = modules._macro()
   local terminal = modules._terminal()
   local location = modules._location()
@@ -341,7 +341,7 @@ function _G.MyStatusLine()
     macro,
     terminal,
     location,
-    formatters,
+    -- formatters,
     lsp,
     time,
     branch .. ' ' .. branch_sync_status,
