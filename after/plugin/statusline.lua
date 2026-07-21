@@ -56,7 +56,7 @@ local modules = {
     return hl(vim.g.hl.text.secondary, filename)
   end,
 
-  _filetype = function()
+  _file_icon = function()
     if not vim.g.statusline_show_filepath then
       return ''
     end
@@ -76,8 +76,7 @@ local modules = {
       end
     end
 
-    local result = vim.bo.filetype .. ' ' .. icon
-    return hl(color, result)
+    return hl(color, icon)
   end,
 
   _git_status = function()
@@ -313,6 +312,7 @@ function _G.MyStatusLine()
     return ''
   end
 
+  local file = vim.b.cached_file or modules._file()
   local branch = modules._git_branch()
   local branch_sync_status = modules._branch_sync_status()
   local git_status = vim.b.cached_git_status or modules._git_status()
@@ -333,9 +333,10 @@ function _G.MyStatusLine()
     file_status = -search_results .. ' ' .. file_status
   end
 
-  local left = '' --  _build_section({}, 'left')
+  local left = _build_section({
+    file .. file_status,
+  }, 'left')
   local right = _build_section({
-    file_status,
     macro,
     terminal,
     location,
