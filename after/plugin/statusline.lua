@@ -309,12 +309,7 @@ local function _build_section(segments, direction)
 end
 
 function _G.MyStatusLine()
-  -- return default statusline if big file
-  if not vim.g.statusline or vim.bo.filetype == 'dbout' then
-    return hl(vim.g.hl.text.secondary, ' %f')
-  end
-
-  if vim.g.zen_mode then
+  if not vim.g.statusline or vim.g.zen_mode or vim.bo.filetype == 'dbout' then
     return ''
   end
 
