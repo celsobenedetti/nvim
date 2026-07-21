@@ -8,7 +8,7 @@ local function get_local_directories_for_snacks()
   local root = cwd.root()
   --- @type snacks.picker.finder.Item[]
   local snack_items = { { text = '.', file = root, dir = root, cmd = root, desc = root } }
-  for _, dir in ipairs(cwd.directories({ git = true })) do
+  for _, dir in ipairs(cwd.directories({ git = false })) do
     dir = dir .. '/' -- remove trailing slash
     table.insert(snack_items, { text = dir, file = dir, dir = dir, cmd = dir, desc = dir })
   end
