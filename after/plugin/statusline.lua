@@ -143,14 +143,14 @@ local modules = {
     for _, diagnostic in pairs(vim.diagnostic.get(bufnr)) do
       count[diagnostic.severity] = count[diagnostic.severity] + 1
     end
-    local result = ''
+    local parts = {}
   -- stylua: ignore start
-  if count[1] > 0 then result = result .. hl('DiagnosticError', vim.g.icons.diagnostics.error .. tostring(count[1]) .. ' ') end
-  if count[2] > 0 then result = result .. hl('DiagnosticWarn', vim.g.icons.diagnostics.warn .. tostring(count[2]) .. ' ') end
-  if count[3] > 0 then result = result .. hl('DiagnosticInfo', vim.g.icons.diagnostics.info .. tostring(count[3]) .. ' ') end
-  if count[4] > 0 then result = result .. hl('DiagnosticHint', vim.g.icons.diagnostics.hint .. tostring(count[4]) .. ' ') end
+  if count[1] > 0 then parts[#parts + 1] = hl('DiagnosticError', vim.g.icons.diagnostics.error .. tostring(count[1])) end
+  if count[2] > 0 then parts[#parts + 1] = hl('DiagnosticWarn', vim.g.icons.diagnostics.warn .. tostring(count[2])) end
+  if count[3] > 0 then parts[#parts + 1] = hl('DiagnosticInfo', vim.g.icons.diagnostics.info .. tostring(count[3])) end
+  if count[4] > 0 then parts[#parts + 1] = hl('DiagnosticHint', vim.g.icons.diagnostics.hint .. tostring(count[4])) end
     -- stylua: ignore end
-    return strings.trim(result)
+    return table.concat(parts, ' ')
   end,
 
   _macro = function()
@@ -318,8 +318,6 @@ function _G.MyStatusLine()
 
   local branch = modules._git_branch()
   local branch_sync_status = modules._branch_sync_status()
-  local file = vim.b.cached_file or modules._file()
-  local file_icon = modules._file_icon()
   local git_status = vim.b.cached_git_status or modules._git_status()
   local diagnostics = vim.b.cached_diagnostics or modules._diagnostics()
   local lsp = vim.b.cached_lsps or modules._lsps()
@@ -330,16 +328,16 @@ function _G.MyStatusLine()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
   local search_results = modules._search_results()
 
-  local _file = ''
-  -- if #git_status > 0 then
-  --   _file = file_icon .. file .. git_status
-  -- end
+  local file_status = git_status
+  if #diagnostics > 0 then
+    file_status = file_status .. '  ' .. diagnostics
+  end
 
   local left = _build_section({
     search_results,
   }, 'left')
   local right = _build_section({
-    git_status .. '  ' .. diagnostics,
+    file_status,
     macro,
     terminal,
     location,
