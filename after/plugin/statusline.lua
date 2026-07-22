@@ -308,9 +308,9 @@ local function _build_section(segments, direction)
 end
 
 function _G.MyStatusLine()
-  if not vim.g.statusline or vim.g.zen_mode or vim.bo.filetype == 'dbout' then
-    return ''
-  end
+  -- if not vim.g.statusline or vim.g.zen_mode or vim.bo.filetype == 'dbout' then
+  --   return ''
+  -- end
 
   local file = vim.b.cached_file or modules._file()
   local branch = modules._git_branch()
@@ -330,7 +330,7 @@ function _G.MyStatusLine()
     file_status = file_status .. '  ' .. diagnostics
   end
   if search_results and #search_results > 0 then
-    file_status = -search_results .. ' ' .. file_status
+    file_status = search_results .. ' ' .. file_status
   end
 
   -- local left = _build_section({ file .. file_status }, 'left')
