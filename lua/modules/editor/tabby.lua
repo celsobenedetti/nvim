@@ -5,7 +5,7 @@ return {
     keys = {
       {
         '<leader><tab>r',
-        vim.g.fn.rename_tab,
+        '<cmd>RenameTab<CR>',
         desc = 'tab: rename tab',
       },
     },

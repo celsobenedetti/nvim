@@ -25,9 +25,8 @@ function Explorer()
   -- })
 end
 
-vim.g.fn = {
-  ---@param name? string
-  rename_tab = function(name)
+do
+  local function rename_tab(name)
     local ok, tabby = pcall(require, 'tabby')
     if not ok then
       Snacks.notify.warn("can't rename tab: tabby.nvim not installed")
@@ -43,8 +42,14 @@ vim.g.fn = {
       end
       require('tabby').tab_rename(input)
     end)
-  end,
-}
+  end
+
+  vim.g.fn = { rename_tab = rename_tab }
+
+  vim.api.nvim_create_user_command('RenameTab', function(opts)
+    rename_tab(opts.args)
+  end, { nargs = '?' })
+end
 
 _G.open_file_in = _G.open_file_in
   or function(location)
