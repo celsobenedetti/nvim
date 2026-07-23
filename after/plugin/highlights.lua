@@ -3,6 +3,7 @@ if vim.g.colorscheme == 'default' then
 end
 
 local colors = require('lib.colors')
+vim.api.nvim_set_hl(0, 'Bold', { fg = vim.g.colors.fg, bold = true, cterm = { bold = true } })
 vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- transparency changes -----------
 
 vim.api.nvim_set_hl(0, 'TextSecondary', { fg = vim.g.colors.secondary or vim.g.colors.fg })
