@@ -138,7 +138,7 @@ end
 
 return {
   {
-    'celsobenedetti/orgmode',
+    'celsobenedetti/nvim-orgmode',
     branch = 'WIP',
     -- event = "VeryLazy",
     -- dir = '~/projects/nvim-orgmode-celsobenedetti/',
