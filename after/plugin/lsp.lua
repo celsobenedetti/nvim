@@ -20,7 +20,7 @@ vim.lsp.enable({
 
 vim.diagnostic.config({
   virtual_lines = false,
-  virtual_text = false,
+  virtual_text = { prefix = '●', severity = vim.diagnostic.severity.ERROR },
   float = {
     source = true,
   },
