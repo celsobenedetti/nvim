@@ -54,7 +54,8 @@ vim.g.icons = {
   },
   separator = {
     right = '  ',
-    left = ' | ',
+    left = '  ',
+    vertical = ' | ',
   },
   dap = {
     breakpoint = '',

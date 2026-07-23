@@ -2,17 +2,15 @@
 ---@author Celso Benedetti
 ---
 --- example:
----  main  󰢱 after/plugin/statusline.lua +3 ~1 -1   5  1  1                                                       stylua   lua_ls
+---  after/plugin/statusline.lua +3 ~1 -1  5  1  1                                                      lua_ls |  main
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
----
----
----
+
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local strings = require('lib.strings')
 local hl = strings.hl
 local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
-local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
+local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.vertical)
 -- local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
 -- local RIGHT_SUFFIX = ' ' -- #right > 0 and RIGHT_SEPARATOR or ''
 
@@ -326,16 +324,17 @@ function _G.MyStatusLine()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
   local search_results = modules._search_results()
 
-  local file_status = git_status
+  local file_status = ''
   if #diagnostics > 0 then
-    file_status = file_status .. '  ' .. diagnostics
+    file_status = diagnostics
   end
   if search_results and #search_results > 0 then
     file_status = search_results .. ' ' .. file_status
   end
 
-  local left = _build_section({ file .. file_status }, 'left')
+  local left = _build_section({ file .. git_status }, 'left')
   local right = _build_section({
+    file_status,
     macro,
     terminal,
     location,
