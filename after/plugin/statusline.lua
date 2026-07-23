@@ -13,8 +13,8 @@ local strings = require('lib.strings')
 local hl = strings.hl
 local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
 local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.left)
-local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
-local RIGHT_SUFFIX = ' ' -- #right > 0 and RIGHT_SEPARATOR or ''
+-- local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
+-- local RIGHT_SUFFIX = ' ' -- #right > 0 and RIGHT_SEPARATOR or ''
 
 local modules = {
   _git_branch = function()
@@ -45,15 +45,17 @@ local modules = {
     if not vim.g.statusline_show_filepath then
       return ''
     end
-    local filename = vim.fn.expand('%:.')
-    vim.b.relative_file = filename
+    -- local filename = vim.fn.expand('%:.')
+    -- vim.b.relative_file = filename
+    local absolute_file = vim.fn.expand('%:p')
+    local basename = vim.fs.basename(absolute_file)
 
-    if vim.bo.filetype == 'git' and filename:find('tmp') then
-      filename = ' git command result'
-      -- get latest command in command history:
-    end
+    -- if vim.bo.filetype == 'git' and filename:find('tmp') then
+    --   filename = ' git command result'
+    --   -- get latest command in command history:
+    -- end
 
-    return hl(vim.g.hl.text.secondary, filename)
+    return hl(vim.g.hl.text.secondary, basename)
   end,
 
   _file_icon = function()
@@ -333,7 +335,7 @@ function _G.MyStatusLine()
     file_status = search_results .. ' ' .. file_status
   end
 
-  -- local left = _build_section({ file .. file_status }, 'left')
+  local left = _build_section({ file .. file_status }, 'left')
   local right = _build_section({
     macro,
     terminal,
@@ -345,7 +347,7 @@ function _G.MyStatusLine()
   }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
-  return string.format('%s%s', SPACE_BETWEEN, right)
+  return string.format(' %s%s%s', left, SPACE_BETWEEN, right)
 end
 
 vim.opt.statusline = '%!v:lua.MyStatusLine()'
