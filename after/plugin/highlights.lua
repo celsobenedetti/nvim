@@ -25,7 +25,6 @@ vim.api.nvim_set_hl(0, 'BlinkCmpMenuBorder', { bg = 'none' })
 local hyperlink = { underline = true, fg = colors.get_color('@markup.link.label.markdown_inline', 'fg') }
 vim.api.nvim_set_hl(0, '@markup.link.label.markdown_inline', hyperlink)
 vim.api.nvim_set_hl(0, '@org.hyperlink.desc.org', hyperlink)
--- stylua: ignore end
 
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
@@ -65,6 +64,24 @@ vim.api.nvim_set_hl(0, 'PmenuSbar', { bg = 'none', fg = colors.get_color('PmenuS
 vim.api.nvim_set_hl(0, 'WinBarNC', { bg = 'none', fg = colors.get_color('WinBarNC', 'fg') })
 vim.api.nvim_set_hl(0, 'WinBar', { bg = 'none', fg = colors.get_color('WinBar', 'fg') })
 vim.api.nvim_set_hl(0, 'FloatTitle', { bg = 'none', fg = colors.get_color('FloatTitle', 'fg') })
+vim.api.nvim_set_hl(0, 'SnacksBackdrop', { bg = 'none', fg = colors.get_color('SnacksBackdrop', 'fg') })
+vim.api.nvim_set_hl(0, 'SnacksPickerNormal', { bg = 'none', fg = colors.get_color('SnacksPickerNormal', 'fg') })
+
+vim.api.nvim_set_hl(0, 'SnacksPickerCursorLine', { bg = 'none', fg = colors.get_color('SnacksPickerCursorLine', 'fg') })
+vim.api.nvim_set_hl( 0, 'SnacksPickerListCursorLine', { bg = 'none', fg = colors.get_color('SnacksPickerListCursorLine', 'fg') })
+vim.api.nvim_set_hl(0, 'SnacksPickerBorder', { bg = 'none', fg = colors.get_color('SnacksPickerBorder', 'fg') })
+vim.api.nvim_set_hl(0, 'SnacksPickerListBorder', { bg = 'none', fg = colors.get_color('SnacksPickerListBorder', 'fg') })
+vim.api.nvim_set_hl(0, 'SnacksPickerListNormal', { bg = 'none', fg = colors.get_color('SnacksPickerListNormal', 'fg') })
+vim.api.nvim_set_hl( 0, 'SnacksPickerInputBorder', { bg = 'none', fg = colors.get_color('SnacksPickerInputBorder', 'fg') })
+vim.api.nvim_set_hl( 0, 'SnacksPickerInputNormal', { bg = 'none', fg = colors.get_color('SnacksPickerInputNormal', 'fg') })
+vim.api.nvim_set_hl( 0, 'SnacksPickerPreviewBorder', { bg = 'none', fg = colors.get_color('SnacksPickerPreviewBorder', 'fg') })
+vim.api.nvim_set_hl( 0, 'SnacksPickerPreviewNormal', { bg = 'none', fg = colors.get_color('SnacksPickerPreviewNormal', 'fg') })
+
+vim.api.nvim_set_hl( 0,  "SnacksPickerListCursorLine", {bg='none', fg = colors.get_color ('SnacksPickerListCursorLine', 'fg')})
+vim.api.nvim_set_hl( 0,  "SnacksPickerPreviewCursorLine", {bg='none', fg = colors.get_color ('SnacksPickerPreviewCursorLine', 'fg')})
+vim.api.nvim_set_hl( 0,  "SnacksPickerCursorLine", {bg='none', fg = colors.get_color ('SnacksPickerCursorLine', 'fg')})
+vim.api.nvim_set_hl( 0,  "SnacksPickerCode", {bg='none', fg = colors.get_color ('SnacksPickerCode', 'fg')})
+-- stylua: ignore end
 
 -- necessary since "laststatus=3", and "laststatus=0" render statuslien between panes
 -- vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none', fg = colors.get_color('StatusLine', 'fg') })

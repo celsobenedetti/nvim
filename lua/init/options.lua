@@ -7,7 +7,7 @@ vim.g.incline = false
 vim.g.dropbar = true
 vim.g.statusline = true
 
--- vim.o.background = 'dark'
+vim.o.background = 'light'
 vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
 vim.g.colorcolumn = 80 -- column highlighted by the colorcolumn toggle (<leader>u|)
