@@ -31,6 +31,10 @@ end
 
 return {
   'obsidian-nvim/obsidian.nvim',
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    'ibhagwan/fzf-lua',
+  },
   version = '*',
   vscode = false,
   cmd = { 'Obsidian' },
@@ -290,7 +294,4 @@ return {
       bold = true,
     })
   end,
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-  },
 }
