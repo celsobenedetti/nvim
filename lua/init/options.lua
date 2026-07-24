@@ -76,7 +76,6 @@ vim.g.hl = {
     text = '@text',
     highlight = 'Title',
     bold = 'Bold',
-    secondary = 'TextSecondary',
     subtext = '@comment',
     warn = 'WarningMsg',
   },

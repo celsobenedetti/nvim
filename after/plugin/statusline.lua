@@ -9,8 +9,8 @@
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local strings = require('lib.strings')
 local hl = strings.hl
-local LEFT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.right)
-local RIGHT_SEPARATOR = hl(vim.g.hl.text.secondary, vim.g.icons.separator.vertical)
+local LEFT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.right)
+local RIGHT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.vertical)
 -- local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
 -- local RIGHT_SUFFIX = ' ' -- #right > 0 and RIGHT_SEPARATOR or ''
 
@@ -20,8 +20,7 @@ local modules = {
       return ''
     end
 
-    return hl(vim.g.hl.text.highlight, vim.g.icons.git.branch)
-      .. hl(vim.g.hl.text.secondary, (vim.g.gitsigns_head or ''))
+    return hl(vim.g.hl.text.highlight, vim.g.icons.git.branch) .. hl('StatusLine', (vim.g.gitsigns_head or ''))
   end,
 
   _branch_sync_status = function()
@@ -36,7 +35,7 @@ local modules = {
     if #branch_status == 0 then
       return ''
     end
-    return hl(vim.g.hl.text.secondary, branch_status)
+    return hl('StatusLine', branch_status)
   end,
 
   _file = function()
@@ -52,7 +51,7 @@ local modules = {
       return hl(vim.g.hl.text.bold, basename)
     end
 
-    return hl(vim.g.hl.text.secondary, dir) .. hl(vim.g.hl.text.bold, basename)
+    return hl('StatusLine', dir) .. hl(vim.g.hl.text.bold, basename)
   end,
 
   _file_icon = function()
@@ -113,8 +112,7 @@ local modules = {
     for _, client in pairs(clients) do
       table.insert(c, client.name)
     end
-    return hl(vim.g.hl.text.highlight, vim.g.icons.lsp)
-      .. hl(vim.g.hl.text.secondary, table.concat(vim.fn.reverse(c), ', '))
+    return hl(vim.g.hl.text.highlight, vim.g.icons.lsp) .. hl('StatusLine', table.concat(vim.fn.reverse(c), ', '))
   end,
 
   _formatters = function()
@@ -134,7 +132,7 @@ local modules = {
       return ''
     end
 
-    return hl(vim.g.hl.text.highlight, vim.g.icons.format) .. hl(vim.g.hl.text.secondary, result)
+    return hl(vim.g.hl.text.highlight, vim.g.icons.format) .. hl('StatusLine', result)
   end,
 
   _diagnostics = function(bufnr)
