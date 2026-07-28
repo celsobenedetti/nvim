@@ -332,12 +332,10 @@ function _G.MyStatusLine()
 
   local left = _build_section({ file .. git_status }, 'left')
   local right = _build_section({
-    file_status,
     macro,
     terminal,
     location,
-    -- formatters,
-    lsp,
+    file_status .. lsp,
     time,
     branch .. ' ' .. branch_sync_status,
   }, 'right')

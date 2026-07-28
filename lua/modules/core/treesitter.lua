@@ -8,7 +8,7 @@ vim.g.treesitter = {
     'jsx',
     'lua',
     'markdown',
-    'python',
+    -- 'python',
     'sql',
     'tsx',
     'typescript',
