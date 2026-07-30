@@ -305,9 +305,9 @@ local function _build_section(segments, direction)
 end
 
 function _G.MyStatusLine()
-  -- if not vim.g.statusline or vim.g.zen_mode or vim.bo.filetype == 'dbout' then
-  --   return ''
-  -- end
+  if vim.g.statusline == false then
+    return ''
+  end
 
   local file = vim.b.cached_file or modules._file()
   local branch = modules._git_branch()
