@@ -58,7 +58,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
   desc = 'term: setup new terminal',
   group = augroup,
   callback = function()
-    vim.opt_local.number = true
+    vim.opt_local.number = false
     vim.opt_local.scrolloff = 0
     vim.bo.filetype = 'terminal'
     vim.schedule(lib.startinsert)
