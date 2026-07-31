@@ -239,6 +239,7 @@ return {
 
         org_todo_keywords = {
           'TODO(t)', -- Actions that are not started and not planned. These are backlog.
+          'MAYBE(m)', -- 🤷‍♂️
           'UPCOMING(u)', -- Events that are upcoming, not actions to take.
           'NEXT(n)', -- Actions that are not started, but have been selected through planning to be engaged with next.
           'WAITING(w)', -- Acions that are waiting on some hold up or time to lapse.
