@@ -1,7 +1,12 @@
 local cwd = require('lib.cwd')
 
 local function dotfiles()
-  Snacks.picker.files({ dirs = { '~/.dotfiles', '~/.config/nvim' }, title = 'dotfiles', hidden = true })
+  Snacks.picker.files({
+    dirs = { '~/.dotfiles', '~/.config/nvim' },
+    title = 'dotfiles',
+    hidden = true,
+    layout = 'select',
+  })
 end
 
 local function cd()
