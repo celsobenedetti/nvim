@@ -5,7 +5,7 @@ local function dotfiles()
     dirs = { '~/.dotfiles', '~/.config/nvim' },
     title = 'dotfiles',
     hidden = true,
-    layout = 'select',
+    layout = ':e',
   })
 end
 
@@ -122,6 +122,24 @@ return {
             { win = 'input', height = 1, border = 'bottom' },
             { win = 'list', border = 'none' },
             -- { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
+          },
+        },
+        -- Mimics native `:e<Tab>` wildmenu: anchored bottom-left, no chrome,
+        -- results grow upward from the input line (reverse = bottom-up list).
+        [':e'] = {
+          hidden = { 'preview' },
+          reverse = true,
+          layout = {
+            backdrop = false,
+            row = -1,
+            col = 0,
+            width = 0.4,
+            min_width = 60,
+            height = 0.3,
+            border = 'none',
+            box = 'vertical',
+            { win = 'list', border = 'none' },
+            { win = 'input', height = 1, border = 'none' },
           },
         },
       },
