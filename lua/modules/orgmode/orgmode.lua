@@ -167,6 +167,13 @@ return {
         desc = 'org: refile heading (fzf)',
       },
       {
+        '<leader>ap',
+        function()
+          require('lib.org_fzf').refile_to(vim.g.env.org.REFERENCES .. '/datalake.org', 'prompts')
+        end,
+        desc = 'org: refile heading to prompts',
+      },
+      {
         '<leader>T',
         function()
           require('lib.notes').focus_or_create_notes_tab(function()

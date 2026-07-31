@@ -303,25 +303,31 @@ local function resolve_destination(item)
   return nil
 end
 
+--- Resolve the headline under the cursor (org buffer) or point (agenda) that
+--- should be refiled.
+---@return OrgApiHeadline?
+local function source_headline_at_point()
+  if vim.bo.filetype == 'org' then
+    local ok, current = pcall(function()
+      return OrgApi().current():get_closest_headline()
+    end)
+    return ok and current or nil
+  elseif vim.bo.filetype == 'orgagenda' then
+    local ok, agenda = pcall(require, 'orgmode.api.agenda')
+    if ok then
+      return agenda.get_headline_at_cursor()
+    end
+  end
+  return nil
+end
+
 --- Refile the headline under the cursor to a chosen headline or file.
 ---@param opts? { archived?: boolean }
 function M.refile_heading(opts)
   opts = opts or {}
   opts.current_file = vim.api.nvim_buf_get_name(0)
 
-  local source
-  if vim.bo.filetype == 'org' then
-    local ok, current = pcall(function()
-      return OrgApi().current():get_closest_headline()
-    end)
-    source = ok and current or nil
-  elseif vim.bo.filetype == 'orgagenda' then
-    local ok, agenda = pcall(require, 'orgmode.api.agenda')
-    if ok then
-      source = agenda.get_headline_at_cursor()
-    end
-  end
-
+  local source = source_headline_at_point()
   if not source then
     vim.notify('No headline under the cursor to refile', vim.log.levels.WARN)
     return
@@ -365,6 +371,45 @@ function M.refile_heading(opts)
       end)
     end,
   })
+end
+
+--- Refile the headline under the cursor directly to a named heading in
+--- another file, skipping the interactive picker.
+---@param filename string
+---@param heading_title string
+function M.refile_to(filename, heading_title)
+  local source = source_headline_at_point()
+  if not source then
+    vim.notify('No headline under the cursor to refile', vim.log.levels.WARN)
+    return
+  end
+
+  local file = OrgApi().load(filename)
+  if not file then
+    vim.notify('Could not load refile target: ' .. filename, vim.log.levels.ERROR)
+    return
+  end
+
+  local destination
+  for _, headline in ipairs(file.headlines) do
+    if headline.title == heading_title then
+      destination = headline
+      break
+    end
+  end
+  if not destination then
+    vim.notify(string.format('Could not find heading %q in %s', heading_title, filename), vim.log.levels.ERROR)
+    return
+  end
+
+  local ok, result = pcall(function()
+    return OrgApi().refile({ source = source, destination = destination }):wait()
+  end)
+  if ok and result then
+    vim.notify('Refiled: ' .. source.title, vim.log.levels.INFO)
+  else
+    vim.notify('Refile failed' .. (ok and '' or (': ' .. tostring(result))), vim.log.levels.WARN)
+  end
 end
 
 return M
