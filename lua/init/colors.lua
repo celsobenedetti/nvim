@@ -1,3 +1,7 @@
+local lib = {
+  colors = require('lib.colors'),
+}
+
 local colors_path = vim.fn.expand('~/.config/omarchy/current/theme/colors.toml')
 local colors = {}
 
@@ -17,3 +21,9 @@ colors.fg = colors.foreground or colors.color7
 colors.secondary = colors.color7
 
 vim.g.colors = colors
+
+local background = 'dark'
+if lib.colors.omarchy_colorscheme() == 'tufte' then
+  background = 'light'
+end
+vim.o.background = background
