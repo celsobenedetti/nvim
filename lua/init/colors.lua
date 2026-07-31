@@ -23,7 +23,7 @@ colors.secondary = colors.color7
 vim.g.colors = colors
 
 local background = 'dark'
-if lib.colors.omarchy_colorscheme() == 'tufte' then
+if lib.colors.omarchy_colorscheme().colorscheme == 'tufte' then
   background = 'light'
 end
 vim.o.background = background
