@@ -324,7 +324,7 @@ function _G.MyStatusLine()
 
   local file_status = ''
   if #diagnostics > 0 then
-    file_status = diagnostics
+    file_status = diagnostics .. ' '
   end
   if search_results and #search_results > 0 then
     file_status = search_results .. ' ' .. file_status
