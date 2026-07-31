@@ -160,7 +160,7 @@ return {
         desc = 'org: search headings (fzf)',
       },
       {
-        '<leader>re',
+        '<leader>or',
         function()
           require('lib.org_fzf').refile_heading()
         end,
@@ -229,7 +229,7 @@ return {
           org = {
             org_set_tags_command = nil,
             org_priority_up = '+',
-            -- org_refile = false,
+            org_refile = '<leader>re',
             -- org_agenda_set_tags = '<nop>',
             org_toggle_checkbox = '<leader><C-Space>',
             org_insert_todo_heading_respect_content = '<leader>tod',
