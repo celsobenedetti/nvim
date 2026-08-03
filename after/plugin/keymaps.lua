@@ -24,6 +24,7 @@ local lib = {
   cwd = require('lib.cwd'),
   term = require('lib.term'),
   tmux = require('lib.tmux'),
+  cmdline = require('lib.cmdline'),
 }
 
 local should_quit = function()
@@ -112,8 +113,9 @@ local fs = require('lib.fs')
 map('n', '<leader>mv', fs.mv_file, { desc = 'snacks: move file of current buffer to dir' })
 map('n', '<leader>fd', fs.open_dir_in_explorer, { desc = 'snacks: open dir in explorer' })
 
-map({ 'i', 'n', 's' }, '<esc>', function()
+map({ 'i', 'n', 't', 's' }, '<esc>', function()
   vim.cmd('noh')
+  lib.cmdline.clear()
   return '<esc>'
 end, { expr = true, desc = 'Escape and Clear hlsearch' })
 
