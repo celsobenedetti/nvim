@@ -310,7 +310,7 @@ function _G.MyStatusLine()
   end
 
   local file = vim.b.cached_file or modules._file()
-  local branch = modules._git_branch()
+  local _branch = modules._git_branch()
   local branch_sync_status = modules._branch_sync_status()
   local git_status = vim.b.cached_git_status or modules._git_status()
   local diagnostics = vim.b.cached_diagnostics or modules._diagnostics()
@@ -330,6 +330,11 @@ function _G.MyStatusLine()
     file_status = search_results .. ' ' .. file_status
   end
 
+  local branch = _branch
+  if branch_sync_status ~= '' then
+    branch = branch .. ' ' .. branch_sync_status .. ' '
+  end
+
   local left = _build_section({ file .. git_status }, 'left')
   local right = _build_section({
     macro,
@@ -337,7 +342,7 @@ function _G.MyStatusLine()
     location,
     file_status .. lsp,
     time,
-    branch .. ' ' .. branch_sync_status,
+    branch,
   }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
