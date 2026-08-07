@@ -165,7 +165,7 @@ local modules = {
     if not lib.term.is_term() then
       return ''
     end
-    return hl(vim.g.hl.highlight, '   terminal ')
+    return hl('Normal', '   ')
   end,
 
   _location = function()

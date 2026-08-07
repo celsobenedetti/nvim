@@ -14,9 +14,6 @@ vim.g.treesitter = {
     'typescript',
     'vue',
     'yaml',
-
-    --- these look better without treesitter
-    -- 'hmtl',
   },
 }
 vim.g.treesitter.ensure_installed = vim.tbl_extend('force', vim.g.treesitter.highlight, {
