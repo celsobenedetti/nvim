@@ -8,6 +8,7 @@
 
 local SPECIAL_FT_WINBARS = {
   markdown = ' ',
+  snacks_picker_input = '',
 }
 local strings = require('lib.strings')
 local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
