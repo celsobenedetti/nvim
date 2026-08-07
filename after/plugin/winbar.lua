@@ -34,8 +34,12 @@ end
 local function segment(name, category)
   local glyph, hl = get_icon(category, name)
   local text = name:gsub('%%', '%%%%') -- escape statusline % sequences
+
   if glyph ~= '' and category == 'file' then
     text = glyph .. ' ' .. text
+  end
+  if category == 'directory' then
+    hl = 'Normal'
   end
   return strings.hl(hl or 'WinBar', text)
 end
