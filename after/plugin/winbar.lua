@@ -3,6 +3,10 @@
 --- Path is relative to cwd when the file lives under it, absolute otherwise.
 --- Each window shows its own buffer's path (native winbar semantics).
 
+local SPECIAL_FT_WINBARS = {
+  markdown = ' ',
+}
+
 local strings = require('lib.strings')
 local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
 
@@ -61,4 +65,20 @@ _G.get_dropbar_winbar = function()
   return ' ' .. table.concat(parts, strings.hl('WinBar', SEP))
 end
 
-vim.opt.winbar = '%!v:lua.get_dropbar_winbar()'
+vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
+  group = vim.api.nvim_create_augroup('Winbar', { clear = true }),
+  callback = function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local winid = vim.api.nvim_get_current_win()
+    local filetype = vim.bo[bufnr].filetype
+
+    for ft, text in ipairs(SPECIAL_FT_WINBARS) do
+      if filetype == ft then
+        vim.wo[winid].winbar = text
+        return
+      end
+    end
+
+    vim.wo[winid].winbar = '%!v:lua.get_dropbar_winbar()'
+  end,
+})
