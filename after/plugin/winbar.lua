@@ -1,12 +1,14 @@
 --- Lightweight dropbar.nvim replacement: renders the current file path as a
 --- segmented winbar above the window, e.g. `after  plugin  󰢱 winbar.lua`.
---- Path is relative to cwd when the file lives under it, absolute otherwise.
---- Each window renders its own buffer's path, resolved via g:statusline_winid.
+---
+--- 1. Each window renders its own buffer's path, set in vim.wo[winid].winbar,
+--- and resolved via g:statusline_winid.
+--- 2. Path is relative to cwd when the file lives under it, absolute otherwise.
+--- 3. ft icons resolved via mini.icons.
 
 local SPECIAL_FT_WINBARS = {
   markdown = ' ',
 }
-
 local strings = require('lib.strings')
 local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
 
@@ -37,7 +39,7 @@ local function segment(name, category)
 end
 
 ---@return string
-_G.get_dropbar_winbar = function()
+_G.get_winbar = function()
   -- `%!` expressions are evaluated in the context of the *current* (focused)
   -- window, so resolve the window this bar belongs to via g:statusline_winid.
   local winid = vim.g.statusline_winid
@@ -83,6 +85,10 @@ end
 vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
   group = vim.api.nvim_create_augroup('Winbar', { clear = true }),
   callback = function()
+    if vim.bo.buftype == 'nofile' then
+      return
+    end
+
     local bufnr = vim.api.nvim_get_current_buf()
     local winid = vim.api.nvim_get_current_win()
     local filetype = vim.bo[bufnr].filetype
@@ -94,6 +100,6 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
       end
     end
 
-    vim.wo[winid].winbar = '%!v:lua.get_dropbar_winbar()'
+    vim.wo[winid].winbar = '%!v:lua.get_winbar()'
   end,
 })

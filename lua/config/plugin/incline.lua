@@ -1,6 +1,5 @@
 return {
   config = function()
-    vim.opt.winbar = ' '
     local devicons = require('nvim-web-devicons')
 
     require('incline').setup({

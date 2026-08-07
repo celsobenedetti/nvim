@@ -4,7 +4,6 @@ vim.g.autoformat = true
 vim.g.completion = true
 vim.g.eslint_autoformat = true
 vim.g.incline = false
-vim.g.dropbar = true
 vim.g.statusline = true
 
 vim.o.cmdheight = 1 -- Height of the command bar
