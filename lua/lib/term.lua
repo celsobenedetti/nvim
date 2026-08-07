@@ -8,6 +8,10 @@ end
 local M = {
   is_term = is_term,
 
+  is_toggle_term = function(buffer)
+    return is_term(buffer) or buffer == vim.g.float_term_bufnr
+  end,
+
   -- Returns true if buffer is terminal, and has no running command
   -- https://github.com/neovim/neovim/issues/31313
   -- https://github.com/ilan-schemoul/nvim-config/commit/4e27ebabe9d4e819007c770800bac4d5903b8a8d

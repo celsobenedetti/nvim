@@ -6,8 +6,11 @@
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
 
-local has_icons, devicons = pcall(require, 'nvim-web-devicons')
+local lib = {
+  term = require('lib.term'),
+}
 local strings = require('lib.strings')
+local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = strings.hl
 local LEFT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.right)
 local RIGHT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.vertical)
@@ -159,7 +162,7 @@ local modules = {
   end,
 
   _terminal = function()
-    if not vim.b.term then
+    if not lib.term.is_term() then
       return ''
     end
     return hl(vim.g.hl.highlight, '   terminal ')
