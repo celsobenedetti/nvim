@@ -332,8 +332,9 @@ function _G.MyStatusLine()
 
   local branch = _branch
   if branch_sync_status ~= '' then
-    branch = branch .. ' ' .. branch_sync_status .. ' '
+    branch = branch .. ' ' .. branch_sync_status
   end
+  branch = branch .. ' '
 
   local left = _build_section({ file .. git_status }, 'left')
   local right = _build_section({
