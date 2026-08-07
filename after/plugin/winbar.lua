@@ -6,8 +6,9 @@
 --- 2. Path is relative to cwd when the file lives under it, absolute otherwise.
 --- 3. ft icons resolved via mini.icons.
 
-local SPECIAL_FT_WINBARS = {
-  markdown = ' ',
+-- static string instead of custom winbar for specific filetypes
+local SPECIAL_FILETYPES = {
+  markdown = ' ', -- whitespace to accomodate for incline.nvim
   snacks_picker_input = '',
 }
 local strings = require('lib.strings')
@@ -94,7 +95,7 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
     local winid = vim.api.nvim_get_current_win()
     local filetype = vim.bo[bufnr].filetype
 
-    for ft, text in pairs(SPECIAL_FT_WINBARS) do
+    for ft, text in pairs(SPECIAL_FILETYPES) do
       if filetype == ft then
         vim.wo[winid].winbar = text
         return

@@ -10,9 +10,9 @@ vim.keymap.set(
   '<leader>te',
   function()
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      if vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal' and lib.terminal_is_available(buf) then
+      local is_terminal = vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal'
+      if is_terminal and lib.terminal_is_available(buf) then
         vim.api.nvim_set_current_buf(buf)
-        lib.startinsert()
         return
       end
     end
@@ -21,7 +21,9 @@ vim.keymap.set(
   { desc = 'terminal: friendly term - upsert terminal in current window (resume if available, create new otherwise)' }
 )
 
--- taken from: https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
+--- Toggle terminal plugin ---
+--- references:
+---     https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
   local target_height = math.max(20, math.floor(vim.fn.winheight(0) * 0.5))
   if float_term_bufnr <= 0 then
@@ -45,17 +47,16 @@ local function toggle_terminal()
   vim.cmd.resize(target_height)
 end
 
-vim.keymap.set('n', vim.g.key['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
-vim.keymap.set('t', vim.g.key['<C-/>'], function()
-  if vim.api.nvim_get_current_buf() == float_term_bufnr then
-    vim.api.nvim_input('<C-\\><C-n><C-w>c')
-  end
-end, { desc = 'Close toggle terminal' })
-
--- Autocmds
+--- Autocmds ---
+-- stylua: ignore start
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
+-- insert mode when entering terminal window
+vim.api.nvim_create_autocmd('BufWinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.startinsert, })
+vim.api.nvim_create_autocmd('WinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.startinsert, })
+-- stylua: ignore end
+
 vim.api.nvim_create_autocmd('TermOpen', {
-  desc = 'term: setup new terminal',
+  desc = 'term: TermOpen init function',
   group = augroup,
   callback = function()
     vim.opt_local.number = false
@@ -66,11 +67,11 @@ vim.api.nvim_create_autocmd('TermOpen', {
 })
 
 vim.api.nvim_create_autocmd('TermClose', {
-  desc = 'term: reset toggle term when closing term',
+  desc = 'term: TermClose cleanup',
   callback = function()
     local bufs = lib.buffers.get_valid_bufs()
     for _, buf in ipairs(bufs) do
-      if buf == float_term_bufnr then
+      if buf == float_term_bufnr then -- float term still open
         return
       end
     end
@@ -125,8 +126,9 @@ vim.api.nvim_create_autocmd('ExitPre', {
   end,
 })
 
-
--- stylua: ignore start
--- insert mode when entering terminal window
-vim.api.nvim_create_autocmd('BufWinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.startinsert, })
-vim.api.nvim_create_autocmd( 'WinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.startinsert, })
+vim.keymap.set('n', vim.g.key['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
+vim.keymap.set('t', vim.g.key['<C-/>'], function()
+  if vim.api.nvim_get_current_buf() == float_term_bufnr then
+    vim.api.nvim_input('<C-\\><C-n><C-w>c')
+  end
+end, { desc = 'Close toggle terminal' })
