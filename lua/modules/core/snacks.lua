@@ -1,5 +1,7 @@
-local cwd = require('lib.cwd')
-local tab = require('lib.tab')
+local lib = {
+  cwd = require('lib.cwd'),
+  tab = require('lib.tab'),
+}
 
 local function dotfiles()
   Snacks.picker.files({
@@ -20,7 +22,7 @@ local function workspace()
       function(_, item)
         vim.cmd('tabnew')
         if item.file and item.file ~= '' then
-          tab.rename(vim.fs.basename(item.file))
+          lib.tab.rename(vim.fs.basename(item.file))
         end
       end,
       'lcd',
@@ -32,7 +34,7 @@ end
 
 --- Find the tabpage whose window shows `buf`.
 ---@param buf number
----@return number? tabpage, or nil when the buffer is not displayed anywhere
+---@return number? tabpage when the buffer is not displayed anywhere
 local function tabpage_containing(buf)
   for _, tp in ipairs(vim.api.nvim_list_tabpages()) do
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tp)) do
@@ -47,17 +49,17 @@ end
 --- Open lazygit in its own tabpage. If a lazygit tab already exists,
 --- jump to it instead of opening a duplicate.
 local function lazygit_tab()
-  local tabid = tab.find('lazygit')
+  local tabid = lib.tab.find('lazygit')
   if tabid then
     vim.api.nvim_set_current_tabpage(tabid)
     return
   end
 
   vim.cmd('tabnew')
-  tab.rename(vim.g.icons.git.git .. 'lazygit')
+  lib.tab.rename('lazygit')
 
   local term = Snacks.lazygit({
-    cwd = cwd.root(),
+    cwd = lib.cwd.root(),
     auto_close = false,
     win = {
       position = 'current',
@@ -70,19 +72,24 @@ local function lazygit_tab()
   })
 
   -- close the lazygit tab (returning to the previous one) when the process
-  -- exits, even if the user navigated to another tab in the meantime
+  -- exits, even if the user navigated to another tab in the meantime.
+  -- Also wipe the buffer: snacks caches terminals by cmd+cwd and only drops
+  -- the cache entry on BufWipeout, so leaving the (dead) buffer around would
+  -- make the next lazygit_tab() call reuse it instead of starting fresh.
   vim.api.nvim_create_autocmd('TermClose', {
     buffer = term.buf,
     once = true,
     callback = function()
       local tp = tabpage_containing(term.buf)
-      if not tp then
-        return
+      if tp then
+        if tp ~= vim.api.nvim_get_current_tabpage() then
+          vim.api.nvim_set_current_tabpage(tp)
+        end
+        vim.cmd('tabclose')
       end
-      if tp ~= vim.api.nvim_get_current_tabpage() then
-        vim.api.nvim_set_current_tabpage(tp)
+      if vim.api.nvim_buf_is_valid(term.buf) then
+        vim.api.nvim_buf_delete(term.buf, { force = true })
       end
-      vim.cmd('tabclose')
     end,
   })
 end
@@ -146,6 +153,18 @@ return {
     lazygit = {
       -- theme = { selectedLineBgColor = { bg = 'CursorLine' } },
       win = { width = 0, height = 0 },
+      config = {
+        os = {
+          -- The stock nvim-remote preset does `--remote-send "q"` before
+          -- opening the file, to dismiss a floating terminal in some other
+          -- nvim window. Here lazygit runs *inside* this nvim's own
+          -- terminal, so that "q" goes straight to lazygit's stdin and
+          -- lazygit quits on it (its default binding for bare "q"). Drop
+          -- that step; editPreset stays "nvim-remote" for suspend behavior.
+          edit = 'nvim --server "$NVIM" --remote-tab {{filename}}',
+          editAtLine = 'nvim --server "$NVIM" --remote-tab {{filename}} && nvim --server "$NVIM" --remote-send ":{{line}}<CR>"',
+        },
+      },
     },
     picker = {
       enabled = true,
