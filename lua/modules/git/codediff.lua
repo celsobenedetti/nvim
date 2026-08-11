@@ -3,6 +3,8 @@ local function fzf()
   return require('fzf-lua')
 end
 
+local tab = require('lib.tab')
+
 --- Open a CodeDiff of `commit` against its parent and name the tab.
 ---@param commit string short/long sha
 ---@param text? string full entry text, sniffed for a `#PR` number
@@ -23,12 +25,13 @@ local function open_codediff(commit, text)
   local parent = vim.trim(result.stdout):match('[a-f0-9]+')
   Snacks.notify.info('git show ' .. commit, { title = 'Git', icon = '', style = 'fancy' })
   vim.cmd(string.format('CodeDiff %s %s', parent, commit))
-  vim.g.tabname = vim.g.icons.git.commit .. commit
 
+  local tabname = vim.g.icons.git.commit .. commit
   local pr_number = text and text:match('#(%d+)')
   if pr_number ~= nil and pr_number ~= '' then
-    vim.g.tabname = string.format('%s #%s', vim.g.tabname, pr_number)
+    tabname = string.format('%s #%s', tabname, pr_number)
   end
+  tab.set_next_name(tabname)
 end
 
 --- Snacks picker `confirm` (still used by git_pickaxe).
@@ -223,7 +226,7 @@ return {
         group = vim.api.nvim_create_augroup('celso_codefiff', { clear = true }),
         pattern = 'vscodediff:///*',
         callback = function()
-          vim.g.fn.rename_tab(' diff')
+          tab.rename(' diff')
         end,
       })
     end,

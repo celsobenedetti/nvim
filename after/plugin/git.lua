@@ -41,21 +41,18 @@ map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git 
   end, { desc = 'git: git add -p current file' })
 
   map('n', '<leader>gs', function()
-    local tabs = vim.api.nvim_list_tabpages()
-    local ok, tabname = pcall(require, 'tabby.feature.tab_name')
-    if not ok then
+    local tab = require('lib.tab')
+    if not tab.available() then
       Snacks.notify.warn("can't rename tab: tabby.nvim not installed")
       return
     end
 
-    for _, tabid in ipairs(tabs) do
-      if tabname.get(tabid):find('git status') then
-        vim.cmd('tabnext')
-        return
-      end
+    if tab.find('git status') then
+      vim.cmd('tabnext')
+      return
     end
 
-    vim.g.tabname = ' git status'
+    tab.set_next_name(' git status')
     vim.cmd('CodeDiff')
   end, { desc = 'git: (codediff) git status' })
 
@@ -96,7 +93,7 @@ map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git 
       end,
       confirm = function(picker, item)
         picker:close()
-        vim.g.tabname = string.format('%sgit diff %s HEAD', vim.g.icons.git.diff, item.text)
+        require('lib.tab').set_next_name(string.format('%sgit diff %s HEAD', vim.g.icons.git.diff, item.text))
         vim.cmd(string.format('CodeDiff %s HEAD', item.text))
       end,
     })

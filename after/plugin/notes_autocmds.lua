@@ -5,4 +5,4 @@ if not require('lib.cwd').matches({ 'notes' }) then
   return
 end
 
-vim.g.fn.rename_tab(vim.g.icons.notes .. 'notes')
+require('lib.tab').rename(vim.g.icons.notes .. 'notes')

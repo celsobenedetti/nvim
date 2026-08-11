@@ -1,4 +1,5 @@
 local cwd = require('lib.cwd')
+local tab = require('lib.tab')
 
 local function dotfiles()
   Snacks.picker.files({
@@ -19,7 +20,7 @@ local function workspace()
       function(_, item)
         vim.cmd('tabnew')
         if item.file and item.file ~= '' then
-          vim.g.fn.rename_tab(vim.fs.basename(item.file))
+          tab.rename(vim.fs.basename(item.file))
         end
       end,
       'lcd',

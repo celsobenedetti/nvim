@@ -1,21 +1,13 @@
 local M = {}
+local tab = require('lib.tab')
 
 --- @param fn function? to be called after tab is created or focus
 M.focus_or_create_notes_tab = function(fn)
-  local tab_id = -1
-  local has_tabby, tab_name = pcall(require, 'tabby.feature.tab_name')
-  if has_tabby then
-    local tabs = vim.api.nvim_list_tabpages()
-    for _, tab in ipairs(tabs) do
-      if tab_name.get(tab):find(vim.g.notes_tabname) then
-        tab_id = tab
-      end
-    end
-  end
+  local tab_id = tab.find(vim.g.notes_tabname)
 
-  if tab_id == -1 then
+  if not tab_id then
     vim.cmd.tabnew()
-    vim.g.fn.rename_tab(vim.g.notes_tabname)
+    tab.rename(vim.g.notes_tabname)
     vim.cmd.lcd(vim.g.env.notes.NOTES)
     vim.cmd.tabmove('$')
   else
