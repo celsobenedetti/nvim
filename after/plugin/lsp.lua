@@ -12,9 +12,10 @@ vim.lsp.enable({
   'lua_ls',
   'org',
   'pyright',
+  'tsgo',
   -- 'tailwindcss',
   'tinymist',
-  'vtsls',
+  -- 'vtsls',
   'vue_ls',
 })
 
