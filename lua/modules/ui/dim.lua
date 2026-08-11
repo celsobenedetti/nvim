@@ -1,3 +1,6 @@
+local lib = {
+  colors = require('lib.colors'),
+}
 local highlights_to_hide = {
   'ObsidianRefText',
 }
@@ -31,13 +34,13 @@ return {
         function()
           MiniHipatterns.toggle()
           if Snacks.dim.enabled then
-            vim.wo.number = true
+            -- vim.wo.number = true
             Snacks.dim.disable()
             Snacks.indent.enable()
             vim.cmd('Gitsigns attach')
             toggle_highlights(false)
           else
-            vim.wo.number = false
+            -- vim.wo.number = false
             Snacks.indent.disable()
             Snacks.dim.enable({
               scope = {
@@ -89,9 +92,10 @@ return {
         },
       }
 
+      local bg = lib.colors.darken(vim.g.colors.bg, 0.1)
       vim.api.nvim_set_hl(0, 'SnacksDim', {
-        bg = 'none',
-        fg = vim.g.colors.bg,
+        bg = bg,
+        fg = bg,
         bold = false,
         italic = false,
         underline = false,

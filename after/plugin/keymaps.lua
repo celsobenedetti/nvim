@@ -192,7 +192,7 @@ map('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
 
 vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
   local cwd = lib.cwd.cwd()
-  lib.fzf({
+  lib.fzf.grep({
     cmd = {
       'rg',
       '--no-heading',
