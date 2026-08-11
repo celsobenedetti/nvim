@@ -65,6 +65,10 @@ local function setup_tabby(tabs)
       get = function(tabid)
         return tabby_names[tabid] or ''
       end,
+      set = function(tabid, name)
+        last_renamed = name
+        tabby_names[tabid] = name
+      end,
     }
   end
 
@@ -85,6 +89,17 @@ local function setup_tabby(tabs)
           input_callback = cb
         end,
       },
+      g = {
+        icons = {
+          git = {
+            git = '',
+            diff = '',
+          },
+        },
+      },
+      trim = function(s)
+        return s:gsub('^%s+', ''):gsub('%s+$', '')
+      end,
     },
     Snacks = {
       notify = {
@@ -133,6 +148,15 @@ setup_tabby({ [0] = 'foo' })
 tab = reload_tab()
 tab.rename('my tab')
 assert_eq(last_renamed, 'my tab', 'renames current tab')
+teardown_tabby()
+
+-- specific tabid
+setup_tabby({ [0] = 'foo', [5] = 'bar' })
+tab = reload_tab()
+tab.rename('my tab', 5)
+assert_eq(last_renamed, 'my tab', 'renames given tab')
+assert_eq(tab.get_name(5), 'my tab', 'tab 5 renamed')
+assert_eq(tab.get_name(0), 'foo', 'current tab untouched')
 teardown_tabby()
 
 -- empty name prompts via vim.ui.input
@@ -209,6 +233,26 @@ assert_eq(tab.consume_next_name(), nil, 'empty before set')
 tab.set_next_name('git diff main HEAD')
 assert_eq(tab.consume_next_name(), 'git diff main HEAD', 'roundtrip')
 assert_eq(tab.consume_next_name(), nil, 'cleared after consume')
+teardown_tabby()
+
+-- ============================================================
+describe('lib.tab: name_from_command')
+
+setup_tabby({ [0] = 'foo' })
+tab = reload_tab()
+
+assert_eq(tab.name_from_command('Git show abc123'), 'git show abc123', 'Git with args')
+assert_eq(tab.name_from_command('tab Git show abc123'), 'git show abc123', 'tab Git with args')
+assert_eq(tab.name_from_command(':Git show abc123'), 'git show abc123', 'leading colon')
+assert_eq(tab.name_from_command('tab Git diff abc123..def456'), 'git diff abc123..def456', 'hash range')
+assert_eq(tab.name_from_command('CodeDiff main HEAD'), 'diff main HEAD', 'CodeDiff with args')
+assert_eq(tab.name_from_command('CodeDiff history'), 'diff history', 'CodeDiff history')
+assert_eq(tab.name_from_command('tab Git'), nil, 'bare Git -> nil (defaults)')
+assert_eq(tab.name_from_command('Git'), nil, 'bare Git no space -> nil')
+assert_eq(tab.name_from_command('CodeDiff'), nil, 'bare CodeDiff -> nil (defaults)')
+assert_eq(tab.name_from_command('e foo.lua'), nil, 'unrelated command -> nil')
+assert_eq(tab.name_from_command(''), nil, 'empty command -> nil')
+
 teardown_tabby()
 
 -- ============================================================

@@ -1,6 +1,26 @@
 local lib = {
   term = require('lib.term'),
+  tab = require('lib.tab'),
+  cmd = require('lib.cmd'),
 }
+
+-- filetypes of git/codediff tabs that get named on creation
+local GIT_TAB_FILETYPES = {
+  git = true,
+  fugitive = true,
+  ['codediff-explorer'] = true,
+  ['codediff-history'] = true,
+}
+
+local function default_tabname(ft)
+  if ft == 'codediff-history' then
+    return vim.g.icons.git.git .. 'git log'
+  end
+  if ft == 'codediff-explorer' then
+    return vim.g.icons.git.diff .. 'git diff'
+  end
+  return vim.g.icons.git.git .. 'git status'
+end
 
 local function augroup(name)
   return vim.api.nvim_create_augroup('celso_' .. name, { clear = true })
@@ -151,12 +171,30 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('TabNew', {
-  desc = 'term: detach toggle term when sending it to new tab',
+  desc = 'term: detach toggle term; name git/codediff tabs',
   pattern = '*',
   callback = function()
     if lib.term.is_toggle_term() then
       Snacks.notify.info('Detached', { title = 'Toggle term', icon = '', style = 'fancy' })
       vim.g.toggle_term_bufnr = 0
     end
+
+    local tabid = vim.api.nvim_get_current_tabpage()
+    vim.schedule(function()
+      if not vim.api.nvim_tabpage_is_valid(tabid) then
+        return
+      end
+      local buf = vim.api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tabid))
+      local ft = vim.bo[buf].filetype
+      if not GIT_TAB_FILETYPES[ft] then
+        return
+      end
+      local name = lib.tab.consume_next_name()
+        or lib.tab.name_from_command(lib.cmd.get_last_command())
+        or default_tabname(ft)
+      if name then
+        lib.tab.rename(name, tabid)
+      end
+    end)
   end,
 })
