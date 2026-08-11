@@ -3,15 +3,6 @@ local lib = {
   tab = require('lib.tab'),
 }
 
-local function dotfiles()
-  Snacks.picker.files({
-    dirs = { '~/.dotfiles', '~/.config/nvim' },
-    title = 'dotfiles',
-    hidden = true,
-    layout = ':e',
-  })
-end
-
 local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' })
 end
@@ -330,7 +321,7 @@ return {
     -- { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
     { '<leader>no', function() Snacks.picker.notifications() end, desc = 'snacks: notification history', },
     { '<leader>dd', function() Snacks.bufdelete() end, desc = 'snacks: delete buffer', },
-    { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
+    -- { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
     { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'snacks: Rename File', },
     { '<leader>lgl', function() Snacks.lazygit.log() end, desc = 'snacks: Lazygit Log (cwd)', },
     { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'snacks: Explorer Snacks (root dir)', },

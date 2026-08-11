@@ -8,7 +8,7 @@ end
 
 local keymaps = function()
 -- stylua: ignore start
-map('n', 'gs', function() Snacks.picker.git_status() end, { desc = 'git: (snacks) git Status' })
+map('n', 'gs', function() Snacks.picker.git_status({layout = ":e"}) end, { desc = 'git: (snacks) git Status' })
 map('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
 map('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
 map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })

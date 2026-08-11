@@ -6,10 +6,16 @@ end
 -- Mimics the snacks `:e` picker layout (see snacks.lua): anchored bottom-left,
 -- no border/backdrop chrome, results growing upward from the prompt line.
 -- fzf-lua already defaults to `--layout=reverse` (list grows up), so this only
--- needs to set window geometry. Returns `winopts` so it can be dropped into any
--- picker call.
-local function e_layout()
-  return {
+-- needs to set window geometry.
+--
+-- This is a pseudo-profile, not a real fzf-lua `profile` (those can only be a
+-- string like `profile = 'ivy'`): fzf-lua resolves them via `dofile` against
+-- its own plugin directory (see fzf-lua/utils.lua load_profiles), so a
+-- user-defined profile would have to live inside the lazy-managed plugin
+-- install dir and get wiped on every update. `e(opts)` merges the `:e`
+-- winopts with any extra picker opts, mirroring how a real profile is used.
+local function e(opts)
+  return vim.tbl_extend('force', {
     previewer = false,
     fzf_opts = { ['--layout'] = 'default' },
     winopts = function()
@@ -24,11 +30,11 @@ local function e_layout()
         preview = { hidden = true },
       }
     end,
-  }
+  }, opts or {})
 end
 
 local function notes()
-  fzf_lua().files(vim.tbl_extend('force', e_layout(), { cwd = '~/notes' }))
+  fzf_lua().files(e({ cwd = '~/notes' }))
 end
 
 -- Yank the raw text of the current (or all multi-selected) entries, stripped
@@ -110,7 +116,7 @@ return {
     {
       '<c-p>',
       function()
-        require('fzf-lua').files(vim.tbl_extend('force', e_layout(), {
+        require('fzf-lua').files(e({
           -- also list directories alongside files
           cmd = string.gsub(
             [[
@@ -202,6 +208,7 @@ return {
     { '<leader>pr', function() fzf_lua().resume() end, desc = 'fzf: Resume', },
     { '<leader>sq', function() fzf_lua().quickfix() end, desc = 'fzf: Quickfix List', },
     { '<leader>su', function() fzf_lua().undotree() end, desc = 'fzf: Undotree', },
+    { '<leader>dot', function () fzf_lua().files(e({ cwd = '~/.dotfiles' })) end , desc = 'snacks: search dotfiles', },
     -- ui
     { '<leader>uC', function() fzf_lua().colorschemes() end, desc = 'fzf: Colorschemes', },
     { '<leader>sS', function() fzf_lua().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },
