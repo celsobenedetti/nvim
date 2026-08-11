@@ -77,6 +77,9 @@ local modules = {
       end
     end
 
+    if icon == '' then
+      return ''
+    end
     return hl(color, icon)
   end,
 
@@ -320,10 +323,11 @@ function _G.MyStatusLine()
   local lsp = vim.b.cached_lsps or modules._lsps()
   -- local formatters = vim.b.cached_formatters or modules._formatters()
   local macro = modules._macro()
-  local terminal = modules._terminal()
   local location = modules._location()
   local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
   local search_results = modules._search_results()
+
+  local filetype = modules._file_icon()
 
   local file_status = ''
   if #diagnostics > 0 then
@@ -339,12 +343,16 @@ function _G.MyStatusLine()
   end
   branch = branch .. ' '
 
+  local filetype_and_lsps = ''
+  if #file_status > 0 or #filetype > 0 or #lsp > 0 then
+    filetype_and_lsps = file_status .. ' ' .. filetype .. ' ' .. lsp
+  end
+
   local left = _build_section({ file .. git_status }, 'left')
   local right = _build_section({
     macro,
-    terminal,
     location,
-    file_status .. lsp,
+    filetype_and_lsps,
     time,
     branch,
   }, 'right')

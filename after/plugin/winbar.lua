@@ -10,20 +10,21 @@ local lib = {
   term = require('lib.term'),
 }
 
+local strings = require('lib.strings')
+local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
+
 -- specify winbar string or function for specific filetypes
 local SPECIAL_FILETYPES = {
   markdown = ' ', -- whitespace to accomodate for incline.nvim
   snacks_picker_input = '',
   terminal = function()
+    local text = '  terminal'
     if lib.term.is_toggle_term() then
-      return '  toggle term'
+      return text .. SEP .. 'toggle term'
     end
-
-    return '  term'
+    return text
   end,
 }
-local strings = require('lib.strings')
-local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
 
 local has_icons, mini_icons = pcall(require, 'mini.icons')
 

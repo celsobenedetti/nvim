@@ -4,25 +4,21 @@ vim.g.float_term_bufnr = 0
 local lib = require('lib.term')
 lib.buffers = require('lib.buffers')
 
--- friendly term - upsert terminal in current window
-vim.keymap.set(
-  'n',
-  '<leader>te',
-  function()
-    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      local is_terminal = vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal'
-      local is_toggle_term = buf == vim.g.float_term_bufnr
-      if is_terminal and not is_toggle_term and lib.terminal_is_available(buf) then
-        vim.api.nvim_set_current_buf(buf)
-        return
-      end
+-- sticky terminal:
+-- upsert terminal in current window (resume if available, create new otherwise)
+local function sticky_terminal()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    local is_terminal = vim.api.nvim_get_option_value('buftype', { buf = buf }) == 'terminal'
+    local is_toggle_term = buf == vim.g.float_term_bufnr
+    if is_terminal and not is_toggle_term and lib.terminal_is_available(buf) then
+      vim.api.nvim_set_current_buf(buf)
+      return
     end
-    vim.cmd.term()
-  end,
-  { desc = 'terminal: friendly term - upsert terminal in current window (resume if available, create new otherwise)' }
-)
+  end
+  vim.cmd.term()
+end
 
---- Toggle terminal plugin ---
+--- Toggle terminal plugin
 --- references:
 ---     https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
@@ -127,6 +123,7 @@ vim.api.nvim_create_autocmd('ExitPre', {
   end,
 })
 
+vim.keymap.set('n', '<leader>te', sticky_terminal, { desc = 'terminal: sticky terminal' })
 vim.keymap.set('n', vim.g.key['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
 vim.keymap.set('t', vim.g.key['<C-/>'], function()
   if vim.api.nvim_get_current_buf() == vim.g.float_term_bufnr then
