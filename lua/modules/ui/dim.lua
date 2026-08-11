@@ -7,6 +7,38 @@ local highlights_to_hide = {
 
 local saved_highlights = {}
 
+local dim_scope_patched = false
+
+-- snacks.dim only recomputes a window's scope on cursor movement, so
+-- unfocused splits keep showing their last-active-line scope instead of
+-- going fully dim. Patch on_win so only the current window gets
+-- scope-based dimming; every other window is dimmed edge-to-edge.
+local function patch_dim_scope()
+  if dim_scope_patched then
+    return
+  end
+  dim_scope_patched = true
+
+  local dim = require('snacks.dim')
+  local original_on_win = dim.on_win
+  local ns = vim.api.nvim_create_namespace('snacks_dim')
+
+  dim.on_win = function(win, buf, top, bottom)
+    if win ~= vim.api.nvim_get_current_win() then
+      for l = top, bottom do
+        vim.api.nvim_buf_set_extmark(buf, ns, l - 1, 0, {
+          end_row = l,
+          end_col = 0,
+          hl_group = 'SnacksDim',
+          ephemeral = true,
+        })
+      end
+      return
+    end
+    original_on_win(win, buf, top, bottom)
+  end
+end
+
 local function toggle_highlights(hide)
   if hide then
     for _, name in ipairs(highlights_to_hide) do
@@ -56,6 +88,8 @@ return {
       },
     },
     opts = function(_, opts)
+      patch_dim_scope()
+
       --- @type snacks.zen.Config
       opts.dim = {
         scope = {
