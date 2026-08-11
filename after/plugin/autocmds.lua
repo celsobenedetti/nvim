@@ -1,3 +1,7 @@
+local lib = {
+  term = require('lib.term'),
+}
+
 local function augroup(name)
   return vim.api.nvim_create_augroup('celso_' .. name, { clear = true })
 end
@@ -143,5 +147,16 @@ vim.api.nvim_create_autocmd('FileType', {
       vim.fn.setqflist(qf_list, 'r')
       vim.cmd('copen') -- Refresh the window
     end, { buffer = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd('TabNew', {
+  desc = 'term: detach toggle term when sending it to new tab',
+  pattern = '*',
+  callback = function()
+    if lib.term.is_toggle_term() then
+      Snacks.notify.info('Detached', { title = 'Toggle term', icon = '', style = 'fancy' })
+      vim.g.toggle_term_bufnr = 0
+    end
   end,
 })
