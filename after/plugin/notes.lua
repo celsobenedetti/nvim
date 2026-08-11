@@ -5,7 +5,7 @@ local lib = {
 
 vim.keymap.set('n', vim.g.key['<C-S-N>'], function()
   lib.notes.focus_or_create_notes_tab(function()
-    lib.fzf({
+    lib.fzf.grep({
       cmd = {
         'rg',
         '--no-heading',

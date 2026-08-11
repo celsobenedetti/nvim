@@ -6,8 +6,10 @@ plugins.
 
 ## Research and document neovim APIs
 
-nvim help docs located in: `/usr/local/share/nvim/runtime/doc` if needed:
-[Neovim API web reference Reference](https://neovim.io/doc/user/api.html).
+1. nvim help docs located in: `/usr/local/share/nvim/runtime/doc` (if needed,
+   docs in web:
+   [Neovim API web reference Reference](https://neovim.io/doc/user/api.html))
+2. Neovim source code in `~/local/neovim/`
 
 When valuable populate your findings in a `docs` file.
 
