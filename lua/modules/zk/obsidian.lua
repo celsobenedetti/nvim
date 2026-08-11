@@ -1,17 +1,20 @@
-local strings = require('lib.strings')
-local visual = require('lib.visual')
+local lib = {
+  cwd = require('lib.cwd'),
+  strings = require('lib.strings'),
+  visual = require('lib.visual'),
+}
 
 local function create_note_from_selection()
   if vim.bo.filetype ~= 'markdown' then
     return
   end
 
-  local text = visual.get_selection()
+  local text = lib.visual.get_selection()
   if not text or #text == 0 then
     return
   end
   local obsidian = require('obsidian')
-  local title = strings.trim(text)
+  local title = lib.strings.trim(text)
 
   obsidian.Note
     .create({
@@ -26,7 +29,7 @@ local function create_note_from_selection()
       end,
     })
 
-  visual.replace('[[' .. title .. ']]')
+  lib.visual.replace('[[' .. title .. ']]')
 end
 
 return {
@@ -293,5 +296,11 @@ return {
       underline = true,
       bold = true,
     })
+
+    vim.schedule(function()
+      if lib.cwd.matches({ 'work' }) then
+        Obsidian.workspace.set('work')
+      end
+    end)
   end,
 }
