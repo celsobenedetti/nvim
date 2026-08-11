@@ -2,13 +2,6 @@ return {
   {
     'nanozuki/tabby.nvim',
     event = 'TabNew',
-    keys = {
-      {
-        '<leader><tab>r',
-        '<cmd>RenameTab<CR>',
-        desc = 'tab: rename tab',
-      },
-    },
     config = function()
       local theme = {
         fill = 'TabLineFill',
