@@ -325,7 +325,7 @@ return {
 
     -- -- git
     { '<leader>fp', function() Snacks.picker.projects() end, desc = 'snacks: Projects', },
-    { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
+    -- { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
     -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'snacks: GitHub Issues (open)', },
     -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'snacks: GitHub Issues (all)', },
     { '<leader>gp', function() Snacks.picker.gh_pr() end, desc = 'snacks: GitHub Pull Requests (open)', },
