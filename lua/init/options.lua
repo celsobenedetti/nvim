@@ -19,6 +19,7 @@ vim.g.dirs = vim.tbl_deep_extend('force', require('config.dirs'), {
   },
   disable_eslint_lsp = {
     'integrations',
+    'io',
     'notes',
     'dotfiles',
   },

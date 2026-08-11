@@ -31,8 +31,8 @@ return {
         vim.g.fn.rename_tab(tabname)
       end, { nargs = 1 })
 
-      vim.cmd.cnoreabbrev('db Db')
-      vim.cmd.cnoreabbrev('DB Db')
+      -- vim.cmd.cnoreabbrev('db Db')
+      -- vim.cmd.cnoreabbrev('DB Db')
     end,
   },
 }

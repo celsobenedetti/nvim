@@ -29,9 +29,9 @@ return {
         make = { 'checkmake' },
         go = { 'golangcilint' },
         python = { 'ruff' },
-        typescript = { 'oxlint' },
-        javascript = { 'oxlint' },
-        vue = { 'oxlint' },
+        -- typescript = { 'oxlint' },
+        -- javascript = { 'oxlint' },
+        -- vue = { 'oxlint' },
       }
 
       function M.debounce(ms, fn)
