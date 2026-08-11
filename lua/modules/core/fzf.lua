@@ -10,6 +10,8 @@ end
 -- picker call.
 local function e_layout()
   return {
+    previewer = false,
+    fzf_opts = { ['--layout'] = 'default' },
     winopts = function()
       local cols = vim.o.columns
       return {
@@ -27,6 +29,40 @@ end
 
 local function notes()
   fzf_lua().files(vim.tbl_extend('force', e_layout(), { cwd = '~/notes' }))
+end
+
+-- Yank the raw text of the current (or all multi-selected) entries, stripped
+-- of ansi coloring. Mirrors fzf-lua's own `git_yank_commit` action so it
+-- respects the `clipboard` setting.
+local function yank_entry(selected, _)
+  if not selected[1] then
+    return
+  end
+  local utils = require('fzf-lua.utils')
+  local lines = vim.tbl_map(function(line)
+    return utils.strip_ansi_coloring(line)
+  end, selected)
+  local text = table.concat(lines, '\n')
+
+  local regs, cb = {}, vim.o.clipboard
+  if cb:match('unnamed') then
+    regs[#regs + 1] = [[*]]
+  end
+  if cb:match('unnamedplus') then
+    regs[#regs + 1] = [[+]]
+  end
+  if #regs == 0 then
+    regs[#regs + 1] = [["]]
+  end
+  for _, reg in ipairs(regs) do
+    vim.fn.setreg(reg, text)
+  end
+  vim.fn.setreg([[0]], text)
+
+  utils.info({
+    'yanked to register ',
+    { regs[1], 'DiagnosticVirtualLinesHint' },
+  })
 end
 
 return {
@@ -49,9 +85,16 @@ return {
           ['ctrl-a'] = 'select-all', -- mark every result (then <a-q> to send all to qf)
         },
       },
-      -- NOTE: don't set `actions.files` here — it REPLACES fzf-lua's default file
-      -- actions (losing `enter`=file_edit_or_qf and the ctrl-s/v/t splits). `alt-q`
-      -- → send-to-quickfix is already the built-in default.
+      -- NOTE: don't set `actions.files` here to a NEW table — it REPLACES fzf-lua's
+      -- default file actions (losing `enter`=file_edit_or_qf and the ctrl-s/v/t
+      -- splits). `alt-q` → send-to-quickfix is already the built-in default.
+      -- `actions.files`/`actions.buffers` are merged as extra entries (not a
+      -- wholesale replacement) into every files-like/buffers-like picker, which
+      -- is how `ctrl-y` ends up bound everywhere.
+      actions = {
+        files = { ['ctrl-y'] = yank_entry },
+        buffers = { ['ctrl-y'] = yank_entry },
+      },
     }
     fzf.setup(opts)
 
@@ -68,11 +111,6 @@ return {
       '<c-p>',
       function()
         require('fzf-lua').files(vim.tbl_extend('force', e_layout(), {
-          profile = 'fzf-vim',
-          previewer = false,
-          -- fzf-vim nullifies `--layout` to inherit FZF_DEFAULT_OPTS; restore
-          -- the `:e` bottom-up list (default `reverse`)
-          fzf_opts = { ['--layout'] = 'default' },
           -- also list directories alongside files
           cmd = string.gsub(
             [[
