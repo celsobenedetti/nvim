@@ -3,8 +3,30 @@ local function fzf_lua()
   return require('fzf-lua')
 end
 
+-- Mimics the snacks `:e` picker layout (see snacks.lua): anchored bottom-left,
+-- no border/backdrop chrome, results growing upward from the prompt line.
+-- fzf-lua already defaults to `--layout=reverse` (list grows up), so this only
+-- needs to set window geometry. Returns `winopts` so it can be dropped into any
+-- picker call.
+local function e_layout()
+  return {
+    winopts = function()
+      local cols = vim.o.columns
+      return {
+        row = 1, -- bottom edge
+        col = 0, -- left edge
+        width = math.max(0.4, 60 / cols), -- 40% width, at least 60 cols
+        height = 0.3,
+        border = 'none',
+        backdrop = 100, -- fully transparent, i.e. no backdrop
+        preview = { hidden = true },
+      }
+    end,
+  }
+end
+
 local function notes()
-  fzf_lua().files({ cwd = '~/notes' })
+  fzf_lua().files(vim.tbl_extend('force', e_layout(), { cwd = '~/notes' }))
 end
 
 return {
@@ -45,11 +67,12 @@ return {
     {
       '<c-p>',
       function()
-        local cols = vim.o.columns
-        local max_cols = 120
-        require('fzf-lua').files({
+        require('fzf-lua').files(vim.tbl_extend('force', e_layout(), {
           profile = 'fzf-vim',
           previewer = false,
+          -- fzf-vim nullifies `--layout` to inherit FZF_DEFAULT_OPTS; restore
+          -- the `:e` bottom-up list (default `reverse`)
+          fzf_opts = { ['--layout'] = 'default' },
           -- also list directories alongside files
           cmd = string.gsub(
             [[
@@ -92,11 +115,7 @@ return {
               ['ctrl-v'] = dir_or('file_vsplit', 'vsplit'),
             }
           end)(),
-          winopts = {
-            height = 0.4,
-            width = cols <= max_cols and 1.0 or (max_cols / cols),
-          },
-        })
+        }))
       end,
     },
 
