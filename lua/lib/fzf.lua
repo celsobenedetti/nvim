@@ -1,8 +1,10 @@
+local M = {}
+
 --- search entries with fzf-lua
 --- runs the command once and fuzzy-filters the results in fzf (like the
 --- Snacks static-item picker), with native file:line preview and jump.
 ---@param opts {cwd?: string, cmd?: string[]}
-return function(opts)
+M.grep = function(opts)
   opts = opts or {}
   local cmd = opts.cmd or { 'git', '-C', '%s', 'grep', '--line-number', '.', opts.cwd or '.' }
 
@@ -26,3 +28,36 @@ return function(opts)
     winopts = { title = 'grep ' .. (opts.cwd or '') },
   })
 end
+
+-- Mimics the `:e` picker layout: anchored bottom-left,
+-- no border/backdrop chrome, results growing upward from the prompt line.
+-- fzf-lua already defaults to `--layout=reverse` (list grows up), so this only
+-- needs to set window geometry.
+--
+-- This is a pseudo-profile, not a real fzf-lua `profile` (those can only be a
+-- string like `profile = 'ivy'`): fzf-lua resolves them via `dofile` against
+-- its own plugin directory (see fzf-lua/utils.lua load_profiles), so a
+-- user-defined profile would have to live inside the lazy-managed plugin
+-- install dir and get wiped on every update. `M.e(opts)` merges the `:e`
+-- winopts with any extra picker opts, mirroring how a real profile is used.
+---@param opts table?
+M.e = function(opts)
+  return vim.tbl_extend('force', {
+    previewer = false,
+    fzf_opts = { ['--layout'] = 'default' },
+    winopts = function()
+      local cols = vim.o.columns
+      return {
+        row = 1, -- bottom edge
+        col = 0, -- left edge
+        width = math.max(0.4, 60 / cols), -- 40% width, at least 60 cols
+        height = 0.3,
+        border = 'none',
+        backdrop = 100, -- fully transparent, i.e. no backdrop
+        preview = { hidden = true },
+      }
+    end,
+  }, opts or {})
+end
+
+return M
