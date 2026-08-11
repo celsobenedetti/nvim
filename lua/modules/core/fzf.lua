@@ -37,40 +37,6 @@ local function notes()
   fzf_lua().files(e({ cwd = '~/notes' }))
 end
 
--- Yank the raw text of the current (or all multi-selected) entries, stripped
--- of ansi coloring. Mirrors fzf-lua's own `git_yank_commit` action so it
--- respects the `clipboard` setting.
-local function yank_entry(selected, _)
-  if not selected[1] then
-    return
-  end
-  local utils = require('fzf-lua.utils')
-  local lines = vim.tbl_map(function(line)
-    return utils.strip_ansi_coloring(line)
-  end, selected)
-  local text = table.concat(lines, '\n')
-
-  local regs, cb = {}, vim.o.clipboard
-  if cb:match('unnamed') then
-    regs[#regs + 1] = [[*]]
-  end
-  if cb:match('unnamedplus') then
-    regs[#regs + 1] = [[+]]
-  end
-  if #regs == 0 then
-    regs[#regs + 1] = [["]]
-  end
-  for _, reg in ipairs(regs) do
-    vim.fn.setreg(reg, text)
-  end
-  vim.fn.setreg([[0]], text)
-
-  utils.info({
-    'yanked to register ',
-    { regs[1], 'DiagnosticVirtualLinesHint' },
-  })
-end
-
 return {
   'ibhagwan/fzf-lua',
   dependencies = { 'nvim-mini/mini.icons' },
@@ -90,16 +56,6 @@ return {
         fzf = {
           ['ctrl-a'] = 'select-all', -- mark every result (then <a-q> to send all to qf)
         },
-      },
-      -- NOTE: don't set `actions.files` here to a NEW table — it REPLACES fzf-lua's
-      -- default file actions (losing `enter`=file_edit_or_qf and the ctrl-s/v/t
-      -- splits). `alt-q` → send-to-quickfix is already the built-in default.
-      -- `actions.files`/`actions.buffers` are merged as extra entries (not a
-      -- wholesale replacement) into every files-like/buffers-like picker, which
-      -- is how `ctrl-y` ends up bound everywhere.
-      actions = {
-        files = { ['ctrl-y'] = yank_entry },
-        buffers = { ['ctrl-y'] = yank_entry },
       },
     }
     fzf.setup(opts)
