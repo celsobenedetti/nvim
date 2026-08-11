@@ -30,6 +30,63 @@ local function workspace()
   })
 end
 
+--- Find the tabpage whose window shows `buf`.
+---@param buf number
+---@return number? tabpage, or nil when the buffer is not displayed anywhere
+local function tabpage_containing(buf)
+  for _, tp in ipairs(vim.api.nvim_list_tabpages()) do
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tp)) do
+      if vim.api.nvim_win_get_buf(win) == buf then
+        return tp
+      end
+    end
+  end
+  return nil
+end
+
+--- Open lazygit in its own tabpage. If a lazygit tab already exists,
+--- jump to it instead of opening a duplicate.
+local function lazygit_tab()
+  local tabid = tab.find('lazygit')
+  if tabid then
+    vim.api.nvim_set_current_tabpage(tabid)
+    return
+  end
+
+  vim.cmd('tabnew')
+  tab.rename(vim.g.icons.git.git .. 'lazygit')
+
+  local term = Snacks.lazygit({
+    cwd = cwd.root(),
+    auto_close = false,
+    win = {
+      position = 'current',
+      keys = {
+        q = function()
+          vim.cmd('tabclose')
+        end,
+      },
+    },
+  })
+
+  -- close the lazygit tab (returning to the previous one) when the process
+  -- exits, even if the user navigated to another tab in the meantime
+  vim.api.nvim_create_autocmd('TermClose', {
+    buffer = term.buf,
+    once = true,
+    callback = function()
+      local tp = tabpage_containing(term.buf)
+      if not tp then
+        return
+      end
+      if tp ~= vim.api.nvim_get_current_tabpage() then
+        vim.api.nvim_set_current_tabpage(tp)
+      end
+      vim.cmd('tabclose')
+    end,
+  })
+end
+
 return {
   'folke/snacks.nvim',
   lazy = false,
@@ -248,18 +305,6 @@ return {
   },
   keys = {
 
-    -- {
-    --   '<C-p>',
-    --   function()
-    --     Snacks.picker.smart({
-    --       layout = 'select',
-    --       title = '',
-    --       hidden = cwd.cwd():find('dotfiles'),
-    --     })
-    --   end,
-    --   desc = 'snacks: Smart picker',
-    --   mode = { 'n' },
-    -- },
     -- stylua: ignore start
     -- TODO: figure out cwd in terminal, if opening file with different cwd from root
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
@@ -291,7 +336,7 @@ return {
     { '<leader>si', function() Snacks.picker.icons() end, desc = 'snacks: Icons', },
 
 
-    { '<leader>gg', function() Snacks.lazygit { cwd = cwd.root() } end, desc = 'snacks: Lazygit (Root Dir)', },
+    { '<leader>gg', lazygit_tab, desc = 'lazygit: (tab) Root Dir', },
     { '<leader>gG', function() Snacks.lazygit() end, desc = 'snacks: Lazygit (cwd)', },
     -- lsp
     { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'snacks: Next Reference', },

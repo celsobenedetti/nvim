@@ -1,7 +1,12 @@
 .PHONY: test format snippets 
 
 test:
-	./scripts/test
+	@fail=0; \
+	for t in $$(find tests -name 'test_*.lua' | sort); do \
+		echo "== $$t"; \
+		luajit "$$t" || fail=1; \
+	done; \
+	exit $$fail
 
 format:
 	stylua .

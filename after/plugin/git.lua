@@ -1,9 +1,19 @@
+local function main_branch()
+  local result = vim.system({ 'git', 'symbolic-ref', 'refs/remotes/origin/HEAD' }):wait()
+  if result.code == 0 and result.stdout then
+    return result.stdout:gsub('^refs/remotes/origin/', ''):gsub('%s+$', '')
+  end
+  return 'dev'
+end
+
 local keymaps = function()
 -- stylua: ignore start
 map('n', 'gs', function() Snacks.picker.git_status() end, { desc = 'git: (snacks) git Status' })
 map('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
 map('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
 map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
+
+map('n','<leader>gd', function()vim.cmd('vertical Git diff ' .. main_branch() .. ' -- %')end, {desc ="git: Git diff main -- %"})
   -- stylua: ignore end
 
   map('n', 'gC', function()
@@ -57,7 +67,7 @@ map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git 
   end, { desc = 'git: (codediff) git status' })
 
   -- git: CodeDiff with branch picker
-  map('n', '<leader>gd', function()
+  map('n', '<leader>gD', function()
     local branches = vim.fn.systemlist('git branch -a --sort=-committerdate')
     if vim.v.shell_error ~= 0 then
       Snacks.notify.error('Not a git repository')

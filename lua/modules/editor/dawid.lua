@@ -1,10 +1,11 @@
 return {
   'rodakd/terms.nvim',
+
   config = function()
     require('terms').setup({
       width = 0.9, -- fraction of editor width (float/vsplit)
       height = 0.9, -- fraction of editor height (float/hsplit)
-      position = 'float', -- "float" | "vsplit" | "hsplit"
+      position = 'vsplit', -- "float" | "vsplit" | "hsplit"
       close = '<C-q>', -- buffer-local key to hide the terminal window (set to false to disable)
     })
 
