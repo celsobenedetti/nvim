@@ -8,10 +8,10 @@
 
 local PALETTES = {
   dark = {
-    add = '#004e00', -- line-level add background
-    delete = '#4e0000', -- line-level delete background
-    add_char = '#006000', -- char-level add emphasis (more saturated)
-    delete_char = '#901011', -- char-level delete emphasis (more saturated)
+    add = '#004b00', -- line-level add background
+    delete = '#3f0000', -- line-level delete background
+    add_char = '#006f00', -- char-level add emphasis (more saturated)
+    delete_char = '#6f0c10', -- char-level delete emphasis (more saturated)
   },
   light = {
     add = '#d0ffd0', -- line-level add background
