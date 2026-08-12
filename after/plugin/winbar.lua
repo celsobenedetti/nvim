@@ -8,14 +8,13 @@
 
 local lib = {
   term = require('lib.term'),
+  strings = require('lib.strings'),
 }
 
-local strings = require('lib.strings')
 local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
 
 -- specify winbar string or function for specific filetypes
 local SPECIAL_FILETYPES = {
-  markdown = ' ', -- whitespace to accomodate for incline.nvim
   snacks_picker_input = '',
   terminal = function()
     local text = '  terminal'
@@ -53,7 +52,7 @@ local function segment(name, category)
   if category == 'directory' then
     hl = 'Normal'
   end
-  return strings.hl(hl or 'WinBar', text)
+  return lib.strings.hl(hl or 'WinBar', text)
 end
 
 ---@return string
@@ -97,7 +96,7 @@ _G.get_winbar = function()
   end
   parts[#parts + 1] = segment(segments[#segments], 'file')
 
-  return ' ' .. table.concat(parts, strings.hl('WinBar', SEP))
+  return ' ' .. table.concat(parts, lib.strings.hl('WinBar', SEP))
 end
 
 vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
