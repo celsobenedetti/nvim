@@ -53,24 +53,6 @@ local function apply()
     local ok_hl, cd_highlights = pcall(require, 'codediff.ui.highlights')
     if ok_hl then
       cd_highlights.setup()
-
-      -- cd_highlights.setup() only sets `bg`, so the char/line-level wash
-      -- combines with whatever's underneath (e.g. treesitter's Comment
-      -- fg/bold/italic) instead of replacing it. `bold = false`/`italic =
-      -- false` can't fix that: Neovim's highlight combining treats an unset
-      -- boolean attribute the same as `false`, so it just falls through to
-      -- the lower-priority highlight either way. `nocombine = true` is what
-      -- actually forces this highlight to replace rather than layer.
-      --- @param hl string
-      --- @param bg string
-      local function set_codediff_bg(hl, bg)
-        vim.api.nvim_set_hl(0, hl, { bg = bg, fg = vim.g.colors.fg, bold = false, italic = false, nocombine = true })
-      end
-
-      set_codediff_bg('CodeDiffLineInsert', p.add)
-      set_codediff_bg('CodeDiffLineDelete', p.delete)
-      set_codediff_bg('CodeDiffCharInsert', p.add_char)
-      set_codediff_bg('CodeDiffCharDelete', p.delete_char)
     end
   end
 end
