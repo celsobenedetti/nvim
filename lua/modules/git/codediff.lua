@@ -139,6 +139,135 @@ local function codefiff_cmd(cmd)
   end
 end
 
+--- codediff.nvim's `gf` (`open_in_prev_tab`) always targets the tab
+--- immediately left of the diff tab (tabs[current_index - 1]). We want it to
+--- always land in the *first* tab instead, since that's the "home" tab our
+--- diff-launching workflow returns to. The plugin hardcodes this action, so
+--- we monkeypatch it here rather than reimplementing the keymap wiring.
+local function patch_gf_to_open_in_first_tab()
+  local ok, panes = pcall(require, 'codediff.ui.view.actions.panes')
+  if not ok then
+    return
+  end
+  local lifecycle = require('codediff.ui.lifecycle')
+  local cfg = require('codediff.config')
+
+  local function get_explorer_target_file(explorer, session)
+    local node = explorer.tree and explorer.tree:get_node()
+    local data = node and node.data
+    if not data or data.type == 'group' or data.type == 'directory' or not data.path or data.path == '' then
+      return nil
+    end
+    local git_root = data.git_root or explorer.git_root or session.git_root
+    if not git_root or git_root == '' then
+      return nil
+    end
+    return vim.fs.joinpath(git_root, data.path)
+  end
+
+  panes.open_in_prev_tab = function(ctx)
+    local session = lifecycle.get_session(ctx.tabpage)
+    if not session then
+      return
+    end
+
+    local current_buf = vim.api.nvim_get_current_buf()
+    local side = nil
+    if current_buf == ctx.original_bufnr then
+      side = 'original'
+    elseif current_buf == ctx.modified_bufnr then
+      side = 'modified'
+    end
+
+    local explorer = lifecycle.get_explorer(ctx.tabpage)
+    local is_explorer_buf = explorer and explorer.bufnr and current_buf == explorer.bufnr
+
+    if not side and not is_explorer_buf then
+      return
+    end
+
+    local is_virtual = (side == 'original' and lifecycle.is_original_virtual(ctx.tabpage))
+      or (side == 'modified' and lifecycle.is_modified_virtual(ctx.tabpage))
+
+    local target_file
+    if is_explorer_buf then
+      target_file = get_explorer_target_file(explorer, session)
+      if not target_file then
+        return
+      end
+    elseif is_virtual then
+      local original, modified = lifecycle.get_paths(ctx.tabpage)
+      local ref = side == 'original' and original or modified
+      if not ref or ref.absolute == '' then
+        vim.notify('Buffer has no associated file path', vim.log.levels.WARN)
+        return
+      end
+      target_file = ref.absolute
+    else
+      target_file = vim.api.nvim_buf_get_name(current_buf)
+      if target_file == '' then
+        vim.notify('Buffer has no name; cannot open in first tab', vim.log.levels.WARN)
+        return
+      end
+    end
+
+    local cursor = side and vim.api.nvim_win_get_cursor(0) or nil
+    local current_tab = vim.api.nvim_get_current_tabpage()
+    local tabs = vim.api.nvim_list_tabpages()
+
+    local current_index = nil
+    for i, t in ipairs(tabs) do
+      if t == current_tab then
+        current_index = i
+        break
+      end
+    end
+
+    -- Only deviation from upstream: always target the first tab rather than
+    -- the one immediately preceding the diff tab.
+    local target_tab
+    if current_index and current_index > 1 then
+      target_tab = tabs[1]
+    else
+      vim.cmd('tabnew')
+      target_tab = vim.api.nvim_get_current_tabpage()
+      vim.cmd('tabmove 0')
+    end
+
+    if vim.api.nvim_get_current_tabpage() ~= target_tab then
+      vim.api.nvim_set_current_tabpage(target_tab)
+    end
+
+    local target_win = vim.api.nvim_get_current_win()
+    if not vim.api.nvim_win_is_valid(target_win) then
+      vim.notify('No valid window in target tab to open buffer', vim.log.levels.ERROR)
+      return
+    end
+
+    local edit_ok, err
+    if is_virtual or is_explorer_buf then
+      edit_ok, err = pcall(vim.cmd, 'edit ' .. vim.fn.fnameescape(target_file))
+    else
+      edit_ok, err = pcall(vim.api.nvim_win_set_buf, target_win, current_buf)
+    end
+    if not edit_ok then
+      vim.notify('Failed to open buffer in first tab: ' .. err, vim.log.levels.ERROR)
+      return
+    end
+
+    if cursor then
+      pcall(vim.api.nvim_win_set_cursor, target_win, cursor)
+    end
+
+    if cfg.options.keymaps.view.close_on_open_in_prev_tab then
+      if vim.api.nvim_tabpage_is_valid(current_tab) then
+        vim.api.nvim_set_current_tabpage(current_tab)
+        vim.cmd('tabclose')
+      end
+    end
+  end
+end
+
 return {
   {
     'esmuellert/codediff.nvim',
@@ -202,6 +331,8 @@ return {
           },
         },
       }))
+
+      patch_gf_to_open_in_first_tab()
 
       vim.cmd.cnoreabbrev(('%s %s'):format('codediff', 'CodeDiff'))
 
