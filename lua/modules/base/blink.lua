@@ -7,7 +7,7 @@ return {
     'saghen/blink.cmp',
     dependencies = { 'nvim-mini/mini.snippets' },
     version = '1.*',
-    event = 'InsertEnter',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     opts = function(_, opts)
       opts.enabled = function()
         return vim.bo.buftype ~= 'prompt'
@@ -76,11 +76,7 @@ return {
             },
           },
           menu = {
-            auto_show = function(ctx, _)
-              return true
-              -- avoid completion on ":w"
-              -- return #ctx.line > 2
-            end,
+            auto_show = true,
           },
         },
       }

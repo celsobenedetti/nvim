@@ -3,13 +3,12 @@ return {
   cmd = {
     'CccPick',
     'CccConvert',
-    'CccHighlighterEnable',
-    'CccHighlighterDisable',
-    'CccHighlighterToggle',
   },
   config = function()
     require('ccc').setup({
       inputs = { require('ccc.input.hsv') },
+      alpha_show = 'hide',
+      mappings = { ['a'] = function() end },
     })
   end,
 }
