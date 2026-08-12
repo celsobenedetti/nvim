@@ -176,7 +176,7 @@ vim.api.nvim_create_autocmd('TabNew', {
   callback = function()
     if lib.term.is_toggle_term() then
       Snacks.notify.info('Detached', { title = 'Toggle term', icon = '', style = 'fancy' })
-      vim.g.toggle_term_bufnr = 0
+      vim.g.toggle_term_bufnr = -1
     end
 
     local tabid = vim.api.nvim_get_current_tabpage()

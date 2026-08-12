@@ -1,7 +1,10 @@
+local lib = {
+  term = require('lib.term'),
+}
 vim.g.claude_bufnr = 0
 
 local function is_claude_buf(buf)
-  return buf > 0 and buf == vim.g.claude_bufnr and vim.api.nvim_buf_is_valid(buf)
+  return buf > 0 and buf == vim.g.claude_bufnr and vim.api.nvim_buf_is_valid(buf) and not lib.term.is_toggle_term()
 end
 
 local function focus_buf(buf)

@@ -1,5 +1,5 @@
 vim.g.insert_when_entering_terminal = true
-vim.g.toggle_term_bufnr = 0
+vim.g.toggle_term_bufnr = -1
 
 local lib = {
   term = require('lib.term'),
@@ -23,7 +23,7 @@ end
 ---     https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
 local function toggle_terminal()
   local target_height = math.max(20, math.floor(vim.fn.winheight(0) * 0.5))
-  if vim.g.toggle_term_bufnr <= 0 then
+  if vim.g.toggle_term_bufnr < 0 then
     vim.cmd('botright sp | term')
     vim.cmd.resize(target_height)
     vim.cmd.setlocal('bufhidden=hide')
@@ -37,7 +37,7 @@ local function toggle_terminal()
     return
   end
   if not vim.api.nvim_buf_is_valid(vim.g.toggle_term_bufnr) then
-    vim.g.toggle_term_bufnr = 0
+    vim.g.toggle_term_bufnr = -1
     return
   end
   vim.cmd('botright sp | b' .. vim.g.toggle_term_bufnr)
@@ -72,7 +72,7 @@ vim.api.nvim_create_autocmd('TermClose', {
         return
       end
     end
-    vim.g.toggle_term_bufnr = 0
+    vim.g.toggle_term_bufnr = -1
   end,
   group = augroup,
 })

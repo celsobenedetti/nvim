@@ -9,7 +9,10 @@ local M = {
   is_term = is_term,
 
   is_toggle_term = function(buffer)
-    return is_term(buffer) or buffer == vim.g.toggle_term_bufnr
+    if not buffer then
+      buffer = vim.api.nvim_get_current_buf()
+    end
+    return is_term(buffer) and buffer == vim.g.toggle_term_bufnr
   end,
 
   -- Returns true if buffer is terminal, and has no running command
