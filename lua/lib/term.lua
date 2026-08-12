@@ -15,6 +15,19 @@ local M = {
     return is_term(buffer) and buffer == vim.g.toggle_term_bufnr
   end,
 
+  is_claude = function(buffer)
+    if not buffer then
+      buffer = vim.api.nvim_get_current_buf()
+    end
+    return is_term(buffer) and buffer == vim.g.claude_bufnr
+  end,
+  is_opencode = function(buffer)
+    if not buffer then
+      buffer = vim.api.nvim_get_current_buf()
+    end
+    return is_term(buffer) and buffer == vim.g.opencode_bufnr
+  end,
+
   -- Returns true if buffer is terminal, and has no running command
   -- https://github.com/neovim/neovim/issues/31313
   -- https://github.com/ilan-schemoul/nvim-config/commit/4e27ebabe9d4e819007c770800bac4d5903b8a8d

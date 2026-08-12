@@ -1,23 +1,3 @@
-local keys = {
-  ['<C-S-g>'] = '<C-S-g>',
-  ['<C-/>'] = '<C-/>',
-  ['<C-S-N>'] = '<S-Down>',
-  ['<C-tab>'] = '<C-tab>',
-  ['<C-S-tab>'] = '<C-S-tab>',
-}
-
-if os.getenv('TMUX') then
-  keys['<C-/>'] = '<C-_>'
-end
-
-if os.getenv('GHOSTTY_BIN_DIR') then
-  keys['<C-S-N>'] = 'NOTES'
-  keys['<C-tab>'] = 'TABNEXT'
-  keys['<C-S-tab>'] = 'TABPREV'
-end
-
-vim.g.key = keys
-
 local lib = {
   org = require('lib.orgmode'),
   fzf = require('lib.fzf'),

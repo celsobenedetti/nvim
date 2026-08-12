@@ -65,3 +65,24 @@ vim.g.lazy_nvim_config = {
     },
   },
 }
+
+local keys = {
+  ['<C-S-g>'] = '<C-S-g>',
+  ['<C-/>'] = '<C-/>',
+  ['<C-S-N>'] = '<S-Down>',
+  ['<C-tab>'] = '<C-tab>',
+  ['<C-S-tab>'] = '<C-S-tab>',
+}
+
+if os.getenv('TMUX') then
+  keys['<C-/>'] = '<C-_>'
+end
+
+if os.getenv('GHOSTTY_BIN_DIR') then
+  keys['<C-S-N>'] = 'NOTES'
+  keys['<C-tab>'] = 'TABNEXT'
+  keys['<C-S-tab>'] = 'TABPREV'
+  keys['<C-S-O>'] = '♠'
+end
+
+vim.g.key = keys

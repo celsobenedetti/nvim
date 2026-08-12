@@ -20,7 +20,16 @@ local SPECIAL_FILETYPES = {
     local text = '  terminal'
     if lib.term.is_toggle_term() then
       return text .. SEP .. 'toggle term'
+    else
+      if lib.term.is_claude() then
+        return text .. SEP .. '󱙺 claude'
+      else
+        if lib.term.is_opencode() then
+          return text .. SEP .. '󱙺 opencode'
+        end
+      end
     end
+
     return text
   end,
 }
