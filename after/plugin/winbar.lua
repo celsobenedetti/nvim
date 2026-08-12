@@ -32,6 +32,9 @@ local SPECIAL_FILETYPES = {
 
     return text
   end,
+  git = function()
+    return '  ' .. vim.api.nvim_buf_get_lines(0, 0, 1, false)[1]
+  end,
 }
 
 local has_icons, mini_icons = pcall(require, 'mini.icons')

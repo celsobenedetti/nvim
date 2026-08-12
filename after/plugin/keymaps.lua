@@ -129,12 +129,12 @@ map('v', 'gy', function()
     start_line, end_line = end_line, start_line
   end
   local text = string.format('%s:%d:%d', file, start_line, end_line)
-  if lib.tmux.active() then
-    lib.tmux.send_text(' ' .. text)
-  else
-    vim.fn.setreg('+', text)
-    Snacks.notify.info(string.format('Yanked:\n- `%s`', text), { title = 'Clipboard', icon = '', style = 'fancy' })
-  end
+  -- if lib.tmux.active() then
+  --   lib.tmux.send_text(' ' .. text)
+  -- else
+  vim.fn.setreg('+', text)
+  Snacks.notify.info(string.format('Yanked:\n- `%s`', text), { title = 'Clipboard', icon = '', style = 'fancy' })
+  -- end
   vim.api.nvim_input('<Esc>')
 end, { desc = 'Copy file path:line:line to clipboard' })
 
