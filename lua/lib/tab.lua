@@ -198,6 +198,9 @@ M.render = function()
     if name:find('lazygit') then
       prefix = vim.g.icons.git.git
     end
+    if name:find('claude') then
+      prefix = vim.g.icons.agent
+    end
 
     if i > 1 then
       table.insert(parts, '%#Normal# ')
