@@ -56,11 +56,6 @@ map('n','<leader>gd', function()vim.cmd('vertical Git diff ' .. main_branch() ..
 
   map('n', '<leader>gs', function()
     local tab = require('lib.tab')
-    if not tab.available() then
-      Snacks.notify.warn("can't rename tab: tabby.nvim not installed")
-      return
-    end
-
     if tab.find('git status') then
       vim.cmd('tabnext')
       return

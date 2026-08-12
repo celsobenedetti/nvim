@@ -8,8 +8,7 @@ local function get_tabs()
   for i, tabpage in ipairs(tabpages) do
     local wins = vim.api.nvim_tabpage_list_wins(tabpage)
     local cur_win = vim.api.nvim_tabpage_get_win(tabpage)
-    local buf = vim.api.nvim_win_get_buf(cur_win)
-    local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ':t')
+    local name = require('lib.tab').get_name(tabpage)
     if name == '' then
       name = '[No Name]'
     end

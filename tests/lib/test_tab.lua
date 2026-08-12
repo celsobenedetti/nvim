@@ -1,7 +1,7 @@
 --- Tests for lib.tab tab helpers
 --- Run with: luajit tests/lib/test_tab.lua
 ---
---- Mocks tabby.nvim and the neovim globals the module depends on.
+--- Mocks the neovim globals the module depends on (no tabby.nvim).
 
 package.path = './lua/?.lua;' .. package.path
 
@@ -36,87 +36,93 @@ local function describe(label)
   io.write('\n--- ' .. label .. '\n')
 end
 
--- In-memory tabby: name registry keyed by tabid.
-local tabby_names = {}
-local tabby_installed = true
-local last_renamed = nil
-local warn_called = nil
+-- Mutable nvim state the mock reads from.
+local tabpages = { ids = {}, current = nil }
+local buf_names = {}
 local input_callback = nil
+local vim_g = { icons = { git = { git = '', diff = '' } } }
 
-local function setup_tabby(tabs)
-  tabby_names = tabs or {}
-  last_renamed = nil
-  warn_called = nil
+local vim_mock = {
+  api = {
+    nvim_list_tabpages = function()
+      return tabpages.ids
+    end,
+    nvim_get_current_tabpage = function()
+      return tabpages.current
+    end,
+    nvim_tabpage_get_number = function(id)
+      for i, t in ipairs(tabpages.ids) do
+        if t == id then
+          return i
+        end
+      end
+      return 0
+    end,
+    nvim_tabpage_is_valid = function()
+      return true
+    end,
+    nvim_tabpage_get_win = function(id)
+      return id
+    end,
+    nvim_win_get_buf = function(win)
+      return win
+    end,
+    nvim_buf_get_name = function(buf)
+      return buf_names[buf] or ''
+    end,
+    nvim_create_autocmd = function() end,
+  },
+  fn = {
+    fnamemodify = function(name, mod)
+      if mod ~= ':t' then
+        return name
+      end
+      return name:match('[^/]+$') or name
+    end,
+  },
+  ui = {
+    input = function(_, cb)
+      input_callback = cb
+    end,
+  },
+  cmd = function() end,
+  trim = function(s)
+    return s:gsub('^%s+', ''):gsub('%s+$', '')
+  end,
+  g = vim_g,
+  json = {
+    encode = function(t)
+      local parts = {}
+      for k, v in pairs(t) do
+        parts[#parts + 1] = k .. '|' .. v:gsub('|', '%%')
+      end
+      table.sort(parts)
+      return table.concat(parts, '\n')
+    end,
+    decode = function(s)
+      local t = {}
+      for line in (s or ''):gmatch('[^\n]+') do
+        local k, v = line:match('^([^|]+)|(.*)$')
+        if k then
+          t[k] = v
+        end
+      end
+      return t
+    end,
+  },
+}
+
+mock.setup({ vim = vim_mock })
+
+---Point the mock at a fresh set of tabpages (ids are arbitrary numbers; the
+---tab *number* is their 1-based position). Optionally pre-seed saved names
+---as the JSON string stored in vim.g.
+local function reset(tabs, names_json)
+  tabpages.ids = tabs or {}
+  tabpages.current = (tabs and tabs[1]) or nil
+  buf_names = {}
+  vim_g.NamedTabs = names_json
   input_callback = nil
-
-  package.loaded['tabby'] = nil
-  package.preload['tabby'] = function()
-    return {
-      tab_rename = function(name)
-        last_renamed = name
-        tabby_names[0] = name
-      end,
-    }
-  end
-
-  package.loaded['tabby.feature.tab_name'] = nil
-  package.preload['tabby.feature.tab_name'] = function()
-    return {
-      get = function(tabid)
-        return tabby_names[tabid] or ''
-      end,
-      set = function(tabid, name)
-        last_renamed = name
-        tabby_names[tabid] = name
-      end,
-    }
-  end
-
-  mock.setup({
-    vim = {
-      api = {
-        nvim_list_tabpages = function()
-          local ids = {}
-          for k in pairs(tabby_names) do
-            ids[#ids + 1] = k
-          end
-          table.sort(ids)
-          return ids
-        end,
-      },
-      ui = {
-        input = function(_, cb)
-          input_callback = cb
-        end,
-      },
-      g = {
-        icons = {
-          git = {
-            git = '',
-            diff = '',
-          },
-        },
-      },
-      trim = function(s)
-        return s:gsub('^%s+', ''):gsub('%s+$', '')
-      end,
-    },
-    Snacks = {
-      notify = {
-        warn = function()
-          warn_called = true
-        end,
-      },
-    },
-  })
-end
-
-local function teardown_tabby()
-  package.loaded['tabby'] = nil
-  package.preload['tabby'] = nil
-  package.loaded['tabby.feature.tab_name'] = nil
-  package.preload['tabby.feature.tab_name'] = nil
-  mock.teardown({ 'vim', 'Snacks' })
 end
 
 local function reload_tab()
@@ -127,118 +133,86 @@ end
 -- ============================================================
 describe('lib.tab: available')
 
-setup_tabby({ [0] = 'foo' })
+reset({ 0, 3, 5 })
 local tab = reload_tab()
-assert_eq(tab.available(), true, 'true when tabby installed')
-teardown_tabby()
-
-tabby_installed = false
-package.loaded['tabby'] = nil
-package.preload['tabby'] = nil
-mock.setup({ vim = { api = {}, ui = {} }, Snacks = { notify = { warn = function() end } } })
-tab = reload_tab()
-assert_eq(tab.available(), false, 'false when tabby missing')
-teardown_tabby()
-tabby_installed = true
+assert_eq(tab.available(), true, 'always available (home-grown)')
 
 -- ============================================================
 describe('lib.tab: rename')
 
-setup_tabby({ [0] = 'foo' })
+reset({ 0, 3, 5 })
 tab = reload_tab()
 tab.rename('my tab')
-assert_eq(last_renamed, 'my tab', 'renames current tab')
-teardown_tabby()
+assert_eq(tab.get_name(0), 'my tab', 'renames current tab')
 
 -- specific tabid
-setup_tabby({ [0] = 'foo', [5] = 'bar' })
+reset({ 0, 3, 5 })
 tab = reload_tab()
+tab.rename('foo')
 tab.rename('my tab', 5)
-assert_eq(last_renamed, 'my tab', 'renames given tab')
-assert_eq(tab.get_name(5), 'my tab', 'tab 5 renamed')
+assert_eq(tab.get_name(5), 'my tab', 'renames given tab')
 assert_eq(tab.get_name(0), 'foo', 'current tab untouched')
-teardown_tabby()
 
 -- empty name prompts via vim.ui.input
-setup_tabby({ [0] = 'foo' })
+reset({ 0, 3, 5 })
 tab = reload_tab()
 tab.rename('')
 assert_eq(type(input_callback), 'function', 'prompts when name empty')
 input_callback('prompted name')
-assert_eq(last_renamed, 'prompted name', 'prompt result renames tab')
-teardown_tabby()
+assert_eq(tab.get_name(0), 'prompted name', 'prompt result renames tab')
 
 -- prompt cancelled (nil) does not rename
-setup_tabby({ [0] = 'foo' })
+reset({ 0, 3, 5 })
 tab = reload_tab()
 tab.rename('')
 input_callback(nil)
-assert_eq(last_renamed, nil, 'cancelled prompt does not rename')
-teardown_tabby()
-
--- tabby missing warns instead of renaming
-package.loaded['tabby'] = nil
-package.preload['tabby'] = nil
-mock.setup({ vim = { api = {}, ui = {} }, Snacks = { notify = {
-  warn = function()
-    warn_called = true
-  end,
-} } })
-tab = reload_tab()
-tab.rename('x')
-assert_eq(warn_called, true, 'warns when tabby missing')
-teardown_tabby()
+assert_eq(vim_g.NamedTabs, nil, 'cancelled prompt does not rename')
 
 -- ============================================================
 describe('lib.tab: get_name')
 
-setup_tabby({ [0] = 'foo', [3] = 'bar' })
+reset({ 0, 3, 5 })
 tab = reload_tab()
+tab.rename('foo')
+tab.rename('bar', 3)
 assert_eq(tab.get_name(3), 'bar', 'named tab')
 assert_eq(tab.get_name(), 'foo', 'defaults to current tab')
-teardown_tabby()
 
--- tabby missing returns nil
-package.loaded['tabby.feature.tab_name'] = nil
-package.preload['tabby.feature.tab_name'] = nil
-mock.setup({ vim = { api = {}, ui = {} }, Snacks = { notify = { warn = function() end } } })
+-- unnamed tab falls back to the current buffer name
+reset({ 0, 3, 5 })
 tab = reload_tab()
-assert_eq(tab.get_name(3), nil, 'nil when tabby missing')
-teardown_tabby()
+tab.rename('foo')
+buf_names[5] = '/work/project/main.lua'
+assert_eq(tab.get_name(5), 'main.lua', 'fallback to buffer basename')
+assert_eq(tab.get_name(3), '[No Name]', 'fallback for unnamed buffer')
 
 -- ============================================================
 describe('lib.tab: find')
 
-setup_tabby({ [1] = 'git status', [3] = 'notes', [5] = 'git log' })
+-- tab numbers: id 0 -> tab 1, id 3 -> tab 2, id 5 -> tab 3
+reset(
+  { 0, 3, 5 },
+  vim_mock.json.encode({ ['1'] = 'git status', ['2'] = 'notes', ['3'] = 'git log' })
+)
 tab = reload_tab()
 assert_eq(tab.find('notes'), 3, 'finds tab by plain substring')
-assert_eq(tab.find('git'), 1, 'returns first matching tab')
+assert_eq(tab.find('git status'), 0, 'returns first matching tab')
 assert_eq(tab.find('nothing'), nil, 'nil when no match')
-teardown_tabby()
-
--- tabby missing returns nil
-package.loaded['tabby.feature.tab_name'] = nil
-package.preload['tabby.feature.tab_name'] = nil
-mock.setup({ vim = { api = {}, ui = {} }, Snacks = { notify = { warn = function() end } } })
-tab = reload_tab()
-assert_eq(tab.find('notes'), nil, 'nil when tabby missing')
-teardown_tabby()
 
 -- ============================================================
 describe('lib.tab: set_next_name / consume_next_name')
 
-setup_tabby({ [0] = 'foo' })
+reset({ 0 })
 tab = reload_tab()
 assert_eq(tab.consume_next_name(), nil, 'empty before set')
 tab.set_next_name('git diff main HEAD')
 assert_eq(tab.consume_next_name(), 'git diff main HEAD', 'roundtrip')
 assert_eq(tab.consume_next_name(), nil, 'cleared after consume')
-teardown_tabby()
 
 -- ============================================================
 describe('lib.tab: name_from_command')
 
-setup_tabby({ [0] = 'foo' })
+reset({ 0 })
 tab = reload_tab()
 
 assert_eq(tab.name_from_command('Git show abc123'), 'git show abc123', 'Git with args')
@@ -253,7 +227,28 @@ assert_eq(tab.name_from_command('CodeDiff'), nil, 'bare CodeDiff -> nil (default
 assert_eq(tab.name_from_command('e foo.lua'), nil, 'unrelated command -> nil')
 assert_eq(tab.name_from_command(''), nil, 'empty command -> nil')
 
-teardown_tabby()
+-- ============================================================
+describe('lib.tab: persistence')
+
+reset({ 0, 3, 5 })
+tab = reload_tab()
+tab.rename('hello')
+assert_eq(type(vim_g.NamedTabs), 'string', 'saves to vim.g.NamedTabs')
+assert_eq(vim_g.NamedTabs, '1|hello', 'keyed by tab number')
+tab = reload_tab()
+assert_eq(tab.get_name(0), 'hello', 'name survives module reload')
+
+-- ============================================================
+describe('lib.tab: render')
+
+reset({ 0, 3, 5 })
+tab = reload_tab()
+tab.rename('alpha')
+local line = tab.render()
+assert_eq(type(line), 'string', 'render returns a string')
+assert_eq(line:find('alpha', 1, true) ~= nil, true, 'render includes tab name')
+assert_eq(line:find('%1T', 1, true) ~= nil, true, 'render emits native tabpage labels')
+assert_eq(line:find('%#Normal# ', 1, true) ~= nil, true, 'render spaces tabs apart with Normal hl')
 
 -- ============================================================
 io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
