@@ -9,12 +9,6 @@ require('lazy').setup({
     { import = 'modules.orgmode' },
     { import = 'modules.omarchy' },
     { 'folke/snacks.nvim', opts = { picker = {} } },
-    -- BUG: nvim orgmode C-c
-    {
-      'b0o/incline.nvim',
-      dependencies = { { 'nvim-mini/mini.icons', config = true } },
-      config = require('config.plugin.incline').config,
-    },
   },
   performance = vim.g.lazy_nvim_config.performance,
 })
