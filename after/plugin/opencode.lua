@@ -40,4 +40,4 @@ vim.api.nvim_create_autocmd('TermClose', {
 
 vim.api.nvim_create_user_command('Opencode', opencode, { desc = 'Open or focus the opencode terminal' })
 
-vim.keymap.set('n', '<leader>oc', '<cmd>Opencode<CR>', { desc = 'opencode: open/focus terminal' })
+vim.keymap.set('n', '<leader>oC', '<cmd>Opencode<CR>', { desc = 'opencode: open/focus terminal' })

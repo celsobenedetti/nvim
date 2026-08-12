@@ -1,6 +1,6 @@
 return {
   'rodakd/terms.nvim',
-
+  enabled = false,
   config = function()
     require('terms').setup({
       width = 0.9, -- fraction of editor width (float/vsplit)
