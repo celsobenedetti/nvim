@@ -7,5 +7,9 @@ return {
     'CccHighlighterDisable',
     'CccHighlighterToggle',
   },
-  config = true,
+  config = function()
+    require('ccc').setup({
+      inputs = { require('ccc.input.hsv') },
+    })
+  end,
 }
