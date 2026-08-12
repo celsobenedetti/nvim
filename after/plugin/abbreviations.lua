@@ -22,6 +22,7 @@ local abbreviations = {
   codediff = 'CodeDiff',
   Codediff = 'CodeDiff',
   Tab = 'tab',
+  cfilter = 'Cfilter',
 }
 
 if vim.env.ORG_INBOX then
