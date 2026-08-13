@@ -1,3 +1,4 @@
+--- @module 'winbar' home-cooked winbar plugin
 --- Lightweight dropbar.nvim replacement: renders the current file path as a
 --- segmented winbar above the window, e.g. `after  plugin  󰢱 winbar.lua`.
 ---

@@ -25,7 +25,11 @@ return {
         break
       end
     end
-    local fmt_js = use_eslint and { lsp_format = 'fallback', async = true } or { 'prettier' }
+    local fmt_js = { 'prettier' }
+    local is_deno = cwd.root_contains('deno.json')
+    if is_deno or use_eslint then
+      fmt_js = { lsp_format = 'fallback', async = true }
+    end
 
     require('conform').setup({
       format_on_save = function()

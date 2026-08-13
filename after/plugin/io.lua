@@ -10,3 +10,12 @@ vim.api.nvim_create_user_command('IoCrawlers', function()
     { name = 'bot-clearer', cmd = 'npm', args = { 'run', 'devms', 'bot-clearer' } },
   })
 end, { desc = 'Run all crawler tasks' })
+
+vim.api.nvim_create_user_command('IoTest', function()
+  require('lib.overseer.run_tasks').run({
+    { name = 'tsc', cmd = 'pnpm', args = { 'exec', 'tsc' } },
+    { name = 'test', cmd = 'pnpm', args = { 'test' } },
+    { name = 'lint:changed', cmd = 'pnpm', args = { 'run', 'lint:changed' } },
+    { name = 'fallow:audit', cmd = 'pnpm', args = { 'run', 'fallow:audit' } },
+  })
+end, { desc = 'Run all crawler tasks' })

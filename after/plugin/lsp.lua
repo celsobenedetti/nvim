@@ -4,8 +4,9 @@ end
 
 vim.lsp.enable({
   'bashls',
+  'denols',
   -- 'copilot',
-  'eslint',
+  -- 'eslint',
   'gopls',
   'jsonls',
   -- 'harper_ls',

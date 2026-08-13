@@ -1,9 +1,6 @@
 ---@module 'statusline' home cooked statusline plugin
 ---@author Celso Benedetti
 ---
---- example:
----  after/plugin/statusline.lua +3 ~1 -1  5  1  1                                                      lua_ls |  main
----
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
 
 local lib = {

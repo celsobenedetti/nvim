@@ -1,3 +1,5 @@
+--- fuzzy tab autocomplete on native find
+
 local ignore_patterns = {
   'node_modules',
   '%.git',

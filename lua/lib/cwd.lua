@@ -33,6 +33,13 @@ M.is_git_repo = function()
   return vim.fs.root(0, '.git') ~= nil
 end
 
+---returns true of file can be found in cwd
+------@param file string
+------@return boolean
+M.root_contains = function(file)
+  return vim.fs.root(0, file) ~= nil
+end
+
 M.root = M.cwd
 
 M.current_file = function()

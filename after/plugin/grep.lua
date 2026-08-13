@@ -1,3 +1,5 @@
+-- use rg for native grep
+-- and custom Grep command to grep and qflist
 vim.opt.grepprg = 'rg --vimgrep --smart-case --hidden --ignore'
 vim.opt.grepformat = '%f:%l:%c:%m'
 

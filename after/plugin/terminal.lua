@@ -1,13 +1,12 @@
 vim.g.insert_when_entering_terminal = true
-vim.g.toggle_term_bufnr = -1
 
 local lib = {
   term = require('lib.term'),
   buffers = require('lib.buffers'),
 }
 
--- sticky terminal:
--- upsert terminal in current window (resume if available, create new otherwise)
+--- @module 'sticky terminal'
+--- upsert terminal in current window (resume if available, create new otherwise)
 local function sticky_terminal()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if lib.term.is_term(buf) and not lib.term.is_toggle_term(buf) and lib.term.terminal_is_available(buf) then
@@ -17,10 +16,12 @@ local function sticky_terminal()
   end
   vim.cmd.term()
 end
+vim.keymap.set('n', '<leader>te', sticky_terminal, { desc = 'terminal: sticky terminal' })
 
---- Toggle terminal plugin
+--- @module 'toggle terminal'
 --- references:
 ---     https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
+vim.g.toggle_term_bufnr = -1
 local function toggle_terminal()
   local target_height = math.max(20, math.floor(vim.fn.winheight(0) * 0.5))
   if vim.g.toggle_term_bufnr < 0 then
@@ -43,8 +44,15 @@ local function toggle_terminal()
   vim.cmd('botright sp | b' .. vim.g.toggle_term_bufnr)
   vim.cmd.resize(target_height)
 end
+vim.keymap.set('n', vim.g.key['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
 
---- Autocmds ---
+vim.keymap.set('t', vim.g.key['<C-/>'], function()
+  if vim.api.nvim_get_current_buf() == vim.g.toggle_term_bufnr then
+    vim.api.nvim_input('<C-\\><C-n><C-w>c')
+  end
+end, { desc = 'Close toggle terminal' })
+
+--- @module 'terminal autocmds'
 -- stylua: ignore start
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
 -- insert mode when entering terminal window
@@ -111,11 +119,3 @@ vim.api.nvim_create_autocmd('ExitPre', {
     end
   end,
 })
-
-vim.keymap.set('n', '<leader>te', sticky_terminal, { desc = 'terminal: sticky terminal' })
-vim.keymap.set('n', vim.g.key['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
-vim.keymap.set('t', vim.g.key['<C-/>'], function()
-  if vim.api.nvim_get_current_buf() == vim.g.toggle_term_bufnr then
-    vim.api.nvim_input('<C-\\><C-n><C-w>c')
-  end
-end, { desc = 'Close toggle terminal' })
