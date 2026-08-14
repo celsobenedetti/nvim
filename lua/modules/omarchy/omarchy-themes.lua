@@ -11,18 +11,4 @@ return {
       vim.cmd('colorscheme ' .. omarchy_colorscheme.colorscheme)
     end,
   }),
-
-  -- these are here simply to prevent these plugins from being cleaned up by lazy.nvim
-
-  { 'oskarnurm/koda.nvim', lazy = true, enabled = true },
-  { 'tahayvr/matteblack.nvim', lazy = true, enabled = true },
-  { 'EdenEast/nightfox.nvim', lazy = true, enabled = true },
-  { 'gthelding/monokai-pro.nvim', lazy = true, enabled = true },
-  { 'rebelot/kanagawa.nvim', lazy = true, enabled = true },
-  { 'ribru17/bamboo.nvim', lazy = true, enabled = true },
-  { 'neanias/everforest-nvim', lazy = true, enabled = true },
-  { 'rose-pine/neovim', lazy = true, enabled = true, name = 'rose-pine' },
-  { 'ellisonleao/gruvbox.nvim', lazy = true, enabled = true },
-  { 'kepano/flexoki-neovim', lazy = true, enabled = true },
-  { 'https://codeberg.org/evergarden/nvim', lazy = true, enabled = true, name = 'evergarden' },
 }
