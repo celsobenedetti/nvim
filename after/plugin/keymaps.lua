@@ -170,7 +170,7 @@ vim.keymap.set('n', '<leader>gn', lib.org.goto_current_task, { desc = 'org: goto
 -- Insert mode: Ctrl+B to go back one character (shell-like behavior)
 map('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
 
-vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
+vim.keymap.set('n', '<leader>rg', function()
   local cwd = lib.cwd.cwd()
   lib.fzf.grep({
     cmd = {
@@ -211,3 +211,6 @@ vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
     cwd = cwd,
   })
 end, { desc = 'rg current dir' })
+vim.keymap.set('n', vim.g.key['<C-S-g>'], function()
+  require('fzf-lua').live_grep()
+end)

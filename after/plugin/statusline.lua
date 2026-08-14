@@ -341,7 +341,7 @@ function _G.MyStatusLine()
   branch = branch .. ' '
 
   local filetype_and_lsps = ''
-  if #file_status > 0 or #filetype > 0 or #lsp > 0 then
+  if #lsp > 0 and (#file_status > 0 or #filetype > 0) then
     filetype_and_lsps = file_status .. ' ' .. filetype .. ' ' .. lsp
   end
 

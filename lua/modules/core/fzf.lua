@@ -115,7 +115,6 @@ return {
     { '<leader>co', function() fzf_lua().commands({profile = "fzf-vim"}) end, desc = 'fzf: Commands', },
     { '<leader>zo', function() fzf_lua().zoxide() end, desc = 'fzf: zoxide (session)', },
     { '<leader>fF', function() fzf_lua().git_files() end, desc = 'fzf: Find Files (git-files)', },
-    { '<leader>rg', function() fzf_lua().live_grep() end, desc = 'fzf: grep', },
     { '<leader>rG', function() fzf_lua().live_grep({ hidden = true, no_ignore = true }) end, desc = 'fzf: grep (all)', },
     { '<leader>sC', function() fzf_lua().command_history({profile = "fzf-vim" }) end, desc = 'fzf: Command History', },
     { 'grs', function() fzf_lua().lsp_references() end, nowait = true, desc = 'fzf: References', },
