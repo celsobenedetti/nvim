@@ -16,11 +16,11 @@ local RIGHT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.vertical)
 
 local modules = {
   _git_branch = function()
-    if not vim.g.gitsigns_head or #vim.g.gitsigns_head == 0 then
+    if not vim.b.gitsigns_head or #vim.b.gitsigns_head == 0 then
       return ''
     end
 
-    return hl(vim.g.hl.text.highlight, vim.g.icons.git.branch) .. hl('StatusLine', (vim.g.gitsigns_head or ''))
+    return hl(vim.g.hl.text.highlight, vim.g.icons.git.branch) .. hl('StatusLine', (vim.b.gitsigns_head or ''))
   end,
 
   _branch_sync_status = function()
