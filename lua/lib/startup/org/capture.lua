@@ -1,4 +1,3 @@
-vim.g.lazy_orgmode = false
 vim.g.lsp = false
 vim.g.capture = true
 
@@ -26,7 +25,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
-Org.capture.c()
+vim.cmd('Org capture c')
 
 vim.keymap.set('n', 'R', function()
   local orgmode = require('orgmode')

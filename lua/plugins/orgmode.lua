@@ -147,7 +147,6 @@ return {
       { 'celsobenedetti/orgmode-keymaps.nvim', config = true },
       { 'aaratha/org-cycle-lite.nvim' },
     },
-    lazy = vim.g.lazy_orgmode == nil and true or vim.g.lazy_orgmode,
     cmd = { 'Org' },
     ft = { 'org', 'markdown' },
     keys = {
