@@ -200,7 +200,6 @@ vim.opt.spelllang = { 'en' }
 vim.opt.splitbelow = true -- Put new windows below current
 vim.opt.splitkeep = 'screen'
 vim.opt.splitright = true -- Put new windows right of current
-vim.opt.statuscolumn = [[%!v:lua.require('lib.utils').statuscolumn()]]
 vim.opt.termguicolors = true -- True color support
 vim.opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
 vim.opt.undofile = true

@@ -5,6 +5,7 @@ local lib = {
   term = require('lib.term'),
   tmux = require('lib.tmux'),
   cmdline = require('lib.cmdline'),
+  notes = require('lib.notes'),
 }
 
 local should_quit = function()
@@ -156,7 +157,11 @@ vim.keymap.set('n', 'gx', gx.normal, { desc = 'gx: open link' })
 vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 
 -- orgmode
-vim.keymap.set('n', '<leader>in', ':e' .. vim.g.env.org.INBOX .. '<cr>', { desc = 'org: refile file' })
+vim.keymap.set('n', '<leader>in', function()
+  lib.notes.focus_or_create_notes_tab(function()
+    vim.cmd.e(vim.g.env.org.INBOX)
+  end)
+end, { desc = 'org: refile file' })
 vim.keymap.set('n', '<leader>oo', ':e' .. vim.g.env.org.MAIN .. '<cr>', { desc = 'org: actions file' })
 vim.keymap.set('n', '<leader>ow', ':e' .. vim.g.env.org.WORK .. '<cr>', { desc = 'org: work file' })
 vim.keymap.set('n', '<leader>occ', ':Org capture c<cr>', { desc = 'org: capture c' })

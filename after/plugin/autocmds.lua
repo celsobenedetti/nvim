@@ -2,6 +2,8 @@ local lib = {
   term = require('lib.term'),
   tab = require('lib.tab'),
   cmd = require('lib.cmd'),
+  cwd = require('lib.cwd'),
+  notes = require('lib.notes'),
 }
 
 -- filetypes of git/codediff tabs that get named on creation
@@ -196,5 +198,16 @@ vim.api.nvim_create_autocmd('TabNew', {
         lib.tab.rename(name, tabid)
       end
     end)
+  end,
+})
+
+vim.api.nvim_create_autocmd('VimEnter', {
+  desc = 'notes: VimEnter setup callback for notes dir',
+  callback = function()
+    if lib.cwd.matches({ 'notes' }) then
+      lib.notes.focus_or_create_notes_tab(function()
+        vim.cmd.tabclose(1)
+      end)
+    end
   end,
 })
