@@ -1,4 +1,5 @@
 local lib = require('lib')
+local state = require('state')
 
 local should_quit = function()
   if not lib.term.is_term() then
@@ -58,10 +59,10 @@ map({ 'n', 't', 'i' }, '[<tab>', function()
   vim.cmd('tabprevious')
 end, { desc = 'tab: previous' })
 
-map({ 'n', 't', 'i' }, vim.g.keys['<C-tab>'], function()
+map({ 'n', 't', 'i' }, state.keys['<C-tab>'], function()
   vim.cmd('tabnext')
 end, { desc = 'tab: next (ctrl)' })
-map({ 'n', 't', 'i' }, vim.g.keys['<C-S-tab>'], function()
+map({ 'n', 't', 'i' }, state.keys['<C-S-tab>'], function()
   vim.cmd('tabprevious')
 end, { desc = 'tab: previous (ctrl)' })
 
@@ -151,11 +152,11 @@ vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 -- orgmode
 vim.keymap.set('n', '<leader>in', function()
   lib.notes.focus_or_create_notes_tab(function()
-    vim.cmd.e(vim.g.env.org.INBOX)
+    vim.cmd.e(state.env.org.INBOX)
   end)
 end, { desc = 'org: refile file' })
-vim.keymap.set('n', '<leader>oo', ':e' .. vim.g.env.org.MAIN .. '<cr>', { desc = 'org: actions file' })
-vim.keymap.set('n', '<leader>ow', ':e' .. vim.g.env.org.WORK .. '<cr>', { desc = 'org: work file' })
+vim.keymap.set('n', '<leader>oo', ':e' .. state.env.org.MAIN .. '<cr>', { desc = 'org: actions file' })
+vim.keymap.set('n', '<leader>ow', ':e' .. state.env.org.WORK .. '<cr>', { desc = 'org: work file' })
 vim.keymap.set('n', '<leader>occ', ':Org capture c<cr>', { desc = 'org: capture c' })
 
 vim.keymap.set('n', 'ZZ', function()
@@ -208,6 +209,6 @@ vim.keymap.set('n', '<leader>rg', function()
     cwd = cwd,
   })
 end, { desc = 'rg current dir' })
-vim.keymap.set('n', vim.g.keys['<C-S-g>'], function()
+vim.keymap.set('n', state.keys['<C-S-g>'], function()
   require('fzf-lua').live_grep()
 end)

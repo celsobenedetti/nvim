@@ -180,6 +180,9 @@ local modules = {
   _search_results = function()
     if vim.v.hlsearch == 1 then
       local sinfo = vim.fn.searchcount({ maxcount = 0 })
+      if vim.tbl_isempty(sinfo) then
+        return ''
+      end
       local search_stat = sinfo.incomplete > 0 and '[?/?]'
         or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
         or nil
@@ -246,10 +249,10 @@ local function setup_caching_and_updating()
       return
     end
     _updating = true
-    async_git_count(vim.g.cmd.git.commits_ahead_of_origin, function(n)
+    async_git_count(state.cmd.git.commits_ahead_of_origin, function(n)
       state.branch_commits_ahead_of_origin = n
     end)
-    async_git_count(vim.g.cmd.git.commits_behind_origin, function(n)
+    async_git_count(state.cmd.git.commits_behind_origin, function(n)
       state.branch_commits_behind_origin = n
       _updating = false
     end)

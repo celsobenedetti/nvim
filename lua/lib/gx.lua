@@ -1,4 +1,5 @@
 local strings = require('lib.strings')
+local state = require('state')
 
 ---@type table<string, string|function>
 local regex_redirects = {
@@ -22,20 +23,20 @@ local regex_redirects = {
   {
     '^%s*VA-[0-9]*',
     function(s)
-      return vim.g.web.jira .. s
+      return state.web.jira .. s
     end,
   },
 
   {
     '^%s*va-[0-9]*',
     function(s)
-      return vim.g.web.jira .. s
+      return state.web.jira .. s
     end,
   },
   {
     '^INT-[0-9]*',
     function(s)
-      return vim.g.web.jira .. s
+      return state.web.jira .. s
     end,
   },
 }

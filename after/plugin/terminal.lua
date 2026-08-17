@@ -1,4 +1,4 @@
-vim.g.insert_when_entering_terminal = true
+state.insert_when_entering_terminal = true
 
 local lib = require('lib')
 local state = require('state')
@@ -42,9 +42,9 @@ local function toggle_terminal()
   vim.cmd('botright sp | b' .. state.toggle_term_bufnr)
   vim.cmd.resize(target_height)
 end
-vim.keymap.set('n', vim.g.keys['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
+vim.keymap.set('n', state.keys['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
 
-vim.keymap.set('t', vim.g.keys['<C-/>'], function()
+vim.keymap.set('t', state.keys['<C-/>'], function()
   if vim.api.nvim_get_current_buf() == state.toggle_term_bufnr then
     vim.api.nvim_input('<C-\\><C-n><C-w>c')
   end

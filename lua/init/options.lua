@@ -12,7 +12,7 @@ vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
 state.colorcolumn = 80 -- column highlighted by the colorcolumn toggle (<leader>u|)
 
-vim.g.env = {
+state.env = {
   WORK = os.getenv('WORK') or '',
   work = {
     jira = os.getenv('WORK_JIRA') or '',
@@ -48,7 +48,7 @@ vim.g.env = {
 }
 
 -- table extend dirs
-vim.g.dirs = {
+state.dirs = {
   work = {
     edge_server = os.getenv('EDGE_SERVER') or '',
     airflow_pipeline = os.getenv('AIRFLOW_PIPELINE') or '',
@@ -104,9 +104,9 @@ state.icons = {
   },
 }
 
-vim.g.notes_tabname = state.icons.notes .. 'notes'
+state.notes_tabname = state.icons.notes .. 'notes'
 
-vim.g.cmd = {
+state.cmd = {
   git = {
     commits_ahead_of_origin = 'git rev-list --count HEAD ^origin/$(git branch --show-current)',
     commits_behind_origin = 'git rev-list --count ^HEAD origin/$(git branch --show-current)',
@@ -125,7 +125,7 @@ state.hl = {
   warn = 'LspDiagnosticsVirtualTextWarning',
 }
 
-vim.g.ignore = {
+state.ignore = {
   grep = {
     'pnpm-lock.yaml',
     'instascan.min.js',
@@ -157,7 +157,7 @@ state.close_with_q = {
 }
 
 --- check root file for specific stack
-vim.g.root = {
+state.root = {
   vue = 'vite.config.ts',
 }
 
@@ -246,6 +246,6 @@ vim.opt.wildmode = 'longest:full,full' -- Command-line completion mode
 vim.opt.winminwidth = 5 -- Minimum window width
 vim.opt.wrap = false -- Disable line wrap
 
-vim.g.web = {
-  jira = vim.g.env.work.jira or '',
+state.web = {
+  jira = state.env.work.jira or '',
 }

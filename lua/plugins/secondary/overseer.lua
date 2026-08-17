@@ -1,4 +1,6 @@
-vim.g.overseer = {
+local state = require('state')
+
+state.overseer = {
   ---@param tasks overseer.TaskDefinition[]
   run_tasks = function(tasks)
     require('lazy').load({ plugins = { 'overseer.nvim' } }) -- ensure overseer
@@ -78,13 +80,13 @@ return {
                 cmd = { 'act' },
                 args = { '-j', 'test' },
                 name = 'act -j test',
-                cwd = vim.g.dirs.work.edge_server,
+                cwd = state.dirs.work.edge_server,
                 components = { 'default' },
               }
             end,
             desc = 'run CI tests with act',
             condition = {
-              dir = vim.g.dirs.work.edge_server,
+              dir = state.dirs.work.edge_server,
             },
           },
 
@@ -95,13 +97,13 @@ return {
                 cmd = { 'act' },
                 args = { '-j', 'lint' },
                 name = 'act -j lint',
-                cwd = vim.g.dirs.work.edge_server,
+                cwd = state.dirs.work.edge_server,
                 components = { 'default' },
               }
             end,
             desc = 'run CI lint with act',
             condition = {
-              dir = vim.g.dirs.work.edge_server,
+              dir = state.dirs.work.edge_server,
             },
           },
         },
@@ -114,13 +116,13 @@ return {
                 cmd = { 'act' },
                 args = { '-j', 'pyright' },
                 name = 'act -j pyright',
-                cwd = vim.g.dirs.work.airflow_pipeline,
+                cwd = state.dirs.work.airflow_pipeline,
                 components = { 'default' },
               }
             end,
             desc = 'run pyright checks with act',
             condition = {
-              dir = vim.g.dirs.work.airflow_pipeline,
+              dir = state.dirs.work.airflow_pipeline,
             },
           },
         },

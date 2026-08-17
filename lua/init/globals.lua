@@ -1,5 +1,7 @@
+local state = require('state')
+
 if os.getenv('PERF') == 'true' then
-  vim.g.performance = true
+  state.performance = true
 end
 
 ---@diagnostic disable-next-line: lowercase-global
@@ -9,7 +11,7 @@ vim.api.nvim_create_user_command('RenameTab', function(opts)
   require('lib.tab').rename(opts.args)
 end, { nargs = '?' })
 
-vim.g.lazy_nvim_config = {
+state.lazy_nvim_config = {
   performance = {
     rtp = {
       disabled_plugins = {
@@ -46,4 +48,4 @@ if os.getenv('GHOSTTY_BIN_DIR') then
   keys['<C-S-E>'] = '♣'
 end
 
-vim.g.keys = keys
+state.keys = keys

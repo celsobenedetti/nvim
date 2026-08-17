@@ -34,6 +34,20 @@
 ---@field close_with_q string[]
 ---@field colorcolumn number
 ---@field incline boolean
+---@field dirs table
+---@field env table
+---@field root table
+---@field notes_tabname string
+---@field ignore table
+---@field web table
+---@field cmd table
+---@field capture boolean
+---@field org_current_task string?
+---@field overseer table
+---@field lazy_nvim_config table
+---@field keys table<string, string>
+---@field insert_when_entering_terminal boolean
+---@field performance boolean?
 local M = {}
 
 return M
