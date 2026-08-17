@@ -1,4 +1,5 @@
 local lib = require('lib')
+local state = require('state')
 local highlights_to_hide = {
   'ObsidianRefText',
 }
@@ -124,7 +125,7 @@ return {
         },
       }
 
-      local bg = lib.colors.darken(vim.g.colors.bg, 0.1)
+      local bg = lib.colors.darken(state.colors.bg, 0.1)
       vim.api.nvim_set_hl(0, 'SnacksDim', {
         bg = bg,
         fg = bg,

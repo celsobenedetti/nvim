@@ -1,4 +1,5 @@
 local lib = require('lib')
+local state = require('state')
 
 local function create_note_from_selection()
   if vim.bo.filetype ~= 'markdown' then
@@ -47,7 +48,7 @@ return {
   end,
   keys = function()
     local vault = vim.g.env.notes.NOTES
-    local icons = (vim.g.icons or {}).notes or ''
+    local icons = (state.icons or {}).notes or ''
 
     return {
       -- {
@@ -288,7 +289,7 @@ return {
 
     vim.api.nvim_set_hl(0, 'ObsidianRefText', {
       bg = 'none',
-      fg = vim.g.colors.links or vim.g.colors.purple or vim.g.colors.primary,
+      fg = state.colors.links or state.colors.purple or state.colors.primary,
       underline = true,
       bold = true,
     })

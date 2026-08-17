@@ -4,6 +4,7 @@ local function fzf()
 end
 
 local tab = require('lib.tab')
+local state = require('state')
 
 --- Open a CodeDiff of `commit` against its parent and name the tab.
 ---@param commit string short/long sha
@@ -26,7 +27,7 @@ local function open_codediff(commit, text)
   Snacks.notify.info('git show ' .. commit, { title = 'Git', icon = '', style = 'fancy' })
   vim.cmd(string.format('CodeDiff %s %s', parent, commit))
 
-  local tabname = vim.g.icons.git.commit .. commit
+  local tabname = state.icons.git.commit .. commit
   local pr_number = text and text:match('#(%d+)')
   if pr_number ~= nil and pr_number ~= '' then
     tabname = string.format('%s #%s', tabname, pr_number)

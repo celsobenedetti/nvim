@@ -1,3 +1,5 @@
+local state = require('state')
+
 return {
 
   'folke/snacks.nvim',
@@ -41,7 +43,7 @@ return {
 
         vim.cmd('norm zt')
 
-        vim.api.nvim_set_hl(0, 'Folded', { fg = vim.g.colors.bg, bg = 'none' })
+        vim.api.nvim_set_hl(0, 'Folded', { fg = state.colors.bg, bg = 'none' })
       end,
       on_close = function()
         vim.g.zen_mode = false

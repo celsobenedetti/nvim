@@ -1,3 +1,5 @@
+local state = require('state')
+
 vim.g.lsp = true
 vim.g.supermaven = true
 vim.g.autoformat = true
@@ -66,7 +68,7 @@ vim.g.dirs = {
   },
 }
 
-vim.g.icons = {
+state.icons = {
   lsp = '', -- ',
   format = '', -- ' ',
   notes = ' ',
@@ -102,7 +104,7 @@ vim.g.icons = {
   },
 }
 
-vim.g.notes_tabname = vim.g.icons.notes .. 'notes'
+vim.g.notes_tabname = state.icons.notes .. 'notes'
 
 vim.g.cmd = {
   git = {
@@ -111,7 +113,7 @@ vim.g.cmd = {
   },
 }
 
-vim.g.hl = {
+state.hl = {
   text = {
     text = '@text',
     highlight = 'Title',

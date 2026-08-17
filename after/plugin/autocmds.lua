@@ -1,4 +1,5 @@
 local lib = require('lib')
+local state = require('state')
 
 -- filetypes of git/codediff tabs that get named on creation
 local GIT_TAB_FILETYPES = {
@@ -10,12 +11,12 @@ local GIT_TAB_FILETYPES = {
 
 local function default_tabname(ft)
   if ft == 'codediff-history' then
-    return vim.g.icons.git.git .. 'git log'
+    return state.icons.git.git .. 'git log'
   end
   if ft == 'codediff-explorer' then
-    return vim.g.icons.git.diff .. 'git diff'
+    return state.icons.git.diff .. 'git diff'
   end
-  return vim.g.icons.git.git .. 'git status'
+  return state.icons.git.git .. 'git status'
 end
 
 local function augroup(name)

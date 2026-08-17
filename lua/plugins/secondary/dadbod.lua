@@ -1,3 +1,5 @@
+local state = require('state')
+
 return {
   {
     'kristijanhusak/vim-dadbod-ui',
@@ -27,7 +29,7 @@ return {
 
         vim.cmd.tabnew()
         vim.cmd('DBUI')
-        tabname = vim.g.icons.db .. tabname
+        tabname = state.icons.db .. tabname
         require('lib.tab').rename(tabname)
       end, { nargs = 1 })
 

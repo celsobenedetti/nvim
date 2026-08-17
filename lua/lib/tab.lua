@@ -2,6 +2,8 @@
 ---@class LibTab
 local M = {}
 
+local state = require('state')
+
 ---@type table<number,string> tabpage id -> explicit name
 local names = {}
 
@@ -154,11 +156,11 @@ M.name_from_command = function(last)
   end
   local git_args = last:match('^:?%s*tab%s+Git%s+(.*)$') or last:match('^:?%s*Git%s+(.*)$')
   if git_args and git_args ~= '' then
-    return vim.g.icons.git.git .. 'git ' .. vim.trim(git_args)
+    return state.icons.git.git .. 'git ' .. vim.trim(git_args)
   end
   local cdiff_args = last:match('^:?%s*CodeDiff%s+(.*)$')
   if cdiff_args and cdiff_args ~= '' then
-    return vim.g.icons.git.diff .. 'diff ' .. vim.trim(cdiff_args)
+    return state.icons.git.diff .. 'diff ' .. vim.trim(cdiff_args)
   end
   return nil
 end
@@ -189,13 +191,13 @@ M.render = function()
     local name = M.get_name(tpid)
     local prefix = ''
     if i == 1 then
-      prefix = vim.g.icons.code
+      prefix = state.icons.code
     end
     if name:find('lazygit') then
-      prefix = vim.g.icons.git.git
+      prefix = state.icons.git.git
     end
     if name:find('claude') then
-      prefix = vim.g.icons.agent
+      prefix = state.icons.agent
     end
 
     if i > 1 then

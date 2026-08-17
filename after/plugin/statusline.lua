@@ -4,10 +4,11 @@
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
 
 local lib = require('lib')
+local state = require('state')
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = lib.strings.hl
-local LEFT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.right)
-local RIGHT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.vertical)
+local LEFT_SEPARATOR = hl('StatusLine', state.icons.separator.right)
+local RIGHT_SEPARATOR = hl('StatusLine', state.icons.separator.vertical)
 -- local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
 -- local RIGHT_SUFFIX = ' ' -- #right > 0 and RIGHT_SEPARATOR or ''
 
@@ -17,16 +18,16 @@ local modules = {
       return ''
     end
 
-    return hl(vim.g.hl.text.highlight, vim.g.icons.git.branch) .. hl('StatusLine', (vim.b.gitsigns_head or ''))
+    return hl(state.hl.text.highlight, state.icons.git.branch) .. hl('StatusLine', (vim.b.gitsigns_head or ''))
   end,
 
   _branch_sync_status = function()
     local branch_status = ''
     if vim.g.branch_commits_behind_origin and vim.g.branch_commits_behind_origin > 0 then
-      branch_status = ' ' .. vim.g.icons.git.behind .. vim.g.branch_commits_behind_origin
+      branch_status = ' ' .. state.icons.git.behind .. vim.g.branch_commits_behind_origin
     end
     if vim.g.branch_commits_ahead_of_origin and vim.g.branch_commits_ahead_of_origin > 0 then
-      branch_status = branch_status .. vim.g.icons.git.ahead .. vim.g.branch_commits_ahead_of_origin
+      branch_status = branch_status .. state.icons.git.ahead .. vim.g.branch_commits_ahead_of_origin
     end
 
     if #branch_status == 0 then
@@ -45,10 +46,10 @@ local modules = {
     local dir = relative:sub(1, #relative - #basename)
 
     if #dir == 0 then
-      return hl(vim.g.hl.text.bold, basename)
+      return hl(state.hl.text.bold, basename)
     end
 
-    return hl('StatusLine', dir) .. hl(vim.g.hl.text.bold, basename)
+    return hl('StatusLine', dir) .. hl(state.hl.text.bold, basename)
   end,
 
   _file_icon = function()
@@ -59,7 +60,7 @@ local modules = {
     local color = ''
     if vim.bo.filetype == 'terminal' then
       icon = ''
-      color = vim.g.hl.text.text
+      color = state.hl.text.text
     end
 
     if icon == '' and has_icons then
@@ -89,13 +90,13 @@ local modules = {
 
     local result = ''
     if added > 0 then
-      result = result .. hl('GitSignsAdd', vim.g.icons.git.added .. added)
+      result = result .. hl('GitSignsAdd', state.icons.git.added .. added)
     end
     if modified > 0 then
-      result = result .. hl('GitSignsChange', vim.g.icons.git.modified .. modified)
+      result = result .. hl('GitSignsChange', state.icons.git.modified .. modified)
     end
     if removed > 0 then
-      result = result .. hl('GitSignsDelete', vim.g.icons.git.removed .. removed)
+      result = result .. hl('GitSignsDelete', state.icons.git.removed .. removed)
     end
     return lib.strings.trim(result)
   end,
@@ -112,7 +113,7 @@ local modules = {
     for _, client in pairs(clients) do
       table.insert(c, client.name)
     end
-    return hl(vim.g.hl.text.highlight, vim.g.icons.lsp) .. hl('StatusLine', table.concat(vim.fn.reverse(c), ', '))
+    return hl(state.hl.text.highlight, state.icons.lsp) .. hl('StatusLine', table.concat(vim.fn.reverse(c), ', '))
   end,
 
   _formatters = function()
@@ -132,7 +133,7 @@ local modules = {
       return ''
     end
 
-    return hl(vim.g.hl.text.highlight, vim.g.icons.format) .. hl('StatusLine', result)
+    return hl(state.hl.text.highlight, state.icons.format) .. hl('StatusLine', result)
   end,
 
   _diagnostics = function(bufnr)
@@ -143,10 +144,10 @@ local modules = {
     end
     local parts = {}
   -- stylua: ignore start
-  if count[1] > 0 then parts[#parts + 1] = hl('DiagnosticError', vim.g.icons.diagnostics.error .. tostring(count[1])) end
-  if count[2] > 0 then parts[#parts + 1] = hl('DiagnosticWarn', vim.g.icons.diagnostics.warn .. tostring(count[2])) end
-  if count[3] > 0 then parts[#parts + 1] = hl('DiagnosticInfo', vim.g.icons.diagnostics.info .. tostring(count[3])) end
-  if count[4] > 0 then parts[#parts + 1] = hl('DiagnosticHint', vim.g.icons.diagnostics.hint .. tostring(count[4])) end
+  if count[1] > 0 then parts[#parts + 1] = hl('DiagnosticError', state.icons.diagnostics.error .. tostring(count[1])) end
+  if count[2] > 0 then parts[#parts + 1] = hl('DiagnosticWarn', state.icons.diagnostics.warn .. tostring(count[2])) end
+  if count[3] > 0 then parts[#parts + 1] = hl('DiagnosticInfo', state.icons.diagnostics.info .. tostring(count[3])) end
+  if count[4] > 0 then parts[#parts + 1] = hl('DiagnosticHint', state.icons.diagnostics.hint .. tostring(count[4])) end
     -- stylua: ignore end
     return table.concat(parts, ' ')
   end,
@@ -155,7 +156,7 @@ local modules = {
     if not vim.g.recording_macro then
       return ''
     end
-    return hl(vim.g.hl.warn, '  recording macro ')
+    return hl(state.hl.warn, '  recording macro ')
   end,
 
   _terminal = function()
@@ -169,7 +170,7 @@ local modules = {
     if not vim.g.statusline_show_position then
       return ''
     end
-    return hl(vim.g.hl.text.subtext, '%l:%v')
+    return hl(state.hl.text.subtext, '%l:%v')
   end,
 
   _time = function()
@@ -184,7 +185,7 @@ local modules = {
         or nil
 
       if search_stat then
-        return hl(vim.g.hl.text.subtext, search_stat)
+        return hl(state.hl.text.subtext, search_stat)
       end
     end
   end,

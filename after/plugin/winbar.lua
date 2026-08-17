@@ -8,8 +8,9 @@
 --- 3. ft icons resolved via mini.icons.
 
 local lib = require('lib')
+local state = require('state')
 
-local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
+local SEP = ((state.icons or {}).separator or {}).right or '  '
 
 -- specify winbar string or function for specific filetypes
 local SPECIAL_FILETYPES = {
