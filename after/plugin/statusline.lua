@@ -23,11 +23,11 @@ local modules = {
 
   _branch_sync_status = function()
     local branch_status = ''
-    if vim.g.branch_commits_behind_origin and vim.g.branch_commits_behind_origin > 0 then
-      branch_status = ' ' .. state.icons.git.behind .. vim.g.branch_commits_behind_origin
+    if state.branch_commits_behind_origin and state.branch_commits_behind_origin > 0 then
+      branch_status = ' ' .. state.icons.git.behind .. state.branch_commits_behind_origin
     end
-    if vim.g.branch_commits_ahead_of_origin and vim.g.branch_commits_ahead_of_origin > 0 then
-      branch_status = branch_status .. state.icons.git.ahead .. vim.g.branch_commits_ahead_of_origin
+    if state.branch_commits_ahead_of_origin and state.branch_commits_ahead_of_origin > 0 then
+      branch_status = branch_status .. state.icons.git.ahead .. state.branch_commits_ahead_of_origin
     end
 
     if #branch_status == 0 then
@@ -37,7 +37,7 @@ local modules = {
   end,
 
   _file = function()
-    if not vim.g.statusline_show_filepath then
+    if not state.statusline_show_filepath then
       return ''
     end
 
@@ -53,7 +53,7 @@ local modules = {
   end,
 
   _file_icon = function()
-    if not vim.g.statusline_show_filepath then
+    if not state.statusline_show_filepath then
       return ''
     end
     local icon = ''
@@ -153,7 +153,7 @@ local modules = {
   end,
 
   _macro = function()
-    if not vim.g.recording_macro then
+    if not state.recording_macro then
       return ''
     end
     return hl(state.hl.warn, '  recording macro ')
@@ -167,7 +167,7 @@ local modules = {
   end,
 
   _location = function()
-    if not vim.g.statusline_show_position then
+    if not state.statusline_show_position then
       return ''
     end
     return hl(state.hl.text.subtext, '%l:%v')
@@ -247,10 +247,10 @@ local function setup_caching_and_updating()
     end
     _updating = true
     async_git_count(vim.g.cmd.git.commits_ahead_of_origin, function(n)
-      vim.g.branch_commits_ahead_of_origin = n
+      state.branch_commits_ahead_of_origin = n
     end)
     async_git_count(vim.g.cmd.git.commits_behind_origin, function(n)
-      vim.g.branch_commits_behind_origin = n
+      state.branch_commits_behind_origin = n
       _updating = false
     end)
   end
@@ -277,7 +277,7 @@ local function setup_caching_and_updating()
       MINUTE,
       MINUTE,
       vim.schedule_wrap(function()
-        vim.g.time = modules._time()
+        state.time = modules._time()
       end)
     )
   end
@@ -306,7 +306,7 @@ local function _build_section(segments, direction)
 end
 
 function _G.MyStatusLine()
-  if vim.g.statusline == false then
+  if state.statusline == false then
     return ''
   end
 
@@ -319,7 +319,7 @@ function _G.MyStatusLine()
   -- local formatters = vim.b.cached_formatters or modules._formatters()
   local macro = modules._macro()
   local location = modules._location()
-  local time = (not vim.g.statusline_show_time and '') or (vim.g.time or modules._time())
+  local time = (not state.statusline_show_time and '') or (state.time or modules._time())
   local search_results = modules._search_results()
 
   local filetype = modules._file_icon()

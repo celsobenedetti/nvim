@@ -1,3 +1,5 @@
+local state = require('state')
+
 local M = {}
 
 --- @param msg string
@@ -21,18 +23,18 @@ M.autoformat = function()
 end
 
 M.statusline_show_filepath = function()
-  vim.g.statusline_show_filepath = not vim.g.statusline_show_filepath
-  if not vim.g.statusline_show_filepath then
+  state.statusline_show_filepath = not state.statusline_show_filepath
+  if not state.statusline_show_filepath then
     vim.b.cached_file = nil
   end
 end
 
 M.statusline_show_position = function()
-  vim.g.statusline_show_position = not vim.g.statusline_show_position
+  state.statusline_show_position = not state.statusline_show_position
 end
 
 M.statusline_show_time = function()
-  vim.g.statusline_show_time = not vim.g.statusline_show_time
+  state.statusline_show_time = not state.statusline_show_time
 end
 
 M.colorcolumn = function()

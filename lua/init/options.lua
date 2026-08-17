@@ -6,7 +6,7 @@ vim.g.autoformat = true
 vim.g.completion = true
 vim.g.eslint_autoformat = true
 vim.g.incline = false
-vim.g.statusline = true
+state.statusline = true
 
 vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
@@ -161,9 +161,9 @@ vim.g.root = {
   vue = 'vite.config.ts',
 }
 
-vim.g.statusline_show_filepath = true
-vim.g.statusline_show_position = false
-vim.g.statusline_show_time = false
+state.statusline_show_filepath = true
+state.statusline_show_position = false
+state.statusline_show_time = false
 
 -- Save swap file and trigger CursorHold
 vim.opt.updatetime = 200

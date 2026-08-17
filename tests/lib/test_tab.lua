@@ -113,7 +113,7 @@ local vim_mock = {
 }
 
 mock.setup({ vim = vim_mock })
-package.loaded['state'] = { icons = vim_g.icons }
+package.loaded['state'] = vim_g
 
 ---Point the mock at a fresh set of tabpages (ids are arbitrary numbers; the
 ---tab *number* is their 1-based position). Optionally pre-seed saved names
@@ -234,7 +234,7 @@ describe('lib.tab: persistence')
 reset({ 0, 3, 5 })
 tab = reload_tab()
 tab.rename('hello')
-assert_eq(type(vim_g.NamedTabs), 'string', 'saves to vim.g.NamedTabs')
+assert_eq(type(vim_g.NamedTabs), 'string', 'saves to state.NamedTabs')
 assert_eq(vim_g.NamedTabs, '1|hello', 'keyed by tab number')
 tab = reload_tab()
 assert_eq(tab.get_name(0), 'hello', 'name survives module reload')
