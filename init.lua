@@ -4,7 +4,6 @@ require('lazy').setup({
   spec = {
     { import = 'plugins' },
     { import = 'plugins.secondary' },
-    { import = 'plugins.overseer' },
 
     { 'neovim/nvim-lspconfig' }, -- install lspconfig through lazy.nvim
     { 'wakatime/vim-wakatime' }, -- code time tracking goodness

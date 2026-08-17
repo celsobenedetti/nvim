@@ -4,12 +4,7 @@ vim.g.capture = true
 require('init')
 
 require('lazy').setup({
-  spec = {
-    { import = 'modules.base' },
-    { import = 'modules.orgmode' },
-    { import = 'modules.omarchy' },
-    { 'folke/snacks.nvim', opts = { picker = {} } },
-  },
+  spec = { { import = 'plugins' } },
   performance = vim.g.lazy_nvim_config.performance,
 })
 
