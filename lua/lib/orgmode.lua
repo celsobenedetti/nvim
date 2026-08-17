@@ -1,8 +1,7 @@
+---@class LibOrgmode
 local M = {}
 
-local lib = {
-  notes = require('lib.notes'),
-}
+local lib = require('lib')
 
 M.goto_current_task = function()
   lib.notes.focus_or_create_notes_tab(function()

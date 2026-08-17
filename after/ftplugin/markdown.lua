@@ -1,7 +1,5 @@
-local lib = {
-  buf = require('lib.buffers'),
-}
-if not lib.buf.is_file() then
+local lib = require('lib')
+if not lib.buffers.is_file() then
   return
 end
 

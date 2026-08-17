@@ -5,6 +5,7 @@ local function is_term(buffer)
   return vim.bo[buffer].buftype == 'terminal'
 end
 
+---@class LibTerm
 local M = {
   is_term = is_term,
 

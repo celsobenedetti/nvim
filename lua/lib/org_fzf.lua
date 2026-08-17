@@ -11,6 +11,7 @@
 --- exact headline regardless of duplicate titles; the index column is hidden
 --- from both display and search via `--with-nth`/`--nth`.
 
+---@class LibOrgFzf
 local M = {}
 
 local function fzf()

@@ -3,12 +3,9 @@
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
 
-local lib = {
-  term = require('lib.term'),
-}
-local strings = require('lib.strings')
+local lib = require('lib')
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
-local hl = strings.hl
+local hl = lib.strings.hl
 local LEFT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.right)
 local RIGHT_SEPARATOR = hl('StatusLine', vim.g.icons.separator.vertical)
 -- local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
@@ -100,7 +97,7 @@ local modules = {
     if removed > 0 then
       result = result .. hl('GitSignsDelete', vim.g.icons.git.removed .. removed)
     end
-    return strings.trim(result)
+    return lib.strings.trim(result)
   end,
 
   -- LSP clients attached to buffer

@@ -1,3 +1,4 @@
+---@class LibBuffers
 local M = {}
 
 M.get_valid_bufs = function()

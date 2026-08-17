@@ -1,15 +1,12 @@
-local lib = {
-  visual = require('lib.visual'),
-  tmux = require('lib.tmux'),
-}
+local lib = require('lib')
 
 if not lib.tmux.active() then
   -- keymaps that only should be available outside tmux
   -- TODO: have a tmux version of this using "set in allacritty"
-  map('n', '<C-S-d>', ':DapViewToggle<CR>', { desc = 'Overseer toggle' })
+  vim.keymap.set('n', '<C-S-d>', ':DapViewToggle<CR>', { desc = 'Overseer toggle' })
 
   -- workspace keymap: available outside tmux too
-  map({ 'n', 'i', 't' }, '<A-f>', function()
+  vim.keymap.set({ 'n', 'i', 't' }, '<A-f>', function()
     vim.cmd('silent! !tmux neww -n workspace ~/scripts/workspace.sh')
   end, { desc = 'workspace: open' })
 
@@ -21,8 +18,8 @@ end
 ---@param cmd string
 local cmd = function(cmd)
   -- escape
-  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
-  vim.api.nvim_feedkeys(Keys('<esc>'), 'n', true)
+  vim.api.nvim_feedkeys(lib.keys.termcodes('<esc>'), 'n', true)
+  vim.api.nvim_feedkeys(lib.keys.termcodes('<esc>'), 'n', true)
 
   return function()
     local ok, luasnip = pcall(require, 'luasnip')
@@ -78,7 +75,7 @@ return {
         function()
           local selection = lib.visual.get_selection()
 
-          vim.api.nvim_feedkeys(Keys('<Esc>'), 'n', true)
+          vim.api.nvim_feedkeys(lib.keys.termcodes('<Esc>'), 'n', true)
           if not selection or selection == '' then
             return
           end

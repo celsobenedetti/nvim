@@ -1,3 +1,4 @@
+---@class LibNotes
 local M = {}
 local tab = require('lib.tab')
 

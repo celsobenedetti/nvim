@@ -1,3 +1,4 @@
+---@class LibJump
 local M = {}
 
 --- Sets a mark at the current position before doing a relative jump

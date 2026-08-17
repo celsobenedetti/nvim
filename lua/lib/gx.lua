@@ -56,6 +56,7 @@ local redirect_from_regex = function(query)
   return ''
 end
 
+---@class LibGx
 local M = {}
 M.normal = function()
   local line = vim.fn.getline('.')

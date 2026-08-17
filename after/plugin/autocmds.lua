@@ -1,10 +1,4 @@
-local lib = {
-  term = require('lib.term'),
-  tab = require('lib.tab'),
-  cmd = require('lib.cmd'),
-  cwd = require('lib.cwd'),
-  notes = require('lib.notes'),
-}
+local lib = require('lib')
 
 -- filetypes of git/codediff tabs that get named on creation
 local GIT_TAB_FILETYPES = {

@@ -194,9 +194,7 @@ return {
       { '<leader>ocw', ':Org capture w<CR>', desc = 'Org: Today agenda' },
     },
     config = function()
-      local lib = {
-        colors = require('lib.colors'),
-      }
+      local lib = require('lib')
 
       -- Setup orgmode
       require('orgmode').setup({

@@ -1,6 +1,4 @@
-local lib = {
-  colors = require('lib.colors'),
-}
+local lib = require('lib')
 local highlights_to_hide = {
   'ObsidianRefText',
 }

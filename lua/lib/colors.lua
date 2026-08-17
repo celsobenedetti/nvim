@@ -1,3 +1,4 @@
+---@class LibColors
 local M = {}
 
 local function hex_to_rgb(hex)

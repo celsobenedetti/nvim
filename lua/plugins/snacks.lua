@@ -1,7 +1,4 @@
-local lib = {
-  cwd = require('lib.cwd'),
-  tab = require('lib.tab'),
-}
+local lib = require('lib')
 
 local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' })

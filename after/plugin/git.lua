@@ -1,6 +1,4 @@
-local lib = {
-  fzf = require('lib.fzf'),
-}
+local lib = require('lib')
 
 local function main_branch()
   local result = vim.system({ 'git', 'symbolic-ref', 'refs/remotes/origin/HEAD' }):wait()
