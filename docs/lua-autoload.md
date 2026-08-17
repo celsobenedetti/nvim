@@ -80,10 +80,48 @@ eagerly; they are read when `vim.lsp.enable('foo')` starts a client. All
 override them (`lsp.txt` "How configs are merged"). So `after/lsp/eslint.lua` is
 auto-consumed only when the `eslint` LSP is enabled.
 
-## 7. `autoload/` — on demand
+## 7. `autoload/` — Vimscript only, loaded on first `#` call
 
-`autoload/*.lua` scripts are loaded lazily the first time their `foo#bar()`
-function is called (`options.txt`, `userfunc.txt`). Not startup.
+`autoload/` is a Vimscript lazy-loading feature (`options.txt`, `userfunc.txt`
+`autoload`). No file in `autoload/` runs at startup. Instead, calling a
+function that is not yet defined and whose name contains `#` triggers a load:
+
+```
+:call foo#bar()
+```
+
+searches every `autoload/foo.vim` in `'runtimepath'`, in runtimepath order,
+first match wins, and sources it. Every `#` in the name acts as a path
+separator, so `:call foo#bar#baz()` loads `autoload/foo/bar.vim`. The file
+must define a function whose name matches the call exactly (`E746` if the
+`#`-prefix of the function and the file name disagree).
+
+Only `.vim` files are autoloaded — an `autoload/foo.lua` is never picked up
+by this mechanism. The Lua equivalent is `lua/` + `require()` (`lua-guide.txt`
+`lua-guide-modules`); from Lua you can still trigger a Vimscript autoload with
+`vim.fn['foo#bar']()` (`lua.txt` `vim.fn`).
+
+Reading an undefined autoload variable also loads the script:
+
+```
+:let x = foo#bar#lvar
+```
+
+Assigning to such a variable does _not_ trigger a load — that is how you pass
+settings to an autoload script before its functions are used.
+
+Caveats (`userfunc.txt`):
+
+- A script is loaded at most once per session (tracked in a loaded-script
+  list). If it is missing, or exists but does not define the called function
+  (`E117`), it is not attempted again — even after you fix the file. Restart
+  Nvim or `:source` the file manually.
+- Avoid calling autoload functions from the toplevel of another autoload
+  script: the target may not be defined yet, so autoload is meant for
+  on-demand calls, not startup code.
+- The search also covers `'packpath'` (under `start/` and `opt/`, `pack.txt`),
+  so package autoload functions can be called from your config before the
+  package is on `'runtimepath'`.
 
 ## Summary table
 
@@ -95,7 +133,7 @@ function is called (`options.txt`, `userfunc.txt`). Not startup.
 | `lua/**`                      | Only via `require()`                        |
 | `after/ftplugin/*.lua`        | On `FileType` autocmd, after base ftplugins |
 | `after/lsp/*.lua`             | When that LSP is enabled                    |
-| `autoload/*.lua`              | On first call of a `#` function             |
+| `autoload/*.vim`              | On first call of a `#` function             |
 
 ## What this means for this config
 
@@ -109,5 +147,8 @@ function is called (`options.txt`, `userfunc.txt`). Not startup.
   not a lazy.nvim feature.
 - `after/ftplugin/*.lua` runs on filetype detection (§5).
 - `after/lsp/*.lua` runs when the matching LSP is enabled (§6).
+- No `autoload/` in this config: it is a Vimscript-only mechanism (§7), and its
+  Lua counterpart — `lua/` + `require()` — is exactly what lazy.nvim's imports
+  and the deferred `require()`s already do.
 - `lua/lib/*.lua` never runs on its own; it is only executed when some
   `require('lib.x')` happens.
