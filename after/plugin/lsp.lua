@@ -1,6 +1,6 @@
 local state = require('state')
 
-if not vim.g.lsp then
+if not state.lsp then
   return
 end
 

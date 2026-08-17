@@ -1,5 +1,7 @@
-if vim.g.completion == nil then
-  vim.g.completion = true
+local state = require('state')
+
+if state.completion == nil then
+  state.completion = true
 end
 
 return {
@@ -14,7 +16,7 @@ return {
           and vim.bo.filetype ~= 'DressingInput'
           and vim.bo.filetype ~= 'OverseerForm'
           and vim.bo.filetype ~= 'snacks_picker_input'
-          and vim.g.completion
+          and state.completion
       end
 
       opts.fuzzy = {
@@ -31,7 +33,7 @@ return {
         keyword = { range = 'full' },
         menu = {
           border = 'single',
-          auto_show = vim.g.completion,
+          auto_show = state.completion,
           draw = {
             columns = {
               { 'label', 'label_description', gap = 1 },

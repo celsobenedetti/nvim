@@ -1,16 +1,16 @@
 local state = require('state')
 
-vim.g.lsp = true
-vim.g.supermaven = true
-vim.g.autoformat = true
-vim.g.completion = true
-vim.g.eslint_autoformat = true
-vim.g.incline = false
+state.lsp = true
+state.supermaven = true
+state.autoformat = true
+state.completion = true
+state.eslint_autoformat = true
+state.incline = false
 state.statusline = true
 
 vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
-vim.g.colorcolumn = 80 -- column highlighted by the colorcolumn toggle (<leader>u|)
+state.colorcolumn = 80 -- column highlighted by the colorcolumn toggle (<leader>u|)
 
 vim.g.env = {
   WORK = os.getenv('WORK') or '',
@@ -136,7 +136,7 @@ vim.g.ignore = {
 }
 
 --- filsubtextetypes to close with q
-vim.g.close_with_q = {
+state.close_with_q = {
   'checkhealth',
   'dap-view',
   'dbout',

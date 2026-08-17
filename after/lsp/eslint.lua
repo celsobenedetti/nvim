@@ -1,5 +1,7 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/a2bd1cf7b0446a7414aaf373cea5e4ca804c9c69/lsp/eslint.lua
 -- https://github.com/antfu/eslint-config
+local state = require('state')
+
 return {
   root_dir = function(bufnr, on_dir)
     if require('lib.cwd').matches(vim.g.dirs.disable_eslint_lsp) then
@@ -26,7 +28,7 @@ return {
 
     -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
     workingDirectories = { mode = 'auto' },
-    format = vim.g.eslint_autoformat,
+    format = state.eslint_autoformat,
   },
   filetypes = {
     'astro',
