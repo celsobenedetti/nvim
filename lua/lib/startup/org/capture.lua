@@ -1,12 +1,6 @@
 vim.g.lazy_orgmode = false
 vim.g.lsp = false
 vim.g.capture = true
-require('init')
-
-require('lazy').setup({
-  spec = { { import = 'plugins' } },
-  performance = vim.g.lazy_nvim_config.performance,
-})
 
 local initial_window = vim.api.nvim_get_current_win()
 vim.api.nvim_create_autocmd('FileType', {
