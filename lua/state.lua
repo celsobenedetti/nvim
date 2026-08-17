@@ -23,6 +23,17 @@
 ---@field branch_commits_ahead_of_origin number?
 ---@field branch_commits_behind_origin number?
 ---@field NamedTabs string?
+---@field autoformat boolean
+---@field completion boolean
+---@field treesitter table
+---@field lsp boolean
+---@field supermaven boolean
+---@field zen_mode boolean
+---@field dials_by_ft table
+---@field eslint_autoformat boolean
+---@field close_with_q string[]
+---@field colorcolumn number
+---@field incline boolean
 local M = {}
 
 return M

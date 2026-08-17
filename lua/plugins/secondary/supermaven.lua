@@ -1,9 +1,11 @@
+local state = require('state')
+
 return {
   {
 
     'supermaven-inc/supermaven-nvim',
     event = 'InsertEnter',
-    enabled = vim.g.supermaven,
+    enabled = state.supermaven,
     cmd = { 'SupermavenUseFree', 'SupermavenToggle' },
     opts = {
       keymaps = {

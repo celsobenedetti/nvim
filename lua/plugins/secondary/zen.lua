@@ -39,14 +39,14 @@ return {
     --- @type snacks.zen.Config
     opts.zen = {
       on_open = function()
-        vim.g.zen_mode = true
+        state.zen_mode = true
 
         vim.cmd('norm zt')
 
         vim.api.nvim_set_hl(0, 'Folded', { fg = state.colors.bg, bg = 'none' })
       end,
       on_close = function()
-        vim.g.zen_mode = false
+        state.zen_mode = false
         vim.api.nvim_set_hl(0, 'Folded', { link = 'Normal' })
       end,
       show = {

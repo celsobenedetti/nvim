@@ -1,4 +1,5 @@
-vim.g.lsp = false
+local state = require('state')
+state.lsp = false
 vim.g.capture = true
 
 local initial_window = vim.api.nvim_get_current_win()

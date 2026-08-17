@@ -1,4 +1,5 @@
 local cwd = require('lib.cwd')
+local state = require('state')
 
 return {
   'stevearc/conform.nvim',
@@ -33,7 +34,7 @@ return {
 
     require('conform').setup({
       format_on_save = function()
-        if not vim.g.autoformat then
+        if not state.autoformat then
           return nil
         end
 

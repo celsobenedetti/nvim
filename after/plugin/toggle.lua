@@ -8,8 +8,8 @@ local function notify(msg)
 end
 
 M.completion = function()
-  vim.g.completion = not vim.g.completion
-  notify(string.format('completion: %q', vim.g.completion))
+  state.completion = not state.completion
+  notify(string.format('completion: %q', state.completion))
 end
 
 M.supermaven = function()
@@ -18,8 +18,8 @@ M.supermaven = function()
 end
 
 M.autoformat = function()
-  vim.g.autoformat = not vim.g.autoformat
-  notify(string.format('autoformat: %q', vim.g.autoformat))
+  state.autoformat = not state.autoformat
+  notify(string.format('autoformat: %q', state.autoformat))
 end
 
 M.statusline_show_filepath = function()
@@ -38,7 +38,7 @@ M.statusline_show_time = function()
 end
 
 M.colorcolumn = function()
-  vim.wo.colorcolumn = vim.wo.colorcolumn == '' and tostring(vim.g.colorcolumn) or ''
+  vim.wo.colorcolumn = vim.wo.colorcolumn == '' and tostring(state.colorcolumn) or ''
 end
 
 -- toggles

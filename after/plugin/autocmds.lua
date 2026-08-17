@@ -44,10 +44,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Tresitter Highlight
-if vim.g.treesitter then
+if state.treesitter then
   vim.api.nvim_create_autocmd('FileType', {
     group = groups.treesitter_highlight,
-    pattern = vim.g.treesitter.highlight,
+    pattern = state.treesitter.highlight,
     callback = function()
       vim.treesitter.start()
     end,
@@ -57,7 +57,7 @@ end
 -- close some filetypes with <q>
 vim.api.nvim_create_autocmd('FileType', {
   group = groups.close_with_q,
-  pattern = vim.g.close_with_q,
+  pattern = state.close_with_q,
   callback = function(event)
     vim.bo[event.buf].buflisted = false
     vim.schedule(function()

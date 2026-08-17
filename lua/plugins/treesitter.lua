@@ -1,4 +1,6 @@
-vim.g.treesitter = {
+local state = require('state')
+
+state.treesitter = {
   --- filetypes to highlight with treesitter
   highlight = {
     'gitcommit',
@@ -16,7 +18,7 @@ vim.g.treesitter = {
     'yaml',
   },
 }
-vim.g.treesitter.ensure_installed = vim.tbl_extend('force', vim.g.treesitter.highlight, {
+state.treesitter.ensure_installed = vim.tbl_extend('force', state.treesitter.highlight, {
   'bash',
   'c',
   'diff',
@@ -57,7 +59,7 @@ return {
     cmd = { 'TSUpdate', 'TSInstall', 'TSLog', 'TSUninstall' },
     config = function()
       -- NOTE: setup function not needed when using default options
-      require('nvim-treesitter').install(vim.g.treesitter.ensure_installed)
+      require('nvim-treesitter').install(state.treesitter.ensure_installed)
       vim.wo.foldmethod = 'expr'
       vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
       vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
