@@ -2,7 +2,6 @@ require('init')
 
 require('lazy').setup({
   spec = {
-    -- { import = 'modules.git' },
     { import = 'modules.editor' },
     { import = 'modules.overseer' },
     { import = 'modules.ui' },
