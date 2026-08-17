@@ -1,5 +1,7 @@
 require('init')
 
+local state = require('state')
+
 require('lazy').setup({
   spec = {
     { import = 'plugins' },
@@ -33,7 +35,7 @@ require('lazy').setup({
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update
   },
-  performance = vim.g.lazy_nvim_config.performance,
+  performance = state.lazy_nvim_config.performance,
 })
 
 vim.cmd.packadd('cfilter')

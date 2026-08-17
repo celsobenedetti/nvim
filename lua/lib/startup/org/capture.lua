@@ -1,6 +1,6 @@
 local state = require('state')
 state.lsp = false
-vim.g.capture = true
+state.capture = true
 
 local initial_window = vim.api.nvim_get_current_win()
 vim.api.nvim_create_autocmd('FileType', {

@@ -1,3 +1,5 @@
+local state = require('state')
+
 -- Declare a global function to retrieve the current directory
 function _G.get_oil_winbar()
   local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
@@ -36,7 +38,7 @@ return {
         winbar = '%!v:lua.get_oil_winbar()',
       },
     })
-    vim.keymap.set('n', vim.g.keys['<C-S-E>'], ':Oil<cr>', { desc = 'oil: Open parent directory' })
+    vim.keymap.set('n', state.keys['<C-S-E>'], ':Oil<cr>', { desc = 'oil: Open parent directory' })
     vim.keymap.set('n', '-', ':Oil<cr>', { desc = 'oil: Open parent directory' })
     vim.keymap.set('n', '_', ':Oil .<cr>', { desc = 'oil: Open parent directory' })
   end,

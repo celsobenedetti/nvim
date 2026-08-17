@@ -53,7 +53,7 @@ local M = {
 
   startinsert = function()
     if
-      not vim.g.insert_when_entering_terminal
+      not state.insert_when_entering_terminal
       or not vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative == '' -- is not valid window
     then
       return

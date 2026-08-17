@@ -108,7 +108,7 @@ map('n','<leader>gd', function()vim.cmd('vertical Git diff ' .. main_branch() ..
     })
   end, { desc = 'CodeDiff: compare branch with HEAD' })
 
-  vim.keymap.set('n', vim.g.keys['<C-S-O>'], function()
+  vim.keymap.set('n', state.keys['<C-S-O>'], function()
     require('fzf-lua').lsp_document_symbols()
   end)
 end

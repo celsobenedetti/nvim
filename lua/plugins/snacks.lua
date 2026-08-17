@@ -1,4 +1,5 @@
 local lib = require('lib')
+local state = require('state')
 
 local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' })
@@ -160,7 +161,7 @@ return {
         },
         picker = {
           enabled = true,
-          exclude = vim.g.ignore.grep,
+          exclude = state.ignore.grep,
           layout = 'ivy_split',
           win = {
             input = {
@@ -265,7 +266,7 @@ return {
             explorer = {
               auto_close = false,
               ignored = true,
-              exclude = vim.g.ignore.explorer,
+              exclude = state.ignore.explorer,
               win = {
                 list = {
                   keys = {

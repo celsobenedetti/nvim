@@ -1,4 +1,5 @@
 local lib = require('lib')
+local state = require('state')
 if not lib.buffers.is_file() then
   return
 end
@@ -82,7 +83,7 @@ local function setup_markdown_hl()
 end
 
 -- follow wiki links with enter (only in notes dir)
-local notes = vim.g.env and vim.g.env.notes
+local notes = state.env and state.env.notes
 if notes then
   local filepath = vim.fn.expand('%:p')
   if filepath:find(notes.NOTES, 1, true) == 1 then

@@ -1,6 +1,7 @@
 local lib = require('lib')
+local state = require('state')
 
-vim.keymap.set('n', vim.g.keys['<C-S-N>'], function()
+vim.keymap.set('n', state.keys['<C-S-N>'], function()
   lib.notes.focus_or_create_notes_tab(function()
     lib.fzf.grep({
       cmd = {
@@ -9,12 +10,12 @@ vim.keymap.set('n', vim.g.keys['<C-S-N>'], function()
         '--line-number',
         '-g',
         '!.archives',
-        -- '!' .. vim.g.env.notes.ASSETS_DIR .. '/*',
+        -- '!' .. state.env.notes.ASSETS_DIR .. '/*',
         '-v',
-        string.format('"%s"', vim.g.env.notes.GREP_IGNORE), -- quotes are indeed needed here for complex regex
-        vim.g.env.notes.NOTES,
+        string.format('"%s"', state.env.notes.GREP_IGNORE), -- quotes are indeed needed here for complex regex
+        state.env.notes.NOTES,
       },
-      cwd = vim.g.env.notes.NOTES,
+      cwd = state.env.notes.NOTES,
     })
   end)
 end, { desc = 'search all notes' })

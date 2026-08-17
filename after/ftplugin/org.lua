@@ -3,8 +3,10 @@
 -- resolution is plain-text (not tied to the markdown parser), so we reuse it for
 -- org files that live inside a configured workspace. Returns true if it handled
 -- a wikilink, false otherwise (so callers can fall back to orgmode).
+local state = require('state')
+
 local function obsidian_follow_wikilink()
-  local notes = vim.g.env and vim.g.env.notes
+  local notes = state.env and state.env.notes
   if not notes or not notes.NOTES then
     return false
   end
@@ -26,7 +28,7 @@ end
 -- attach the in-process obsidian-ls LSP so blink can offer [[ completion. The
 -- LSP completion path is line-text based, not markdown-specific.
 do
-  local notes = vim.g.env and vim.g.env.notes
+  local notes = state.env and state.env.notes
   local filepath = vim.fn.expand('%:p')
   if notes and notes.NOTES and filepath ~= '' and filepath:find(notes.NOTES, 1, true) == 1 then
     vim.b.obsidian_buffer = true
@@ -68,7 +70,7 @@ vim.api.nvim_buf_set_keymap(0, 'n', 'X', ':lua require("orgmode").action("clock.
   { desc = 'org: cancel clock' }
 )
 
-if not vim.g.capture then
+if not state.capture then
   vim.keymap.set('n', 'R', function()
     require('orgmode').action('capture.refile_headline_to_destination')
   end, { desc = 'org: refile headline' })

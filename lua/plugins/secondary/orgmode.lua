@@ -92,7 +92,7 @@ local colorschemes_to_highlight = {
 local TMP_CURRENT_TASK_FILE = '/tmp/org_current_task'
 
 local agenda_files = {
-  vim.g.env.notes.ORG .. '/**/*',
+  state.env.notes.ORG .. '/**/*',
 }
 
 local function set_highlights()
@@ -170,7 +170,7 @@ return {
       {
         '<leader>ap',
         function()
-          require('lib.org_fzf').refile_to(vim.g.env.org.REFERENCES .. '/datalake.org', 'prompts')
+          require('lib.org_fzf').refile_to(state.env.org.REFERENCES .. '/datalake.org', 'prompts')
         end,
         desc = 'org: refile heading to prompts',
       },
@@ -202,7 +202,7 @@ return {
       require('orgmode').setup({
         org_agenda_files = agenda_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
-        org_default_notes_file = vim.g.env.org.INBOX,
+        org_default_notes_file = state.env.org.INBOX,
         org_priority_highest = 'A',
         org_priority_default = 'C',
         org_priority_lowest = 'C',
@@ -223,7 +223,7 @@ return {
           c = {
             description = 'quick capture',
             template = '* %?\n%u',
-            target = vim.g.env.org.INBOX,
+            target = state.env.org.INBOX,
           },
         },
 
@@ -264,7 +264,7 @@ return {
 
       local clock_in_current_task = function(ev)
         vim.schedule(function()
-          vim.g.org_current_task = ev.headline:get_title()
+          state.org_current_task = ev.headline:get_title()
           local file = io.open(TMP_CURRENT_TASK_FILE, 'w')
           if file then
             file:write(ev.headline:get_title())
@@ -292,7 +292,7 @@ return {
 
       Events.listen(Events.event.ClockedOut, function(ev)
         vim.schedule(function()
-          vim.g.org_current_task = nil
+          state.org_current_task = nil
           os.remove(TMP_CURRENT_TASK_FILE)
         end)
       end)

@@ -1,6 +1,8 @@
 -- Flash enhances the built-in search functionality by showing labels
 -- at the end of each match, letting you quickly jump to a specific
 -- location.
+local state = require('state')
+
 return {
   {
     'folke/flash.nvim',
@@ -13,9 +15,9 @@ return {
         's',
         mode = { 'n', 'o' },
         function()
-          vim.g.insert_when_entering_terminal = false
+          state.insert_when_entering_terminal = false
           require('flash').jump()
-          vim.g.insert_when_entering_terminal = true
+          state.insert_when_entering_terminal = true
         end,
         desc = 'Flash',
       },
