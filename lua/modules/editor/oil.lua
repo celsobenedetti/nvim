@@ -19,25 +19,26 @@ end
 
 return {
   'stevearc/oil.nvim',
-  ---@module 'oil'
-  ---@type oil.SetupOpts
-  opts = {
-    keymaps = {
-      ['<C-h>'] = false,
-      ['<C-l>'] = false,
-      ['<C-p>'] = false,
-      ['<C-s>'] = false,
-      ['gp'] = 'actions.preview',
-      ['ge'] = open_in_snacks_explorer,
-    },
+  config = function()
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    require('oil').setup({
+      keymaps = {
+        ['<C-h>'] = false,
+        ['<C-l>'] = false,
+        ['<C-p>'] = false,
+        ['<C-s>'] = false,
+        ['gp'] = 'actions.preview',
+        ['ge'] = open_in_snacks_explorer,
+      },
 
-    win_options = {
-      winbar = '%!v:lua.get_oil_winbar()',
-    },
-  },
+      win_options = {
+        winbar = '%!v:lua.get_oil_winbar()',
+      },
+    })
+    vim.keymap.set('n', vim.g.keys['<C-S-E>'], ':Oil<cr>', { desc = 'oil: Open parent directory' })
+    vim.keymap.set('n', '-', ':Oil<cr>', { desc = 'oil: Open parent directory' })
+  end,
   dependencies = { { 'nvim-mini/mini.icons', opts = {} } },
   lazy = false, -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
-  keys = {
-    { '-', ':Oil<cr>', { desc = 'oil: Open parent directory' } },
-  },
 }
