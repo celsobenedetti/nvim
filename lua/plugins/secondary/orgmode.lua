@@ -1,3 +1,5 @@
+local state = require('state')
+
 --- @type table<string, OrgAgendaCustomCommand>
 local agenda_views = {
   C = {
@@ -94,14 +96,14 @@ local agenda_files = {
 }
 
 local function set_highlights()
-  if vim.g.colors.done then
-    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = vim.g.colors.done })
+  if state.colors.done then
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = state.colors.done })
   else
     vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
   end
 
-  if vim.g.colors.todo then
-    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = vim.g.colors.todo })
+  if state.colors.todo then
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = state.colors.todo })
   else
     vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
   end

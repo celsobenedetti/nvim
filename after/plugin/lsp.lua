@@ -1,3 +1,5 @@
+local state = require('state')
+
 if not vim.g.lsp then
   return
 end
@@ -29,10 +31,10 @@ vim.diagnostic.config({
   signs = {
     active = true,
     text = {
-      [vim.diagnostic.severity.ERROR] = vim.g.icons.diagnostics.error,
-      [vim.diagnostic.severity.WARN] = vim.g.icons.diagnostics.warn,
-      [vim.diagnostic.severity.INFO] = vim.g.icons.diagnostics.info,
-      [vim.diagnostic.severity.HINT] = vim.g.icons.diagnostics.hint,
+      [vim.diagnostic.severity.ERROR] = state.icons.diagnostics.error,
+      [vim.diagnostic.severity.WARN] = state.icons.diagnostics.warn,
+      [vim.diagnostic.severity.INFO] = state.icons.diagnostics.info,
+      [vim.diagnostic.severity.HINT] = state.icons.diagnostics.hint,
     },
   },
 })

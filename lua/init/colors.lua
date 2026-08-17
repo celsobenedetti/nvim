@@ -1,3 +1,5 @@
+local state = require('state')
+
 local colors_path = vim.fn.expand('~/.config/omarchy/current/theme/colors.toml')
 local colors = {}
 
@@ -16,4 +18,4 @@ colors.bg = colors.background or colors.color0
 colors.fg = colors.foreground or colors.color7
 colors.secondary = colors.color7
 
-vim.g.colors = colors
+state.colors = colors

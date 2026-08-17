@@ -113,6 +113,7 @@ local vim_mock = {
 }
 
 mock.setup({ vim = vim_mock })
+package.loaded['state'] = { icons = vim_g.icons }
 
 ---Point the mock at a fresh set of tabpages (ids are arbitrary numbers; the
 ---tab *number* is their 1-based position). Optionally pre-seed saved names

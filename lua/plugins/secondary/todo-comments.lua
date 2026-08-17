@@ -1,3 +1,5 @@
+local state = require('state')
+
 return {
   'folke/todo-comments.nvim',
   keys = {
@@ -13,8 +15,8 @@ return {
   opts = {
     keywords = {
       WIP = { icon = ' ', color = 'warning' },
-      NOTE = { icon = '󰂺 ', color = vim.g.colors.lightgray },
-      TODO = { icon = ' ', color = vim.g.colors.lightgray },
+      NOTE = { icon = '󰂺 ', color = state.colors.lightgray },
+      TODO = { icon = ' ', color = state.colors.lightgray },
     },
   },
 }

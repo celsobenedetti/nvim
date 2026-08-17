@@ -1,20 +1,21 @@
-if vim.g.colorscheme == 'default' then
+local colors = require('lib.colors')
+local state = require('state')
+
+if colors.omarchy_colorscheme().colorscheme == 'default' then
   return
 end
+vim.api.nvim_set_hl(0, 'Bold', { fg = state.colors.fg, bold = true, cterm = { bold = true } })
+vim.api.nvim_set_hl(0, 'MsgArea', { link = state.hl.text_secondary }) -------- transparency changes -----------
 
-local colors = require('lib.colors')
-vim.api.nvim_set_hl(0, 'Bold', { fg = vim.g.colors.fg, bold = true, cterm = { bold = true } })
-vim.api.nvim_set_hl(0, 'MsgArea', { link = vim.g.hl.text_secondary }) -------- transparency changes -----------
+vim.api.nvim_set_hl(0, 'TextSecondary', { fg = state.colors.secondary or state.colors.fg })
 
-vim.api.nvim_set_hl(0, 'TextSecondary', { fg = vim.g.colors.secondary or vim.g.colors.fg })
-
-if vim.g.colors.colorcolumn then
-  vim.api.nvim_set_hl(0, 'ColorColumn', { bg = vim.g.colors.colorcolumn })
+if state.colors.colorcolumn then
+  vim.api.nvim_set_hl(0, 'ColorColumn', { bg = state.colors.colorcolumn })
 end
 
 
 -- stylua: ignore start
--- vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(vim.g.hl.text.subtext, 'fg') })
+-- vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(state.hl.text.subtext, 'fg') })
 -- vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
 -- vim.api.nvim_set_hl(0, 'TabLineSel', { bg = colors.get_color('StatusLine', 'bg') , bold = true, underline=true})
 vim.api.nvim_set_hl(0, 'NonText', { link = "Comment"})
@@ -105,6 +106,6 @@ vim.api.nvim_set_hl(
   { bg = 'none', fg = colors.get_color('@markup.link.label.markdown_inline', 'fg'), italic = true }
 )
 
-if vim.g.colors.folded then
-  vim.api.nvim_set_hl(0, 'Folded', { bg = vim.g.colors.folded })
+if state.colors.folded then
+  vim.api.nvim_set_hl(0, 'Folded', { bg = state.colors.folded })
 end

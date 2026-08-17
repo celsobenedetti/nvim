@@ -1,6 +1,8 @@
 ---@class LibColors
 local M = {}
 
+local state = require('state')
+
 local function hex_to_rgb(hex)
   if not hex then
     return 0, 0, 0
@@ -66,14 +68,14 @@ M.omarchy_colorscheme = function()
   }
 end
 
---- updates vim.g.colors
----@param new_colors k,v table for vim.g.colors
+--- updates state.colors
+---@param new_colors k,v table for state.colors
 M.update = function(new_colors)
-  local colors = vim.g.colors
+  local colors = state.colors
   for k, v in pairs(new_colors) do
     colors[k] = v
   end
-  vim.g.colors = colors
+  state.colors = colors
 end
 
 return M

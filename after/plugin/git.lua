@@ -1,4 +1,5 @@
 local lib = require('lib')
+local state = require('state')
 
 local function main_branch()
   local result = vim.system({ 'git', 'symbolic-ref', 'refs/remotes/origin/HEAD' }):wait()
@@ -101,7 +102,7 @@ map('n','<leader>gd', function()vim.cmd('vertical Git diff ' .. main_branch() ..
       end,
       confirm = function(picker, item)
         picker:close()
-        require('lib.tab').set_next_name(string.format('%sgit diff %s HEAD', vim.g.icons.git.diff, item.text))
+        require('lib.tab').set_next_name(string.format('%sgit diff %s HEAD', state.icons.git.diff, item.text))
         vim.cmd(string.format('CodeDiff %s HEAD', item.text))
       end,
     })
