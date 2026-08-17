@@ -159,7 +159,7 @@ return {
         },
         picker = {
           enabled = true,
-          exclude = state.ignore.grep,
+          exclude = config.ignore.grep,
           layout = 'ivy_split',
           win = {
             input = {
@@ -264,7 +264,7 @@ return {
             explorer = {
               auto_close = false,
               ignored = true,
-              exclude = state.ignore.explorer,
+              exclude = config.ignore.explorer,
               win = {
                 list = {
                   keys = {

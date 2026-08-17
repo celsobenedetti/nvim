@@ -5,8 +5,8 @@
 
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = lib.strings.hl
-local LEFT_SEPARATOR = hl('StatusLine', state.icons.separator.right)
-local RIGHT_SEPARATOR = hl('StatusLine', state.icons.separator.vertical)
+local LEFT_SEPARATOR = hl('StatusLine', config.icons.separator.right)
+local RIGHT_SEPARATOR = hl('StatusLine', config.icons.separator.vertical)
 -- local LEFT_PREFIX = ' ' -- os.getenv('TMUX') and LEFT_SEPARATOR or ' '
 -- local RIGHT_SUFFIX = ' ' -- #right > 0 and RIGHT_SEPARATOR or ''
 
@@ -16,16 +16,16 @@ local modules = {
       return ''
     end
 
-    return hl(state.hl.text.highlight, state.icons.git.branch) .. hl('StatusLine', (vim.b.gitsigns_head or ''))
+    return hl(config.hl.text.highlight, config.icons.git.branch) .. hl('StatusLine', (vim.b.gitsigns_head or ''))
   end,
 
   _branch_sync_status = function()
     local branch_status = ''
     if state.branch_commits_behind_origin and state.branch_commits_behind_origin > 0 then
-      branch_status = ' ' .. state.icons.git.behind .. state.branch_commits_behind_origin
+      branch_status = ' ' .. config.icons.git.behind .. state.branch_commits_behind_origin
     end
     if state.branch_commits_ahead_of_origin and state.branch_commits_ahead_of_origin > 0 then
-      branch_status = branch_status .. state.icons.git.ahead .. state.branch_commits_ahead_of_origin
+      branch_status = branch_status .. config.icons.git.ahead .. state.branch_commits_ahead_of_origin
     end
 
     if #branch_status == 0 then
@@ -44,10 +44,10 @@ local modules = {
     local dir = relative:sub(1, #relative - #basename)
 
     if #dir == 0 then
-      return hl(state.hl.text.bold, basename)
+      return hl(config.hl.text.bold, basename)
     end
 
-    return hl('StatusLine', dir) .. hl(state.hl.text.bold, basename)
+    return hl('StatusLine', dir) .. hl(config.hl.text.bold, basename)
   end,
 
   _file_icon = function()
@@ -58,7 +58,7 @@ local modules = {
     local color = ''
     if vim.bo.filetype == 'terminal' then
       icon = ''
-      color = state.hl.text.text
+      color = config.hl.text.text
     end
 
     if icon == '' and has_icons then
@@ -88,13 +88,13 @@ local modules = {
 
     local result = ''
     if added > 0 then
-      result = result .. hl('GitSignsAdd', state.icons.git.added .. added)
+      result = result .. hl('GitSignsAdd', config.icons.git.added .. added)
     end
     if modified > 0 then
-      result = result .. hl('GitSignsChange', state.icons.git.modified .. modified)
+      result = result .. hl('GitSignsChange', config.icons.git.modified .. modified)
     end
     if removed > 0 then
-      result = result .. hl('GitSignsDelete', state.icons.git.removed .. removed)
+      result = result .. hl('GitSignsDelete', config.icons.git.removed .. removed)
     end
     return lib.strings.trim(result)
   end,
@@ -111,7 +111,7 @@ local modules = {
     for _, client in pairs(clients) do
       table.insert(c, client.name)
     end
-    return hl(state.hl.text.highlight, state.icons.lsp) .. hl('StatusLine', table.concat(vim.fn.reverse(c), ', '))
+    return hl(config.hl.text.highlight, config.icons.lsp) .. hl('StatusLine', table.concat(vim.fn.reverse(c), ', '))
   end,
 
   _formatters = function()
@@ -131,7 +131,7 @@ local modules = {
       return ''
     end
 
-    return hl(state.hl.text.highlight, state.icons.format) .. hl('StatusLine', result)
+    return hl(config.hl.text.highlight, config.icons.format) .. hl('StatusLine', result)
   end,
 
   _diagnostics = function(bufnr)
@@ -142,10 +142,10 @@ local modules = {
     end
     local parts = {}
     -- stylua: ignore start
-    if count[1] > 0 then parts[#parts + 1] = hl('DiagnosticError', state.icons.diagnostics.error .. tostring(count[1])) end
-    if count[2] > 0 then parts[#parts + 1] = hl('DiagnosticWarn', state.icons.diagnostics.warn .. tostring(count[2])) end
-    if count[3] > 0 then parts[#parts + 1] = hl('DiagnosticInfo', state.icons.diagnostics.info .. tostring(count[3])) end
-    if count[4] > 0 then parts[#parts + 1] = hl('DiagnosticHint', state.icons.diagnostics.hint .. tostring(count[4])) end
+    if count[1] > 0 then parts[#parts + 1] = hl('DiagnosticError', config.icons.diagnostics.error .. tostring(count[1])) end
+    if count[2] > 0 then parts[#parts + 1] = hl('DiagnosticWarn', config.icons.diagnostics.warn .. tostring(count[2])) end
+    if count[3] > 0 then parts[#parts + 1] = hl('DiagnosticInfo', config.icons.diagnostics.info .. tostring(count[3])) end
+    if count[4] > 0 then parts[#parts + 1] = hl('DiagnosticHint', config.icons.diagnostics.hint .. tostring(count[4])) end
     -- stylua: ignore end
     return table.concat(parts, ' ')
   end,
@@ -154,7 +154,7 @@ local modules = {
     if not state.recording_macro then
       return ''
     end
-    return hl(state.hl.warn, '  recording macro ')
+    return hl(config.hl.warn, '  recording macro ')
   end,
 
   _terminal = function()
@@ -168,7 +168,7 @@ local modules = {
     if not state.statusline_show_position then
       return ''
     end
-    return hl(state.hl.text.subtext, '%l:%v')
+    return hl(config.hl.text.subtext, '%l:%v')
   end,
 
   _time = function()
@@ -186,7 +186,7 @@ local modules = {
           or nil
 
       if search_stat then
-        return hl(state.hl.text.subtext, search_stat)
+        return hl(config.hl.text.subtext, search_stat)
       end
     end
   end,
@@ -247,10 +247,10 @@ local function setup_caching_and_updating()
       return
     end
     _updating = true
-    async_git_count(state.cmd.git.commits_ahead_of_origin, function(n)
+    async_git_count(config.cmd.git.commits_ahead_of_origin, function(n)
       state.branch_commits_ahead_of_origin = n
     end)
-    async_git_count(state.cmd.git.commits_behind_origin, function(n)
+    async_git_count(config.cmd.git.commits_behind_origin, function(n)
       state.branch_commits_behind_origin = n
       _updating = false
     end)
@@ -307,7 +307,7 @@ local function _build_section(segments, direction)
 end
 
 function _G.MyStatusLine()
-  if state.statusline == false then
+  if config.statusline == false then
     return ''
   end
 

@@ -22,20 +22,20 @@ local regex_redirects = {
   {
     '^%s*VA-[0-9]*',
     function(s)
-      return state.web.jira .. s
+      return config.web.jira .. s
     end,
   },
 
   {
     '^%s*va-[0-9]*',
     function(s)
-      return state.web.jira .. s
+      return config.web.jira .. s
     end,
   },
   {
     '^INT-[0-9]*',
     function(s)
-      return state.web.jira .. s
+      return config.web.jira .. s
     end,
   },
 }

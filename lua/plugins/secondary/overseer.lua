@@ -1,4 +1,4 @@
-state.overseer = {
+config.overseer = {
   ---@param tasks overseer.TaskDefinition[]
   run_tasks = function(tasks)
     require('lazy').load({ plugins = { 'overseer.nvim' } }) -- ensure overseer
@@ -78,13 +78,13 @@ return {
                 cmd = { 'act' },
                 args = { '-j', 'test' },
                 name = 'act -j test',
-                cwd = state.dirs.work.edge_server,
+                cwd = config.dirs.work.edge_server,
                 components = { 'default' },
               }
             end,
             desc = 'run CI tests with act',
             condition = {
-              dir = state.dirs.work.edge_server,
+              dir = config.dirs.work.edge_server,
             },
           },
 
@@ -95,13 +95,13 @@ return {
                 cmd = { 'act' },
                 args = { '-j', 'lint' },
                 name = 'act -j lint',
-                cwd = state.dirs.work.edge_server,
+                cwd = config.dirs.work.edge_server,
                 components = { 'default' },
               }
             end,
             desc = 'run CI lint with act',
             condition = {
-              dir = state.dirs.work.edge_server,
+              dir = config.dirs.work.edge_server,
             },
           },
         },
@@ -114,13 +114,13 @@ return {
                 cmd = { 'act' },
                 args = { '-j', 'pyright' },
                 name = 'act -j pyright',
-                cwd = state.dirs.work.airflow_pipeline,
+                cwd = config.dirs.work.airflow_pipeline,
                 components = { 'default' },
               }
             end,
             desc = 'run pyright checks with act',
             condition = {
-              dir = state.dirs.work.airflow_pipeline,
+              dir = config.dirs.work.airflow_pipeline,
             },
           },
         },

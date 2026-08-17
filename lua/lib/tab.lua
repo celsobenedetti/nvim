@@ -155,11 +155,11 @@ M.name_from_command = function(last)
   end
   local git_args = last:match('^:?%s*tab%s+Git%s+(.*)$') or last:match('^:?%s*Git%s+(.*)$')
   if git_args and git_args ~= '' then
-    return state.icons.git.git .. 'git ' .. vim.trim(git_args)
+    return config.icons.git.git .. 'git ' .. vim.trim(git_args)
   end
   local cdiff_args = last:match('^:?%s*CodeDiff%s+(.*)$')
   if cdiff_args and cdiff_args ~= '' then
-    return state.icons.git.diff .. 'diff ' .. vim.trim(cdiff_args)
+    return config.icons.git.diff .. 'diff ' .. vim.trim(cdiff_args)
   end
   return nil
 end
@@ -190,13 +190,13 @@ M.render = function()
     local name = M.get_name(tpid)
     local prefix = ''
     if i == 1 then
-      prefix = state.icons.code
+      prefix = config.icons.code
     end
     if name:find('lazygit') then
-      prefix = state.icons.git.git
+      prefix = config.icons.git.git
     end
     if name:find('claude') then
-      prefix = state.icons.agent
+      prefix = config.icons.agent
     end
 
     if i > 1 then

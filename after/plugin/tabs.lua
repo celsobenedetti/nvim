@@ -10,6 +10,7 @@ vim.api.nvim_create_user_command('TabRename', function(opts)
   lib.tab.rename(opts.args)
 end, { nargs = '?' })
 
+
 local group = vim.api.nvim_create_augroup('homegrown_tabs', { clear = true })
 for _, event in ipairs({ 'TabNew', 'TabClosed', 'WinEnter', 'BufEnter', 'BufWinEnter', 'TermOpen' }) do
   vim.api.nvim_create_autocmd(event, {

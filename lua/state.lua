@@ -1,54 +1,26 @@
---- Single source of truth for internal app state/config, exposed globally as
---- `state` (see init/globals.lua) instead of a per-file `require('state')` call.
+--- Global source of truth for internal app state.
 ---
---- vim.g is reserved strictly for values a plugin or Vimscript actually reads
---- directly from that namespace (an external contract) — e.g. mapleader,
---- clipboard, db_ui_use_nerd_fonts. Everything else that used to live in
---- vim.g out of habit belongs here instead.
----
---- Only put read-at-or-near-startup config/data here. A value used by
---- exactly one file should just stay local to that file.
 ---@class State
 ---@field colors table
----@field icons table
----@field hl table
 ---@field claude_bufnr number
 ---@field opencode_bufnr number
 ---@field toggle_term_bufnr number
----@field statusline boolean
----@field statusline_show_filepath boolean
----@field statusline_show_position boolean
----@field statusline_show_time boolean
 ---@field recording_macro boolean
 ---@field time string?
 ---@field branch_commits_ahead_of_origin number?
 ---@field branch_commits_behind_origin number?
 ---@field NamedTabs string?
----@field autoformat boolean
----@field completion boolean
----@field treesitter table
----@field lsp boolean
----@field supermaven boolean
 ---@field zen_mode boolean
----@field dials_by_ft table
----@field eslint_autoformat boolean
----@field close_with_q string[]
----@field colorcolumn number
----@field incline boolean
----@field dirs table
----@field env table
----@field root table
----@field notes_tabname string
----@field ignore table
----@field web table
----@field cmd table
 ---@field capture boolean
 ---@field org_current_task string?
----@field overseer table
----@field lazy_nvim_config table
----@field keys table<string, string>
 ---@field insert_when_entering_terminal boolean
----@field performance boolean?
-local M = {}
+local M = {
+  lsp = true,
+  autoformat = true,
+  completion = true,
+  statusline_show_filepath = true,
+  statusline_show_position = false,
+  statusline_show_time = false
+}
 
 return M

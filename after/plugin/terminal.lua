@@ -39,9 +39,9 @@ local function toggle_terminal()
   vim.cmd('botright sp | b' .. state.toggle_term_bufnr)
   vim.cmd.resize(target_height)
 end
-vim.keymap.set('n', state.keys['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
+vim.keymap.set('n', config.keys['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
 
-vim.keymap.set('t', state.keys['<C-/>'], function()
+vim.keymap.set('t', config.keys['<C-/>'], function()
   if vim.api.nvim_get_current_buf() == state.toggle_term_bufnr then
     vim.api.nvim_input('<C-\\><C-n><C-w>c')
   end

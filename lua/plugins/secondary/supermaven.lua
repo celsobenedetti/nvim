@@ -3,7 +3,7 @@ return {
 
     'supermaven-inc/supermaven-nvim',
     event = 'InsertEnter',
-    enabled = state.supermaven,
+    enabled = config.supermaven,
     cmd = { 'SupermavenUseFree', 'SupermavenToggle' },
     opts = {
       keymaps = {

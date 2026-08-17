@@ -47,7 +47,7 @@ return {
       { '[g', ':Gitsigns prev_hunk<CR>', desc = 'Prev git diff hunk' },
       { ']g', ':Gitsigns next_hunk<CR>', desc = 'Next git diff hunk' },
 
-      map('n', '<leader>gid', function()
+      vim.keymap.set('n', '<leader>gid', function()
         local gs = package.loaded.gitsigns
         gs.toggle_word_diff()
         gs.toggle_linehl()
