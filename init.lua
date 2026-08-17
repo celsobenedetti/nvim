@@ -20,7 +20,11 @@ require('lazy').setup({
       },
     },
   },
-  change_detection = { notify = false },
+  -- disabled: polls every file under lua/plugins/** every 2s and, on change,
+  -- synchronously reloads all plugin specs on the main loop. Editing any
+  -- plugin config file while a terminal-backed UI (fzf-lua, etc.) is open
+  -- stalls the event loop mid-redraw and corrupts its screen buffer.
+  change_detection = { enabled = false },
   defaults = {
     lazy = false,
     version = false, -- always use the latest git commit
