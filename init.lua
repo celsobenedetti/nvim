@@ -4,15 +4,13 @@ require('lazy').setup({
   spec = {
     { import = 'plugins' },
     { import = 'plugins.secondary' },
-    --
 
     { 'neovim/nvim-lspconfig' }, -- install lspconfig through lazy.nvim
     { 'wakatime/vim-wakatime' }, -- code time tracking goodness
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } }, -- json/yaml schema store
 
-    -- lua lsp intellisense for neovim config
     {
-      'folke/lazydev.nvim',
+      'folke/lazydev.nvim', -- lua lsp intellisense for neovim config
       ft = { 'lua' },
       opts = {
         library = {

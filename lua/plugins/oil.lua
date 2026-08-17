@@ -36,7 +36,7 @@ return {
         winbar = '%!v:lua.get_oil_winbar()',
       },
     })
-    vim.keymap.set('n', vim.g.keys['<C-S-E>'], ':Oil .<cr>', { desc = 'oil: Open parent directory' })
+    vim.keymap.set('n', vim.g.keys['<C-S-E>'], ':Oil<cr>', { desc = 'oil: Open parent directory' })
     vim.keymap.set('n', '-', ':Oil<cr>', { desc = 'oil: Open parent directory' })
   end,
   dependencies = { { 'nvim-mini/mini.icons', opts = {} } },
