@@ -7,3 +7,5 @@ require('init.lazy')
 require('init.colors')
 require('init.globals')
 require('init.options')
+
+require('init.remote_clipboard').setup()
