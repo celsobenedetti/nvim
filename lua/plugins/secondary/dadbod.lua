@@ -28,7 +28,7 @@ return {
         vim.cmd.tabnew()
         vim.cmd('DBUI')
         tabname = state.icons.db .. tabname
-        require('lib.tab').rename(tabname)
+        lib.tab.rename(tabname)
       end, { nargs = 1 })
 
       -- vim.cmd.cnoreabbrev('db Db')

@@ -3,7 +3,7 @@
 
 return {
   root_dir = function(bufnr, on_dir)
-    if require('lib.cwd').matches(state.dirs.disable_eslint_lsp) then
+    if lib.cwd.matches(state.dirs.disable_eslint_lsp) then
       return
     end
     local root_markers = { 'package.json', 'pnpm-lock.yaml', '.git' }

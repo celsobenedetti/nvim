@@ -1,4 +1,4 @@
-local cwd = require('lib.cwd')
+local cwd = lib.cwd
 
 return {
   'stevearc/conform.nvim',

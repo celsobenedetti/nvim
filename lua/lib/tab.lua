@@ -180,7 +180,7 @@ M.consume_next_name = function()
 end
 
 ---Render the tabline (install via
----`vim.o.tabline = "%!v:lua.require('lib.tab').render()"`).
+---`vim.o.tabline = "%!v:lua.lib.tab.render()"`).
 ---@return string
 M.render = function()
   ensure_loaded()

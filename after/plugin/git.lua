@@ -53,7 +53,7 @@ local keymaps = function()
   end, { desc = 'git: git add -p current file' })
 
   map('n', '<leader>gs', function()
-    local tab = require('lib.tab')
+    local tab = lib.tab
     if tab.find('git status') then
       vim.cmd('tabnext')
       return
@@ -100,7 +100,7 @@ local keymaps = function()
       end,
       confirm = function(picker, item)
         picker:close()
-        require('lib.tab').set_next_name(string.format('%sgit diff %s HEAD', state.icons.git.diff, item.text))
+        lib.tab.set_next_name(string.format('%sgit diff %s HEAD', state.icons.git.diff, item.text))
         vim.cmd(string.format('CodeDiff %s HEAD', item.text))
       end,
     })

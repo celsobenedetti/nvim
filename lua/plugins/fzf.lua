@@ -5,7 +5,7 @@ end
 
 -- `:e` pseudo-profile winopts, shared with other modules (see lib/fzf.lua for
 -- why this can't be a real fzf-lua `profile` string).
-local e = require('lib.fzf').e
+local e = lib.fzf.e
 
 local function notes()
   fzf_lua().files(e({ cwd = '~/notes' }))

@@ -1,4 +1,4 @@
-local strings = require('lib.strings')
+local strings = lib.strings
 
 ---@type table<string, string|function>
 local regex_redirects = {
@@ -84,7 +84,7 @@ M.normal = function()
 end
 
 M.visual = function()
-  local s = require('lib.visual').get_selection()
+  local s = lib.visual.get_selection()
   if s == '' or s == nil then
     return
   end

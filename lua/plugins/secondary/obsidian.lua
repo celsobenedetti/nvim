@@ -71,7 +71,7 @@ return {
             cwd = vault,
             title = icons .. 'search through notes',
             confirm = function(_, item)
-              require('lib.notes').focus_or_create_notes_tab(function()
+              lib.notes.focus_or_create_notes_tab(function()
                 vim.cmd('e ' .. item.file)
               end)
             end,

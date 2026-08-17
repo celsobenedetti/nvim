@@ -3,7 +3,7 @@ local function fzf()
   return require('fzf-lua')
 end
 
-local tab = require('lib.tab')
+local tab = lib.tab
 
 --- Open a CodeDiff of `commit` against its parent and name the tab.
 ---@param commit string short/long sha

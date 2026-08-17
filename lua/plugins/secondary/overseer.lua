@@ -133,7 +133,7 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         pattern = 'OverseerOutput',
         callback = function()
-          vim.api.nvim_buf_set_keymap(0, 'n', 'gf', ':lua require("lib.fs").open_file_in("top_split")<CR>', {
+          vim.api.nvim_buf_set_keymap(0, 'n', 'gf', ':lua lib.fs.open_file_in("top_split")<CR>', {
             desc = 'overseer: open file in top split',
           })
         end,

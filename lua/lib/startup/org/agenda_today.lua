@@ -1,4 +1,4 @@
-require('lib.notes').focus_or_create_notes_tab(function()
+lib.notes.focus_or_create_notes_tab(function()
   vim.cmd(':Org agenda T')
   vim.schedule(function()
     vim.cmd('wincmd k | close')

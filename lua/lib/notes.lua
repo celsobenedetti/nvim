@@ -1,6 +1,6 @@
 ---@class LibNotes
 local M = {}
-local tab = require('lib.tab')
+local tab = lib.tab
 
 --- @param fn function? to be called after tab is created or focus
 M.focus_or_create_notes_tab = function(fn)

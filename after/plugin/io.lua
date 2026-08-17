@@ -1,4 +1,4 @@
-if not require('lib.cwd').matches({ 'work/io' }) then
+if not lib.cwd.matches({ 'work/io' }) then
   return
 end
 
