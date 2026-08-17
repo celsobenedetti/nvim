@@ -7,10 +7,7 @@
 --- 2. Path is relative to cwd when the file lives under it, absolute otherwise.
 --- 3. ft icons resolved via mini.icons.
 
-local lib = {
-  term = require('lib.term'),
-  strings = require('lib.strings'),
-}
+local lib = require('lib')
 
 local SEP = ((vim.g.icons or {}).separator or {}).right or '  '
 

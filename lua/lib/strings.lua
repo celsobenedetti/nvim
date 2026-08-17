@@ -1,4 +1,5 @@
 -- module: strings.lua
+---@class LibStrings
 local M = {}
 
 -- remove leading and trailing whitespace

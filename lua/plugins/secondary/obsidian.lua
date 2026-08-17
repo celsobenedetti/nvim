@@ -1,8 +1,4 @@
-local lib = {
-  cwd = require('lib.cwd'),
-  strings = require('lib.strings'),
-  visual = require('lib.visual'),
-}
+local lib = require('lib')
 
 local function create_note_from_selection()
   if vim.bo.filetype ~= 'markdown' then

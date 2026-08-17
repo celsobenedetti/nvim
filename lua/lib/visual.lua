@@ -1,3 +1,4 @@
+---@class LibVisual
 local M = {}
 
 local api = vim.api

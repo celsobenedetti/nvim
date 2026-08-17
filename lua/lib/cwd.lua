@@ -1,3 +1,4 @@
+---@class LibCwd
 local M = {}
 
 --- returns true if cwd matches any of the paths

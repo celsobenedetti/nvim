@@ -1,3 +1,4 @@
+---@class LibCmdline
 local M = {}
 
 -- clear cmdline after 5s

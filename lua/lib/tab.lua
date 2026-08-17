@@ -2,10 +2,6 @@
 ---@class LibTab
 local M = {}
 
-local lib = {
-  strings = require('lib.strings'),
-}
-
 ---@type table<number,string> tabpage id -> explicit name
 local names = {}
 

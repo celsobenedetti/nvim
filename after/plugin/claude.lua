@@ -1,6 +1,4 @@
-local lib = {
-  term = require('lib.term'),
-}
+local lib = require('lib')
 vim.g.claude_bufnr = 0
 
 local function is_claude_buf(buf)

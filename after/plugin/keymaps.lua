@@ -1,12 +1,4 @@
-local lib = {
-  org = require('lib.orgmode'),
-  fzf = require('lib.fzf'),
-  cwd = require('lib.cwd'),
-  term = require('lib.term'),
-  tmux = require('lib.tmux'),
-  cmdline = require('lib.cmdline'),
-  notes = require('lib.notes'),
-}
+local lib = require('lib')
 
 local should_quit = function()
   if not lib.term.is_term() then
@@ -41,7 +33,7 @@ map(
     if should_write() then
       vim.cmd('silent w!')
     end
-    vim.api.nvim_feedkeys(Keys('<esc>'), 'n', false)
+    vim.api.nvim_feedkeys(lib.keys.termcodes('<esc>'), 'n', false)
   end,
   { desc = 'Save File' }
 )
@@ -170,7 +162,7 @@ vim.keymap.set('n', 'ZZ', function()
   Snacks.notify.warn("Please don't use ZZ")
 end, { silent = true, desc = 'Disable ZZ' })
 
-vim.keymap.set('n', '<leader>gn', lib.org.goto_current_task, { desc = 'org: goto current task' })
+vim.keymap.set('n', '<leader>gn', lib.orgmode.goto_current_task, { desc = 'org: goto current task' })
 
 -- Insert mode: Ctrl+B to go back one character (shell-like behavior)
 map('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })

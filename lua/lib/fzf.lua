@@ -1,3 +1,4 @@
+---@class LibFzf
 local M = {}
 
 --- search entries with fzf-lua

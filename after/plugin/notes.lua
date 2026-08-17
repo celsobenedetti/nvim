@@ -1,7 +1,4 @@
-local lib = {
-  notes = require('lib.notes'),
-  fzf = require('lib.fzf'),
-}
+local lib = require('lib')
 
 vim.keymap.set('n', vim.g.keys['<C-S-N>'], function()
   lib.notes.focus_or_create_notes_tab(function()

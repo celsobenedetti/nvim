@@ -1,3 +1,4 @@
+---@class LibUtils
 local M = {}
 
 M.statusline = function()

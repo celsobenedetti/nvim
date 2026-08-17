@@ -1,9 +1,6 @@
 vim.g.insert_when_entering_terminal = true
 
-local lib = {
-  term = require('lib.term'),
-  buffers = require('lib.buffers'),
-}
+local lib = require('lib')
 
 --- @module 'sticky terminal'
 --- upsert terminal in current window (resume if available, create new otherwise)

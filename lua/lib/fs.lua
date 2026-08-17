@@ -1,6 +1,8 @@
 local cwd = require('lib.cwd')
 local strings = require('lib.strings')
+local keys = require('lib.keys')
 
+---@class LibFs
 local M = {}
 
 --- @return snacks.picker.finder.Item[]
@@ -64,11 +66,28 @@ end
 
 M.rm = function()
   os.remove(vim.fn.expand('%'))
-  vim.api.nvim_feedkeys(Keys(':bdelete<cr>'), 'n', true)
+  vim.api.nvim_feedkeys(keys.termcodes(':bdelete<cr>'), 'n', true)
 end
 
 M.is_current_buffer_a_file = function()
   return vim.fn.expand('%'):match('/')
+end
+
+---Open the file under the cursor at a specific location.
+---@param location? 'top_split'|'first_tab'
+M.open_file_in = function(location)
+  local file = vim.fn.expand('<cfile>')
+  if file == '' then
+    return
+  end
+
+  if location == 'top_split' then
+    vim.cmd('wincmd k')
+  elseif location == 'first_tab' then
+    vim.cmd('tabfirst')
+  end
+
+  vim.cmd('edit ' .. vim.fn.fnameescape(file))
 end
 
 return M

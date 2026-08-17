@@ -1,3 +1,4 @@
+---@class LibTmux
 local M = {}
 
 M.active = function()

@@ -1,3 +1,4 @@
+---@class LibFold
 local M = {}
 
 --- if in column 0,  fold with `zc`
