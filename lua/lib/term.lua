@@ -36,6 +36,9 @@ local M = {
       buffer = vim.api.nvim_get_current_buf()
     end
 
+    if not vim.api.nvim_buf_is_valid(buffer) then
+      return true
+    end
     if not is_term(buffer) then
       Snacks.notify.warn('Buffer is not terminal')
       return true
