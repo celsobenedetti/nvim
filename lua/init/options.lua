@@ -10,10 +10,48 @@ vim.o.cmdheight = 1 -- Height of the command bar
 vim.o.relativenumber = false
 vim.g.colorcolumn = 80 -- column highlighted by the colorcolumn toggle (<leader>u|)
 
-vim.g.env = require('config.env')
+vim.g.env = {
+  WORK = os.getenv('WORK') or '',
+  work = {
+    jira = os.getenv('WORK_JIRA') or '',
+  },
+  JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN') or '',
+
+  HOME = os.getenv('HOME') or '',
+  quartz = 'http://localhost:42069',
+
+  notes = {
+    NOTES = os.getenv('NOTES') or '',
+    OBSIDIAN_VAULT = os.getenv('OBSIDIAN_VAULT') or '',
+    OBSIDIAN_VAULT_WORK = os.getenv('OBSIDIAN_VAULT_WORK') or '',
+    OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
+    ORG = os.getenv('ORG') or '',
+    PROJECTS = os.getenv('PROJECTS') or '',
+    ARCHIVES = os.getenv('ARCHIVES') or '',
+
+    ASSETS_DIR = os.getenv('ASSETS_DIR') or '',
+    ASSETS = os.getenv('ASSETS') or '',
+    ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
+
+    GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
+  },
+  org = {
+    INBOX = os.getenv('ORG_INBOX') or '',
+    MAIN = os.getenv('ORG_MAIN') or '',
+    WORK = os.getenv('ORG_WORK') or '',
+    REFERENCES = os.getenv('ORG_REFERENCES') or '',
+    CALENDAR = os.getenv('ORG_CALENDAR') or '',
+    PURCHASES = os.getenv('ORG_PURCHASES') or '/home/celso/notes/0 org/Purchases.org',
+  },
+}
 
 -- table extend dirs
-vim.g.dirs = vim.tbl_deep_extend('force', require('config.dirs'), {
+vim.g.dirs = {
+  work = {
+    edge_server = os.getenv('EDGE_SERVER') or '',
+    airflow_pipeline = os.getenv('AIRFLOW_PIPELINE') or '',
+    io = '/home/celso/work/io',
+  },
   format_with_eslint = {
     'ecommerce',
   },
@@ -26,7 +64,7 @@ vim.g.dirs = vim.tbl_deep_extend('force', require('config.dirs'), {
   dont_format = {
     '.local/share/nvim/lazy', -- ~/.local/share/nvim/lazy
   },
-})
+}
 
 vim.g.icons = {
   lsp = '', -- ',
@@ -93,10 +131,6 @@ vim.g.ignore = {
   explorer = {
     '*.org_archive',
   },
-}
-
-vim.g.web = {
-  jira = vim.g.env.work.jira or '',
 }
 
 --- filsubtextetypes to close with q
@@ -209,3 +243,7 @@ vim.opt.virtualedit = 'block' -- Allow cursor to move where there is no text in 
 vim.opt.wildmode = 'longest:full,full' -- Command-line completion mode
 vim.opt.winminwidth = 5 -- Minimum window width
 vim.opt.wrap = false -- Disable line wrap
+
+vim.g.web = {
+  jira = vim.g.env.work.jira or '',
+}
