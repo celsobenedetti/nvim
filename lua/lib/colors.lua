@@ -1,6 +1,9 @@
 local M = {}
 
 local function hex_to_rgb(hex)
+  if not hex then
+    return 0, 0, 0
+  end
   hex = hex:gsub('#', '')
   return tonumber(hex:sub(1, 2), 16), tonumber(hex:sub(3, 4), 16), tonumber(hex:sub(5, 6), 16)
 end
