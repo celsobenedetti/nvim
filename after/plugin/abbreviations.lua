@@ -24,6 +24,7 @@ local abbreviations = {
   Tab = 'tab',
   cfilter = 'Cfilter',
   grep = 'Grep',
+  fd = 'Fd',
 }
 
 if vim.env.ORG_INBOX then
