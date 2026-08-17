@@ -1,3 +1,44 @@
+local treesitter = {
+  --- filetypes to highlight with treesitter
+  highlight = {
+    'gitcommit',
+    'go',
+    'javascript',
+    'json',
+    'jsx',
+    'lua',
+    'markdown',
+    'python',
+    'sql',
+    'tsx',
+    'typescript',
+    'vue',
+    'yaml',
+  },
+}
+
+treesitter.ensure_installed = vim.list_extend(vim.deepcopy(treesitter.highlight), {
+  'bash',
+  'c',
+  'diff',
+  'html',
+  'jsdoc',
+  'lua',
+  'luadoc',
+  'luap',
+  'markdown_inline',
+  'printf',
+  'python',
+  'query',
+  'regex',
+  'sql',
+  'toml',
+  'vim',
+  'vimdoc',
+  'xml',
+})
+
+
 --- Global source of truth for all read-only configuration.
 ---
 ---@class Config
@@ -10,11 +51,13 @@ local M = {
   supermaven = true,
   eslint_autoformat = true,
   statusline = true,
-
   colorcolumn = 80, -- column highlighted by the colorcolumn toggle (<leader>u|)
+
+  treesitter = treesitter,
+
   icons = {
-    lsp = '',       -- ',
-    format = '',    -- ' ',
+    lsp = '',    -- ',
+    format = '', -- ' ',
     notes = ' ',
     clock = ' ',
     db = ' ',
@@ -175,6 +218,7 @@ local M = {
     },
   },
 }
+
 
 local keys = {
   ['<C-S-g>'] = '<C-S-g>',

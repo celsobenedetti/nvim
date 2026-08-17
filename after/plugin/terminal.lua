@@ -56,16 +56,14 @@ vim.api.nvim_create_autocmd('BufWinEnter',
     desc = 'terminal: insert mode when entering terminal window',
     pattern = 'term://*',
     group = augroup,
-    callback = lib
-        .term.startinsert,
+    callback = lib.term.startinsert,
   })
 vim.api.nvim_create_autocmd('WinEnter',
   {
     desc = 'terminal: insert mode when entering terminal window',
     pattern = 'term://*',
     group = augroup,
-    callback = lib
-        .term.startinsert,
+    callback = lib.term.startinsert,
   })
 -- stylua: ignore end
 
@@ -109,7 +107,7 @@ vim.api.nvim_create_autocmd('ExitPre', {
 
     local busy_terms = {}
     for _, buf in ipairs(term_bufs) do
-      if lib.terminal_is_available(buf) then
+      if lib.term.terminal_is_available(buf) then
         vim.api.nvim_buf_delete(buf, { force = true })
       else
         table.insert(busy_terms, buf)
