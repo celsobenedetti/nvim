@@ -21,7 +21,8 @@ map('n','<leader>gd', function()vim.cmd('vertical Git diff ' .. main_branch() ..
   -- stylua: ignore end
 
   map('n', 'gC', function()
-    local result = vim.system({ 'git', 'diff', '--staged', '--name-only' }):wait()
+    local cwd = vim.fn.expand('%:p:h')
+    local result = vim.system({ 'git', 'diff', '--staged', '--name-only' }, { cwd = cwd }):wait()
     local has_staged = result.stdout ~= nil and result.stdout ~= ''
     local cmd = 'tab Git commit'
     if not has_staged then
