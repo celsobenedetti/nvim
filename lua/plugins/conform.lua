@@ -4,7 +4,7 @@ return {
   'stevearc/conform.nvim',
   lazy = false,
   enabled = function()
-    return not cwd.matches(state.dirs.dont_format)
+    return not cwd.matches(config.dirs.dont_format)
   end,
   keys = {
     {
@@ -19,7 +19,7 @@ return {
   config = function()
     -- BUG: this only runs when neovim starts up, if we change the dir later, this config is already set
     local use_eslint = false
-    for _, project in ipairs(state.dirs.format_with_eslint) do
+    for _, project in ipairs(config.dirs.format_with_eslint) do
       if cwd.matches({ project }) then
         use_eslint = true
         break

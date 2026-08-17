@@ -29,10 +29,10 @@ vim.diagnostic.config({
   signs = {
     active = true,
     text = {
-      [vim.diagnostic.severity.ERROR] = state.icons.diagnostics.error,
-      [vim.diagnostic.severity.WARN] = state.icons.diagnostics.warn,
-      [vim.diagnostic.severity.INFO] = state.icons.diagnostics.info,
-      [vim.diagnostic.severity.HINT] = state.icons.diagnostics.hint,
+      [vim.diagnostic.severity.ERROR] = config.icons.diagnostics.error,
+      [vim.diagnostic.severity.WARN] = config.icons.diagnostics.warn,
+      [vim.diagnostic.severity.INFO] = config.icons.diagnostics.info,
+      [vim.diagnostic.severity.HINT] = config.icons.diagnostics.hint,
     },
   },
 })
@@ -42,9 +42,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
   callback = function(event)
     -- map('n', 'gi', vim.lsp.buf.implementation, { desc = 'LSP: Goto Implementation' }) -- NOTE: let's use default gri instead
-    map('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP: Goto Definition' })
-    map('n', 'gD', vim.lsp.buf.declaration, { desc = 'LSP: Goto Declaration' })
-    map('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'LSP: insert mode signature help' })
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP: Goto Definition' })
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'LSP: Goto Declaration' })
+    vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'LSP: insert mode signature help' })
   end,
 })
 
@@ -60,10 +60,10 @@ local diagnostic_goto = function(next, severity)
   end
 end
 
-map('n', '<leader>e', vim.diagnostic.open_float, { desc = 'LSP: Line Diagnostics' })
-map('n', ']d', diagnostic_goto(true), { desc = 'LSP: Next Diagnostic' })
-map('n', '[d', diagnostic_goto(false), { desc = 'LSP: Prev Diagnostic' })
-map('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'LSP: Next Error' })
-map('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'LSP: Prev Error' })
-map('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'LSP: Next Warning' })
-map('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'LSP: Prev Warning' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'LSP: Line Diagnostics' })
+vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'LSP: Next Diagnostic' })
+vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'LSP: Prev Diagnostic' })
+vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'LSP: Next Error' })
+vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'LSP: Prev Error' })
+vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'LSP: Next Warning' })
+vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'LSP: Prev Warning' })

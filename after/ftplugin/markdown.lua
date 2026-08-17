@@ -81,7 +81,7 @@ local function setup_markdown_hl()
 end
 
 -- follow wiki links with enter (only in notes dir)
-local notes = state.env and state.env.notes
+local notes = config.env and config.env.notes
 if notes then
   local filepath = vim.fn.expand('%:p')
   if filepath:find(notes.NOTES, 1, true) == 1 then

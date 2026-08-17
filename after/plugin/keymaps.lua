@@ -19,7 +19,7 @@ local function should_write()
 end
 
 -- keymap: C-s Save file
-map(
+vim.keymap.set(
   {
     'x',
     'n',
@@ -36,7 +36,7 @@ map(
   { desc = 'Save File' }
 )
 
-map('n', '<C-c>', function()
+vim.keymap.set('n', '<C-c>', function()
   if should_write() then
     vim.cmd('silent w')
   end
@@ -46,38 +46,38 @@ map('n', '<C-c>', function()
 end, { desc = 'C-c: write and quit' })
 
 -- lazy
-map('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy' })
+vim.keymap.set('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
 -- tabs
-map({ 'n', 't', 'i' }, ']<tab>', function()
+vim.keymap.set({ 'n', 't', 'i' }, ']<tab>', function()
   vim.cmd('tabnext')
 end, { desc = 'tab: next' })
-map({ 'n', 't', 'i' }, '[<tab>', function()
+vim.keymap.set({ 'n', 't', 'i' }, '[<tab>', function()
   vim.cmd('tabprevious')
 end, { desc = 'tab: previous' })
 
-map({ 'n', 't', 'i' }, state.keys['<C-tab>'], function()
+vim.keymap.set({ 'n', 't', 'i' }, config.keys['<C-tab>'], function()
   vim.cmd('tabnext')
 end, { desc = 'tab: next (ctrl)' })
-map({ 'n', 't', 'i' }, state.keys['<C-S-tab>'], function()
+vim.keymap.set({ 'n', 't', 'i' }, config.keys['<C-S-tab>'], function()
   vim.cmd('tabprevious')
 end, { desc = 'tab: previous (ctrl)' })
 
-map('c', '', '', { desc = 'cmd: edit in prompt (similar behavior to <C-f>)' })
-map('c', '<C-p>', '<Up>', { desc = 'cmd: previous command' })
-map('c', '<C-n>', '<Down>', { desc = 'cmd: next command' })
+vim.keymap.set('c', '', '', { desc = 'cmd: edit in prompt (similar behavior to <C-f>)' })
+vim.keymap.set('c', '<C-p>', '<Up>', { desc = 'cmd: previous command' })
+vim.keymap.set('c', '<C-n>', '<Down>', { desc = 'cmd: next command' })
 
 -- better j/k
 local jump = lib.jump
-map('n', 'k', jump.up)
-map('n', 'j', jump.down)
+vim.keymap.set('n', 'k', jump.up)
+vim.keymap.set('n', 'j', jump.down)
 
 -- h/l with folding
 local fold = lib.fold
-map('n', 'h', fold.h, { desc = 'h: move left or fold' })
-map('n', 'l', fold.l, { desc = 'l: move right and unfold' })
+vim.keymap.set('n', 'h', fold.h, { desc = 'h: move left or fold' })
+vim.keymap.set('n', 'l', fold.l, { desc = 'l: move right and unfold' })
 
-map('n', '<leader>R', function()
+vim.keymap.set('n', '<leader>R', function()
   local fname = vim.fn.expand('%:p')
   if fname == '' then
     return
@@ -91,16 +91,16 @@ end, { desc = 'write buffer if not outdated' })
 
 -- fs
 local fs = lib.fs
-map('n', '<leader>mv', fs.mv_file, { desc = 'snacks: move file of current buffer to dir' })
-map('n', '<leader>fd', fs.open_dir_in_explorer, { desc = 'snacks: open dir in explorer' })
+vim.keymap.set('n', '<leader>mv', fs.mv_file, { desc = 'snacks: move file of current buffer to dir' })
+vim.keymap.set('n', '<leader>fd', fs.open_dir_in_explorer, { desc = 'snacks: open dir in explorer' })
 
-map({ 'i', 'n', 't', 's' }, '<esc>', function()
+vim.keymap.set({ 'i', 'n', 't', 's' }, '<esc>', function()
   vim.cmd('noh')
   lib.cmdline.clear()
   return '<esc>'
 end, { expr = true, desc = 'Escape and Clear hlsearch' })
 
-map('n', 'gy', function()
+vim.keymap.set('n', 'gy', function()
   local file = vim.fn.expand('%:p')
   file = file:gsub(' ', '\\ ')
   vim.fn.setreg('+', file)
@@ -111,7 +111,7 @@ map('n', 'gy', function()
   })
 end, { desc = 'Copy file path to clipboard' })
 
-map('v', 'gy', function()
+vim.keymap.set('v', 'gy', function()
   local file = vim.fn.expand('%:.')
   file = file:gsub(' ', '\\ ')
   local start_line = vim.fn.line('v')
@@ -138,8 +138,8 @@ local function grep_word()
     fzf.grep_cword()
   end
 end
-map({ 'n', 'x', 'v' }, '<leader>sw', grep_word, { desc = 'fzf: Visual selection or word' })
-map({ 'n', 'x', 'v' }, '<leader>sW', grep_word, { desc = 'fzf: Visual selection or word' })
+vim.keymap.set({ 'n', 'x', 'v' }, '<leader>sw', grep_word, { desc = 'fzf: Visual selection or word' })
+vim.keymap.set({ 'n', 'x', 'v' }, '<leader>sW', grep_word, { desc = 'fzf: Visual selection or word' })
 
 -- gx
 local gx = lib.gx
@@ -149,11 +149,11 @@ vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 -- orgmode
 vim.keymap.set('n', '<leader>in', function()
   lib.notes.focus_or_create_notes_tab(function()
-    vim.cmd.e(state.env.org.INBOX)
+    vim.cmd.e(config.env.org.INBOX)
   end)
 end, { desc = 'org: refile file' })
-vim.keymap.set('n', '<leader>oo', ':e' .. state.env.org.MAIN .. '<cr>', { desc = 'org: actions file' })
-vim.keymap.set('n', '<leader>ow', ':e' .. state.env.org.WORK .. '<cr>', { desc = 'org: work file' })
+vim.keymap.set('n', '<leader>oo', ':e' .. config.env.org.MAIN .. '<cr>', { desc = 'org: actions file' })
+vim.keymap.set('n', '<leader>ow', ':e' .. config.env.org.WORK .. '<cr>', { desc = 'org: work file' })
 vim.keymap.set('n', '<leader>occ', ':Org capture c<cr>', { desc = 'org: capture c' })
 
 vim.keymap.set('n', 'ZZ', function()
@@ -163,7 +163,7 @@ end, { silent = true, desc = 'Disable ZZ' })
 vim.keymap.set('n', '<leader>gn', lib.orgmode.goto_current_task, { desc = 'org: goto current task' })
 
 -- Insert mode: Ctrl+B to go back one character (shell-like behavior)
-map('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
+vim.keymap.set('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
 
 vim.keymap.set('n', '<leader>rg', function()
   local cwd = lib.cwd.cwd()
@@ -206,6 +206,6 @@ vim.keymap.set('n', '<leader>rg', function()
     cwd = cwd,
   })
 end, { desc = 'rg current dir' })
-vim.keymap.set('n', state.keys['<C-S-g>'], function()
+vim.keymap.set('n', config.keys['<C-S-g>'], function()
   require('fzf-lua').live_grep()
 end)

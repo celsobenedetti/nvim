@@ -90,7 +90,7 @@ local colorschemes_to_highlight = {
 local TMP_CURRENT_TASK_FILE = '/tmp/org_current_task'
 
 local agenda_files = {
-  state.env.notes.ORG .. '/**/*',
+  config.env.notes.ORG .. '/**/*',
 }
 
 local function set_highlights()
@@ -168,7 +168,7 @@ return {
       {
         '<leader>ap',
         function()
-          lib.org_fzf.refile_to(state.env.org.REFERENCES .. '/datalake.org', 'prompts')
+          lib.org_fzf.refile_to(config.env.org.REFERENCES .. '/datalake.org', 'prompts')
         end,
         desc = 'org: refile heading to prompts',
       },
@@ -198,7 +198,7 @@ return {
       require('orgmode').setup({
         org_agenda_files = agenda_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
-        org_default_notes_file = state.env.org.INBOX,
+        org_default_notes_file = config.env.org.INBOX,
         org_priority_highest = 'A',
         org_priority_default = 'C',
         org_priority_lowest = 'C',
@@ -219,7 +219,7 @@ return {
           c = {
             description = 'quick capture',
             template = '* %?\n%u',
-            target = state.env.org.INBOX,
+            target = config.env.org.INBOX,
           },
         },
 

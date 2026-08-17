@@ -36,9 +36,8 @@ return {
         winbar = '%!v:lua.get_oil_winbar()',
       },
     })
-    vim.keymap.set('n', state.keys['<C-S-E>'], ':Oil<cr>', { desc = 'oil: Open parent directory' })
+    vim.keymap.set('n', config.keys['<C-S-E>'], ':Oil<cr>', { desc = 'oil: Open parent directory' })
     vim.keymap.set('n', '-', ':Oil<cr>', { desc = 'oil: Open parent directory' })
-    vim.keymap.set('n', '_', ':Oil .<cr>', { desc = 'oil: Open parent directory' })
   end,
   dependencies = { { 'nvim-mini/mini.icons', opts = {} } },
   lazy = false, -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.

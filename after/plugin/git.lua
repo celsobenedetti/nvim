@@ -8,16 +8,17 @@ end
 
 local keymaps = function()
   -- stylua: ignore start
-  map('n', 'gs', function() require("fzf-lua").git_status(lib.fzf.e()) end, { desc = 'git: (snacks) git Status' })
-  map('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
-  map('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
-  map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
+  vim.keymap.set('n', 'gs', function() require("fzf-lua").git_status(lib.fzf.e()) end,
+    { desc = 'git: (snacks) git Status' })
+  vim.keymap.set('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
+  vim.keymap.set('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
+  vim.keymap.set('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
 
-  map('n', '<leader>gd', function() vim.cmd('vertical Git diff ' .. main_branch() .. ' -- %') end,
+  vim.keymap.set('n', '<leader>gd', function() vim.cmd('vertical Git diff ' .. main_branch() .. ' -- %') end,
     { desc = "git: Git diff main -- %" })
   -- stylua: ignore end
 
-  map('n', 'gC', function()
+  vim.keymap.set('n', 'gC', function()
     local cwd = vim.fn.expand('%:p:h')
     local result = vim.system({ 'git', 'diff', '--staged', '--name-only' }, { cwd = cwd }):wait()
     local has_staged = result.stdout ~= nil and result.stdout ~= ''
@@ -28,7 +29,7 @@ local keymaps = function()
     vim.cmd(cmd)
   end, { desc = 'git: Git commit (or amend if nothing staged)' })
 
-  map('n', 'ga', function()
+  vim.keymap.set('n', 'ga', function()
     local file = vim.fn.expand('%')
     local hunks = require('gitsigns').get_hunks(0)
 
@@ -52,7 +53,7 @@ local keymaps = function()
     vim.cmd('tab Git add -p %')
   end, { desc = 'git: git add -p current file' })
 
-  map('n', '<leader>gs', function()
+  vim.keymap.set('n', '<leader>gs', function()
     local tab = lib.tab
     if tab.find('git status') then
       vim.cmd('tabnext')
@@ -64,7 +65,7 @@ local keymaps = function()
   end, { desc = 'git: (codediff) git status' })
 
   -- git: CodeDiff with branch picker
-  map('n', '<leader>gD', function()
+  vim.keymap.set('n', '<leader>gD', function()
     local branches = vim.fn.systemlist('git branch -a --sort=-committerdate')
     if vim.v.shell_error ~= 0 then
       Snacks.notify.error('Not a git repository')
@@ -100,13 +101,13 @@ local keymaps = function()
       end,
       confirm = function(picker, item)
         picker:close()
-        lib.tab.set_next_name(string.format('%sgit diff %s HEAD', state.icons.git.diff, item.text))
+        lib.tab.set_next_name(string.format('%sgit diff %s HEAD', config.icons.git.diff, item.text))
         vim.cmd(string.format('CodeDiff %s HEAD', item.text))
       end,
     })
   end, { desc = 'CodeDiff: compare branch with HEAD' })
 
-  vim.keymap.set('n', state.keys['<C-S-O>'], function()
+  vim.keymap.set('n', config.keys['<C-S-O>'], function()
     require('fzf-lua').lsp_document_symbols()
   end)
 end

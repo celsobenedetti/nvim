@@ -8,7 +8,7 @@
 --- 3. ft icons resolved via mini.icons.
 
 
-local SEP = ((state.icons or {}).separator or {}).right or '  '
+local SEP = ((config.icons or {}).separator or {}).right or '  '
 
 -- specify winbar string or function for specific filetypes
 local SPECIAL_FILETYPES = {

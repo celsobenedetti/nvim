@@ -3,7 +3,7 @@ if not lib.cwd.matches({ 'work/io' }) then
 end
 
 vim.api.nvim_create_user_command('IoCrawlers', function()
-  state.overseer.run_tasks({
+  config.overseer.run_tasks({
     { name = 'crawler-diff',        cmd = 'npm', args = { 'run', 'devms', 'crawler-diff' } },
     { name = 'wforge-qans-indexer', cmd = 'npm', args = { 'run', 'devms', 'wforge-qans-indexer' } },
     { name = 'wforge-orchestrator', cmd = 'npm', args = { 'run', 'devms', 'wforge-orchestrator' } },
@@ -12,7 +12,7 @@ vim.api.nvim_create_user_command('IoCrawlers', function()
 end, { desc = 'Run all crawler tasks' })
 
 vim.api.nvim_create_user_command('IoTest', function()
-  state.overseer.run_tasks({
+  config.overseer.run_tasks({
     { name = 'tsc',          cmd = 'pnpm', args = { 'exec', 'tsc' } },
     { name = 'test',         cmd = 'pnpm', args = { 'test' } },
     { name = 'lint:changed', cmd = 'pnpm', args = { 'run', 'lint:changed' } },
@@ -21,7 +21,7 @@ vim.api.nvim_create_user_command('IoTest', function()
 end, { desc = 'Run all crawler tasks' })
 
 vim.api.nvim_create_user_command('IoServers', function()
-  state.overseer.run_tasks({
+  config.overseer.run_tasks({
     { name = 'tsc',       cmd = 'tsc',  args = { '-w' } },
     { name = 'rspack',    cmd = 'pnpm', args = { 'run', 'rspack' } },
     { name = 'devserver', cmd = 'pnpm', args = { 'run', 'devserver' } },

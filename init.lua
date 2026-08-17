@@ -33,7 +33,7 @@ require('lazy').setup({
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update
   },
-  performance = state.lazy_nvim_config.performance,
+  performance = config.lazy_nvim_config.performance,
 })
 
 vim.cmd.packadd('cfilter')

@@ -4,7 +4,7 @@ if colors.omarchy_colorscheme().colorscheme == 'default' then
   return
 end
 vim.api.nvim_set_hl(0, 'Bold', { fg = state.colors.fg, bold = true, cterm = { bold = true } })
-vim.api.nvim_set_hl(0, 'MsgArea', { link = state.hl.text_secondary }) -------- transparency changes -----------
+vim.api.nvim_set_hl(0, 'MsgArea', { link = config.hl.text_secondary }) -------- transparency changes -----------
 
 vim.api.nvim_set_hl(0, 'TextSecondary', { fg = state.colors.secondary or state.colors.fg })
 
@@ -14,7 +14,7 @@ end
 
 
 -- stylua: ignore start
--- vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(state.hl.text.subtext, 'fg') })
+-- vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(config.hl.text.subtext, 'fg') })
 -- vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
 -- vim.api.nvim_set_hl(0, 'TabLineSel', { bg = colors.get_color('StatusLine', 'bg') , bold = true, underline=true})
 vim.api.nvim_set_hl(0, 'NonText', { link = "Comment" })

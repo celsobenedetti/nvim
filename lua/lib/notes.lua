@@ -2,14 +2,16 @@
 local M = {}
 local tab = lib.tab
 
+local TABNAME = config.icons.notes .. 'notes'
+
 --- @param fn function? to be called after tab is created or focus
 M.focus_or_create_notes_tab = function(fn)
-  local tab_id = tab.find(state.notes_tabname)
+  local tab_id = tab.find(TABNAME)
 
   if not tab_id then
     vim.cmd.tabnew()
-    tab.rename(state.notes_tabname)
-    vim.cmd.lcd(state.env.notes.NOTES)
+    tab.rename(TABNAME)
+    vim.cmd.lcd(config.env.notes.NOTES)
     vim.cmd.tabmove('$')
   else
     vim.api.nvim_set_current_win(vim.api.nvim_tabpage_get_win(tab_id))
@@ -21,7 +23,7 @@ M.focus_or_create_notes_tab = function(fn)
 end
 
 M.is_notes_dir = function()
-  return vim.fn.getcwd():find(state.env.notes.NOTES)
+  return vim.fn.getcwd():find(config.env.notes.NOTES)
 end
 
 return M

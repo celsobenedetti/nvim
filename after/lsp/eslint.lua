@@ -3,7 +3,7 @@
 
 return {
   root_dir = function(bufnr, on_dir)
-    if lib.cwd.matches(state.dirs.disable_eslint_lsp) then
+    if lib.cwd.matches(config.dirs.disable_eslint_lsp) then
       return
     end
     local root_markers = { 'package.json', 'pnpm-lock.yaml', '.git' }
@@ -28,7 +28,7 @@ return {
 
     -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
     workingDirectories = { mode = 'auto' },
-    format = state.eslint_autoformat,
+    format = config.eslint_autoformat,
   },
   filetypes = {
     'astro',

@@ -8,12 +8,12 @@ local GIT_TAB_FILETYPES = {
 
 local function default_tabname(ft)
   if ft == 'codediff-history' then
-    return state.icons.git.git .. 'git log'
+    return config.icons.git.git .. 'git log'
   end
   if ft == 'codediff-explorer' then
-    return state.icons.git.diff .. 'git diff'
+    return config.icons.git.diff .. 'git diff'
   end
-  return state.icons.git.git .. 'git status'
+  return config.icons.git.git .. 'git status'
 end
 
 local function augroup(name)
@@ -41,10 +41,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Tresitter Highlight
-if state.treesitter then
+if config.treesitter then
   vim.api.nvim_create_autocmd('FileType', {
     group = groups.treesitter_highlight,
-    pattern = state.treesitter.highlight,
+    pattern = config.treesitter.highlight,
     callback = function()
       vim.treesitter.start()
     end,
@@ -54,7 +54,7 @@ end
 -- close some filetypes with <q>
 vim.api.nvim_create_autocmd('FileType', {
   group = groups.close_with_q,
-  pattern = state.close_with_q,
+  pattern = config.close_with_q,
   callback = function(event)
     vim.bo[event.buf].buflisted = false
     vim.schedule(function()

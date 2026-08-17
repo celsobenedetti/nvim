@@ -5,7 +5,7 @@
 -- a wikilink, false otherwise (so callers can fall back to orgmode).
 
 local function obsidian_follow_wikilink()
-  local notes = state.env and state.env.notes
+  local notes = config.env and config.env.notes
   if not notes or not notes.NOTES then
     return false
   end
@@ -27,7 +27,7 @@ end
 -- attach the in-process obsidian-ls LSP so blink can offer [[ completion. The
 -- LSP completion path is line-text based, not markdown-specific.
 do
-  local notes = state.env and state.env.notes
+  local notes = config.env and config.env.notes
   local filepath = vim.fn.expand('%:p')
   if notes and notes.NOTES and filepath ~= '' and filepath:find(notes.NOTES, 1, true) == 1 then
     vim.b.obsidian_buffer = true
