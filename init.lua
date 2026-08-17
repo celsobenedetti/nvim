@@ -2,13 +2,10 @@ require('init')
 
 require('lazy').setup({
   spec = {
-    { import = 'modules.editor' },
-    { import = 'modules.overseer' },
-    { import = 'modules.ui' },
-    { import = 'modules.zk' },
-    { import = 'modules.orgmode' },
-    { import = 'modules.omarchy' },
     { import = 'plugins' },
+    { import = 'plugins.secondary' },
+    { import = 'plugins.overseer' },
+
     { 'neovim/nvim-lspconfig' }, -- install lspconfig through lazy.nvim
     { 'wakatime/vim-wakatime' }, -- code time tracking goodness
     { 'b0o/SchemaStore.nvim', lazy = true, ft = { 'json', 'yaml', 'toml' } }, -- json/yaml schema store
