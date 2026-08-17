@@ -1,6 +1,6 @@
-local cwd = require('lib.cwd')
-local strings = require('lib.strings')
-local keys = require('lib.keys')
+local cwd = lib.cwd
+local strings = lib.strings
+local keys = lib.keys
 
 ---@class LibFs
 local M = {}

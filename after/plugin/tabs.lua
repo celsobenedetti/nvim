@@ -1,14 +1,13 @@
 ---@module 'statusline' home cooked statusline plugin
 -- Home-cooked tabline: named tabs backed by lib/tab
-local tab = require('lib.tab')
 
 -- showtabline = 1: hide the tabline while a single tab is open (like
 -- default nvim and tabby.nvim), show it once there are at least two.
 vim.o.showtabline = 1
-vim.o.tabline = "%!v:lua.require('lib.tab').render()"
+vim.o.tabline = '%!v:lua.lib.tab.render()'
 
 vim.api.nvim_create_user_command('TabRename', function(opts)
-  tab.rename(opts.args)
+  lib.tab.rename(opts.args)
 end, { nargs = '?' })
 
 local group = vim.api.nvim_create_augroup('homegrown_tabs', { clear = true })
@@ -30,7 +29,7 @@ local function get_tabs()
   for i, tabpage in ipairs(tabpages) do
     local wins = vim.api.nvim_tabpage_list_wins(tabpage)
     local cur_win = vim.api.nvim_tabpage_get_win(tabpage)
-    local name = require('lib.tab').get_name(tabpage)
+    local name = lib.tab.get_name(tabpage)
     if name == '' then
       name = '[No Name]'
     end

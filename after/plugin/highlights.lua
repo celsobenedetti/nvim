@@ -1,4 +1,4 @@
-local colors = require('lib.colors')
+local colors = lib.colors
 
 if colors.omarchy_colorscheme().colorscheme == 'default' then
   return

@@ -154,28 +154,28 @@ return {
       {
         '<leader>os',
         function()
-          require('lib.org_fzf').search_headings()
+          lib.org_fzf.search_headings()
         end,
         desc = 'org: search headings (fzf)',
       },
       {
         '<leader>or',
         function()
-          require('lib.org_fzf').refile_heading()
+          lib.org_fzf.refile_heading()
         end,
         desc = 'org: refile heading (fzf)',
       },
       {
         '<leader>ap',
         function()
-          require('lib.org_fzf').refile_to(state.env.org.REFERENCES .. '/datalake.org', 'prompts')
+          lib.org_fzf.refile_to(state.env.org.REFERENCES .. '/datalake.org', 'prompts')
         end,
         desc = 'org: refile heading to prompts',
       },
       {
         '<leader>T',
         function()
-          require('lib.notes').focus_or_create_notes_tab(function()
+          lib.notes.focus_or_create_notes_tab(function()
             vim.cmd(':Org agenda T')
           end)
         end,
@@ -184,7 +184,7 @@ return {
       {
         '<leader>C',
         function()
-          require('lib.notes').focus_or_create_notes_tab(function()
+          lib.notes.focus_or_create_notes_tab(function()
             vim.cmd(':Org agenda C')
           end)
         end,
@@ -194,8 +194,6 @@ return {
       { '<leader>ocw', ':Org capture w<CR>',   desc = 'Org: Today agenda' },
     },
     config = function()
-      local lib = require('lib')
-
       -- Setup orgmode
       require('orgmode').setup({
         org_agenda_files = agenda_files,

@@ -1,4 +1,4 @@
-local omarchy_colorscheme = require('lib.colors').omarchy_colorscheme()
+local omarchy_colorscheme = lib.colors.omarchy_colorscheme()
 
 if not omarchy_colorscheme or not omarchy_colorscheme.colorscheme or not omarchy_colorscheme.colorscheme_plugin then
   return {}

@@ -1,9 +1,8 @@
---- Single source of truth for `lib.*` submodules: `local lib = require('lib')`
---- instead of a per-file `local lib = { x = require('lib.x') }` table.
+--- Single source of truth for `lib.*` submodules, exposed globally as `lib`
 ---
---- Only put functions here that are actually shared across files. Data/state
---- (colors, dirs, env, ...) belongs in the state module, not here. A helper
---- used by exactly one file should just stay local to that file.
+--- These are functions shared across files.
+--- Data/state belongs in the state module, not here.
+---
 ---@class Lib
 ---@field buffers LibBuffers
 ---@field cmd LibCmd
@@ -27,6 +26,8 @@
 ---@field visual LibVisual
 local M = {}
 
+-- Individual modules are loaded JIT when first accessed. `__index`
+-- fires on a miss, so each submodule is `require`d at most once.
 setmetatable(M, {
   __index = function(t, key)
     local mod = require('lib.' .. key)

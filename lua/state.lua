@@ -1,4 +1,5 @@
---- Single source of truth for internal app state/config: `local state = require('state')`.
+--- Single source of truth for internal app state/config, exposed globally as
+--- `state` (see init/globals.lua) instead of a per-file `require('state')` call.
 ---
 --- vim.g is reserved strictly for values a plugin or Vimscript actually reads
 --- directly from that namespace (an external contract) — e.g. mapleader,

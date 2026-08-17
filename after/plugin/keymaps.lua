@@ -68,12 +68,12 @@ map('c', '<C-p>', '<Up>', { desc = 'cmd: previous command' })
 map('c', '<C-n>', '<Down>', { desc = 'cmd: next command' })
 
 -- better j/k
-local jump = require('lib.jump')
+local jump = lib.jump
 map('n', 'k', jump.up)
 map('n', 'j', jump.down)
 
 -- h/l with folding
-local fold = require('lib.fold')
+local fold = lib.fold
 map('n', 'h', fold.h, { desc = 'h: move left or fold' })
 map('n', 'l', fold.l, { desc = 'l: move right and unfold' })
 
@@ -90,7 +90,7 @@ map('n', '<leader>R', function()
 end, { desc = 'write buffer if not outdated' })
 
 -- fs
-local fs = require('lib.fs')
+local fs = lib.fs
 map('n', '<leader>mv', fs.mv_file, { desc = 'snacks: move file of current buffer to dir' })
 map('n', '<leader>fd', fs.open_dir_in_explorer, { desc = 'snacks: open dir in explorer' })
 
@@ -142,7 +142,7 @@ map({ 'n', 'x', 'v' }, '<leader>sw', grep_word, { desc = 'fzf: Visual selection 
 map({ 'n', 'x', 'v' }, '<leader>sW', grep_word, { desc = 'fzf: Visual selection or word' })
 
 -- gx
-local gx = require('lib.gx')
+local gx = lib.gx
 vim.keymap.set('n', 'gx', gx.normal, { desc = 'gx: open link' })
 vim.keymap.set('v', 'gx', gx.visual, { desc = 'gx: open link' })
 
