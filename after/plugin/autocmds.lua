@@ -101,14 +101,14 @@ end
 vim.api.nvim_create_autocmd('RecordingEnter', {
   group = groups.on_macro,
   callback = function()
-    vim.g.recording_macro = true
+    state.recording_macro = true
     Snacks.notify.info(' recording', { title = 'Macro' })
   end,
 })
 vim.api.nvim_create_autocmd('RecordingLeave', {
   group = groups.on_macro,
   callback = function()
-    vim.g.recording_macro = false
+    state.recording_macro = false
     Snacks.notify.info(' done', { title = 'Macro' })
   end,
 })

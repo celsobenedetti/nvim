@@ -29,10 +29,10 @@ local function fallback_name(tabid)
   return vim.fn.fnamemodify(name, ':t')
 end
 
----Load names from `vim.g.NamedTabs`, keyed by tab *number* so they survive
+---Load names from `state.NamedTabs`, keyed by tab *number* so they survive
 ---tabpage id changes after a session restore.
 local function load()
-  local raw = vim.g.NamedTabs
+  local raw = state.NamedTabs
   if type(raw) ~= 'string' or vim.json == nil then
     return
   end
@@ -51,7 +51,7 @@ local function load()
   end
 end
 
----Persist names to `vim.g.NamedTabs`.
+---Persist names to `state.NamedTabs`.
 local function save()
   local by_number = {}
   for tpid, name in pairs(names) do
@@ -61,7 +61,7 @@ local function save()
     end
   end
   if vim.json ~= nil then
-    vim.g.NamedTabs = vim.json.encode(by_number)
+    state.NamedTabs = vim.json.encode(by_number)
   end
 end
 

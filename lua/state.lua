@@ -14,6 +14,15 @@
 ---@field claude_bufnr number
 ---@field opencode_bufnr number
 ---@field toggle_term_bufnr number
+---@field statusline boolean
+---@field statusline_show_filepath boolean
+---@field statusline_show_position boolean
+---@field statusline_show_time boolean
+---@field recording_macro boolean
+---@field time string?
+---@field branch_commits_ahead_of_origin number?
+---@field branch_commits_behind_origin number?
+---@field NamedTabs string?
 local M = {}
 
 return M
