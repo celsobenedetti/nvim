@@ -1,8 +1,9 @@
 local lib = require('lib')
-vim.g.claude_bufnr = 0
+local state = require('state')
+state.claude_bufnr = 0
 
 local function is_claude_buf(buf)
-  return buf > 0 and buf == vim.g.claude_bufnr and vim.api.nvim_buf_is_valid(buf) and not lib.term.is_toggle_term()
+  return buf > 0 and buf == state.claude_bufnr and vim.api.nvim_buf_is_valid(buf) and not lib.term.is_toggle_term()
 end
 
 local function focus_buf(buf)
@@ -16,21 +17,21 @@ end
 
 -- sticky claude terminal: focus existing claude buffer, or start a new one
 local function claude()
-  if is_claude_buf(vim.g.claude_bufnr) then
-    focus_buf(vim.g.claude_bufnr)
+  if is_claude_buf(state.claude_bufnr) then
+    focus_buf(state.claude_bufnr)
     return
   end
   vim.cmd.term('claude')
-  vim.g.claude_bufnr = vim.api.nvim_get_current_buf()
+  state.claude_bufnr = vim.api.nvim_get_current_buf()
 end
 
 vim.api.nvim_create_autocmd('TermClose', {
   desc = 'claude: close terminal buffer when claude exits',
   callback = function(args)
-    if args.buf ~= vim.g.claude_bufnr then
+    if args.buf ~= state.claude_bufnr then
       return
     end
-    vim.g.claude_bufnr = 0
+    state.claude_bufnr = 0
     vim.schedule(function()
       if vim.api.nvim_buf_is_valid(args.buf) then
         vim.api.nvim_buf_delete(args.buf, { force = true })

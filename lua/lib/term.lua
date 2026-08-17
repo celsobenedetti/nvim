@@ -1,3 +1,5 @@
+local state = require('state')
+
 local function is_term(buffer)
   if not buffer then
     buffer = vim.api.nvim_get_current_buf()
@@ -13,20 +15,20 @@ local M = {
     if not buffer then
       buffer = vim.api.nvim_get_current_buf()
     end
-    return is_term(buffer) and buffer == vim.g.toggle_term_bufnr
+    return is_term(buffer) and buffer == state.toggle_term_bufnr
   end,
 
   is_claude = function(buffer)
     if not buffer then
       buffer = vim.api.nvim_get_current_buf()
     end
-    return is_term(buffer) and buffer == vim.g.claude_bufnr
+    return is_term(buffer) and buffer == state.claude_bufnr
   end,
   is_opencode = function(buffer)
     if not buffer then
       buffer = vim.api.nvim_get_current_buf()
     end
-    return is_term(buffer) and buffer == vim.g.opencode_bufnr
+    return is_term(buffer) and buffer == state.opencode_bufnr
   end,
 
   -- Returns true if buffer is terminal, and has no running command

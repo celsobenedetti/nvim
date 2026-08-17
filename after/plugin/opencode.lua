@@ -1,7 +1,8 @@
-vim.g.opencode_bufnr = 0
+local state = require('state')
+state.opencode_bufnr = 0
 
 local function is_opencode_buf(buf)
-  return buf > 0 and buf == vim.g.opencode_bufnr and vim.api.nvim_buf_is_valid(buf)
+  return buf > 0 and buf == state.opencode_bufnr and vim.api.nvim_buf_is_valid(buf)
 end
 
 local function focus_buf(buf)
@@ -15,21 +16,21 @@ end
 
 -- sticky opencode terminal: focus existing opencode buffer, or start a new one
 local function opencode()
-  if is_opencode_buf(vim.g.opencode_bufnr) then
-    focus_buf(vim.g.opencode_bufnr)
+  if is_opencode_buf(state.opencode_bufnr) then
+    focus_buf(state.opencode_bufnr)
     return
   end
   vim.cmd.term('opencode')
-  vim.g.opencode_bufnr = vim.api.nvim_get_current_buf()
+  state.opencode_bufnr = vim.api.nvim_get_current_buf()
 end
 
 vim.api.nvim_create_autocmd('TermClose', {
   desc = 'opencode: close terminal buffer when opencode exits',
   callback = function(args)
-    if args.buf ~= vim.g.opencode_bufnr then
+    if args.buf ~= state.opencode_bufnr then
       return
     end
-    vim.g.opencode_bufnr = 0
+    state.opencode_bufnr = 0
     vim.schedule(function()
       if vim.api.nvim_buf_is_valid(args.buf) then
         vim.api.nvim_buf_delete(args.buf, { force = true })

@@ -11,6 +11,9 @@
 ---@field colors table
 ---@field icons table
 ---@field hl table
+---@field claude_bufnr number
+---@field opencode_bufnr number
+---@field toggle_term_bufnr number
 local M = {}
 
 return M
