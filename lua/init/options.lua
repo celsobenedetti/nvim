@@ -36,6 +36,7 @@ vim.g.icons = {
   db = ' ',
   code = ' ',
   agent = '󱚞 ',
+  term = ' ',
   git = {
     added = ' +',
     modified = ' ~',

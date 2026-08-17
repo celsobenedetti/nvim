@@ -83,6 +83,7 @@ if os.getenv('GHOSTTY_BIN_DIR') then
   keys['<C-tab>'] = 'TABNEXT'
   keys['<C-S-tab>'] = 'TABPREV'
   keys['<C-S-O>'] = '♠'
+  keys['<C-S-E>'] = '♣'
 end
 
-vim.g.key = keys
+vim.g.keys = keys

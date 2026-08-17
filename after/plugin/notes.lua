@@ -3,7 +3,7 @@ local lib = {
   fzf = require('lib.fzf'),
 }
 
-vim.keymap.set('n', vim.g.key['<C-S-N>'], function()
+vim.keymap.set('n', vim.g.keys['<C-S-N>'], function()
   lib.notes.focus_or_create_notes_tab(function()
     lib.fzf.grep({
       cmd = {

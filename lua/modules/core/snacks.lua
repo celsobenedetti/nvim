@@ -341,7 +341,7 @@ return {
     { '<leader>cd', cd, desc = 'snacks: zoxide (cd)', },
     { '<leader>ws', workspace, desc = 'snacks: workspace (zoxide)', },
 
-    { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
+    -- { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
     { '<leader>fe', function()Snacks.explorer()end, desc = 'snacks: explorer (fe)', },
 
 
