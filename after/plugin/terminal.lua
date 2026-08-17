@@ -1,8 +1,5 @@
 state.insert_when_entering_terminal = true
 
-local lib = require('lib')
-local state = require('state')
-
 --- @module 'sticky terminal'
 --- upsert terminal in current window (resume if available, create new otherwise)
 local function sticky_terminal()
@@ -54,8 +51,22 @@ end, { desc = 'Close toggle terminal' })
 -- stylua: ignore start
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
 -- insert mode when entering terminal window
-vim.api.nvim_create_autocmd('BufWinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.term.startinsert, })
-vim.api.nvim_create_autocmd('WinEnter', { desc = 'terminal: insert mode when entering terminal window', pattern = 'term://*', group = augroup, callback = lib.term.startinsert, })
+vim.api.nvim_create_autocmd('BufWinEnter',
+  {
+    desc = 'terminal: insert mode when entering terminal window',
+    pattern = 'term://*',
+    group = augroup,
+    callback = lib
+        .term.startinsert,
+  })
+vim.api.nvim_create_autocmd('WinEnter',
+  {
+    desc = 'terminal: insert mode when entering terminal window',
+    pattern = 'term://*',
+    group = augroup,
+    callback = lib
+        .term.startinsert,
+  })
 -- stylua: ignore end
 
 vim.api.nvim_create_autocmd('TermOpen', {

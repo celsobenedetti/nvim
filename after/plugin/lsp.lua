@@ -1,5 +1,3 @@
-local state = require('state')
-
 if not state.lsp then
   return
 end

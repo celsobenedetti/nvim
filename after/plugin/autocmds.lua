@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 -- filetypes of git/codediff tabs that get named on creation
 local GIT_TAB_FILETYPES = {
   git = true,
@@ -187,8 +184,8 @@ vim.api.nvim_create_autocmd('TabNew', {
         return
       end
       local name = lib.tab.consume_next_name()
-        or lib.tab.name_from_command(lib.cmd.get_last_command())
-        or default_tabname(ft)
+          or lib.tab.name_from_command(lib.cmd.get_last_command())
+          or default_tabname(ft)
       if name then
         lib.tab.rename(name, tabid)
       end

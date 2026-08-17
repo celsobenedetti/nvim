@@ -1,5 +1,3 @@
-local lib = require('lib')
-
 if not lib.tmux.active() then
   -- keymaps that only should be available outside tmux
   -- TODO: have a tmux version of this using "set in allacritty"
@@ -66,9 +64,9 @@ return {
         desc = 'Go to Left tmux pane',
         mode = { 'n', 'i', 't' },
       },
-      { '<C-j>', cmd('TmuxNavigateDown'), desc = 'Go to Down tmux pane', mode = { 'n', 'i' } },
+      { '<C-j>', cmd('TmuxNavigateDown'),  desc = 'Go to Down tmux pane',  mode = { 'n', 'i' } },
       { '<C-l>', cmd('TmuxNavigateRight'), desc = 'Go to Right tmux pane', mode = { 'n', 't' } },
-      { '<C-k>', cmd('TmuxNavigateUp'), desc = 'Go to Up tmux pane', mode = { 'n', 'i', 't' } },
+      { '<C-k>', cmd('TmuxNavigateUp'),    desc = 'Go to Up tmux pane',    mode = { 'n', 'i', 't' } },
 
       {
         '<C-k>',

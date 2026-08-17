@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 if 'default' ~= lib.colors.omarchy_colorscheme().colorscheme then
   return {}
 end

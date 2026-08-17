@@ -1,5 +1,3 @@
-local lib = require('lib')
-local state = require('state')
 if not lib.buffers.is_file() then
   return
 end

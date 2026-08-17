@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 local should_quit = function()
   if not lib.term.is_term() then
     return true
@@ -16,9 +13,9 @@ end
 
 local function should_write()
   return vim.bo.buftype ~= 'nofile'
-    and vim.bo.buftype ~= 'nowrite'
-    and vim.bo.buftype ~= 'terminal'
-    and vim.fn.expand('%:p') ~= ''
+      and vim.bo.buftype ~= 'nowrite'
+      and vim.bo.buftype ~= 'terminal'
+      and vim.fn.expand('%:p') ~= ''
 end
 
 -- keymap: C-s Save file

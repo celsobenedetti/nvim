@@ -1,4 +1,5 @@
-local state = require('state')
+_G.state = require('state')
+_G.lib = require('lib')
 
 if os.getenv('PERF') == 'true' then
   state.performance = true
@@ -8,7 +9,7 @@ end
 map = vim.keymap.set
 
 vim.api.nvim_create_user_command('RenameTab', function(opts)
-  require('lib.tab').rename(opts.args)
+  lib.tab.rename(opts.args)
 end, { nargs = '?' })
 
 state.lazy_nvim_config = {

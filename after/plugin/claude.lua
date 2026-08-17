@@ -1,5 +1,3 @@
-local lib = require('lib')
-local state = require('state')
 state.claude_bufnr = 0
 
 local function is_claude_buf(buf)

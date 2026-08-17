@@ -1,4 +1,3 @@
-local state = require('state')
 state.opencode_bufnr = 0
 
 local function is_opencode_buf(buf)

@@ -1,5 +1,3 @@
-local state = require('state')
-
 state.treesitter = {
   --- filetypes to highlight with treesitter
   highlight = {
