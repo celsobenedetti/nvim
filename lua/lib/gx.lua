@@ -1,5 +1,4 @@
 local strings = require('lib.strings')
-local state = require('state')
 
 ---@type table<string, string|function>
 local regex_redirects = {
@@ -18,7 +17,7 @@ local regex_redirects = {
     end,
   },
   { '^lazyvim', 'https://lazyvim.org' },
-  { '^mt$', 'https://monkeytype.com' },
+  { '^mt$',     'https://monkeytype.com' },
   -- TODO: support table of strings so can reuse same function with different patterns
   {
     '^%s*VA-[0-9]*',

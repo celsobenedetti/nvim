@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 local function create_note_from_selection()
   if vim.bo.filetype ~= 'markdown' then
     return
@@ -14,17 +11,17 @@ local function create_note_from_selection()
   local title = lib.strings.trim(text)
 
   obsidian.Note
-    .create({
-      id = title,
-      title = title,
-    })
-    :save({
-      path = state.env.notes.OBSIDIAN_INBOX .. '/' .. title .. '.md',
-      insert_frontmatter = false,
-      update_content = function()
-        return { '' }
-      end,
-    })
+      .create({
+        id = title,
+        title = title,
+      })
+      :save({
+        path = state.env.notes.OBSIDIAN_INBOX .. '/' .. title .. '.md',
+        insert_frontmatter = false,
+        update_content = function()
+          return { '' }
+        end,
+      })
 
   lib.visual.replace('[[' .. title .. ']]')
 end
@@ -113,7 +110,7 @@ return {
 
         desc = 'Toggle Obsidian UI',
       },
-      { '<leader>oO', '<cmd>Obsidian open<CR>', desc = 'Open in Obsidian' },
+      { '<leader>oO', '<cmd>Obsidian open<CR>',      desc = 'Open in Obsidian' },
       {
         '<leader>ob',
         function()
@@ -134,24 +131,24 @@ return {
             return
           end
           local items = vim
-            .iter(matches)
-            :map(function(m)
-              return {
-                filename = tostring(m.path),
-                lnum = m.line,
-                col = (m.start or 0) + 1,
-                text = m.text,
-              }
-            end)
-            :totable()
+              .iter(matches)
+              :map(function(m)
+                return {
+                  filename = tostring(m.path),
+                  lnum = m.line,
+                  col = (m.start or 0) + 1,
+                  text = m.text,
+                }
+              end)
+              :totable()
           vim.fn.setqflist(items, 'r')
           vim.cmd('copen')
         end,
         desc = 'Backlinks to quickfix',
       },
       { '<leader>oB', '<cmd>Obsidian backlinks<CR>', desc = 'Backlinks' },
-      { '<leader>od', '<cmd>Obsidian dailies<CR>', desc = 'Daily notes' },
-      { '<leader>oL', '<cmd>Obsidian links<CR>', desc = 'Links in note' },
+      { '<leader>od', '<cmd>Obsidian dailies<CR>',   desc = 'Daily notes' },
+      { '<leader>oL', '<cmd>Obsidian links<CR>',     desc = 'Links in note' },
       {
         '<leader>ol',
         function()
@@ -172,25 +169,25 @@ return {
             return
           end
           local items = vim
-            .iter(matches)
-            :map(function(m)
-              return {
-                filename = path,
-                lnum = m.line,
-                col = (m.start or 0) + 1,
-                text = m.link,
-              }
-            end)
-            :totable()
+              .iter(matches)
+              :map(function(m)
+                return {
+                  filename = path,
+                  lnum = m.line,
+                  col = (m.start or 0) + 1,
+                  text = m.link,
+                }
+              end)
+              :totable()
           vim.fn.setqflist(items, 'r')
           vim.cmd('copen')
         end,
         desc = 'Links to quickfix',
       },
-      { '<leader>ch', '<cmd>Obsidian check<CR>', desc = 'Health check' },
-      { '<leader>oR', '<cmd>Obsidian rename<CR>', desc = 'Rename note' },
-      { '<leader>toc', '<cmd>Obsidian toc<CR>', desc = 'Table of contents' },
-      { '<leader>n', create_note_from_selection, mode = 'v', desc = 'Create note from selection' },
+      { '<leader>ch',  '<cmd>Obsidian check<CR>',  desc = 'Health check' },
+      { '<leader>oR',  '<cmd>Obsidian rename<CR>', desc = 'Rename note' },
+      { '<leader>toc', '<cmd>Obsidian toc<CR>',    desc = 'Table of contents' },
+      { '<leader>n',   create_note_from_selection, mode = 'v',                desc = 'Create note from selection' },
     }
   end,
   config = function()
@@ -203,7 +200,7 @@ return {
       legacy_commands = false,
       workspaces = {
         { name = 'garden', path = vault },
-        { name = 'work', path = state.env.notes.OBSIDIAN_VAULT_WORK },
+        { name = 'work',   path = state.env.notes.OBSIDIAN_VAULT_WORK },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',

@@ -3,7 +3,6 @@
 -- resolution is plain-text (not tied to the markdown parser), so we reuse it for
 -- org files that live inside a configured workspace. Returns true if it handled
 -- a wikilink, false otherwise (so callers can fall back to orgmode).
-local state = require('state')
 
 local function obsidian_follow_wikilink()
   local notes = state.env and state.env.notes

@@ -1,5 +1,3 @@
-local state = require('state')
-
 state.overseer = {
   ---@param tasks overseer.TaskDefinition[]
   run_tasks = function(tasks)
@@ -144,14 +142,14 @@ return {
     -- stylua: ignore
     keys = {
       -- { "<leader>OR", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
-      { "<leader>run", "<cmd>OverseerRun<cr>",         desc = "Overseer: Run task" },
-      { "♥", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" }, -- C-S-R set in terminal
+      { "<leader>run", "<cmd>OverseerRun<cr>", desc = "Overseer: Run task" },
+      { "♥", "<cmd>OverseerToggle<cr>", desc = "Overseer: Toggle" }, -- C-S-R set in terminal
       -- { "<C-]>", "<cmd>OverseerToggle<cr>",      desc = "Overseer: Toggle" },
       { "<leader>OQ", "<cmd>OverseerQuickAction<cr>", desc = "Overseer: Action recent task" },
-      { "<leader>OI", "<cmd>OverseerInfo<cr>",        desc = "Overseer: Overseer Info" },
-      { "<leader>OB", "<cmd>OverseerBuild<cr>",       desc = "Overseer: Task builder" },
-      { "<leader>OA", "<cmd>OverseerTaskAction<cr>",  desc = "Overseer: Task action" },
-      { "<leader>OC", "<cmd>OverseerClearCache<cr>",  desc = "Overseer: Clear cache" },
+      { "<leader>OI", "<cmd>OverseerInfo<cr>", desc = "Overseer: Overseer Info" },
+      { "<leader>OB", "<cmd>OverseerBuild<cr>", desc = "Overseer: Task builder" },
+      { "<leader>OA", "<cmd>OverseerTaskAction<cr>", desc = "Overseer: Task action" },
+      { "<leader>OC", "<cmd>OverseerClearCache<cr>", desc = "Overseer: Clear cache" },
     },
   },
 }

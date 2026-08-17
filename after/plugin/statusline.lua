@@ -3,8 +3,6 @@
 ---
 --- try to cache as much as possible since the statusline is re-rendered on every keystroke
 
-local lib = require('lib')
-local state = require('state')
 local has_icons, devicons = pcall(require, 'nvim-web-devicons')
 local hl = lib.strings.hl
 local LEFT_SEPARATOR = hl('StatusLine', state.icons.separator.right)
@@ -143,11 +141,11 @@ local modules = {
       count[diagnostic.severity] = count[diagnostic.severity] + 1
     end
     local parts = {}
-  -- stylua: ignore start
-  if count[1] > 0 then parts[#parts + 1] = hl('DiagnosticError', state.icons.diagnostics.error .. tostring(count[1])) end
-  if count[2] > 0 then parts[#parts + 1] = hl('DiagnosticWarn', state.icons.diagnostics.warn .. tostring(count[2])) end
-  if count[3] > 0 then parts[#parts + 1] = hl('DiagnosticInfo', state.icons.diagnostics.info .. tostring(count[3])) end
-  if count[4] > 0 then parts[#parts + 1] = hl('DiagnosticHint', state.icons.diagnostics.hint .. tostring(count[4])) end
+    -- stylua: ignore start
+    if count[1] > 0 then parts[#parts + 1] = hl('DiagnosticError', state.icons.diagnostics.error .. tostring(count[1])) end
+    if count[2] > 0 then parts[#parts + 1] = hl('DiagnosticWarn', state.icons.diagnostics.warn .. tostring(count[2])) end
+    if count[3] > 0 then parts[#parts + 1] = hl('DiagnosticInfo', state.icons.diagnostics.info .. tostring(count[3])) end
+    if count[4] > 0 then parts[#parts + 1] = hl('DiagnosticHint', state.icons.diagnostics.hint .. tostring(count[4])) end
     -- stylua: ignore end
     return table.concat(parts, ' ')
   end,
@@ -184,8 +182,8 @@ local modules = {
         return ''
       end
       local search_stat = sinfo.incomplete > 0 and '[?/?]'
-        or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
-        or nil
+          or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
+          or nil
 
       if search_stat then
         return hl(state.hl.text.subtext, search_stat)

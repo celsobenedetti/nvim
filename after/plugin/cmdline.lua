@@ -1,5 +1,3 @@
-local lib = require('lib')
-
 vim.api.nvim_create_autocmd('CmdlineLeave', {
   group = vim.api.nvim_create_augroup('celso_cmdline', { clear = true }),
   desc = 'clear cmdline',

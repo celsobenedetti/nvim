@@ -4,7 +4,6 @@ local function fzf()
 end
 
 local tab = require('lib.tab')
-local state = require('state')
 
 --- Open a CodeDiff of `commit` against its parent and name the tab.
 ---@param commit string short/long sha
@@ -188,7 +187,7 @@ local function patch_gf_to_open_in_first_tab()
     end
 
     local is_virtual = (side == 'original' and lifecycle.is_original_virtual(ctx.tabpage))
-      or (side == 'modified' and lifecycle.is_modified_virtual(ctx.tabpage))
+        or (side == 'modified' and lifecycle.is_modified_virtual(ctx.tabpage))
 
     local target_file
     if is_explorer_buf then
@@ -277,14 +276,14 @@ return {
 
     keys = {
       -- stylua: ignore start
-      { '<leader>gl', codediff_picker('git_commits'), desc = 'pickaxe: find_git_log', },
-      { '<leader>sc', codediff_picker('git_commits'), desc = 'git: search commit', },
+      { '<leader>gl', codediff_picker('git_commits'),                     desc = 'pickaxe: find_git_log', },
+      { '<leader>sc', codediff_picker('git_commits'),                     desc = 'git: search commit', },
       { '<leader>gf', codediff_picker('git_bcommits', { follow = true }), desc = 'pickaxe: find_git_log_file', },
-      { '<leader>gL', codefiff_cmd("CodeDiff history"), desc = 'codediff: git log', },
-      { '<leader>gF', codefiff_cmd("CodeDiff history %"), desc = 'codediff: git log file', },
-      { '<leader>gb', codediff_picker('git_blame'), desc = 'fzf: Git Blame Line', },
-      { '<leader>hs', function() git_pickaxe({ global = false }) end, desc = 'pickaxe: Git Search (Buffer)', },
-      { '<leader>hS', function() git_pickaxe({ global = true }) end, desc = 'pickaxe: Git Search (Global)', },
+      { '<leader>gL', codefiff_cmd("CodeDiff history"),                   desc = 'codediff: git log', },
+      { '<leader>gF', codefiff_cmd("CodeDiff history %"),                 desc = 'codediff: git log file', },
+      { '<leader>gb', codediff_picker('git_blame'),                       desc = 'fzf: Git Blame Line', },
+      { '<leader>hs', function() git_pickaxe({ global = false }) end,     desc = 'pickaxe: Git Search (Buffer)', },
+      { '<leader>hS', function() git_pickaxe({ global = true }) end,      desc = 'pickaxe: Git Search (Global)', },
       -- stylua: ignore end
     },
     config = function(_, opts)
@@ -292,8 +291,8 @@ return {
       opts.highlights = vim.tbl_deep_extend('force', opts.highlights or {}, {
         -- Character-level: accepts highlight group names or hex colors
         -- If specified, these override char_brightness calculation
-        char_insert = nil, -- Character-level insertions (nil = auto-derive)
-        char_delete = nil, -- Character-level deletions (nil = auto-derive)
+        char_insert = nil,     -- Character-level insertions (nil = auto-derive)
+        char_delete = nil,     -- Character-level deletions (nil = auto-derive)
         char_brightness = nil, -- Auto-adjust based on your colorscheme
       })
 
@@ -302,33 +301,33 @@ return {
 
         -- Diff view behavior
         diff = {
-          disable_inlay_hints = true, -- Disable inlay hints in diff windows for cleaner view
+          disable_inlay_hints = true,     -- Disable inlay hints in diff windows for cleaner view
           max_computation_time_ms = 5000, -- Maximum time for diff computation (VSCode default)
           layout = 'inline',
         },
 
         -- Explorer (file tree) configuration
         explorer = {
-          view_mode = 'tree', -- Show directory tree instead of flat list
-          flatten_dirs = true, -- Compress single-child directory chains
+          view_mode = 'tree',    -- Show directory tree instead of flat list
+          flatten_dirs = true,   -- Compress single-child directory chains
           indent_markers = true, -- Show tree connectors (│, ├, └)
         },
 
         -- Keymaps in diff view
         keymaps = {
           view = {
-            quit = 'q', -- Close diff tab
+            quit = 'q',                    -- Close diff tab
             toggle_explorer = '<leader>b', -- Toggle explorer visibility (explorer mode only)
-            next_hunk = ']g', -- Jump to next change
-            prev_hunk = '[g', -- Jump to previous change
-            next_file = ']b', -- Next file in explorer mode
-            prev_file = '[b', -- Previous file in explorer mode
+            next_hunk = ']g',              -- Jump to next change
+            prev_hunk = '[g',              -- Jump to previous change
+            next_file = ']b',              -- Next file in explorer mode
+            prev_file = '[b',              -- Previous file in explorer mode
             open_in_prev_tab = 'gf',
           },
           explorer = {
             select = '<CR>', -- Open diff for selected file
-            hover = 'K', -- Show file diff preview
-            refresh = 'R', -- Refresh git status
+            hover = 'K',     -- Show file diff preview
+            refresh = 'R',   -- Refresh git status
           },
         },
       }))

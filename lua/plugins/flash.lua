@@ -1,7 +1,6 @@
 -- Flash enhances the built-in search functionality by showing labels
 -- at the end of each match, letting you quickly jump to a specific
 -- location.
-local state = require('state')
 
 return {
   {
@@ -21,7 +20,7 @@ return {
         end,
         desc = 'Flash',
       },
-    -- stylua: ignore
+      -- stylua: ignore
       { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       {
         'r',

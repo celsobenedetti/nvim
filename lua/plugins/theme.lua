@@ -1,1 +1,14 @@
-../../../../.local/state/omarchy/current/theme/neovim.lua
+
+return {
+	{
+		"celsobenedetti/tufte.nvim",
+		opts = { variant = "dark" },
+		priority = 1000,
+	},
+	{
+		"LazyVim/LazyVim",
+		opts = {
+			colorscheme = "tufte",
+		},
+	},
+}

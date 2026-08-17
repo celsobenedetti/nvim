@@ -1,7 +1,6 @@
 ---@class LibColors
 local M = {}
 
-local state = require('state')
 
 local function hex_to_rgb(hex)
   if not hex then

@@ -1,5 +1,3 @@
-local lib = require('lib')
-local state = require('state')
 local highlights_to_hide = {
   'ObsidianRefText',
 }

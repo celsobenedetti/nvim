@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 vim.keymap.set('n', state.keys['<C-S-N>'], function()
   lib.notes.focus_or_create_notes_tab(function()
     lib.fzf.grep({

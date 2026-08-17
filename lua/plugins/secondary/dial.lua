@@ -1,5 +1,3 @@
-local state = require('state')
-
 local M = {}
 
 ---@param increment boolean
@@ -19,10 +17,10 @@ return {
   desc = 'Increment and decrement numbers, dates, and more',
   -- stylua: ignore
   keys = {
-    { "<C-a>", function() return M.dial(true) end, expr = true, desc = "Increment", mode = {"n", "v"} },
-    { "<C-x>", function() return M.dial(false) end, expr = true, desc = "Decrement", mode = {"n", "v"} },
-    { "g<C-a>", function() return M.dial(true, true) end, expr = true, desc = "Increment", mode = {"n", "v"} },
-    { "g<C-x>", function() return M.dial(false, true) end, expr = true, desc = "Decrement", mode = {"n", "v"} },
+    { "<C-a>",  function() return M.dial(true) end,        expr = true, desc = "Increment", mode = { "n", "v" } },
+    { "<C-x>",  function() return M.dial(false) end,       expr = true, desc = "Decrement", mode = { "n", "v" } },
+    { "g<C-a>", function() return M.dial(true, true) end,  expr = true, desc = "Increment", mode = { "n", "v" } },
+    { "g<C-x>", function() return M.dial(false, true) end, expr = true, desc = "Decrement", mode = { "n", "v" } },
   },
   opts = function()
     local augend = require('dial.augend')
@@ -136,10 +134,10 @@ return {
       },
       groups = {
         default = {
-          augend.integer.alias.decimal, -- nonnegative decimal number (0, 1, 2, 3, ...)
+          augend.integer.alias.decimal,     -- nonnegative decimal number (0, 1, 2, 3, ...)
           augend.integer.alias.decimal_int, -- nonnegative and negative decimal number
-          augend.integer.alias.hex, -- nonnegative hex number  (0x01, 0x1a1f, etc.)
-          augend.date.alias['%Y/%m/%d'], -- date (2022/02/19, etc.)
+          augend.integer.alias.hex,         -- nonnegative hex number  (0x01, 0x1a1f, etc.)
+          augend.date.alias['%Y/%m/%d'],    -- date (2022/02/19, etc.)
           ordinal_numbers,
           weekdays,
           months,
@@ -179,7 +177,7 @@ return {
         lua = {
           augend.constant.new({
             elements = { 'and', 'or' },
-            word = true, -- if false, "sand" is incremented into "sor", "doctor" into "doctand", etc.
+            word = true,   -- if false, "sand" is incremented into "sor", "doctor" into "doctand", etc.
             cyclic = true, -- "or" is incremented into "and".
           }),
         },

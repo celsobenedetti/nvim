@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 local curr = lib.colors.omarchy_colorscheme()
 
 if 'evergarden' ~= curr.colorscheme then

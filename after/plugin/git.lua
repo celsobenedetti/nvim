@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 local function main_branch()
   local result = vim.system({ 'git', 'symbolic-ref', 'refs/remotes/origin/HEAD' }):wait()
   if result.code == 0 and result.stdout then
@@ -10,13 +7,14 @@ local function main_branch()
 end
 
 local keymaps = function()
--- stylua: ignore start
-map('n', 'gs', function() require("fzf-lua").git_status(lib.fzf.e()) end, { desc = 'git: (snacks) git Status' })
-map('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
-map('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
-map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
+  -- stylua: ignore start
+  map('n', 'gs', function() require("fzf-lua").git_status(lib.fzf.e()) end, { desc = 'git: (snacks) git Status' })
+  map('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
+  map('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
+  map('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
 
-map('n','<leader>gd', function()vim.cmd('vertical Git diff ' .. main_branch() .. ' -- %')end, {desc ="git: Git diff main -- %"})
+  map('n', '<leader>gd', function() vim.cmd('vertical Git diff ' .. main_branch() .. ' -- %') end,
+    { desc = "git: Git diff main -- %" })
   -- stylua: ignore end
 
   map('n', 'gC', function()

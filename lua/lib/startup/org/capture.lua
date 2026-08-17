@@ -1,4 +1,3 @@
-local state = require('state')
 state.lsp = false
 state.capture = true
 

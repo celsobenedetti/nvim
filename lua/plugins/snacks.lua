@@ -1,6 +1,3 @@
-local lib = require('lib')
-local state = require('state')
-
 local function cd()
   Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' })
 end
@@ -88,7 +85,7 @@ return {
   lazy = false,
   config = function()
     require('snacks').setup(
-      ---@type snacks.Config
+    ---@type snacks.Config
       {
         terminal = { enabled = true },
         words = { enabled = true },
@@ -98,9 +95,9 @@ return {
 
         bigfile = {
           enabled = true,
-          notify = true, -- show notification when big file detected
+          notify = true,            -- show notification when big file detected
           size = 1.5 * 1024 * 1024, -- 1.5MB
-          line_length = 1000, -- average line length (useful for minified files)
+          line_length = 1000,       -- average line length (useful for minified files)
           -- Enable or disable features when big file detected
           ---@param ctx {buf: number, ft:string}
           setup = function(ctx)
@@ -129,9 +126,9 @@ return {
           -- },
           filter = function(notification)
             local ignore = {
-              'File is too large to send to server', -- thank you supermaven, please stfu
+              'File is too large to send to server',                                                   -- thank you supermaven, please stfu
               'Request textDocument/diagnostic failed with message: No ESLint configuration found in', -- err when eslint is not available
-              'No results found for.*buffers', -- Snacks.picker.buffers when there are no results
+              'No results found for.*buffers',                                                         -- Snacks.picker.buffers when there are no results
             }
             for _, s in ipairs(ignore) do
               if notification.msg:find(s) then
@@ -155,7 +152,8 @@ return {
               -- lazygit quits on it (its default binding for bare "q"). Drop
               -- that step; editPreset stays "nvim-remote" for suspend behavior.
               edit = 'nvim --server "$NVIM" --remote-tab {{filename}}',
-              editAtLine = 'nvim --server "$NVIM" --remote-tab {{filename}} && nvim --server "$NVIM" --remote-send ":{{line}}<CR>"',
+              editAtLine =
+              'nvim --server "$NVIM" --remote-tab {{filename}} && nvim --server "$NVIM" --remote-send ":{{line}}<CR>"',
             },
           },
         },
@@ -189,8 +187,8 @@ return {
                 border = true,
                 title = '{title}',
                 title_pos = 'center',
-                { win = 'input', height = 1, border = 'bottom' },
-                { win = 'list', border = 'none' },
+                { win = 'input', height = 1,     border = 'bottom' },
+                { win = 'list',  border = 'none' },
                 -- { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
               },
             },
@@ -208,8 +206,8 @@ return {
                 height = 0.3,
                 border = 'none',
                 box = 'vertical',
-                { win = 'list', border = 'none' },
-                { win = 'input', height = 1, border = 'none' },
+                { win = 'list',  border = 'none' },
+                { win = 'input', height = 1,     border = 'none' },
               },
             },
           },
@@ -319,7 +317,8 @@ return {
 
     Snacks.config.style('lazygit', {
       wo = {
-        winhighlight = 'Normal:SnacksTerminalNormal,NormalNC:SnacksTerminalNormalNC,WinBar:SnacksWinBar,WinBarNC:SnacksWinBarNC,FloatTitle:SnacksTitle,FloatFooter:SnacksFooter,WinSeparator:SnacksWinSeparator',
+        winhighlight =
+        'Normal:SnacksTerminalNormal,NormalNC:SnacksTerminalNormalNC,WinBar:SnacksWinBar,WinBarNC:SnacksWinBarNC,FloatTitle:SnacksTitle,FloatFooter:SnacksFooter,WinSeparator:SnacksWinSeparator',
       },
     })
   end,
@@ -329,42 +328,42 @@ return {
     -- TODO: figure out cwd in terminal, if opening file with different cwd from root
     -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
     -- { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
-    { '<leader>no', function() Snacks.picker.notifications() end, desc = 'snacks: notification history', },
-    { '<leader>dd', function() Snacks.bufdelete() end, desc = 'snacks: delete buffer', },
+    { '<leader>no',  function() Snacks.picker.notifications() end,         desc = 'snacks: notification history', },
+    { '<leader>dd',  function() Snacks.bufdelete() end,                    desc = 'snacks: delete buffer', },
     -- { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
-    { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'snacks: Rename File', },
-    { '<leader>lgl', function() Snacks.lazygit.log() end, desc = 'snacks: Lazygit Log (cwd)', },
-    { '<leader>fE', function() Snacks.explorer { cwd = cwd.root() } end, desc = 'snacks: Explorer Snacks (root dir)', },
-    { '<leader>dab', function() Snacks.bufdelete.all() end, desc = 'snacks: delete all buffers', },
-    { '<leader>cd', cd, desc = 'snacks: zoxide (cd)', },
-    { '<leader>ws', workspace, desc = 'snacks: workspace (zoxide)', },
+    { '<leader>cR',  function() Snacks.rename.rename_file() end,           desc = 'snacks: Rename File', },
+    { '<leader>lgl', function() Snacks.lazygit.log() end,                  desc = 'snacks: Lazygit Log (cwd)', },
+    { '<leader>fE',  function() Snacks.explorer { cwd = cwd.root() } end,  desc = 'snacks: Explorer Snacks (root dir)', },
+    { '<leader>dab', function() Snacks.bufdelete.all() end,                desc = 'snacks: delete all buffers', },
+    { '<leader>cd',  cd,                                                   desc = 'snacks: zoxide (cd)', },
+    { '<leader>ws',  workspace,                                            desc = 'snacks: workspace (zoxide)', },
 
     -- { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
-    { '<leader>fe', function()Snacks.explorer()end, desc = 'snacks: explorer (fe)', },
+    { '<leader>fe',  function() Snacks.explorer() end,                     desc = 'snacks: explorer (fe)', },
 
 
     -- -- git
-    { '<leader>fp', function() Snacks.picker.projects() end, desc = 'snacks: Projects', },
+    { '<leader>fp',  function() Snacks.picker.projects() end,              desc = 'snacks: Projects', },
     -- { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
     -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'snacks: GitHub Issues (open)', },
     -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'snacks: GitHub Issues (all)', },
-    { '<leader>gp', function() Snacks.picker.gh_pr() end, desc = 'snacks: GitHub Pull Requests (open)', },
-    { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'snacks: GitHub Pull Requests (all)', },
+    { '<leader>gp',  function() Snacks.picker.gh_pr() end,                 desc = 'snacks: GitHub Pull Requests (open)', },
+    { '<leader>gP',  function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'snacks: GitHub Pull Requests (all)', },
     -- -- Grep
-    { '<leader>sla', function() Snacks.picker.lazy() end, desc = 'snacks: Search for Plugin Spec', },
+    { '<leader>sla', function() Snacks.picker.lazy() end,                  desc = 'snacks: Search for Plugin Spec', },
     -- search
-    { '<leader>si', function() Snacks.picker.icons() end, desc = 'snacks: Icons', },
+    { '<leader>si',  function() Snacks.picker.icons() end,                 desc = 'snacks: Icons', },
 
 
-    { '<leader>gg', lazygit_tab, desc = 'lazygit: (tab) Root Dir', },
-    { '<leader>gG', function() Snacks.lazygit() end, desc = 'snacks: Lazygit (cwd)', },
+    { '<leader>gg',  lazygit_tab,                                          desc = 'lazygit: (tab) Root Dir', },
+    { '<leader>gG',  function() Snacks.lazygit() end,                      desc = 'snacks: Lazygit (cwd)', },
     -- lsp
-    { ']]', function() Snacks.words.jump(vim.v.count1) end, desc = 'snacks: Next Reference', },
-    { '[[', function() Snacks.words.jump(-vim.v.count1) end, desc = 'snacks: Prev Reference', },
+    { ']]',          function() Snacks.words.jump(vim.v.count1) end,       desc = 'snacks: Next Reference', },
+    { '[[',          function() Snacks.words.jump(-vim.v.count1) end,      desc = 'snacks: Prev Reference', },
     -- TODO: decide which of these is good
     -- { 'gb', function() Snacks.picker.git_log_line() end, { desc = 'snacks: Git Blame Line' }, },
-    { 'gL', function() Snacks.picker.git_log_line() end, { desc = 'Git Blame Line' }, },
-    { 'gB', function() Snacks.gitbrowse();  end, { desc = 'snacks: Git Browse (open)' }, },
+    { 'gL',          function() Snacks.picker.git_log_line() end,          { desc = 'Git Blame Line' }, },
+    { 'gB',          function() Snacks.gitbrowse(); end,                   { desc = 'snacks: Git Browse (open)' }, },
     { 'gY', function()
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
