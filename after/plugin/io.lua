@@ -19,3 +19,11 @@ vim.api.nvim_create_user_command('IoTest', function()
     { name = 'fallow:audit', cmd = 'pnpm', args = { 'run', 'fallow:audit' } },
   })
 end, { desc = 'Run all crawler tasks' })
+
+vim.api.nvim_create_user_command('IoServers', function()
+  vim.g.overseer.run_tasks({
+    { name = 'tsc', cmd = 'tsc', args = { '-w' } },
+    { name = 'rspack', cmd = 'pnpm', args = { 'run', 'rspack' } },
+    { name = 'devserver', cmd = 'pnpm', args = { 'run', 'devserver' } },
+  })
+end, { desc = 'Run all crawler tasks' })

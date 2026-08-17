@@ -1,6 +1,28 @@
+vim.g.overseer = {
+  ---@param tasks overseer.TaskDefinition[]
+  run_tasks = function(tasks)
+    require('lazy').load({ plugins = { 'overseer.nvim' } }) -- ensure overseer
+    local overseer = require('overseer')
+
+    for _, task in ipairs(tasks) do
+      overseer.register_template({
+        name = task.name,
+        builder = function()
+          return task
+        end,
+      })
+    end
+
+    for _, task in ipairs(tasks) do
+      overseer.run_task({ name = task.name, autostart = true })
+    end
+  end,
+}
+
 return {
   {
     'stevearc/overseer.nvim',
+    name = 'overseer.nvim',
     lazy = true,
     cmd = {
       'OverseerOpen',
@@ -17,7 +39,7 @@ return {
     config = function(_, opts)
       local overseer = require('overseer')
 
-      overseer.setup(vim.tbl_deep_extend(opts, {
+      overseer.setup(vim.tbl_deep_extend('error', opts, {
         dap = false,
 
         task_list = {
@@ -116,24 +138,6 @@ return {
           })
         end,
       })
-
-      vim.g.overseer = {
-        ---@param tasks overseer.TaskDefinition[]
-        run_tasks = function(tasks)
-          for _, task in ipairs(tasks) do
-            overseer.register_template({
-              name = task.name,
-              builder = function()
-                return task
-              end,
-            })
-          end
-
-          for _, task in ipairs(tasks) do
-            overseer.run_task({ name = task.name, autostart = true })
-          end
-        end,
-      }
     end,
     -- stylua: ignore
     keys = {
