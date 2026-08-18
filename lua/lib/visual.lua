@@ -51,7 +51,7 @@ local function get_text_from_visual_selection(region, start, finish)
   if start[1] ~= finish[1] then
     lines[#lines] = vim.fn.strpart(lines[#lines], region[finish[1]][1], region[finish[1]][2] - region[finish[1]][1])
   end
-  return table.concat(lines)
+  return table.concat(lines, '\n')
 end
 
 local function replace_region_with_text(start, finish, new_lines)

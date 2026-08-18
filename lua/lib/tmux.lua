@@ -32,71 +32,47 @@ M.send_text = function(text)
   end)
 end
 
---- workmux primitives -------------------------------------------------------
-
---- Resolve the canonical git toplevel of a path (realpath of
---- `rev-parse --show-toplevel`). Cached per path to avoid repeated subprocess
---- spawns when enumerating agents. `path` may be a file or directory.
----@param path string
----@return string?
-local cache = {}
-M.git_toplevel = function(path)
-  if cache[path] then
-    return cache[path]
-  end
-  local dir = vim.fn.isdirectory(path) == 1 and path or vim.fn.fnamemodify(path, ':h')
-  local out = vim.fn.system({ 'git', '-C', dir, 'rev-parse', '--show-toplevel' })
-  if vim.v.shell_error ~= 0 then
-    cache[path] = false
-    return nil
-  end
-  local resolved = vim.trim(out):gsub('%s+$', '')
-  cache[path] = resolved
-  return resolved
-end
-
---- Parse `workmux status --json` into a list of all live agents, regardless
---- of repository. Each agent carries its worktree path (workdir), used to
---- decide relative-vs-absolute path resolution.
----@return {handle:string, branch:string, status:string, title:string, workdir:string, agent_kind:string}[]
-M.workmux_agents = function()
-  if not M.active() then
-    return {}
-  end
-
-  local output = vim.fn.system({ 'workmux', 'status', '--json' })
-  if vim.v.shell_error ~= 0 then
-    return {}
-  end
-
-  local ok, data = pcall(vim.json.decode, output)
-  if not ok or not data or not data.agents then
-    return {}
-  end
-
-  local agents = {}
-  for _, agent in ipairs(data.agents) do
-    table.insert(agents, {
-      handle = agent.worktree,
-      branch = agent.branch,
-      status = agent.status,
-      title = agent.title,
-      workdir = agent.workdir,
-      agent_kind = agent.agent_kind,
-    })
-  end
-  return agents
-end
-
---- Send text to a running workmux agent by its worktree handle.
----@param handle string
----@param text string
+--- Focus the tmux window and pane containing a given pane_id.
+--- Uses `switch-client` (like workmux) so the user's attached client is moved
+--- to the target pane even across sessions.
+---@param pane_id string
 ---@return boolean ok
-M.workmux_send = function(handle, text)
-  if not M.active() then
+M.focus_pane = function(pane_id)
+  if not M.active() or not pane_id or pane_id == '' then
     return false
   end
-  vim.fn.system({ 'workmux', 'send', handle, text })
+  vim.fn.system({ 'tmux', 'switch-client', '-t', pane_id })
+  return vim.v.shell_error == 0
+end
+
+--- Send text to a tmux pane without pressing Enter.
+--- Multiline text goes through `load-buffer` + `paste-buffer`, which preserves
+--- line breaks exactly; single-line text uses `send-keys -l` so special chars
+--- are typed as-is.
+---@param pane_id string
+---@param text string
+---@return boolean ok
+M.send_to_pane = function(pane_id, text)
+  if not M.active() or not pane_id or pane_id == '' then
+    return false
+  end
+  if text:find('\n') then
+    local tmp = vim.fn.tempname()
+    local f = io.open(tmp, 'w')
+    if not f then
+      return false
+    end
+    f:write(text)
+    f:close()
+    vim.fn.system({ 'tmux', 'load-buffer', tmp })
+    os.remove(tmp)
+    if vim.v.shell_error ~= 0 then
+      return false
+    end
+    vim.fn.system({ 'tmux', 'paste-buffer', '-t', pane_id, '-p', '-d' })
+  else
+    vim.fn.system({ 'tmux', 'send-keys', '-t', pane_id, '-l', text })
+  end
   return vim.v.shell_error == 0
 end
 
