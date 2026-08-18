@@ -1,4 +1,5 @@
-config.overseer = {
+---@class LibOverseer
+lib.overseer = {
   ---@param tasks overseer.TaskDefinition[]
   run_tasks = function(tasks)
     require('lazy').load({ plugins = { 'overseer.nvim' } }) -- ensure overseer

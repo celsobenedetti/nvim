@@ -24,6 +24,7 @@
 ---@field tmux LibTmux
 ---@field utils LibUtils
 ---@field visual LibVisual
+---@field overseer LibOverseer
 local M = {}
 
 -- Individual modules are loaded JIT when first accessed. `__index`

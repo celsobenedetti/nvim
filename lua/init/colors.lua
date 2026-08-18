@@ -1,4 +1,31 @@
-local colors_path = vim.fn.expand('~/.config/omarchy/current/theme/colors.toml')
+local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.toml')
+
+--- @class OmarchyColors
+--- @field color0 string
+--- @field mode string
+--- @field accent string
+--- @field selection string
+--- @field muted string
+--- @field background string
+--- @field dark_background string
+--- @field darker_background string
+--- @field lighter_background string
+--- @field foreground string
+--- @field dark_foreground string
+--- @field light_foreground string
+--- @field bright_foreground string
+--- @field red string
+--- @field green string
+--- @field yellow string
+--- @field blue string
+--- @field magenta string
+--- @field cyan string
+--- @field bright_red string
+--- @field bright_green string
+--- @field bright_yellow string
+--- @field bright_blue string
+--- @field bright_magenta string
+--- @field bright_cyan string
 local colors = {}
 
 local file = io.open(colors_path, 'r')
@@ -12,8 +39,8 @@ if file then
   file:close()
 end
 
-colors.bg = colors.background or colors.color0
-colors.fg = colors.foreground or colors.color7
-colors.secondary = colors.color7
+colors.bg = colors.background
+colors.fg = colors.foreground
+colors.secondary = colors.selection
 
 state.colors = colors
