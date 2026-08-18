@@ -46,6 +46,9 @@ if config.treesitter then
     group = groups.treesitter_highlight,
     pattern = config.treesitter.highlight,
     callback = function()
+      if vim.bo.filetype == 'bigfile' then
+        return
+      end
       vim.treesitter.start()
     end,
   })
