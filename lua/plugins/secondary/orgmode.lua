@@ -293,7 +293,7 @@ return {
         end)
       end)
 
-      if vim.tbl_contains(colorschemes_to_highlight, lib.colors.omarchy_colorscheme().colorscheme) then
+      if vim.tbl_contains(colorschemes_to_highlight, state.omarchy_colorscheme.colorscheme) then
         vim.schedule(set_highlights)
       end
       vim.schedule(set_keymaps)

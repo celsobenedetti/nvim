@@ -1,4 +1,4 @@
-if 'default' ~= lib.colors.omarchy_colorscheme().colorscheme then
+if 'default' ~= state.omarchy_colorscheme.colorscheme then
   return {}
 end
 

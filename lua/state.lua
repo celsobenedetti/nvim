@@ -14,6 +14,7 @@
 ---@field capture boolean
 ---@field org_current_task string?
 ---@field insert_when_entering_terminal boolean
+---@field omarchy_colorscheme table
 local M = {
   lsp = true,
   autoformat = true,

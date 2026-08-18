@@ -1,6 +1,8 @@
-local omarchy_colorscheme = lib.colors.omarchy_colorscheme()
-
-if not omarchy_colorscheme or not omarchy_colorscheme.colorscheme or not omarchy_colorscheme.colorscheme_plugin then
+if
+  not state.omarchy_colorscheme
+  or not state.omarchy_colorscheme.colorscheme
+  or not state.omarchy_colorscheme.colorscheme_plugin
+then
   return {}
 end
 
@@ -9,9 +11,9 @@ return {
   { 'LazyVim/LazyVim', enabled = false },
 
   -- add plugin from omarchy current theme and set colorscheme
-  vim.tbl_extend('keep', omarchy_colorscheme.colorscheme_plugin, {
+  vim.tbl_extend('keep', state.omarchy_colorscheme.colorscheme_plugin, {
     init = function()
-      vim.cmd('colorscheme ' .. omarchy_colorscheme.colorscheme)
+      vim.cmd('colorscheme ' .. state.omarchy_colorscheme.colorscheme)
     end,
   }),
 }

@@ -1,6 +1,4 @@
-local curr = lib.colors.omarchy_colorscheme()
-
-if 'evergarden' ~= curr.colorscheme then
+if 'evergarden' ~= state.omarchy_colorscheme.colorscheme then
   return {}
 end
 
@@ -11,10 +9,13 @@ return {
     lazy = true,
     config = function(_, opts)
       local should_override = true
-      if curr.colorscheme ~= 'evergarden' and curr.colorscheme ~= 'evergarden-summer' then
+      if
+        state.omarchy_colorscheme.colorscheme ~= 'evergarden'
+        and state.omarchy_colorscheme.colorscheme ~= 'evergarden-summer'
+      then
         return {}
       end
-      local light = curr.colorscheme_plugin.opts.theme.variant == 'summer'
+      local light = state.omarchy_colorscheme.colorscheme_plugin.opts.theme.variant == 'summer'
 
       local folded = '#1C2225'
       if light then
