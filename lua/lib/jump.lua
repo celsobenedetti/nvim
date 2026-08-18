@@ -23,15 +23,4 @@ M.down = function()
   relative_jump_with_mark('j', 'gj')
 end
 
-M.diagnostic_goto = function(next, severity)
-  severity = severity and vim.diagnostic.severity[severity] or nil
-  return function()
-    vim.diagnostic.jump({
-      severity = severity,
-      count = next and 1 or -1,
-      float = true,
-    })
-  end
-end
-
 return M
