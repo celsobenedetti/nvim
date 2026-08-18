@@ -1,85 +1,3 @@
-local function cd()
-  Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' })
-end
-
-local function workspace()
-  Snacks.picker.zoxide({
-    confirm = {
-      function(_, item)
-        vim.cmd('tabnew')
-        if item.file and item.file ~= '' then
-          lib.tab.rename(vim.fs.basename(item.file))
-        end
-      end,
-      'lcd',
-      'close',
-    },
-    title = 'workspace (zoxide)',
-  })
-end
-
---- Find the tabpage whose window shows `buf`.
----@param buf number
----@return number? tabpage when the buffer is not displayed anywhere
-local function tabpage_containing(buf)
-  for _, tp in ipairs(vim.api.nvim_list_tabpages()) do
-    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tp)) do
-      if vim.api.nvim_win_get_buf(win) == buf then
-        return tp
-      end
-    end
-  end
-  return nil
-end
-
---- Open lazygit in its own tabpage. If a lazygit tab already exists,
---- jump to it instead of opening a duplicate.
-local function lazygit_tab()
-  local tabid = lib.tab.find('lazygit')
-  if tabid then
-    vim.api.nvim_set_current_tabpage(tabid)
-    return
-  end
-
-  vim.cmd('tabnew')
-  lib.tab.rename('lazygit')
-
-  local term = Snacks.lazygit({
-    cwd = lib.cwd.root(),
-    auto_close = false,
-    win = {
-      position = 'current',
-      keys = {
-        q = function()
-          vim.cmd('tabclose')
-        end,
-      },
-    },
-  })
-
-  -- close the lazygit tab (returning to the previous one) when the process
-  -- exits, even if the user navigated to another tab in the meantime.
-  -- Also wipe the buffer: snacks caches terminals by cmd+cwd and only drops
-  -- the cache entry on BufWipeout, so leaving the (dead) buffer around would
-  -- make the next lazygit_tab() call reuse it instead of starting fresh.
-  vim.api.nvim_create_autocmd('TermClose', {
-    buffer = term.buf,
-    once = true,
-    callback = function()
-      local tp = tabpage_containing(term.buf)
-      if tp then
-        if tp ~= vim.api.nvim_get_current_tabpage() then
-          vim.api.nvim_set_current_tabpage(tp)
-        end
-        vim.cmd('tabclose')
-      end
-      if vim.api.nvim_buf_is_valid(term.buf) then
-        vim.api.nvim_buf_delete(term.buf, { force = true })
-      end
-    end,
-  })
-end
-
 return {
   'folke/snacks.nvim',
   lazy = false,
@@ -119,11 +37,6 @@ return {
         notifier = {
           top_down = false,
           enabled = true,
-          -- margin = {
-          --   top = 0,
-          --   right = 100, -- A large value to push it to the left edge
-          --   bottom = 0,
-          -- },
           filter = function(notification)
             local ignore = {
               'File is too large to send to server', -- thank you supermaven, please stfu
@@ -313,49 +226,21 @@ return {
         },
       }
     )
-
-    Snacks.config.style('lazygit', {
-      wo = {
-        winhighlight = 'Normal:SnacksTerminalNormal,NormalNC:SnacksTerminalNormalNC,WinBar:SnacksWinBar,WinBarNC:SnacksWinBarNC,FloatTitle:SnacksTitle,FloatFooter:SnacksFooter,WinSeparator:SnacksWinSeparator',
-      },
-    })
   end,
   keys = {
-
     -- stylua: ignore start
-    -- TODO: figure out cwd in terminal, if opening file with different cwd from root
-    -- keymap won't work inside terminal, opening a second terminal instead of toggling the first
-    -- { '<c-/>', function() Snacks.terminal.toggle() end, desc = 'snacks: terminal toggle', mode = { 'n', 't' }, },
     { '<leader>no',  function() Snacks.picker.notifications() end,         desc = 'snacks: notification history', },
     { '<leader>dd',  function() Snacks.bufdelete() end,                    desc = 'snacks: delete buffer', },
-    -- { '<leader>dot', dotfiles, desc = 'snacks: search dotfiles', },
     { '<leader>cR',  function() Snacks.rename.rename_file() end,           desc = 'snacks: Rename File', },
     { '<leader>lgl', function() Snacks.lazygit.log() end,                  desc = 'snacks: Lazygit Log (cwd)', },
-    { '<leader>fE',  function() Snacks.explorer { cwd = cwd.root() } end,  desc = 'snacks: Explorer Snacks (root dir)', },
+    { '<leader>fE',  function() Snacks.explorer { cwd = lib.cwd.root() } end,  desc = 'snacks: Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end,                desc = 'snacks: delete all buffers', },
-    { '<leader>cd',  cd,                                                   desc = 'snacks: zoxide (cd)', },
-    { '<leader>ws',  workspace,                                            desc = 'snacks: workspace (zoxide)', },
+    { '<leader>cd',  function () Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' }) end ,                                                   desc = 'snacks: zoxide (cd)', },
 
-    -- { '♣', Explorer, desc = 'snacks: explorer', }, -- C-S-E set in terminal
     { '<leader>fe',  function() Snacks.explorer() end,                     desc = 'snacks: explorer (fe)', },
-
-
-    -- -- git
     { '<leader>fp',  function() Snacks.picker.projects() end,              desc = 'snacks: Projects', },
-    -- { '<leader>gD', function() Snacks.picker.git_diff { base = 'origin', group = true } end, desc = 'snacks: Git Diff (origin)', },
-    -- { '<leader>gi', function() Snacks.picker.gh_issue() end, desc = 'snacks: GitHub Issues (open)', },
-    -- { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'snacks: GitHub Issues (all)', },
-    { '<leader>gp',  function() Snacks.picker.gh_pr() end,                 desc = 'snacks: GitHub Pull Requests (open)', },
-    { '<leader>gP',  function() Snacks.picker.gh_pr { state = 'all' } end, desc = 'snacks: GitHub Pull Requests (all)', },
-    -- -- Grep
     { '<leader>sla', function() Snacks.picker.lazy() end,                  desc = 'snacks: Search for Plugin Spec', },
-    -- search
     { '<leader>si',  function() Snacks.picker.icons() end,                 desc = 'snacks: Icons', },
-
-
-    { '<leader>gg',  lazygit_tab,                                          desc = 'lazygit: (tab) Root Dir', },
-    { '<leader>gG',  function() Snacks.lazygit() end,                      desc = 'snacks: Lazygit (cwd)', },
-    -- lsp
     { ']]',          function() Snacks.words.jump(vim.v.count1) end,       desc = 'snacks: Next Reference', },
     { '[[',          function() Snacks.words.jump(-vim.v.count1) end,      desc = 'snacks: Prev Reference', },
     -- TODO: decide which of these is good
@@ -366,7 +251,6 @@ return {
       Snacks.gitbrowse { open = function(url) vim.fn.setreg('+', url) end, notify = false, }
       Snacks.notify('Copied permalink to clipboard: ' .. vim.fn.getreg('+'))
     end, { desc = 'snacks: Git Browse (copy)', mode = { 'n', 'x' } }, },
-
     -- stylua: ignore end
   },
 }
