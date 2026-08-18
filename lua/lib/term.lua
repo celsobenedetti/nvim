@@ -50,10 +50,12 @@ local M = {
   end,
 
   startinsert = function()
-    if
-      not state.insert_when_entering_terminal
-      or not vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative == '' -- is not valid window
-    then
+    if not state.insert_when_entering_terminal then
+      return
+    end
+    local win = vim.api.nvim_get_current_win()
+    local is_floating = vim.api.nvim_win_get_config(win).relative ~= ''
+    if is_floating then
       return
     end
     vim.cmd('startinsert')
