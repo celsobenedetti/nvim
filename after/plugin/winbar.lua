@@ -7,7 +7,6 @@
 --- 2. Path is relative to cwd when the file lives under it, absolute otherwise.
 --- 3. ft icons resolved via mini.icons.
 
-
 local SEP = ((config.icons or {}).separator or {}).right or '  '
 
 -- specify winbar string or function for specific filetypes

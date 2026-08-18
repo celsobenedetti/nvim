@@ -147,27 +147,47 @@ do
   end
 
   -- Test: no counts set
-  mock.setup({ vim = { g = { branch_commits_behind_origin = nil, branch_commits_ahead_of_origin = nil, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      g = { branch_commits_behind_origin = nil, branch_commits_ahead_of_origin = nil, icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_empty(_branch_sync_status(), 'no counts set')
   mock.teardown({ 'vim' })
 
   -- Test: zero values
-  mock.setup({ vim = { g = { branch_commits_behind_origin = 0, branch_commits_ahead_of_origin = 0, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      g = { branch_commits_behind_origin = 0, branch_commits_ahead_of_origin = 0, icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_empty(_branch_sync_status(), 'zero counts')
   mock.teardown({ 'vim' })
 
   -- Test: behind only
-  mock.setup({ vim = { g = { branch_commits_behind_origin = 3, branch_commits_ahead_of_origin = 0, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      g = { branch_commits_behind_origin = 3, branch_commits_ahead_of_origin = 0, icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_eq(_branch_sync_status(), hl('TextSecondary', ' 3'), '3 behind, 0 ahead')
   mock.teardown({ 'vim' })
 
   -- Test: ahead only
-  mock.setup({ vim = { g = { branch_commits_behind_origin = 0, branch_commits_ahead_of_origin = 5, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      g = { branch_commits_behind_origin = 0, branch_commits_ahead_of_origin = 5, icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_eq(_branch_sync_status(), hl('TextSecondary', '5'), '0 behind, 5 ahead')
   mock.teardown({ 'vim' })
 
   -- Test: both ahead and behind
-  mock.setup({ vim = { g = { branch_commits_behind_origin = 2, branch_commits_ahead_of_origin = 1, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      g = { branch_commits_behind_origin = 2, branch_commits_ahead_of_origin = 1, icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_eq(_branch_sync_status(), hl('TextSecondary', ' 21'), '2 behind, 1 ahead')
   mock.teardown({ 'vim' })
 end
@@ -193,8 +213,12 @@ do
     vim = {
       g = { statusline_show_filepath = false, hl = MOCK_HL },
       b = {},
-      fn = { expand = function() return 'test.lua' end },
-    }
+      fn = {
+        expand = function()
+          return 'test.lua'
+        end,
+      },
+    },
   })
   assert_empty(_file(), 'statusline_show_filepath = false')
   mock.teardown({ 'vim' })
@@ -204,8 +228,12 @@ do
     vim = {
       g = { statusline_show_filepath = true, hl = MOCK_HL },
       b = {},
-      fn = { expand = function() return 'after/plugin/statusline.lua' end },
-    }
+      fn = {
+        expand = function()
+          return 'after/plugin/statusline.lua'
+        end,
+      },
+    },
   })
   local expected = hl('TextSecondary', 'after/plugin/statusline.lua')
   assert_eq(_file(), expected, 'filepath shown')
@@ -216,8 +244,12 @@ do
     vim = {
       g = { statusline_show_filepath = true, hl = MOCK_HL },
       b = {},
-      fn = { expand = function() return '' end },
-    }
+      fn = {
+        expand = function()
+          return ''
+        end,
+      },
+    },
   })
   assert_eq(_file(), hl('TextSecondary', ''), 'empty relative path')
   mock.teardown({ 'vim' })
@@ -256,28 +288,53 @@ do
   mock.teardown({ 'vim' })
 
   -- Test: all zero
-  mock.setup({ vim = { b = { gitsigns_status_dict = { added = 0, changed = 0, removed = 0 } }, g = { icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      b = { gitsigns_status_dict = { added = 0, changed = 0, removed = 0 } },
+      g = { icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_empty(_git_status(), 'all zeros')
   mock.teardown({ 'vim' })
 
   -- Test: some changes
-  mock.setup({ vim = { b = { gitsigns_status_dict = { added = 3, changed = 2, removed = 1 } }, g = { icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      b = { gitsigns_status_dict = { added = 3, changed = 2, removed = 1 } },
+      g = { icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   local expected = hl('GitSignsAdd', ' +3') .. hl('GitSignsChange', ' ~2') .. hl('GitSignsDelete', ' -1')
   assert_eq(_git_status(), expected, '3 added, 2 modified, 1 removed')
   mock.teardown({ 'vim' })
 
   -- Test: only added
-  mock.setup({ vim = { b = { gitsigns_status_dict = { added = 5, changed = 0, removed = 0 } }, g = { icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      b = { gitsigns_status_dict = { added = 5, changed = 0, removed = 0 } },
+      g = { icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_eq(_git_status(), hl('GitSignsAdd', ' +5'), 'only added')
   mock.teardown({ 'vim' })
 
   -- Test: only modified
-  mock.setup({ vim = { b = { gitsigns_status_dict = { added = 0, changed = 7, removed = 0 } }, g = { icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      b = { gitsigns_status_dict = { added = 0, changed = 7, removed = 0 } },
+      g = { icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_eq(_git_status(), hl('GitSignsChange', ' ~7'), 'only modified')
   mock.teardown({ 'vim' })
 
   -- Test: only removed
-  mock.setup({ vim = { b = { gitsigns_status_dict = { added = 0, changed = 0, removed = 2 } }, g = { icons = MOCK_ICONS, hl = MOCK_HL } } })
+  mock.setup({
+    vim = {
+      b = { gitsigns_status_dict = { added = 0, changed = 0, removed = 2 } },
+      g = { icons = MOCK_ICONS, hl = MOCK_HL },
+    },
+  })
   assert_eq(_git_status(), hl('GitSignsDelete', ' -2'), 'only removed')
   mock.teardown({ 'vim' })
 
@@ -298,10 +355,18 @@ do
       count[diagnostic.severity] = count[diagnostic.severity] + 1
     end
     local result = ''
-    if count[1] > 0 then result = result .. hl('DiagnosticError', ' ' .. tostring(count[1]) .. ' ') end
-    if count[2] > 0 then result = result .. hl('DiagnosticWarn', ' ' .. tostring(count[2]) .. ' ') end
-    if count[3] > 0 then result = result .. hl('DiagnosticInfo', ' ' .. tostring(count[3]) .. ' ') end
-    if count[4] > 0 then result = result .. hl('DiagnosticHint', ' ' .. tostring(count[4]) .. ' ') end
+    if count[1] > 0 then
+      result = result .. hl('DiagnosticError', ' ' .. tostring(count[1]) .. ' ')
+    end
+    if count[2] > 0 then
+      result = result .. hl('DiagnosticWarn', ' ' .. tostring(count[2]) .. ' ')
+    end
+    if count[3] > 0 then
+      result = result .. hl('DiagnosticInfo', ' ' .. tostring(count[3]) .. ' ')
+    end
+    if count[4] > 0 then
+      result = result .. hl('DiagnosticHint', ' ' .. tostring(count[4]) .. ' ')
+    end
     return result
   end
 
@@ -309,9 +374,17 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-      diagnostic = { get = function() return {} end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+      diagnostic = {
+        get = function()
+          return {}
+        end,
+      },
+    },
   })
   assert_empty(_diagnostics(), 'no diagnostics')
   mock.teardown({ 'vim' })
@@ -321,9 +394,17 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-      diagnostic = { get = function() return { diagnostic_error, diagnostic_error } end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+      diagnostic = {
+        get = function()
+          return { diagnostic_error, diagnostic_error }
+        end,
+      },
+    },
   })
   assert_eq(_diagnostics(), hl('DiagnosticError', ' 2 '), '2 errors')
   mock.teardown({ 'vim' })
@@ -332,7 +413,11 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
       diagnostic = {
         get = function()
           return {
@@ -344,9 +429,9 @@ do
             { severity = 4 },
             { severity = 4 },
           }
-        end
+        end,
       },
-    }
+    },
   })
   local expected = hl('DiagnosticError', ' 1 ')
     .. hl('DiagnosticWarn', ' 2 ')
@@ -378,10 +463,26 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-      lsp = { get_clients = function() return {} end },
-      fn = { reverse = function(t) local r = {}; for i=#t,1,-1 do r[#r+1]=t[i] end; return r end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+      lsp = {
+        get_clients = function()
+          return {}
+        end,
+      },
+      fn = {
+        reverse = function(t)
+          local r = {}
+          for i = #t, 1, -1 do
+            r[#r + 1] = t[i]
+          end
+          return r
+        end,
+      },
+    },
   })
   assert_empty(_lsps(), 'no LSP clients')
   mock.teardown({ 'vim' })
@@ -390,10 +491,26 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-      lsp = { get_clients = function() return { { name = 'lua_ls' } } end },
-      fn = { reverse = function(t) local r = {}; for i=#t,1,-1 do r[#r+1]=t[i] end; return r end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+      lsp = {
+        get_clients = function()
+          return { { name = 'lua_ls' } }
+        end,
+      },
+      fn = {
+        reverse = function(t)
+          local r = {}
+          for i = #t, 1, -1 do
+            r[#r + 1] = t[i]
+          end
+          return r
+        end,
+      },
+    },
   })
   assert_eq(_lsps(), hl('Title', ' ') .. hl('TextSecondary', 'lua_ls'), 'single LSP')
   mock.teardown({ 'vim' })
@@ -402,10 +519,26 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-      lsp = { get_clients = function() return { { name = 'lua_ls' }, { name = 'stylua' } } end },
-      fn = { reverse = function(t) local r = {}; for i=#t,1,-1 do r[#r+1]=t[i] end; return r end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+      lsp = {
+        get_clients = function()
+          return { { name = 'lua_ls' }, { name = 'stylua' } }
+        end,
+      },
+      fn = {
+        reverse = function(t)
+          local r = {}
+          for i = #t, 1, -1 do
+            r[#r + 1] = t[i]
+          end
+          return r
+        end,
+      },
+    },
   })
   assert_eq(_lsps(), hl('Title', ' ') .. hl('TextSecondary', 'stylua, lua_ls'), 'multiple LSPs reversed')
   mock.teardown({ 'vim' })
@@ -440,7 +573,9 @@ do
     package.loaded['conform'] = nil
     package.preload['conform'] = function()
       return {
-        list_formatters_for_buffer = function() return formatters_for_buffer end,
+        list_formatters_for_buffer = function()
+          return formatters_for_buffer
+        end,
       }
     end
   end
@@ -449,8 +584,12 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+    },
   })
   package.loaded['conform'] = nil
   package.preload['conform'] = nil
@@ -461,8 +600,12 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+    },
   })
   setup_conform({})
   assert_empty(_formatters(), 'no formatters for buffer')
@@ -472,8 +615,12 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+    },
   })
   setup_conform({ 'stylua' })
   assert_eq(_formatters(), hl('Title', ' ') .. hl('TextSecondary', 'stylua'), 'one formatter')
@@ -483,8 +630,12 @@ do
   mock.setup({
     vim = {
       g = { icons = MOCK_ICONS, hl = MOCK_HL },
-      api = { nvim_get_current_buf = function() return 1 end },
-    }
+      api = {
+        nvim_get_current_buf = function()
+          return 1
+        end,
+      },
+    },
   })
   setup_conform({ 'stylua', 'prettier' })
   assert_eq(_formatters(), hl('Title', ' ') .. hl('TextSecondary', 'stylua, prettier'), 'multiple formatters')
@@ -595,9 +746,13 @@ do
   mock.setup({
     vim = {
       v = { hlsearch = 0 },
-      fn = { searchcount = function() return {} end },
+      fn = {
+        searchcount = function()
+          return {}
+        end,
+      },
       g = { hl = MOCK_HL },
-    }
+    },
   })
   assert_eq(_search_results(), nil, 'hlsearch = 0 returns nil')
   mock.teardown({ 'vim' })
@@ -606,9 +761,13 @@ do
   mock.setup({
     vim = {
       v = { hlsearch = 1 },
-      fn = { searchcount = function() return { incomplete = 1, current = 0, total = 0 } end },
+      fn = {
+        searchcount = function()
+          return { incomplete = 1, current = 0, total = 0 }
+        end,
+      },
       g = { hl = MOCK_HL },
-    }
+    },
   })
   assert_eq(_search_results(), hl('@comment', '[?/?]'), 'incomplete search')
   mock.teardown({ 'vim' })
@@ -617,9 +776,13 @@ do
   mock.setup({
     vim = {
       v = { hlsearch = 1 },
-      fn = { searchcount = function() return { incomplete = 0, current = 0, total = 0 } end },
+      fn = {
+        searchcount = function()
+          return { incomplete = 0, current = 0, total = 0 }
+        end,
+      },
       g = { hl = MOCK_HL },
-    }
+    },
   })
   assert_eq(_search_results(), nil, 'hlsearch=1, total=0 returns nil')
   mock.teardown({ 'vim' })
@@ -628,9 +791,13 @@ do
   mock.setup({
     vim = {
       v = { hlsearch = 1 },
-      fn = { searchcount = function() return { incomplete = 0, current = 2, total = 5 } end },
+      fn = {
+        searchcount = function()
+          return { incomplete = 0, current = 2, total = 5 }
+        end,
+      },
       g = { hl = MOCK_HL },
-    }
+    },
   })
   assert_eq(_search_results(), hl('@comment', '[2/5]'), 'hlsearch active, 2/5 matches')
   mock.teardown({ 'vim' })
@@ -638,11 +805,7 @@ end
 
 -- ============================================================
 -- Summary
-io.write(string.format(
-  '\n\n%d / %d tests passed\n',
-  tests_passed,
-  tests_run
-))
+io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
 
 if tests_passed ~= tests_run then
   os.exit(1)

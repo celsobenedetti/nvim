@@ -184,8 +184,8 @@ vim.api.nvim_create_autocmd('TabNew', {
         return
       end
       local name = lib.tab.consume_next_name()
-          or lib.tab.name_from_command(lib.cmd.get_last_command())
-          or default_tabname(ft)
+        or lib.tab.name_from_command(lib.cmd.get_last_command())
+        or default_tabname(ft)
       if name then
         lib.tab.rename(name, tabid)
       end

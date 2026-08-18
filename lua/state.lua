@@ -20,7 +20,7 @@ local M = {
   completion = true,
   statusline_show_filepath = true,
   statusline_show_position = false,
-  statusline_show_time = false
+  statusline_show_time = false,
 }
 
 return M

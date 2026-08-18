@@ -8,7 +8,7 @@ local M = {
   colorcolumn = 80, -- column highlighted by the colorcolumn toggle (<leader>u|)
 
   icons = {
-    lsp = '',    -- ',
+    lsp = '', -- ',
     format = '', -- ' ',
     notes = ' ',
     clock = ' ',
@@ -168,7 +168,7 @@ local M = {
       CALENDAR = os.getenv('ORG_CALENDAR') or '',
       PURCHASES = os.getenv('ORG_PURCHASES') or '/home/celso/notes/0 org/Purchases.org',
     },
-  }
+  },
 }
 
 M.web = {
@@ -215,8 +215,6 @@ treesitter.ensure_installed = vim.list_extend(vim.deepcopy(treesitter.highlight)
   'xml',
 })
 M.treesitter = treesitter
-
-
 
 local keys = {
   ['<C-S-g>'] = '<C-S-g>',
