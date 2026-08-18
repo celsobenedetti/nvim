@@ -24,6 +24,12 @@ end
 ---Aborts the quit and reports if a genuine write fails.
 M.wqa = function()
   local errors = {}
+
+  if #lib.overseer.get_active_tasks() > 0 then
+    vim.notify('Cannot quit while Overseer tasks are running', vim.log.levels.ERROR, { title = 'wqa' })
+    return
+  end
+
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf) then
       local name = vim.api.nvim_buf_get_name(buf)

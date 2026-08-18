@@ -162,7 +162,8 @@ local modules = {
     if not count or count == 0 then
       return ''
     end
-    return hl(config.hl.text.highlight, config.icons.overseer .. count)
+    local text = '  ' .. count .. ' running tasks '
+    return hl(config.hl.text.search, text)
   end,
 
   _terminal = function()

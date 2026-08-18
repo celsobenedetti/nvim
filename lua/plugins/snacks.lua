@@ -35,7 +35,7 @@ return {
           end,
         },
         notifier = {
-          top_down = false,
+          top_down = true,
           enabled = true,
           filter = function(notification)
             local ignore = {

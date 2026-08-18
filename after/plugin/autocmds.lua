@@ -206,3 +206,13 @@ vim.api.nvim_create_autocmd('VimEnter', {
     end
   end,
 })
+
+vim.api.nvim_create_autocmd('ExitPre', {
+  desc = 'notes: VimEnter setup callback for notes dir',
+  callback = function()
+    if #lib.overseer.get_active_tasks() > 0 then
+      vim.notify('Cannot quit while Overseer tasks are running', vim.log.levels.ERROR, { title = 'wqa' })
+      vim.bo.modified = true
+    end
+  end,
+})
