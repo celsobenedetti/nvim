@@ -11,6 +11,7 @@ local SEP = ((config.icons or {}).separator or {}).right or '  '
 
 -- specify winbar string or function for specific filetypes
 local SPECIAL_FILETYPES = {
+  fugitive = '  fugitive',
   snacks_picker_input = '',
   terminal = function()
     local text = '  terminal'
