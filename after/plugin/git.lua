@@ -10,7 +10,7 @@ local keymaps = function()
   -- stylua: ignore start
   vim.keymap.set('n', 'gs', ":Git<CR>", { desc = 'git: status (fugitive)' })
   vim.keymap.set('n', '<leader>gs', function() require("fzf-lua").git_status(lib.fzf.e()) end, { desc = 'git: status (fzf)' })
-  vim.keymap.set('n', 'gp', ':Git! push<CR>', { desc = 'git: push' })
+  vim.keymap.set('n', 'gp', ':Git push<CR>', { desc = 'git: push' })
   vim.keymap.set('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
   vim.keymap.set('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
   vim.keymap.set('n', 'gca', function() vim.cmd("tab Git commit --amend") end, { desc = 'git: Git commit --amend' })
