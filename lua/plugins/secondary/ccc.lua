@@ -2,7 +2,7 @@ return {
   'https://github.com/uga-rosa/ccc.nvim',
   cmd = {
     'CccPick',
-    'CccConvert',
+    'PickColor',
   },
   config = function()
     require('ccc').setup({
@@ -10,5 +10,9 @@ return {
       alpha_show = 'hide',
       mappings = { ['a'] = function() end },
     })
+
+    vim.api.nvim_create_user_command('PickColor', function()
+      vim.cmd('CccPick')
+    end, { desc = 'Pick a color' })
   end,
 }

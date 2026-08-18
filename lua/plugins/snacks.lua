@@ -35,7 +35,7 @@ return {
           end,
         },
         notifier = {
-          top_down = true,
+          top_down = false,
           enabled = true,
           filter = function(notification)
             local ignore = {
@@ -236,7 +236,7 @@ return {
     { '<leader>fE',  function() Snacks.explorer { cwd = lib.cwd.root() } end,  desc = 'snacks: Explorer Snacks (root dir)', },
     { '<leader>dab', function() Snacks.bufdelete.all() end,                desc = 'snacks: delete all buffers', },
     { '<leader>cd',  function () Snacks.picker.zoxide({ confirm = { 'cd', 'lcd', 'close' }, title = 'cd (zoxide)' }) end ,                                                   desc = 'snacks: zoxide (cd)', },
-
+    { '<leader>sH', function() Snacks.picker.highlights() end, desc = 'fzf: Highlights', },
     { '<leader>fe',  function() Snacks.explorer() end,                     desc = 'snacks: explorer (fe)', },
     { '<leader>fp',  function() Snacks.picker.projects() end,              desc = 'snacks: Projects', },
     { '<leader>sla', function() Snacks.picker.lazy() end,                  desc = 'snacks: Search for Plugin Spec', },

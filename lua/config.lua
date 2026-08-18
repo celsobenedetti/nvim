@@ -120,6 +120,8 @@ local M = {
     'startuptime',
     'tsplayground',
     'vim',
+    'fugitive',
+    'git',
   },
 
   --- check root file for specific stack
@@ -176,6 +178,7 @@ M.web = {
 local treesitter = {
   --- filetypes to highlight with treesitter
   highlight = {
+    'css',
     'gitcommit',
     'go',
     'javascript',

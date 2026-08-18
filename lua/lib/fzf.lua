@@ -48,7 +48,7 @@ M.e = function(opts)
     fzf_opts = { ['--layout'] = 'default' },
     winopts = function()
       return {
-        row = 1, -- bottom edge
+        row = 0.96, -- bottom edge
         col = 0, -- left edge
         width = 1,
         height = 0.3,
