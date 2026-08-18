@@ -16,7 +16,7 @@ local function create_note_from_selection()
       title = title,
     })
     :save({
-      path = config.env.notes.OBSIDIAN_INBOX .. '/' .. title .. '.md',
+      path = string.format('%s/%s.md', config.obsidian.inbox, title),
       insert_frontmatter = false,
       update_content = function()
         return { '' }
@@ -37,14 +37,14 @@ return {
   cmd = { 'Obsidian' },
   event = function()
     return {
-      'BufReadPre ' .. config.env.notes.NOTES .. '/**/*',
-      'BufNewFile ' .. config.env.notes.NOTES .. '/**/*',
-      'BufReadPre ' .. config.env.notes.OBSIDIAN_VAULT_WORK .. '/**/*',
-      'BufNewFile ' .. config.env.notes.OBSIDIAN_VAULT_WORK .. '/**/*',
+      'BufReadPre ' .. config.dirs.notes .. '/**/*',
+      'BufNewFile ' .. config.dirs.notes .. '/**/*',
+      'BufReadPre ' .. config.dirs.work_notes .. '/**/*',
+      'BufNewFile ' .. config.dirs.work_notes .. '/**/*',
     }
   end,
   keys = function()
-    local vault = config.env.notes.NOTES
+    local vault = config.dirs.notes
     local icons = (config.icons or {}).notes or ''
 
     return {
@@ -191,8 +191,8 @@ return {
     }
   end,
   config = function()
-    local vault = config.env.notes.OBSIDIAN_VAULT
-    local inbox_subdir = config.env.notes.OBSIDIAN_INBOX:gsub(vault .. '/', '')
+    local vault = config.dirs.garden
+    local inbox_subdir = config.obsidian.inbox
 
     local Path = require('obsidian.path')
 
@@ -200,7 +200,7 @@ return {
       legacy_commands = false,
       workspaces = {
         { name = 'garden', path = vault },
-        { name = 'work', path = config.env.notes.OBSIDIAN_VAULT_WORK },
+        { name = 'work', path = config.dirs.work_notes },
       },
       notes_subdir = inbox_subdir,
       new_notes_location = 'notes_subdir',
@@ -276,7 +276,7 @@ return {
     -- templates, and LSP use the correct directory)
     for _, ws in ipairs(Obsidian.workspaces) do
       if ws.name == 'work' then
-        ws.root = Path.new(config.env.notes.OBSIDIAN_VAULT_WORK):resolve({ strict = true })
+        ws.root = Path.new(config.dirs.work_notes()):resolve({ strict = true })
         if Obsidian.workspace and Obsidian.workspace.name == 'work' then
           Obsidian.dir = ws.root
         end

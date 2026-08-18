@@ -90,7 +90,7 @@ local colorschemes_to_highlight = {
 local TMP_CURRENT_TASK_FILE = '/tmp/org_current_task'
 
 local agenda_files = {
-  config.env.notes.ORG .. '/**/*',
+  config.dirs.org .. '/**/*',
 }
 
 local function set_highlights()
@@ -168,7 +168,7 @@ return {
       {
         '<leader>ap',
         function()
-          lib.org_fzf.refile_to(config.env.org.REFERENCES .. '/datalake.org', 'prompts')
+          lib.org_fzf.refile_to(config.org.references .. '/datalake.org', 'prompts')
         end,
         desc = 'org: refile heading to prompts',
       },

@@ -1,6 +1,9 @@
 require('init')
 
-require('lazy').setup({
+vim.cmd.packadd('cfilter')
+vim.cmd.packadd('nvim.undotree')
+
+require('lazy').setup(vim.tbl_deep_extend('force', config.lazy, {
   spec = {
     { import = 'plugins' },
     { import = 'plugins.secondary' },
@@ -20,21 +23,4 @@ require('lazy').setup({
       },
     },
   },
-  -- disabled: polls every file under lua/plugins/** every 2s and, on change,
-  -- synchronously reloads all plugin specs on the main loop. Editing any
-  -- plugin config file while a terminal-backed UI (fzf-lua, etc.) is open
-  -- stalls the event loop mid-redraw and corrupts its screen buffer.
-  change_detection = { enabled = false },
-  defaults = {
-    lazy = false,
-    version = false, -- always use the latest git commit
-  },
-  checker = {
-    enabled = true, -- check for plugin updates periodically
-    notify = false, -- notify on update
-  },
-  performance = config.lazy_nvim_config.performance,
-})
-
-vim.cmd.packadd('cfilter')
-vim.cmd.packadd('nvim.undotree')
+}))

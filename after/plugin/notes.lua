@@ -9,10 +9,10 @@ vim.keymap.set('n', config.keys['<C-S-N>'], function()
         '!.archives',
         -- '!' .. config.env.notes.ASSETS_DIR .. '/*',
         '-v',
-        string.format('"%s"', config.env.notes.GREP_IGNORE), -- quotes are indeed needed here for complex regex
-        config.env.notes.NOTES,
+        string.format('"%s"', config.env.GREP_IGNORE), -- quotes are indeed needed here for complex regex
+        config.dirs.notes,
       },
-      cwd = config.env.notes.NOTES,
+      cwd = config.dirs.notes,
     })
   end)
 end, { desc = 'search all notes' })
