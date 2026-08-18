@@ -43,7 +43,15 @@ local M = {
     },
   },
 
+  obsidian = {
+    inbox = os.getenv('OBSIDIAN_INBOX') or '',
+  },
+
   dirs = {
+    notes = os.getenv('NOTES') or '',
+    garden = os.getenv('GARDEN') or '',
+    work_notes = os.getenv('WORK_NOTES') or '',
+    org = os.getenv('ORG') or '',
     work = {
       edge_server = os.getenv('EDGE_SERVER') or '',
       airflow_pipeline = os.getenv('AIRFLOW_PIPELINE') or '',
@@ -118,7 +126,20 @@ local M = {
     vue = 'vite.config.ts',
   },
 
-  lazy_nvim_config = {
+  lazy = {
+    -- disabled: polls every file under lua/plugins/** every 2s and, on change,
+    -- synchronously reloads all plugin specs on the main loop. Editing any
+    -- plugin config file while a terminal-backed UI (fzf-lua, etc.) is open
+    -- stalls the event loop mid-redraw and corrupts its screen buffer.
+    change_detection = { enabled = false },
+    defaults = {
+      lazy = false,
+      version = false, -- always use the latest git commit
+    },
+    checker = {
+      enabled = true, -- check for plugin updates periodically
+      notify = false, -- notify on update
+    },
     performance = {
       rtp = {
         disabled_plugins = {
@@ -135,44 +156,20 @@ local M = {
     },
   },
 
+  org = {
+    inbox = os.getenv('ORG_INBOX') or '',
+    work = os.getenv('ORG_WORK') or '',
+    references = os.getenv('ORG_REFERENCES') or '',
+  },
   env = {
-    WORK = os.getenv('WORK') or '',
-    work = {
-      jira = os.getenv('WORK_JIRA') or '',
-    },
-    JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN') or '',
-
-    HOME = os.getenv('HOME') or '',
-    quartz = 'http://localhost:42069',
-
-    notes = {
-      NOTES = os.getenv('NOTES') or '',
-      OBSIDIAN_VAULT = os.getenv('OBSIDIAN_VAULT') or '',
-      OBSIDIAN_VAULT_WORK = os.getenv('OBSIDIAN_VAULT_WORK') or '',
-      OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
-      ORG = os.getenv('ORG') or '',
-      PROJECTS = os.getenv('PROJECTS') or '',
-      ARCHIVES = os.getenv('ARCHIVES') or '',
-
-      ASSETS_DIR = os.getenv('ASSETS_DIR') or '',
-      ASSETS = os.getenv('ASSETS') or '',
-      ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
-
-      GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
-    },
-    org = {
-      INBOX = os.getenv('ORG_INBOX') or '',
-      MAIN = os.getenv('ORG_MAIN') or '',
-      WORK = os.getenv('ORG_WORK') or '',
-      REFERENCES = os.getenv('ORG_REFERENCES') or '',
-      CALENDAR = os.getenv('ORG_CALENDAR') or '',
-      PURCHASES = os.getenv('ORG_PURCHASES') or '/home/celso/notes/0 org/Purchases.org',
-    },
+    WORK_JIRA = os.getenv('WORK_JIRA') or '',
+    GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
+    org = {},
   },
 }
 
 M.web = {
-  jira = M.env.work.jira or '',
+  jira = M.env.WORK_JIRA or '',
 }
 
 local treesitter = {

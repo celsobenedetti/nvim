@@ -1,7 +1,6 @@
---- Single source of truth for `lib.*` submodules, exposed globally as `lib`
----
---- These are functions shared across files.
---- Data/state belongs in the state module, not here.
+--- Libs are individual modules holding util functions that
+--- are shared across files.
+--- Individual modules are loaded JIT when first accessed.
 ---
 ---@class Lib
 ---@field buffers LibBuffers
@@ -27,9 +26,8 @@
 ---@field overseer LibOverseer
 local M = {}
 
--- Individual modules are loaded JIT when first accessed. `__index`
--- fires on a miss, so each submodule is `require`d at most once.
 setmetatable(M, {
+  -- `__index` fires on a miss, so each submodule is `require` at most once.
   __index = function(t, key)
     local mod = require('lib.' .. key)
     rawset(t, key, mod)

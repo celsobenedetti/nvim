@@ -11,7 +11,7 @@ M.focus_or_create_notes_tab = function(fn)
   if not tab_id then
     vim.cmd.tabnew()
     tab.rename(TABNAME)
-    vim.cmd.lcd(config.env.notes.NOTES)
+    vim.cmd.lcd(config.dirs.notes)
     vim.cmd.tabmove('$')
   else
     vim.api.nvim_set_current_win(vim.api.nvim_tabpage_get_win(tab_id))
@@ -23,7 +23,7 @@ M.focus_or_create_notes_tab = function(fn)
 end
 
 M.is_notes_dir = function()
-  return vim.fn.getcwd():find(config.env.notes.NOTES)
+  return vim.fn.getcwd():find(config.dirs.notes)
 end
 
 return M

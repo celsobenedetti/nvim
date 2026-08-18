@@ -84,7 +84,7 @@ end
 local notes = config.env and config.env.notes
 if notes then
   local filepath = vim.fn.expand('%:p')
-  if filepath:find(notes.NOTES, 1, true) == 1 then
+  if filepath:find(config.dirs.notes, 1, true) == 1 then
     vim.keymap.set('n', '<CR>', function()
       local line = vim.api.nvim_get_current_line()
       local col = vim.api.nvim_win_get_cursor(0)[2]

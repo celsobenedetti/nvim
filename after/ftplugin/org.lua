@@ -6,11 +6,11 @@
 
 local function obsidian_follow_wikilink()
   local notes = config.env and config.env.notes
-  if not notes or not notes.NOTES then
+  if not notes or not config.dirs.notes then
     return false
   end
   local filepath = vim.fn.expand('%:p')
-  if filepath == '' or filepath:find(notes.NOTES, 1, true) ~= 1 then
+  if filepath == '' or filepath:find(config.dirs.notes, 1, true) ~= 1 then
     return false
   end
   local ok, api = pcall(require, 'obsidian.api')
@@ -29,7 +29,7 @@ end
 do
   local notes = config.env and config.env.notes
   local filepath = vim.fn.expand('%:p')
-  if notes and notes.NOTES and filepath ~= '' and filepath:find(notes.NOTES, 1, true) == 1 then
+  if notes and config.dirs.notes and filepath ~= '' and filepath:find(config.dirs.notes, 1, true) == 1 then
     vim.b.obsidian_buffer = true
     vim.bo.includeexpr = "v:lua.require('obsidian.link').includeexpr(v:fname)"
     pcall(function()

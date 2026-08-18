@@ -8,7 +8,7 @@ end
 local e = lib.fzf.e
 
 local function notes()
-  fzf_lua().files(e({ cwd = '~/notes' }))
+  fzf_lua().files(e({ cwd = config.dirs.notes }))
 end
 
 return {
@@ -97,7 +97,7 @@ return {
       '<leader>zz',
       function()
         require('fzf-lua').files({
-          cwd = '~/notes/obsidian/',
+          cwd = config.dirs.garden,
           profile = 'fzf-vim',
           previewer = false,
           winopts = { height = 0.4, width = 0.6 },
