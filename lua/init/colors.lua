@@ -43,4 +43,14 @@ colors.bg = colors.background
 colors.fg = colors.foreground
 colors.secondary = colors.selection
 
+local themes = require('plugins.theme')
+
+local colorscheme = themes[2].opts.colorscheme
+local colorscheme_plugin = themes[1]
+
+state.omarchy_colorscheme = {
+  colorscheme = colorscheme or 'default',
+  colorscheme_plugin = colorscheme_plugin or {},
+}
+
 state.colors = colors
