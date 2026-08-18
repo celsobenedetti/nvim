@@ -1,5 +1,4 @@
 local cwd = lib.cwd
-local strings = lib.strings
 local keys = lib.keys
 
 ---@class LibFs
@@ -31,14 +30,16 @@ M.mv_file = function()
       end
 
       local original_buffer = vim.api.nvim_get_current_buf()
+      local current_file = vim.api.nvim_buf_get_name(original_buffer)
+      local new_file = vim.fs.joinpath(item.dir, vim.fn.fnamemodify(current_file, ':t'))
 
-      destination = strings.shellescape(destination)
-      local current_file = strings.shellescape(vim.fn.expand('%'))
+      local ok, err = vim.uv.fs_rename(current_file, new_file)
+      if not ok then
+        Snacks.notify.error(('Failed to move %s to %s: %s'):format(current_file, new_file, err))
+        return
+      end
 
-      vim.cmd('silent! !mv ' .. current_file .. ' ' .. destination)
-      local new_file = strings.shellescape((vim.fn.expand('%:t')))
-
-      vim.cmd('e ' .. destination .. '/' .. new_file)
+      vim.cmd('e ' .. vim.fn.fnameescape(new_file))
       vim.api.nvim_buf_delete(original_buffer, { force = true })
     end,
   })
