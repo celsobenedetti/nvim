@@ -107,9 +107,11 @@ local keymaps = function()
     })
   end, { desc = 'CodeDiff: compare branch with HEAD' })
 
-  vim.keymap.set('n', config.keys['<C-S-O>'], function()
-    require('fzf-lua').lsp_document_symbols()
-  end)
+  if config.keys['<C-S-O>'] then
+    vim.keymap.set('n', config.keys['<C-S-O>'], function()
+      require('fzf-lua').lsp_document_symbols()
+    end)
+  end
 end
 
 keymaps()
