@@ -1,4 +1,8 @@
-local wqa = 'silent! wqa'
+-- Graceful :wqa that writes all valid buffers and quits, ignoring
+-- inconsequential ones (unnamed buffers, etc)
+vim.api.nvim_create_user_command('Wqa', function()
+  lib.buffers.wqa()
+end, { desc = 'write all valid buffers and quit' })
 
 local abbreviations = {
   W = 'w',
@@ -6,8 +10,8 @@ local abbreviations = {
   WA = 'wa',
   Wq = 'wq',
   WQ = 'wq',
-  Wqa = wqa,
-  -- wqa = wqa,
+  Wqa = 'Wqa',
+  wqa = 'Wqa',
   Q = 'q',
   Qa = 'qa',
   Bd = 'bd',

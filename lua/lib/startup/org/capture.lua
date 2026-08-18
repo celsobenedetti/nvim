@@ -31,7 +31,7 @@ vim.keymap.set('n', 'R', function()
   local orgmode = require('orgmode')
   if orgmode.capture then
     orgmode.capture:refile_to_destination():next(function()
-      vim.cmd('wqa')
+      lib.buffers.wqa()
     end)
   end
 end)
