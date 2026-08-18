@@ -160,8 +160,6 @@ vim.keymap.set('n', 'ZZ', function()
   Snacks.notify.warn("Please don't use ZZ")
 end, { silent = true, desc = 'Disable ZZ' })
 
-vim.keymap.set('n', '<leader>gn', lib.orgmode.goto_current_task, { desc = 'org: goto current task' })
-
 -- Insert mode: Ctrl+B to go back one character (shell-like behavior)
 vim.keymap.set('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
 

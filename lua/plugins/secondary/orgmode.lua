@@ -107,33 +107,14 @@ local function set_highlights()
   end
 end
 
-local function set_keymaps()
-  -- TODO: can I figure out a way to parse the heading of the match location within the org file?
-  vim.keymap.set('n', '<leader>sum', function()
-    vim.ui.input({
-      prompt = 'Get summary for date: (YYYY-MM-DD): ',
-      default = tostring(os.date('%F')),
-    }, function(selected_date)
-      if not selected_date or selected_date == '' then
-        return
-      end
-
-      local search_cmd = [[silent vimgrep /\(Note taken\|CLOSED\).*]] .. selected_date .. [[/gj 0\ org/*]]
-
-      -- 2. Execute the search
-      local ok, _ = pcall(vim.cmd, search_cmd)
-      local qf_list = vim.fn.getqflist()
-      if not ok or #qf_list == 0 then
-        Snacks.notify.info('No matches found for: ' .. selected_date)
-        vim.cmd('cclose') -- Close copen if it was open from a previous search but this one failed
-        return
-      end
-
-      -- 3. Open the search results
-      Snacks.notify.info('Found ' .. #qf_list .. ' matches.')
-      vim.cmd('copen')
+local function goto_current_task()
+  lib.notes.focus_or_create_notes_tab(function()
+    local org = require('orgmode')
+    org.clock:org_clock_goto()
+    vim.schedule(function()
+      vim.cmd('normal zt')
     end)
-  end, { desc = 'org: search summary for day' })
+  end)
 end
 
 return {
@@ -150,6 +131,7 @@ return {
     cmd = { 'Org' },
     ft = { 'org', 'markdown' },
     keys = {
+      { '<leader>gn', goto_current_task, desc = 'org: goto current task' },
       { '<leader>oim', ':Org indent_mode<CR>', desc = 'org: toggle indent_mode' },
       {
         '<leader>os',
@@ -198,7 +180,7 @@ return {
       require('orgmode').setup({
         org_agenda_files = agenda_files,
         org_agenda_sorting_strategy = { 'todo-state-up' },
-        org_default_notes_file = config.env.org.INBOX,
+        org_default_notes_file = config.org.inbox,
         org_priority_highest = 'A',
         org_priority_default = 'C',
         org_priority_lowest = 'C',
@@ -219,7 +201,7 @@ return {
           c = {
             description = 'quick capture',
             template = '* %?\n%u',
-            target = config.env.org.INBOX,
+            target = config.org.inbox,
           },
         },
 
@@ -296,7 +278,6 @@ return {
       if vim.tbl_contains(colorschemes_to_highlight, state.omarchy_colorscheme.colorscheme) then
         vim.schedule(set_highlights)
       end
-      vim.schedule(set_keymaps)
       vim.schedule(function()
         vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
         vim.api.nvim_set_hl(0, '@org.headline.level1.org', { link = 'Special' })
