@@ -291,8 +291,7 @@ return {
     opts = function(_, opts)
       opts.sources = opts.sources or {}
       opts.sources.per_filetype = vim.tbl_extend('force', opts.sources.per_filetype or {}, {
-        -- 'lsp' surfaces obsidian-ls [[wikilink]] completion in vault org files
-        org = { 'lsp', 'orgmode' },
+        org = { 'orgmode', inherit_defaults = true }, -- 'lsp' surfaces obsidian-ls [[wikilink]] completion in vault org files
       })
       opts.sources.providers = vim.tbl_extend('force', opts.sources.providers or {}, {
         orgmode = {

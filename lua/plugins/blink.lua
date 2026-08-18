@@ -40,7 +40,6 @@ return {
       opts.sources = {
         default = { 'lsp', 'buffer', 'snippets', 'path' },
         per_filetype = {
-          org = { 'orgmode' },
           mysql = { 'snippets', 'dadbod', 'buffer' },
         },
         providers = {
