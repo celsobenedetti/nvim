@@ -1,5 +1,14 @@
 ---@class LibOverseer
 lib.overseer = {
+  --- Tasks queued or currently running
+  ---@return overseer.Task[]
+  get_active_tasks = function()
+    if not package.loaded['overseer'] then
+      return {}
+    end
+    return require('overseer').list_tasks({ status = { 'RUNNING', 'PENDING' } })
+  end,
+
   ---@param tasks overseer.TaskDefinition[]
   run_tasks = function(tasks)
     require('lazy').load({ plugins = { 'overseer.nvim' } }) -- ensure overseer

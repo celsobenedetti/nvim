@@ -157,6 +157,14 @@ local modules = {
     return hl(config.hl.warn, '  recording macro ')
   end,
 
+  _overseer_tasks = function()
+    local count = state.overseer_task_count
+    if not count or count == 0 then
+      return ''
+    end
+    return hl(config.hl.text.highlight, config.icons.overseer .. count)
+  end,
+
   _terminal = function()
     if not lib.term.is_term() then
       return ''
@@ -274,6 +282,15 @@ local function setup_caching_and_updating()
     end,
   })
 
+  -- Cache active overseer tasks when the task list changes (fires only
+  -- when overseer is loaded, since it emits the autocmd)
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'OverseerListUpdate',
+    callback = function()
+      state.overseer_task_count = #lib.overseer.get_active_tasks()
+    end,
+  })
+
   local MINUTE = 60000
   local minute_timer = vim.uv.new_timer()
   if minute_timer then
@@ -351,6 +368,7 @@ function _G.MyStatusLine()
     filetype_and_lsps,
     time,
     branch,
+    modules._overseer_tasks(),
   }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 

@@ -16,6 +16,7 @@ local M = {
     code = ' ',
     agent = '󱚞 ',
     term = ' ',
+    overseer = ' ',
     git = {
       added = ' +',
       modified = ' ~',

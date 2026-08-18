@@ -23,6 +23,7 @@ local function setup_vim(custom)
       branch_commits_ahead_of_origin = 0,
       zen_mode = false,
       recording_macro = false,
+      overseer_task_count = nil,
       time = nil,
       hl = {
         text = {
@@ -38,6 +39,7 @@ local function setup_vim(custom)
         git = { branch = ' ', ahead = '', behind = '', added = ' +', modified = ' ~', removed = ' -' },
         lsp = ' ',
         format = ' ',
+        overseer = '> ',
         diagnostics = { error = ' ', warn = ' ', info = ' ', hint = ' ' },
       },
     },
@@ -198,6 +200,14 @@ local modules = {
     return hl('WarningMsg', '  recording macro ')
   end,
 
+  _overseer_tasks = function()
+    local count = vim.g.overseer_task_count
+    if not count or count == 0 then
+      return ''
+    end
+    return hl('Title', vim.g.icons.overseer .. count)
+  end,
+
   _terminal = function()
     if not vim.b.term then
       return ''
@@ -267,6 +277,7 @@ local function MyStatusLine()
     modules._formatters(),
     modules._lsps(),
     modules._time(),
+    modules._overseer_tasks(),
   }, 'right')
   return string.format('%s%s%s%s%s', LEFT_PREFIX, left, '%=', right, RIGHT_SUFFIX)
 end
@@ -534,6 +545,40 @@ assert_contains(result7, hl('WarningMsg', '  recording macro '), 'macro indic
 local right_macro = hl('WarningMsg', '  recording macro ')
 local right_part = result7:match('%%=(.*) ')
 assert_eq(right_part, right_macro, 'macro is only right segment, no prefix separator')
+teardown_vim()
+
+-- ============================================================
+describe('MyStatusLine: overseer indicator on the right')
+
+-- Active tasks present: indicator appears in the right section
+setup_vim({
+  g = {
+    gitsigns_head = 'main',
+    statusline_show_position = false,
+    statusline_show_time = false,
+    overseer_task_count = 2,
+  },
+  b = {},
+})
+local result8 = MyStatusLine()
+local overseer_seg = hl('Title', '> 2')
+-- Right part: overseer indicator, then the trailing suffix space
+local right_part = result8:match('%%=(.*)')
+assert_eq(right_part, overseer_seg .. ' ', 'overseer indicator in right section')
+teardown_vim()
+
+-- No active tasks: no indicator
+setup_vim({
+  g = {
+    gitsigns_head = 'main',
+    statusline_show_position = false,
+    statusline_show_time = false,
+    overseer_task_count = 0,
+  },
+  b = {},
+})
+local result9 = MyStatusLine()
+assert_not_contains(result9, overseer_seg, 'no overseer indicator when count is 0')
 teardown_vim()
 
 -- ============================================================

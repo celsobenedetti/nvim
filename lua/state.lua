@@ -6,6 +6,7 @@
 ---@field opencode_bufnr number
 ---@field toggle_term_bufnr number
 ---@field recording_macro boolean
+---@field overseer_task_count number?
 ---@field time string?
 ---@field branch_commits_ahead_of_origin number?
 ---@field branch_commits_behind_origin number?
@@ -22,6 +23,7 @@ local M = {
   statusline_show_filepath = true,
   statusline_show_position = false,
   statusline_show_time = false,
+  overseer_task_count = nil,
 }
 
 return M

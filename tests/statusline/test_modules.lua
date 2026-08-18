@@ -72,6 +72,7 @@ local MOCK_ICONS = {
   },
   lsp = ' ',
   format = ' ',
+  overseer = '> ',
   diagnostics = {
     error = ' ',
     warn = ' ',
@@ -663,6 +664,34 @@ do
 
   mock.setup({ vim = { g = { recording_macro = nil, hl = MOCK_HL } } })
   assert_empty(_macro(), 'recording_macro nil')
+  mock.teardown({ 'vim' })
+end
+
+-- ============================================================
+describe('_overseer_tasks')
+
+do
+  local function _overseer_tasks()
+    local count = vim.g.overseer_task_count
+    if not count or count == 0 then
+      return ''
+    end
+    return hl('Title', vim.g.icons.overseer .. count)
+  end
+
+  -- Test: count nil
+  mock.setup({ vim = { g = { overseer_task_count = nil, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  assert_empty(_overseer_tasks(), 'count nil')
+  mock.teardown({ 'vim' })
+
+  -- Test: count zero
+  mock.setup({ vim = { g = { overseer_task_count = 0, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  assert_empty(_overseer_tasks(), 'count zero')
+  mock.teardown({ 'vim' })
+
+  -- Test: count positive
+  mock.setup({ vim = { g = { overseer_task_count = 3, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  assert_eq(_overseer_tasks(), hl('Title', '> 3'), '3 active tasks')
   mock.teardown({ 'vim' })
 end
 
