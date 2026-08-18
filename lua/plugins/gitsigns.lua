@@ -10,7 +10,7 @@ return {
           local gs = package.loaded.gitsigns
           gs.blame_line()
         end,
-        desc = 'gitsigns: stage buffer',
+        desc = 'gitsigns: blame line',
       },
       {
         '<leader>gA',
@@ -47,12 +47,16 @@ return {
       { '[g', ':Gitsigns prev_hunk<CR>', desc = 'Prev git diff hunk' },
       { ']g', ':Gitsigns next_hunk<CR>', desc = 'Next git diff hunk' },
 
-      vim.keymap.set('n', '<leader>gid', function()
-        local gs = package.loaded.gitsigns
-        gs.toggle_word_diff()
-        gs.toggle_linehl()
-        gs.toggle_deleted()
-      end, { desc = 'Gitsigns: toggle inline diff' }),
+      {
+        '<leader>gid',
+        function()
+          local gs = package.loaded.gitsigns
+          gs.toggle_word_diff()
+          gs.toggle_linehl()
+          gs.toggle_deleted()
+        end,
+        desc = 'Gitsigns: toggle inline diff',
+      },
     },
   },
 }
