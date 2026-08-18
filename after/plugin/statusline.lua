@@ -232,7 +232,7 @@ local function setup_caching_and_updating()
 
   -- Async, throttled branch status updates (avoid blocking UI with system())
   local function async_git_count(cmd, cb)
-    vim.system({ 'bash', '-lc', cmd }, { text = true }, function(res)
+    vim.system({ 'bash', '-c', cmd }, { text = true }, function(res)
       local n = tonumber((res.stdout or ''):match('%d+')) or 0
       vim.schedule(function()
         pcall(cb, n)
