@@ -46,35 +46,44 @@ vim.keymap.set('n', 'gd', function()
   require('orgmode').action('org_mappings.open_at_point')
 end, { buffer = true, desc = 'org: follow [[wikilink]] / go to definition' })
 
--- stylua: ignore start
-vim.api.nvim_buf_set_keymap(0, 'n', '<leader>j', '<Cmd>lua require("orgmode").action("org_mappings.insert_heading_respect_content")<CR>',
+vim.api.nvim_buf_set_keymap(
+  0,
+  'n',
+  '<leader>j',
+  '<Cmd>lua require("orgmode").action("org_mappings.insert_heading_respect_content")<CR>',
   { desc = 'org: insert headline (respect content)' }
 )
-vim.api.nvim_buf_set_keymap(0, 'n', 't', ':lua require("orgmode").action("org_mappings.todo_next_state")<CR>',
+vim.api.nvim_buf_set_keymap(
+  0,
+  'n',
+  't',
+  ':lua require("orgmode").action("org_mappings.todo_next_state")<CR>',
   { desc = 'org: change todo state' }
 )
 
-_G.org_n = _G.org_n or function()
-  if vim.v.hlsearch == 1 then
-    vim.cmd('normal! n')
-    return
+_G.org_n = _G.org_n
+  or function()
+    if vim.v.hlsearch == 1 then
+      vim.cmd('normal! n')
+      return
+    end
+    require('orgmode').action('org_mappings.add_note')
   end
-  require('orgmode').action('org_mappings.add_note')
-end
 
-vim.api.nvim_buf_set_keymap(0, 'n', '<leader>n', ':lua _G.org_n()<CR>',
-  { desc = 'org: add note' }
-)
-vim.api.nvim_buf_set_keymap(0, 'n', 'X', ':lua require("orgmode").action("clock.org_clock_cancel")<CR>',
+vim.api.nvim_buf_set_keymap(0, 'n', '<leader>n', ':lua _G.org_n()<CR>', { desc = 'org: add note' })
+vim.api.nvim_buf_set_keymap(
+  0,
+  'n',
+  'X',
+  ':lua require("orgmode").action("clock.org_clock_cancel")<CR>',
   { desc = 'org: cancel clock' }
 )
 
 if not state.capture then
   vim.keymap.set('n', 'R', function()
     require('orgmode').action('capture.refile_headline_to_destination')
-  end, { desc = 'org: refile headline' })
+  end, { desc = 'org: refile headline', buf = 0 })
 end
--- stylua: ignore end
 
 vim.api.nvim_create_autocmd('ModeChanged', {
   desc = 'org: toggle indent on visual mode',

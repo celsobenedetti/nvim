@@ -1,7 +1,3 @@
-if state.completion == nil then
-  state.completion = true
-end
-
 return {
   {
     'saghen/blink.cmp',
