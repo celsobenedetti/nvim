@@ -1,5 +1,20 @@
 local M = {}
 
+local dials_by_ft = {
+  css = 'css',
+  vue = 'vue',
+  javascript = 'typescript',
+  typescript = 'typescript',
+  typescriptreact = 'typescript',
+  javascriptreact = 'typescript',
+  json = 'json',
+  lua = 'lua',
+  markdown = 'markdown',
+  sass = 'css',
+  scss = 'css',
+  python = 'python',
+}
+
 ---@param increment boolean
 ---@param g? boolean
 function M.dial(increment, g)
@@ -7,7 +22,7 @@ function M.dial(increment, g)
   -- Use visual commands for VISUAL 'v', VISUAL LINE 'V' and VISUAL BLOCK '\22'
   local is_visual = mode == 'v' or mode == 'V' or mode == '\22'
   local func = (increment and 'inc' or 'dec') .. (g and '_g' or '_') .. (is_visual and 'visual' or 'normal')
-  local group = config.dials_by_ft[vim.bo.filetype] or 'default'
+  local group = dials_by_ft[vim.bo.filetype] or 'default'
   return require('dial.map')[func](group)
 end
 
@@ -118,20 +133,7 @@ return {
     })
 
     return {
-      dials_by_ft = {
-        css = 'css',
-        vue = 'vue',
-        javascript = 'typescript',
-        typescript = 'typescript',
-        typescriptreact = 'typescript',
-        javascriptreact = 'typescript',
-        json = 'json',
-        lua = 'lua',
-        markdown = 'markdown',
-        sass = 'css',
-        scss = 'css',
-        python = 'python',
-      },
+      dials_by_ft = dials_by_ft,
       groups = {
         default = {
           augend.integer.alias.decimal,     -- nonnegative decimal number (0, 1, 2, 3, ...)
@@ -197,6 +199,5 @@ return {
       end
     end
     require('dial.config').augends:register_group(opts.groups)
-    config.dials_by_ft = opts.dials_by_ft
   end,
 }

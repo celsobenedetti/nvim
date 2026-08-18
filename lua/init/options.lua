@@ -81,7 +81,3 @@ vim.opt.virtualedit = 'block'          -- Allow cursor to move where there is no
 vim.opt.wildmode = 'longest:full,full' -- Command-line completion mode
 vim.opt.winminwidth = 5                -- Minimum window width
 vim.opt.wrap = false                   -- Disable line wrap
-
-config.web = {
-  jira = config.env.work.jira or '',
-}

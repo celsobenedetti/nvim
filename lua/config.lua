@@ -1,59 +1,11 @@
-local treesitter = {
-  --- filetypes to highlight with treesitter
-  highlight = {
-    'gitcommit',
-    'go',
-    'javascript',
-    'json',
-    'jsx',
-    'lua',
-    'markdown',
-    'python',
-    'sql',
-    'tsx',
-    'typescript',
-    'vue',
-    'yaml',
-  },
-}
-
-treesitter.ensure_installed = vim.list_extend(vim.deepcopy(treesitter.highlight), {
-  'bash',
-  'c',
-  'diff',
-  'html',
-  'jsdoc',
-  'lua',
-  'luadoc',
-  'luap',
-  'markdown_inline',
-  'printf',
-  'python',
-  'query',
-  'regex',
-  'sql',
-  'toml',
-  'vim',
-  'vimdoc',
-  'xml',
-})
-
-
 --- Global source of truth for all read-only configuration.
 ---
 ---@class Config
----@field hl table
----@field treesitter table
----@field dials_by_ft table
----@field web table
----@field overseer table
 local M = {
   supermaven = true,
   eslint_autoformat = true,
   statusline = true,
   colorcolumn = 80, -- column highlighted by the colorcolumn toggle (<leader>u|)
-
-  treesitter = treesitter,
 
   icons = {
     lsp = '',    -- ',
@@ -88,41 +40,6 @@ local M = {
     },
     dap = {
       breakpoint = '',
-    },
-  },
-
-  env = {
-    WORK = os.getenv('WORK') or '',
-    work = {
-      jira = os.getenv('WORK_JIRA') or '',
-    },
-    JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN') or '',
-
-    HOME = os.getenv('HOME') or '',
-    quartz = 'http://localhost:42069',
-
-    notes = {
-      NOTES = os.getenv('NOTES') or '',
-      OBSIDIAN_VAULT = os.getenv('OBSIDIAN_VAULT') or '',
-      OBSIDIAN_VAULT_WORK = os.getenv('OBSIDIAN_VAULT_WORK') or '',
-      OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
-      ORG = os.getenv('ORG') or '',
-      PROJECTS = os.getenv('PROJECTS') or '',
-      ARCHIVES = os.getenv('ARCHIVES') or '',
-
-      ASSETS_DIR = os.getenv('ASSETS_DIR') or '',
-      ASSETS = os.getenv('ASSETS') or '',
-      ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
-
-      GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
-    },
-    org = {
-      INBOX = os.getenv('ORG_INBOX') or '',
-      MAIN = os.getenv('ORG_MAIN') or '',
-      WORK = os.getenv('ORG_WORK') or '',
-      REFERENCES = os.getenv('ORG_REFERENCES') or '',
-      CALENDAR = os.getenv('ORG_CALENDAR') or '',
-      PURCHASES = os.getenv('ORG_PURCHASES') or '/home/celso/notes/0 org/Purchases.org',
     },
   },
 
@@ -217,7 +134,88 @@ local M = {
       },
     },
   },
+
+  env = {
+    WORK = os.getenv('WORK') or '',
+    work = {
+      jira = os.getenv('WORK_JIRA') or '',
+    },
+    JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN') or '',
+
+    HOME = os.getenv('HOME') or '',
+    quartz = 'http://localhost:42069',
+
+    notes = {
+      NOTES = os.getenv('NOTES') or '',
+      OBSIDIAN_VAULT = os.getenv('OBSIDIAN_VAULT') or '',
+      OBSIDIAN_VAULT_WORK = os.getenv('OBSIDIAN_VAULT_WORK') or '',
+      OBSIDIAN_INBOX = os.getenv('OBSIDIAN_INBOX') or '',
+      ORG = os.getenv('ORG') or '',
+      PROJECTS = os.getenv('PROJECTS') or '',
+      ARCHIVES = os.getenv('ARCHIVES') or '',
+
+      ASSETS_DIR = os.getenv('ASSETS_DIR') or '',
+      ASSETS = os.getenv('ASSETS') or '',
+      ATTACHMENTS = os.getenv('ATTACHMENTS') or '',
+
+      GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
+    },
+    org = {
+      INBOX = os.getenv('ORG_INBOX') or '',
+      MAIN = os.getenv('ORG_MAIN') or '',
+      WORK = os.getenv('ORG_WORK') or '',
+      REFERENCES = os.getenv('ORG_REFERENCES') or '',
+      CALENDAR = os.getenv('ORG_CALENDAR') or '',
+      PURCHASES = os.getenv('ORG_PURCHASES') or '/home/celso/notes/0 org/Purchases.org',
+    },
+  }
 }
+
+M.web = {
+  jira = M.env.work.jira or '',
+}
+
+local treesitter = {
+  --- filetypes to highlight with treesitter
+  highlight = {
+    'gitcommit',
+    'go',
+    'javascript',
+    'json',
+    'jsx',
+    'lua',
+    'markdown',
+    'python',
+    'sql',
+    'tsx',
+    'typescript',
+    'vue',
+    'yaml',
+  },
+}
+
+treesitter.ensure_installed = vim.list_extend(vim.deepcopy(treesitter.highlight), {
+  'bash',
+  'c',
+  'diff',
+  'html',
+  'jsdoc',
+  'lua',
+  'luadoc',
+  'luap',
+  'markdown_inline',
+  'printf',
+  'python',
+  'query',
+  'regex',
+  'sql',
+  'toml',
+  'vim',
+  'vimdoc',
+  'xml',
+})
+M.treesitter = treesitter
+
 
 
 local keys = {
