@@ -14,7 +14,7 @@ vim.keymap.set('i', '<C-a>', '<Esc>I', { remap = true })
 -- sensible terminal mappings
 vim.keymap.set('t', '<esc><esc>', '<C-\\><C-n>') -- let me escape insert in terminal!
 vim.keymap.set('t', '<C-w>', '<C-\\><C-n><C-w>') -- make C-w commands work like usual in the terminal
-vim.keymap.set('t', '', '<C-\\><C-n>')         -- C-6 alternate file
+vim.keymap.set('t', '', '<C-\\><C-n>') -- C-6 alternate file
 
 -- -- Move Lines  -- replaced by mini.move
 -- map('n', '<A-j>', "<cmd>execute 'move .+' . v:count1<cr>==", { desc = 'Move Down' })

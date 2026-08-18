@@ -25,7 +25,13 @@ local function setup_vim(custom)
       recording_macro = false,
       time = nil,
       hl = {
-        text = { text = '@text', highlight = 'Title', secondary = 'TextSecondary', subtext = '@comment', warn = 'WarningMsg' },
+        text = {
+          text = '@text',
+          highlight = 'Title',
+          secondary = 'TextSecondary',
+          subtext = '@comment',
+          warn = 'WarningMsg',
+        },
         warn = 'WarningMsg',
       },
       icons = {
@@ -38,19 +44,35 @@ local function setup_vim(custom)
     b = {},
     v = { hlsearch = 0 },
     api = {
-      nvim_get_current_buf = function() return 1 end,
+      nvim_get_current_buf = function()
+        return 1
+      end,
       nvim_buf_set_var = function() end,
     },
     fn = {
-      expand = function() return 'test.lua' end,
-      searchcount = function() return { incomplete = 0, current = 0, total = 0 } end,
-      reverse = function(t) local r = {}; for i = #t, 1, -1 do r[#r + 1] = t[i] end; return r end,
+      expand = function()
+        return 'test.lua'
+      end,
+      searchcount = function()
+        return { incomplete = 0, current = 0, total = 0 }
+      end,
+      reverse = function(t)
+        local r = {}
+        for i = #t, 1, -1 do
+          r[#r + 1] = t[i]
+        end
+        return r
+      end,
     },
     lsp = {
-      get_clients = function() return {} end,
+      get_clients = function()
+        return {}
+      end,
     },
     diagnostic = {
-      get = function() return {} end,
+      get = function()
+        return {}
+      end,
     },
     bo = { filetype = 'lua' },
   }
@@ -98,12 +120,16 @@ local modules = {
     if vim.g.branch_commits_ahead_of_origin and vim.g.branch_commits_ahead_of_origin > 0 then
       s = s .. '' .. vim.g.branch_commits_ahead_of_origin
     end
-    if #s == 0 then return '' end
+    if #s == 0 then
+      return ''
+    end
     return hl('TextSecondary', s)
   end,
 
   _file = function()
-    if not vim.g.statusline_show_filepath then return '' end
+    if not vim.g.statusline_show_filepath then
+      return ''
+    end
     vim.b.relative_file = vim.fn.expand('%:.')
     return hl('TextSecondary', vim.b.relative_file)
   end,
@@ -111,11 +137,19 @@ local modules = {
   _git_status = function()
     local st = vim.b.gitsigns_status_dict or {}
     local a, m, r = st.added or 0, st.changed or 0, st.removed or 0
-    if a == 0 and m == 0 and r == 0 then return '' end
+    if a == 0 and m == 0 and r == 0 then
+      return ''
+    end
     local result = ''
-    if a > 0 then result = result .. hl('GitSignsAdd', ' +' .. a) end
-    if m > 0 then result = result .. hl('GitSignsChange', ' ~' .. m) end
-    if r > 0 then result = result .. hl('GitSignsDelete', ' -' .. r) end
+    if a > 0 then
+      result = result .. hl('GitSignsAdd', ' +' .. a)
+    end
+    if m > 0 then
+      result = result .. hl('GitSignsChange', ' ~' .. m)
+    end
+    if r > 0 then
+      result = result .. hl('GitSignsDelete', ' -' .. r)
+    end
     return result
   end,
 
@@ -125,18 +159,30 @@ local modules = {
       count[d.severity] = count[d.severity] + 1
     end
     local r = ''
-    if count[1] > 0 then r = r .. hl('DiagnosticError', ' ' .. count[1] .. ' ') end
-    if count[2] > 0 then r = r .. hl('DiagnosticWarn', ' ' .. count[2] .. ' ') end
-    if count[3] > 0 then r = r .. hl('DiagnosticInfo', ' ' .. count[3] .. ' ') end
-    if count[4] > 0 then r = r .. hl('DiagnosticHint', ' ' .. count[4] .. ' ') end
+    if count[1] > 0 then
+      r = r .. hl('DiagnosticError', ' ' .. count[1] .. ' ')
+    end
+    if count[2] > 0 then
+      r = r .. hl('DiagnosticWarn', ' ' .. count[2] .. ' ')
+    end
+    if count[3] > 0 then
+      r = r .. hl('DiagnosticInfo', ' ' .. count[3] .. ' ')
+    end
+    if count[4] > 0 then
+      r = r .. hl('DiagnosticHint', ' ' .. count[4] .. ' ')
+    end
     return r
   end,
 
   _lsps = function()
     local clients = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
-    if next(clients) == nil then return '' end
+    if next(clients) == nil then
+      return ''
+    end
     local c = {}
-    for _, client in pairs(clients) do c[#c + 1] = client.name end
+    for _, client in pairs(clients) do
+      c[#c + 1] = client.name
+    end
     return hl('Title', ' ') .. hl('TextSecondary', table.concat(vim.fn.reverse(c), ', '))
   end,
 
@@ -146,17 +192,23 @@ local modules = {
   end,
 
   _macro = function()
-    if not vim.g.recording_macro then return '' end
+    if not vim.g.recording_macro then
+      return ''
+    end
     return hl('WarningMsg', '  recording macro ')
   end,
 
   _terminal = function()
-    if not vim.b.term then return '' end
+    if not vim.b.term then
+      return ''
+    end
     return hl('MiniStatuslineModeOther', '   terminal ')
   end,
 
   _location = function()
-    if not vim.g.statusline_show_position then return '' end
+    if not vim.g.statusline_show_position then
+      return ''
+    end
     return hl('@comment', '%l:%v')
   end,
 
@@ -170,7 +222,9 @@ local modules = {
       local stat = sinfo.incomplete > 0 and '[?/?]'
         or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
         or nil
-      if stat then return hl('@comment', stat) end
+      if stat then
+        return hl('@comment', stat)
+      end
     end
   end,
 }
@@ -196,24 +250,24 @@ local function MyStatusLine()
   if not vim.g.statusline or vim.bo.filetype == 'dbout' then
     return hl('TextSecondary', ' %f')
   end
-  if vim.g.zen_mode then return '' end
+  if vim.g.zen_mode then
+    return ''
+  end
 
-  local left = _build_section(
-    { modules._git_branch() .. modules._branch_sync_status(),
-      modules._file() .. modules._git_status(),
-      modules._diagnostics(),
-      modules._search_results() or '' },
-    'left'
-  )
-  local right = _build_section(
-    { modules._macro(),
-      modules._terminal(),
-      modules._location(),
-      modules._formatters(),
-      modules._lsps(),
-      modules._time() },
-    'right'
-  )
+  local left = _build_section({
+    modules._git_branch() .. modules._branch_sync_status(),
+    modules._file() .. modules._git_status(),
+    modules._diagnostics(),
+    modules._search_results() or '',
+  }, 'left')
+  local right = _build_section({
+    modules._macro(),
+    modules._terminal(),
+    modules._location(),
+    modules._formatters(),
+    modules._lsps(),
+    modules._time(),
+  }, 'right')
   return string.format('%s%s%s%s%s', LEFT_PREFIX, left, '%=', right, RIGHT_SUFFIX)
 end
 -- }}}
@@ -282,7 +336,12 @@ teardown_vim()
 describe('MyStatusLine: with git branch and file (two visible segments)')
 
 setup_vim({
-  g = { gitsigns_head = 'main', branch_commits_behind_origin = 0, branch_commits_ahead_of_origin = 0, statusline_show_position = false },
+  g = {
+    gitsigns_head = 'main',
+    branch_commits_behind_origin = 0,
+    branch_commits_ahead_of_origin = 0,
+    statusline_show_position = false,
+  },
   b = {},
 })
 local result2 = MyStatusLine()
@@ -304,7 +363,11 @@ describe('MyStatusLine: right section — multiple visible segments')
 setup_vim({
   g = { statusline_show_position = true, statusline_show_time = false, gitsigns_head = nil },
   b = {},
-  lsp = { get_clients = function() return { { name = 'lua_ls' }, { name = 'stylua' } } end },
+  lsp = {
+    get_clients = function()
+      return { { name = 'lua_ls' }, { name = 'stylua' } }
+    end,
+  },
 })
 local result3 = MyStatusLine()
 -- Location should be present
@@ -312,7 +375,11 @@ assert_contains(result3, hl('@comment', '%l:%v'), 'location present')
 -- LSP clients should be present (reversed: stylua, lua_ls)
 assert_contains(result3, hl('Title', ' ') .. hl('TextSecondary', 'stylua, lua_ls'), 'LSP clients present')
 -- Separator between location and LSP
-assert_contains(result3, hl('@comment', '%l:%v') .. RIGHT_SEPARATOR .. hl('Title', ' ') .. hl('TextSecondary', 'stylua, lua_ls'), 'separator between location and lsp')
+assert_contains(
+  result3,
+  hl('@comment', '%l:%v') .. RIGHT_SEPARATOR .. hl('Title', ' ') .. hl('TextSecondary', 'stylua, lua_ls'),
+  'separator between location and lsp'
+)
 -- No separator BEFORE the first visible right segment (location)
 local loc = hl('@comment', '%l:%v')
 -- The right section starts after %= which is right after left content
@@ -324,14 +391,29 @@ teardown_vim()
 describe('MyStatusLine: single visible segment on each side')
 
 setup_vim({
-  g = { gitsigns_head = nil, statusline_show_filepath = true, statusline_show_position = false, statusline_show_time = true, gitsigns_head = nil },
+  g = {
+    gitsigns_head = nil,
+    statusline_show_filepath = true,
+    statusline_show_position = false,
+    statusline_show_time = true,
+    gitsigns_head = nil,
+  },
   b = {},
-  lsp = { get_clients = function() return {} end },
+  lsp = {
+    get_clients = function()
+      return {}
+    end,
+  },
 })
 
 -- Mock time to a fixed value for testing
 local orig_date = os.date
-os.date = function(fmt) if fmt == '%H:%M' then return '14:30' end; return orig_date(fmt) end
+os.date = function(fmt)
+  if fmt == '%H:%M' then
+    return '14:30'
+  end
+  return orig_date(fmt)
+end
 
 local result4 = MyStatusLine()
 -- Left: only file
@@ -357,8 +439,16 @@ setup_vim({
     gitsigns_head = nil,
   },
   b = {},
-  lsp = { get_clients = function() return {} end },
-  diagnostic = { get = function() return {} end },
+  lsp = {
+    get_clients = function()
+      return {}
+    end,
+  },
+  diagnostic = {
+    get = function()
+      return {}
+    end,
+  },
 })
 local result5 = MyStatusLine()
 -- Left and right both empty, just prefix, %=, and suffix
@@ -369,9 +459,18 @@ teardown_vim()
 describe('MyStatusLine: diagnostics on left, lsp on right')
 
 setup_vim({
-  g = { gitsigns_head = nil, statusline_show_filepath = true, statusline_show_position = false, statusline_show_time = false },
+  g = {
+    gitsigns_head = nil,
+    statusline_show_filepath = true,
+    statusline_show_position = false,
+    statusline_show_time = false,
+  },
   b = {},
-  lsp = { get_clients = function() return { { name = 'lua_ls' } } end },
+  lsp = {
+    get_clients = function()
+      return { { name = 'lua_ls' } }
+    end,
+  },
   diagnostic = {
     get = function()
       return {
@@ -379,7 +478,7 @@ setup_vim({
         { severity = 1 }, -- error
         { severity = 3 }, -- info
       }
-    end
+    end,
   },
 })
 
@@ -439,11 +538,7 @@ teardown_vim()
 
 -- ============================================================
 -- Summary
-io.write(string.format(
-  '\n\n%d / %d tests passed\n',
-  tests_passed,
-  tests_run
-))
+io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
 
 if tests_passed ~= tests_run then
   os.exit(1)

@@ -13,9 +13,9 @@ end
 
 local function should_write()
   return vim.bo.buftype ~= 'nofile'
-      and vim.bo.buftype ~= 'nowrite'
-      and vim.bo.buftype ~= 'terminal'
-      and vim.fn.expand('%:p') ~= ''
+    and vim.bo.buftype ~= 'nowrite'
+    and vim.bo.buftype ~= 'terminal'
+    and vim.fn.expand('%:p') ~= ''
 end
 
 -- keymap: C-s Save file

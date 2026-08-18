@@ -85,7 +85,7 @@ return {
   lazy = false,
   config = function()
     require('snacks').setup(
-    ---@type snacks.Config
+      ---@type snacks.Config
       {
         terminal = { enabled = true },
         words = { enabled = true },
@@ -95,9 +95,9 @@ return {
 
         bigfile = {
           enabled = true,
-          notify = true,            -- show notification when big file detected
+          notify = true, -- show notification when big file detected
           size = 1.5 * 1024 * 1024, -- 1.5MB
-          line_length = 1000,       -- average line length (useful for minified files)
+          line_length = 1000, -- average line length (useful for minified files)
           -- Enable or disable features when big file detected
           ---@param ctx {buf: number, ft:string}
           setup = function(ctx)
@@ -126,9 +126,9 @@ return {
           -- },
           filter = function(notification)
             local ignore = {
-              'File is too large to send to server',                                                   -- thank you supermaven, please stfu
+              'File is too large to send to server', -- thank you supermaven, please stfu
               'Request textDocument/diagnostic failed with message: No ESLint configuration found in', -- err when eslint is not available
-              'No results found for.*buffers',                                                         -- Snacks.picker.buffers when there are no results
+              'No results found for.*buffers', -- Snacks.picker.buffers when there are no results
             }
             for _, s in ipairs(ignore) do
               if notification.msg:find(s) then
@@ -152,8 +152,7 @@ return {
               -- lazygit quits on it (its default binding for bare "q"). Drop
               -- that step; editPreset stays "nvim-remote" for suspend behavior.
               edit = 'nvim --server "$NVIM" --remote-tab {{filename}}',
-              editAtLine =
-              'nvim --server "$NVIM" --remote-tab {{filename}} && nvim --server "$NVIM" --remote-send ":{{line}}<CR>"',
+              editAtLine = 'nvim --server "$NVIM" --remote-tab {{filename}} && nvim --server "$NVIM" --remote-send ":{{line}}<CR>"',
             },
           },
         },
@@ -187,8 +186,8 @@ return {
                 border = true,
                 title = '{title}',
                 title_pos = 'center',
-                { win = 'input', height = 1,     border = 'bottom' },
-                { win = 'list',  border = 'none' },
+                { win = 'input', height = 1, border = 'bottom' },
+                { win = 'list', border = 'none' },
                 -- { win = 'preview', title = '{preview}', height = 0.4, border = 'top' },
               },
             },
@@ -206,8 +205,8 @@ return {
                 height = 0.3,
                 border = 'none',
                 box = 'vertical',
-                { win = 'list',  border = 'none' },
-                { win = 'input', height = 1,     border = 'none' },
+                { win = 'list', border = 'none' },
+                { win = 'input', height = 1, border = 'none' },
               },
             },
           },
@@ -317,8 +316,7 @@ return {
 
     Snacks.config.style('lazygit', {
       wo = {
-        winhighlight =
-        'Normal:SnacksTerminalNormal,NormalNC:SnacksTerminalNormalNC,WinBar:SnacksWinBar,WinBarNC:SnacksWinBarNC,FloatTitle:SnacksTitle,FloatFooter:SnacksFooter,WinSeparator:SnacksWinSeparator',
+        winhighlight = 'Normal:SnacksTerminalNormal,NormalNC:SnacksTerminalNormalNC,WinBar:SnacksWinBar,WinBarNC:SnacksWinBarNC,FloatTitle:SnacksTitle,FloatFooter:SnacksFooter,WinSeparator:SnacksWinSeparator',
       },
     })
   end,

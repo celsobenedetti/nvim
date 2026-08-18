@@ -182,8 +182,8 @@ local modules = {
         return ''
       end
       local search_stat = sinfo.incomplete > 0 and '[?/?]'
-          or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
-          or nil
+        or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
+        or nil
 
       if search_stat then
         return hl(config.hl.text.subtext, search_stat)

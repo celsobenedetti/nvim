@@ -1,7 +1,6 @@
 ---@class LibColors
 local M = {}
 
-
 local function hex_to_rgb(hex)
   if not hex then
     return 0, 0, 0

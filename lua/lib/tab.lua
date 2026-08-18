@@ -2,7 +2,6 @@
 ---@class LibTab
 local M = {}
 
-
 ---@type table<number,string> tabpage id -> explicit name
 local names = {}
 

@@ -191,10 +191,7 @@ assert_eq(tab.get_name(3), '[No Name]', 'fallback for unnamed buffer')
 describe('lib.tab: find')
 
 -- tab numbers: id 0 -> tab 1, id 3 -> tab 2, id 5 -> tab 3
-reset(
-  { 0, 3, 5 },
-  vim_mock.json.encode({ ['1'] = 'git status', ['2'] = 'notes', ['3'] = 'git log' })
-)
+reset({ 0, 3, 5 }, vim_mock.json.encode({ ['1'] = 'git status', ['2'] = 'notes', ['3'] = 'git log' }))
 tab = reload_tab()
 assert_eq(tab.find('notes'), 3, 'finds tab by plain substring')
 assert_eq(tab.find('git status'), 0, 'returns first matching tab')

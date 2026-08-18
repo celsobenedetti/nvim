@@ -56,35 +56,18 @@ describe('_build_section: empty and edge cases')
 
 assert_empty(_build_section({}, 'left'), 'empty segments list')
 
-assert_empty(
-  _build_section({ '', '', '' }, 'left'),
-  'all empty strings'
-)
+assert_empty(_build_section({ '', '', '' }, 'left'), 'all empty strings')
 
-assert_empty(
-  _build_section({ ' ', ' ', ' ' }, 'left'),
-  'all space-only strings'
-)
+assert_empty(_build_section({ ' ', ' ', ' ' }, 'left'), 'all space-only strings')
 
-assert_empty(
-  _build_section({ ' ' }, 'left'),
-  'single space-only segment'
-)
+assert_empty(_build_section({ ' ' }, 'left'), 'single space-only segment')
 
 -- ============================================================
 describe('_build_section: single non-empty segment')
 
-assert_eq(
-  _build_section({ 'hello' }, 'left'),
-  'hello',
-  'single segment, direction left'
-)
+assert_eq(_build_section({ 'hello' }, 'left'), 'hello', 'single segment, direction left')
 
-assert_eq(
-  _build_section({ 'world' }, 'right'),
-  'world',
-  'single segment, direction right'
-)
+assert_eq(_build_section({ 'world' }, 'right'), 'world', 'single segment, direction right')
 
 assert_eq(
   _build_section({ '  has spaces  ' }, 'left'),
@@ -102,38 +85,22 @@ local SEG_BRANCH = '  main'
 
 -- Left section: first segment (branch) empty, second (file) non-empty
 local result = _build_section({ '', SEG_FILE }, 'left')
-assert_eq(
-  result,
-  SEG_FILE,
-  'first empty, second non-empty (left): no prefix separator'
-)
+assert_eq(result, SEG_FILE, 'first empty, second non-empty (left): no prefix separator')
 
 -- Right section: first segment (macro) empty, second (formatters) non-empty
 local result2 = _build_section({ '', '  stylua' }, 'right')
-assert_eq(
-  result2,
-  '  stylua',
-  'first empty, second non-empty (right): no prefix separator'
-)
+assert_eq(result2, '  stylua', 'first empty, second non-empty (right): no prefix separator')
 
 -- Multiple leading empties before first visible
 local result3 = _build_section({ '', '', '', SEG_FILE }, 'left')
-assert_eq(
-  result3,
-  SEG_FILE,
-  'three empties then content: no prefix separator'
-)
+assert_eq(result3, SEG_FILE, 'three empties then content: no prefix separator')
 
 -- ============================================================
 describe('_build_section: separators between visible segments')
 
 -- Two non-empty segments
 local result4 = _build_section({ SEG_BRANCH, SEG_FILE }, 'left')
-assert_eq(
-  result4,
-  SEG_BRANCH .. LEFT_SEPARATOR .. SEG_FILE,
-  'two non-empty segments separated by LEFT_SEPARATOR'
-)
+assert_eq(result4, SEG_BRANCH .. LEFT_SEPARATOR .. SEG_FILE, 'two non-empty segments separated by LEFT_SEPARATOR')
 
 -- Three non-empty segments (right)
 local SEG_A = 'A'
@@ -159,36 +126,20 @@ assert_eq(
 
 -- Empty, non-empty, empty, non-empty
 local result7 = _build_section({ '', SEG_B, '', SEG_A }, 'left')
-assert_eq(
-  result7,
-  SEG_B .. LEFT_SEPARATOR .. SEG_A,
-  'empty / non-empty / empty / non-empty: no prefix, one separator'
-)
+assert_eq(result7, SEG_B .. LEFT_SEPARATOR .. SEG_A, 'empty / non-empty / empty / non-empty: no prefix, one separator')
 
 -- Non-empty, space-only, non-empty
 local result8 = _build_section({ SEG_A, ' ', SEG_C }, 'left')
-assert_eq(
-  result8,
-  SEG_A .. LEFT_SEPARATOR .. SEG_C,
-  'non-empty / space / non-empty: separator between, space skipped'
-)
+assert_eq(result8, SEG_A .. LEFT_SEPARATOR .. SEG_C, 'non-empty / space / non-empty: separator between, space skipped')
 
 -- ============================================================
 describe('_build_section: direction determines separator')
 
 -- Left direction uses LEFT_SEPARATOR
-assert_eq(
-  _build_section({ 'X', 'Y' }, 'left'),
-  'X' .. LEFT_SEPARATOR .. 'Y',
-  'left direction uses LEFT_SEPARATOR'
-)
+assert_eq(_build_section({ 'X', 'Y' }, 'left'), 'X' .. LEFT_SEPARATOR .. 'Y', 'left direction uses LEFT_SEPARATOR')
 
 -- Right direction uses RIGHT_SEPARATOR
-assert_eq(
-  _build_section({ 'X', 'Y' }, 'right'),
-  'X' .. RIGHT_SEPARATOR .. 'Y',
-  'right direction uses RIGHT_SEPARATOR'
-)
+assert_eq(_build_section({ 'X', 'Y' }, 'right'), 'X' .. RIGHT_SEPARATOR .. 'Y', 'right direction uses RIGHT_SEPARATOR')
 
 -- ============================================================
 describe('_build_section: segment ~= " " check')
@@ -204,11 +155,7 @@ assert_eq(
 
 -- ============================================================
 -- Summary
-io.write(string.format(
-  '\n\n%d / %d tests passed\n',
-  tests_passed,
-  tests_run
-))
+io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
 
 if tests_passed ~= tests_run then
   os.exit(1)

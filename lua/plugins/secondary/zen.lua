@@ -49,7 +49,7 @@ return {
       end,
       show = {
         statusline = false, -- This hides the statusline (including lualine)
-        tabline = false,    -- This also hides the tabline
+        tabline = false, -- This also hides the tabline
       },
       toggles = {
         dim = false,
