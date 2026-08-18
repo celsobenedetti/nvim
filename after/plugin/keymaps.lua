@@ -196,6 +196,8 @@ vim.keymap.set('n', '<leader>rg', function()
       '-g',
       '!*static*',
       '-g',
+      '!*build*',
+      '-g',
       '!*drupal*',
       '-v',
       'ARCHIVE_OLPATH',
@@ -204,6 +206,7 @@ vim.keymap.set('n', '<leader>rg', function()
     cwd = cwd,
   })
 end, { desc = 'rg current dir' })
+
 vim.keymap.set('n', config.keys['<C-S-g>'], function()
   require('fzf-lua').live_grep()
 end)

@@ -81,7 +81,7 @@ vim.api.nvim_buf_set_keymap(
 
 if not state.capture then
   vim.keymap.set('n', 'R', function()
-    require('orgmode').action('capture.refile_headline_to_destination')
+    lib.org_fzf.refile_heading()
   end, { desc = 'org: refile headline', buf = 0 })
 end
 
