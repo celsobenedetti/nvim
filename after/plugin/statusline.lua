@@ -176,18 +176,19 @@ local modules = {
   end,
 
   _search_results = function()
-    if vim.v.hlsearch == 1 then
-      local sinfo = vim.fn.searchcount({ maxcount = 0 })
-      if vim.tbl_isempty(sinfo) then
-        return ''
-      end
-      local search_stat = sinfo.incomplete > 0 and '[?/?]'
-        or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
-        or nil
+    if vim.v.hlsearch ~= 1 then
+      return ''
+    end
+    local sinfo = vim.fn.searchcount({ maxcount = 0 })
+    if vim.tbl_isempty(sinfo) then
+      return ''
+    end
+    local search_stat = sinfo.incomplete > 0 and '[?/?]'
+      or sinfo.total > 0 and ('[%s/%s]'):format(sinfo.current, sinfo.total)
+      or nil
 
-      if search_stat then
-        return hl(config.hl.text.subtext, search_stat)
-      end
+    if search_stat then
+      return hl(config.hl.text.subtext, ' ' .. search_stat)
     end
   end,
 }
@@ -329,9 +330,6 @@ function _G.MyStatusLine()
   if #diagnostics > 0 then
     file_status = diagnostics .. ' '
   end
-  if search_results and #search_results > 0 then
-    file_status = search_results .. ' ' .. file_status
-  end
 
   local branch = _branch
   if branch_sync_status ~= '' then
@@ -344,7 +342,7 @@ function _G.MyStatusLine()
     filetype_and_lsps = file_status .. ' ' .. filetype .. ' ' .. lsp
   end
 
-  local left = _build_section({ file .. git_status }, 'left')
+  local left = _build_section({ file .. git_status .. search_results }, 'left')
   local right = _build_section({
     macro,
     location,
