@@ -12,8 +12,6 @@ local SEP = ((config.icons or {}).separator or {}).right or '  '
 -- functions receive the tab's buffer id.
 ---@type table<string,string|fun(bufnr: number): string>
 local SPECIAL_FILETYPES = {
-  fugitive = config.icons.git.git .. 'git' .. SEP .. 'fugitive',
-  snacks_picker_input = '',
   terminal = function(bufnr)
     local text = config.icons.term .. 'terminal'
     if lib.term.is_toggle_term(bufnr) then
@@ -29,14 +27,6 @@ local SPECIAL_FILETYPES = {
     end
 
     return text
-  end,
-  git = function(bufnr)
-    local ok, result = pcall(vim.fn.FugitiveResult, bufnr)
-    local command = 'git'
-    if ok and #(result.args or {}) > 0 then
-      command = command .. ' ' .. table.concat(result.args, ' ')
-    end
-    return config.icons.git.git .. command:gsub('%%', '%%%%')
   end,
 }
 
