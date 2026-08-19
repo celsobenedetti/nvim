@@ -171,6 +171,10 @@ local M = {
   },
 }
 
+M.tabs = {
+  notes = M.icons.notes .. 'notes',
+}
+
 M.web = {
   jira = M.env.WORK_JIRA or '',
 }

@@ -16,12 +16,10 @@
 ---@field keys LibKeys
 ---@field notes LibNotes
 ---@field org_fzf LibOrgFzf
----@field orgmode LibOrgmode
 ---@field strings LibStrings
 ---@field tab LibTab
 ---@field term LibTerm
 ---@field tmux LibTmux
----@field utils LibUtils
 ---@field visual LibVisual
 ---@field overseer LibOverseer
 local M = {}

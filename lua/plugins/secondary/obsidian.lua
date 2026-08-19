@@ -37,10 +37,10 @@ return {
   cmd = { 'Obsidian' },
   event = function()
     return {
-      'BufReadPre ' .. config.dirs.notes .. '/**/*',
-      'BufNewFile ' .. config.dirs.notes .. '/**/*',
-      'BufReadPre ' .. config.dirs.work_notes .. '/**/*',
-      'BufNewFile ' .. config.dirs.work_notes .. '/**/*',
+      'BufReadPre ' .. config.dirs.notes .. '/*',
+      'BufNewFile ' .. config.dirs.notes .. '/*',
+      'BufReadPre ' .. config.dirs.work_notes .. '/*',
+      'BufNewFile ' .. config.dirs.work_notes .. '/*',
     }
   end,
   keys = function()

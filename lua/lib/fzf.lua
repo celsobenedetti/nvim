@@ -47,10 +47,11 @@ M.e = function(opts)
     previewer = false,
     fzf_opts = { ['--layout'] = 'default' },
     winopts = function()
+      local cols = vim.o.columns
       return {
         row = 0.96, -- bottom edge
         col = 0, -- left edge
-        width = 1,
+        width = math.max(0.6, 60 / cols), -- 40% width, at least 60 cols
         height = 0.3,
         border = 'none',
         backdrop = 100, -- fully transparent, i.e. no backdrop
