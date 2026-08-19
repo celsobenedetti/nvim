@@ -50,19 +50,22 @@ built-in* expands unescaped specials in the resulting command line.
 - Filenames with spaces need escaping: `fnameescape('my file.txt')` →
   `my\ file.txt`, which the shell word-splits correctly.
 
-## Pitfall found while investigating (not fixed): `split_args` strips regex escapes
+## Pitfall found while investigating: `split_args` stripped regex escapes (fixed)
 
-`split_args` (same commit `5be9a18`) treats `\X` as escaped-`X` for *any* X
-(shell-style), inside quotes too. rg patterns lose their backslashes:
+The `split_args` tokenizer (introduced in the same commit `5be9a18`) treated
+`\X` as escaped-`X` for *any* X (shell-style), inside quotes too. rg patterns
+lost their backslashes: `:Grep \bfoo\b file.txt` searched for `bfoob` instead
+of the word-boundary regex.
 
-```
-:Grep \bfoo\bbar file.txt   →   pattern becomes "bfoobbar"   (searches the literal string)
-```
+Fix (`288dcdc` follow-up): a backslash now only escapes a following space,
+quote, or backslash — anything else (`\b`, `\d`, `\.`, ...) is kept verbatim.
+`\bfoo\b` survives as-is; `foo\ bar` still splits into one token. The function
+now lives in `lua/lib/strings.lua` as `M.split_args` (unit-tested in
+`tests/lib/test_strings.lua`, run by `make test`).
 
-Quoting doesn't help: `"..."`/`'...'` only change how spaces split, the
-backslash branch runs regardless. Follow-up fix: only treat `\X` as an escape
-when X is a space, quote, or backslash — or strip escapes only from the target
-arg, never the pattern.
+Note this is a *tokenizer* rule: the regex escaping question only exists here
+because Lua user commands pass `opts.args` raw. A built-in like `:grep` would
+hand the whole line to the ex parser, which has its own escape rules.
 
 ## Verification
 

@@ -33,12 +33,16 @@ APIs.
 
 Unit tests run through `make test` (luajit with mocked `vim`, see `tests/`).
 
-Integration-test user commands against real nvim:
-`nvim --headless -u NONE -c "luafile after/plugin/grep.lua" -c "Grep foo %" -c "qa!"`.
+Integration-test user commands against real nvim (run from the repo root):
+`nvim --headless -u NONE --cmd "set rtp^=." -c "luafile after/plugin/grep.lua" -c "Grep foo %" -c "qa!"`.
+The `set rtp^=.` prepends the repo to 'runtimepath' so `require('lib.*')`
+resolves here — with `-u NONE` nvim's rtp still has `~/.config/nvim` first
+(the live config, which may lag this worktree) and its Lua loader wins over
+`package.path`.
 
 - End every headless `-c` chain with `qa!` (or `cquit`): a `:q` that closes one
   of several windows leaves headless nvim idling in its event loop forever —
-  only a `:q` on the *last* window exits. `:cclose` then `:q` also works.
+  only a `:q` on the _last_ window exits. `:cclose` then `:q` also works.
 - Assert results with `vim.fn.getqflist()` (bufnr/lnum): `:grep` shells out to
   rg and the `:!` output line is invisible in headless mode.
 - Test argument parsing (quoting, backslash escapes) with `nvim -l`, which runs

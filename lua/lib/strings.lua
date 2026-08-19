@@ -47,6 +47,56 @@ M.shellescape = function(s)
   return s
 end
 
+---Split an ex-command arg string into whitespace-separated tokens, honoring
+---"..." and '...' quoting and backslash escapes (space, quote, backslash).
+---Any other `\X` is kept verbatim so rg patterns like `\bword\b` survive;
+---a shell-style "escape any char" would strip their backslashes.
+---@param args string
+---@return string[]
+M.split_args = function(args)
+  local result, current, in_arg, quote = {}, '', false, nil
+  local i, n = 1, #args
+  while i <= n do
+    local c = args:sub(i, i)
+    if c == '\\' then
+      local nxt = args:sub(i + 1, i + 1)
+      if nxt ~= '' and (nxt == ' ' or nxt == '"' or nxt == "'" or nxt == '\\') then
+        current = current .. nxt
+        i = i + 2
+      else
+        current = current .. c
+        i = i + 1
+      end
+      in_arg = true
+    elseif quote then
+      if c == quote then
+        quote = nil
+      else
+        current = current .. c
+      end
+      i = i + 1
+    elseif c == '"' or c == "'" then
+      quote = c
+      in_arg = true
+      i = i + 1
+    elseif c == ' ' or c == '\t' then
+      if in_arg then
+        result[#result + 1] = current
+        current, in_arg = '', false
+      end
+      i = i + 1
+    else
+      current = current .. c
+      in_arg = true
+      i = i + 1
+    end
+  end
+  if in_arg then
+    result[#result + 1] = current
+  end
+  return result
+end
+
 --- highlight text with a given highlight group
 --- @param hl string the highlight group to set
 --- @param text string the text to highlight

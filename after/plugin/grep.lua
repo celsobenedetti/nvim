@@ -3,53 +3,6 @@
 vim.opt.grepprg = 'rg --vimgrep --smart-case --hidden --ignore'
 vim.opt.grepformat = '%f:%l:%c:%m'
 
--- Split args into tokens on whitespace, honoring "..." and '...' quoting and
--- backslash escapes. This lets `:Grep "some query" file.txt` parse the quoted
--- pattern as a single token, unlike a dumb split on spaces.
-local function split_args(args)
-  local result, current, in_arg, quote = {}, '', false, nil
-  local i, n = 1, #args
-  while i <= n do
-    local c = args:sub(i, i)
-    if c == '\\' then
-      local nxt = args:sub(i + 1, i + 1)
-      if nxt ~= '' then
-        current = current .. nxt
-        i = i + 2
-      else
-        current = current .. c
-        i = i + 1
-      end
-      in_arg = true
-    elseif quote then
-      if c == quote then
-        quote = nil
-      else
-        current = current .. c
-      end
-      i = i + 1
-    elseif c == '"' or c == "'" then
-      quote = c
-      in_arg = true
-      i = i + 1
-    elseif c == ' ' or c == '\t' then
-      if in_arg then
-        result[#result + 1] = current
-        current, in_arg = '', false
-      end
-      i = i + 1
-    else
-      current = current .. c
-      in_arg = true
-      i = i + 1
-    end
-  end
-  if in_arg then
-    result[#result + 1] = current
-  end
-  return result
-end
-
 local function do_grep(pattern, target)
   local cmd = 'silent grep ' .. vim.fn.fnameescape(pattern)
   if target then
@@ -63,7 +16,11 @@ local function do_grep(pattern, target)
 end
 
 vim.api.nvim_create_user_command('Grep', function(opts)
-  local args = split_args(opts.args)
+  -- Split args into tokens on whitespace, honoring "..." and '...' quoting and
+  -- backslash escapes (space, quote, backslash). Regex backslashes like `\b` are
+  -- kept verbatim. This lets `:Grep "some query" file.txt` parse the quoted
+  -- pattern as a single token, unlike a dumb split on spaces.
+  local args = lib.strings.split_args(opts.args)
   if #args == 0 then
     vim.ui.input({ prompt = 'Grep: ' }, function(input)
       if input and input ~= '' then
