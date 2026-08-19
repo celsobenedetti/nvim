@@ -250,5 +250,5 @@ local function send_visual_range()
 end
 
 -- keymaps
-vim.keymap.set('n', 'gA', send_current_filepath, { desc = 'workmux: send current buffer' })
+-- vim.keymap.set('n', 'gA', send_current_filepath, { desc = 'workmux: send current buffer' })
 vim.keymap.set('v', 'gY', send_visual_range, { desc = 'workmux: send visual range' })

@@ -12,6 +12,8 @@ M.fd_files_dirs_cmd = function()
 --exclude node_modules
 --exclude public
 --exclude .vault
+--exclude .airflow
+--exclude .venv
   ]],
     '\n',
     ' '
