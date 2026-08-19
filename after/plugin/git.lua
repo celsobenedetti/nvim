@@ -98,6 +98,11 @@ local keymaps = function()
     })
   end, { desc = 'CodeDiff: compare branch with HEAD' })
 
+  vim.keymap.set('n', '<leader>pr', function()
+    vim.cmd.tabnew()
+    vim.cmd.term('gh pr view')
+  end, { desc = 'gh: PR view (terminal in new tab)' })
+
   -- git: Git log -L for the current line or visual selection
   local function git_relative_path()
     local root = vim.fs.root(0, '.git')

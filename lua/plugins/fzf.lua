@@ -135,7 +135,6 @@ return {
     { '<leader>slo', function() fzf_lua().loclist() end, desc = 'fzf: Location List', },
     { '<leader>sM', function() fzf_lua().manpages() end, desc = 'fzf: Man Pages', },
     { '<leader>sm', function() fzf_lua().marks() end, desc = 'fzf: Marks', },
-    { '<leader>pr', function() fzf_lua().resume() end, desc = 'fzf: Resume', },
     { '<leader>sq', function() fzf_lua().quickfix() end, desc = 'fzf: Quickfix List', },
     { '<leader>su', function() fzf_lua().undotree() end, desc = 'fzf: Undotree', },
     { '<leader>dot', function () fzf_lua().files(e({ cwd = '~/.dotfiles' })) end , desc = 'snacks: search dotfiles', },
