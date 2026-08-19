@@ -4,6 +4,10 @@ vim.api.nvim_create_autocmd('CmdlineLeave', {
   callback = lib.cmdline.clear,
 })
 
+vim.keymap.set('c', '<Tab>', lib.cmdline.fzf_tab, {
+  desc = 'cmd: fzf files/dirs when line ends with **',
+})
+
 for _, cmd in ipairs({ '*', '#', 'g*', 'g#' }) do
   vim.keymap.set('n', cmd, function()
     lib.cmdline.clear()

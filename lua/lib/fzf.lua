@@ -1,6 +1,42 @@
 ---@class LibFzf
 local M = {}
 
+---fd command listing files, symlinks and directories: hidden files, no
+---gitignore, minus a few heavy dirs (same rules as the `<c-p>` picker).
+M.fd_files_dirs_cmd = function()
+  return string.gsub(
+    [[
+  fd --color=never --type f --type l --type d --hidden --follow
+--no-ignore
+--exclude .git
+--exclude node_modules
+--exclude public
+--exclude .vault
+  ]],
+    '\n',
+    ' '
+  )
+end
+
+---Resolve the first selection of an fzf-lua file action to an absolute path
+---(fzf-lua returns cwd-relative entries; joining against the picker's cwd
+---makes them absolute).
+---@param selected string[]
+---@param opts table fzf-lua action opts
+---@return string|nil
+M.selected_path = function(selected, opts)
+  local fzfpath = require('fzf-lua.path')
+  if #selected == 0 then
+    return nil
+  end
+  local entry = fzfpath.entry_to_file(selected[1], opts, opts._uri)
+  local full = entry.path
+  if full and not fzfpath.is_absolute(full) then
+    full = fzfpath.join({ opts.cwd or opts._cwd or vim.uv.cwd(), full })
+  end
+  return full
+end
+
 --- search entries with fzf-lua
 --- runs the command once and fuzzy-filters the results in fzf (like the
 --- Snacks static-item picker), with native file:line preview and jump.
