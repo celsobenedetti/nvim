@@ -1,9 +1,18 @@
 # Hijacking `<Tab>` on the cmdline (fzf-tab)
 
 Findings from implementing `lib.cmdline.fzf_tab`: `<Tab>` on the command line
-launches an fzf-lua file/dir picker when the line ends in `**`, and runs
-`:e <selected>` on confirm. Fallback (no `**`) keeps the native cmdline
-completion.
+launches an fzf-lua file/dir picker when the line ends in `**`. On confirm,
+the `**` token is replaced by the selected path and the **user's command is
+preserved**: `:e /some/path/**` runs `:e /some/path/<selected>` (opening a
+directory still goes through the netrw/oil hijack), and `:Grep query **` runs
+`:Grep query <selected>`. The dir before `**` (or the cwd for a bare `**`) is
+the picker's search root. Fallback (no `**`, or a dir that doesn't exist)
+keeps the native cmdline completion.
+
+Parsing lives in `lib.cmdline.parse(line)` (pure, unit-tested): the last
+whitespace-delimited token is the glob token, everything before it is the
+command. Note the token pattern is `[^%s]-%*%*$` (lazy) — a greedy `+` eats
+the trailing stars so a bare `**` token never matches.
 
 ## How it works
 

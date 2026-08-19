@@ -42,11 +42,10 @@ local cmd_e_calls = {} -- args of vim.cmd.e()
 local files_opts = nil -- opts of the mocked fzf-lua files() call
 
 local cmd_mock = setmetatable({}, {
-  __call = function() end,
+  __call = function(_, cmdstr)
+    cmd_e_calls[#cmd_e_calls + 1] = cmdstr
+  end,
 })
-cmd_mock.e = function(path)
-  cmd_e_calls[#cmd_e_calls + 1] = path
-end
 
 local vim_mock = {
   fn = {
@@ -144,19 +143,46 @@ assert_eq(cmdline.is_fzf_tab('e foo'), false, 'no star')
 assert_eq(cmdline.is_fzf_tab(''), false, 'empty line')
 
 -- ============================================================
-describe('lib.cmdline: parse_dir')
+describe('lib.cmdline: parse')
 
 reset()
 cmdline = reload_cmdline()
-assert_eq(cmdline.parse_dir('e **'), '', 'bare ** searches the cwd')
-assert_eq(cmdline.parse_dir('e /a/b/**'), '/a/b', 'absolute path, trailing slash dropped')
-assert_eq(cmdline.parse_dir('e src/**'), 'src', 'relative path')
-assert_eq(cmdline.parse_dir('e ~/code/x/**'), '~/code/x', 'tilde path kept raw (expanded later)')
-assert_eq(cmdline.parse_dir('vsplit foo/**'), 'foo', 'works after any command')
-assert_eq(cmdline.parse_dir('e /**'), '/', 'root dir keeps its slash')
-assert_eq(cmdline.parse_dir('e **/x'), nil, '** not at the end')
-assert_eq(cmdline.parse_dir('e foo'), nil, 'no **')
-assert_eq(cmdline.parse_dir(''), nil, 'empty line')
+
+-- bare `**` searches the cwd; the command is preserved
+local parsed = cmdline.parse('e **')
+assert_eq(parsed.cmd, 'e', 'command kept for bare **')
+assert_eq(parsed.dir, '', 'bare ** searches the cwd')
+
+parsed = cmdline.parse('e /a/b/**')
+assert_eq(parsed.cmd, 'e', 'command kept')
+assert_eq(parsed.dir, '/a/b', 'absolute path, trailing slash dropped')
+
+-- multi-word commands are kept in full
+parsed = cmdline.parse('Grep query **')
+assert_eq(parsed.cmd, 'Grep query', 'multi-word command kept')
+assert_eq(parsed.dir, '', 'bare ** searches the cwd')
+
+parsed = cmdline.parse('e src/**')
+assert_eq(parsed.cmd, 'e', 'command kept')
+assert_eq(parsed.dir, 'src', 'relative path')
+
+parsed = cmdline.parse('vsplit foo/**')
+assert_eq(parsed.cmd, 'vsplit', 'single word command')
+assert_eq(parsed.dir, 'foo', 'path after any command')
+
+parsed = cmdline.parse('e ~/code/x/**')
+assert_eq(parsed.dir, '~/code/x', 'tilde path kept raw (expanded later)')
+
+parsed = cmdline.parse('e /**')
+assert_eq(parsed.dir, '/', 'root dir keeps its slash')
+
+parsed = cmdline.parse('**')
+assert_eq(parsed.cmd, '', 'bare ** has no command')
+assert_eq(parsed.dir, '', 'bare ** searches the cwd')
+
+assert_eq(cmdline.parse('e **/x'), nil, '** not at the end')
+assert_eq(cmdline.parse('e foo'), nil, 'no **')
+assert_eq(cmdline.parse(''), nil, 'empty line')
 
 -- ============================================================
 describe('lib.cmdline: search_root')
@@ -236,19 +262,19 @@ assert_eq(files_opts.prompt, 'e ** > ', 'prompt shows the typed line')
 
 -- enter with a file selection runs `:e <path>`
 files_opts.actions['enter']({ 'file.txt' }, {})
-assert_eq(cmd_e_calls[1], '/a/b/file.txt', 'enter edits the selected file')
+assert_eq(cmd_e_calls[1], 'e /a/b/file.txt', 'enter edits the selected file')
 
--- enter with a path containing spaces is escaped
+-- the command is preserved: `:Grep query **` runs `:Grep query <path>`
 reset()
 cmdline = reload_cmdline()
-state.line = 'e /a/b/**'
-state.dirs['/a/b'] = true
+state.line = 'Grep query **'
 cmdline.fzf_tab()
 scheduled[1]()
-files_opts.actions['enter']({ 'my file.txt' }, {})
-assert_eq(cmd_e_calls[1], '/a/b/my\\ file.txt', 'enter escapes spaces')
+assert_eq(files_opts.prompt, 'Grep query ** > ', 'prompt shows the typed line')
+files_opts.actions['enter']({ 'file.txt' }, {})
+assert_eq(cmd_e_calls[1], 'Grep query /a/b/file.txt', 'enter keeps the user command')
 
--- picker opts come from lib.fzf.e (pseudo-profile) + our overrides
+-- `:e /a/b/**` keeps `e` and the typed dir
 reset()
 cmdline = reload_cmdline()
 state.line = 'e /a/b/**'
@@ -256,7 +282,19 @@ state.dirs['/a/b'] = true
 cmdline.fzf_tab()
 scheduled[1]()
 assert_eq(files_opts.cwd, '/a/b', 'picker rooted at the typed dir')
-assert_eq(files_opts.prompt, 'e /a/b > ', 'prompt shows the typed dir')
+assert_eq(files_opts.prompt, 'e /a/b/** > ', 'prompt shows the typed line')
+files_opts.actions['enter']({ 'file.txt' }, {})
+assert_eq(cmd_e_calls[1], 'e /a/b/file.txt', 'enter rebuilds the command with the selection')
+
+-- a path with spaces is escaped
+reset()
+cmdline = reload_cmdline()
+state.line = 'e /a/b/**'
+state.dirs['/a/b'] = true
+cmdline.fzf_tab()
+scheduled[1]()
+files_opts.actions['enter']({ 'my file.txt' }, {})
+assert_eq(cmd_e_calls[1], 'e /a/b/my\\ file.txt', 'enter escapes spaces')
 
 -- ============================================================
 io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))

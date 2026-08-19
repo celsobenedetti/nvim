@@ -11,9 +11,12 @@ end
 -- ============================================================
 -- `<Tab>` on the cmdline: when the line ends in `**`, launch an fzf-lua
 -- picker over the files+directories under the typed path (`:e **` searches
--- the cwd) and run `:e <selected>` on confirm. Any other line falls back to
--- the native cmdline completion via 'wildcharm' (see lua/init/options.lua);
--- feeding '<Tab>' itself would recurse into this very mapping.
+-- the cwd). On confirm the `**` token is replaced by the selected path and
+-- the rest of the user's command is kept: `:e /some/path/**` runs
+-- `:e /some/path/<selected>` and `:Grep query **` runs
+-- `:Grep query <selected>`. Any other line falls back to the native cmdline
+-- completion via 'wildcharm' (see lua/init/options.lua); feeding '<Tab>'
+-- itself would recurse into this very mapping.
 
 ---Does `line` end in `**` (the fzf-tab trigger)?
 ---@param line string cmdline content, without the leading `:`
@@ -22,22 +25,25 @@ M.is_fzf_tab = function(line)
   return line ~= nil and line:match('%*%*$') ~= nil
 end
 
----Search directory implied by a `**`-terminated cmdline: the last
----whitespace-delimited token, minus the trailing `**`.
+---Split a `**`-terminated cmdline into the user's command (everything up to
+---the last token) and the search dir (that token minus the trailing `**`).
 ---@param line string cmdline content, without the leading `:`
----@return string|nil dir, '' means the cwd; nil when `line` isn't a fzf-tab
-M.parse_dir = function(line)
+---@return {cmd: string, dir: string}|nil cmd='' when the line is a bare `**`;
+---  dir='' means the cwd; nil when `line` isn't a fzf-tab
+M.parse = function(line)
   if not M.is_fzf_tab(line) then
     return nil
   end
-  local dir = line:match('^(.*)%*%*$'):match('(%S+)$')
-  if dir == nil then
-    return ''
+  local prefix, token = line:match('^(.*)%s+([^%s]-%*%*)$')
+  if token == nil then
+    -- no whitespace: the whole line is the `**` glob token
+    token, prefix = line, ''
   end
+  local dir = token:sub(1, -3) -- strip the trailing `**`
   if #dir > 1 and dir:sub(-1) == '/' then
     dir = dir:sub(1, -2) -- drop the trailing slash for display
   end
-  return dir
+  return { cmd = prefix:match('^%s*(.-)%s*$'), dir = dir }
 end
 
 ---Absolute search root for a parsed dir, validated to exist.
@@ -64,21 +70,25 @@ end
 
 ---Cancel the pending cmdline, then launch the picker once back in normal
 ---mode (a floating window can't open while the cmdline is active).
----@param dir string as typed, '' = cwd
+---@param line string the full cmdline (drives the picker prompt)
+---@param parsed {cmd: string, dir: string}
 ---@param root string absolute search root
-local function launch_picker(dir, root)
+local function launch_picker(line, parsed, root)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-c>', true, false, true), 'ni', false)
   vim.schedule(function()
     local fzf = require('fzf-lua')
     fzf.files(lib.fzf.e({
       cwd = root,
       cmd = lib.fzf.fd_files_dirs_cmd(),
-      prompt = 'e ' .. (dir == '' and '**' or dir) .. ' > ',
+      prompt = line .. ' > ',
       actions = {
         ['enter'] = function(selected, opts)
           local full = lib.fzf.selected_path(selected, opts)
           if full then
-            vim.cmd.e(vim.fn.fnameescape(full))
+            -- substitute the selected path for the `**` token, keeping the
+            -- user's command; a bare `:**` defaults to `:e`
+            local ex = parsed.cmd == '' and 'e' or parsed.cmd
+            vim.cmd(ex .. ' ' .. vim.fn.fnameescape(full))
           end
         end,
       },
@@ -91,16 +101,17 @@ M.fzf_tab = function()
   if vim.fn.getcmdtype() ~= ':' then
     return fallback_tab()
   end
-  local dir = M.parse_dir(vim.fn.getcmdline())
-  if dir == nil then
+  local line = vim.fn.getcmdline()
+  local parsed = M.parse(line)
+  if parsed == nil then
     return fallback_tab()
   end
-  local root = M.search_root(dir)
+  local root = M.search_root(parsed.dir)
   if root == nil then
     -- the typed path isn't a directory: keep the native completion
     return fallback_tab()
   end
-  launch_picker(dir, root)
+  launch_picker(line, parsed, root)
 end
 
 return M
