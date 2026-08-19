@@ -98,6 +98,40 @@ local keymaps = function()
     })
   end, { desc = 'CodeDiff: compare branch with HEAD' })
 
+  -- git: Git log -L for the current line or visual selection
+  local function git_relative_path()
+    local root = vim.fs.root(0, '.git')
+    if not root then
+      Snacks.notify.warn('not a git repo', { title = 'Git', icon = '', style = 'fancy' })
+      return nil
+    end
+    local file = vim.fn.expand('%:p')
+    if file == '' then
+      Snacks.notify.warn('buffer has no file', { title = 'Git', icon = '', style = 'fancy' })
+      return nil
+    end
+    local prefix = root:gsub('/+$', '') .. '/'
+    if file:sub(1, #prefix) == prefix then
+      return file:sub(#prefix + 1)
+    end
+    return file
+  end
+
+  local function git_log_line_range()
+    local path = git_relative_path()
+    if not path then
+      return
+    end
+    local start_line, end_line = lib.visual.get_region()
+    if not start_line or not end_line then
+      start_line = vim.fn.line('.')
+      end_line = start_line
+    end
+    vim.cmd(string.format('Git log -L %d,%d:%s', start_line, end_line, path))
+  end
+
+  vim.keymap.set({ 'n', 'v' }, 'gL', git_log_line_range, { desc = 'git: Git log -L line range' })
+
   if config.keys['<C-S-O>'] then
     vim.keymap.set('n', config.keys['<C-S-O>'], function()
       require('fzf-lua').lsp_document_symbols()
