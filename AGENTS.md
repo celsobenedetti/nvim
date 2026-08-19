@@ -28,3 +28,19 @@ ALWAYS ask for clarification if unclear.
 
 For all new feature we do implement, avoid Vimscript and use the Neovim Lua
 APIs.
+
+## Testing
+
+Unit tests run through `make test` (luajit with mocked `vim`, see `tests/`).
+
+Integration-test user commands against real nvim:
+`nvim --headless -u NONE -c "luafile after/plugin/grep.lua" -c "Grep foo %" -c "qa!"`.
+
+- End every headless `-c` chain with `qa!` (or `cquit`): a `:q` that closes one
+  of several windows leaves headless nvim idling in its event loop forever —
+  only a `:q` on the *last* window exits. `:cclose` then `:q` also works.
+- Assert results with `vim.fn.getqflist()` (bufnr/lnum): `:grep` shells out to
+  rg and the `:!` output line is invisible in headless mode.
+- Test argument parsing (quoting, backslash escapes) with `nvim -l`, which runs
+  Lua and exits cleanly — `-c` strings mangle regex backslashes through bash
+  quoting, `-c` parsing, and `split_args`.
