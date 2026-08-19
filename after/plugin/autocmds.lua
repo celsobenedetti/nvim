@@ -196,17 +196,6 @@ vim.api.nvim_create_autocmd('TabNew', {
   end,
 })
 
-vim.api.nvim_create_autocmd('VimEnter', {
-  desc = 'notes: VimEnter setup callback for notes dir',
-  callback = function()
-    if lib.cwd.matches({ 'notes' }) then
-      lib.notes.focus_or_create_notes_tab(function()
-        vim.cmd.tabclose(1)
-      end)
-    end
-  end,
-})
-
 vim.api.nvim_create_autocmd('ExitPre', {
   desc = 'notes: VimEnter setup callback for notes dir',
   callback = function()

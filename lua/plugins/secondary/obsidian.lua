@@ -79,37 +79,37 @@ return {
         end,
         desc = 'Grep through notes',
       },
-      {
-        '<leader>md',
-        function()
-          -- local ui_opts = Obsidian and Obsidian.opts and Obsidian.opts.ui
-          -- if not ui_opts then
-          --   return
-          -- end
-          -- ui_opts.enable = not ui_opts.enable
-          -- if ui_opts.enable then
-          --   require('obsidian.ui').update()
-          -- else
-          --   local ns = vim.api.nvim_create_namespace('ObsidianUI')
-          --   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-          --     if vim.api.nvim_buf_is_valid(buf) then
-          --       vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
-          --     end
-          --   end
-          -- end
-
-          local enabled = Obsidian.opts.ui.enable
-          Obsidian.opts.ui.enable = not enabled
-          if enabled then
-            local ns = vim.api.nvim_create_namespace('ObsidianUI')
-            vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
-          else
-            require('obsidian.ui').update(0)
-          end
-        end,
-
-        desc = 'Toggle Obsidian UI',
-      },
+      -- {
+      --   '<leader>md',
+      --   function()
+      --     -- local ui_opts = Obsidian and Obsidian.opts and Obsidian.opts.ui
+      --     -- if not ui_opts then
+      --     --   return
+      --     -- end
+      --     -- ui_opts.enable = not ui_opts.enable
+      --     -- if ui_opts.enable then
+      --     --   require('obsidian.ui').update()
+      --     -- else
+      --     --   local ns = vim.api.nvim_create_namespace('ObsidianUI')
+      --     --   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      --     --     if vim.api.nvim_buf_is_valid(buf) then
+      --     --       vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
+      --     --     end
+      --     --   end
+      --     -- end
+      --
+      --     local enabled = Obsidian.opts.ui.enable
+      --     Obsidian.opts.ui.enable = not enabled
+      --     if enabled then
+      --       local ns = vim.api.nvim_create_namespace('ObsidianUI')
+      --       vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
+      --     else
+      --       require('obsidian.ui').update(0)
+      --     end
+      --   end,
+      --
+      --   desc = 'Toggle Obsidian UI',
+      -- },
       { '<leader>oO', '<cmd>Obsidian open<CR>', desc = 'Open in Obsidian' },
       {
         '<leader>ob',
@@ -224,8 +224,8 @@ return {
         confirm_img_paste = true,
       },
       ui = {
-        enable = true,
-        enabled = true,
+        enable = false,
+        enabled = false,
         ignore_conceal_warn = false,
         update_debounce = 200,
         max_file_length = 5000,
