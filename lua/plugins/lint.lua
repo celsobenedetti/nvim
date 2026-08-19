@@ -28,7 +28,7 @@ return {
         sh = { 'shellcheck' },
         make = { 'checkmake' },
         go = { 'golangcilint' },
-        python = { 'ruff' },
+        -- python = { 'ruff' },
         -- typescript = { 'oxlint' },
         -- javascript = { 'oxlint' },
         -- vue = { 'oxlint' },

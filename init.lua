@@ -1,8 +1,5 @@
 require('init')
 
-vim.cmd.packadd('cfilter')
-vim.cmd.packadd('nvim.undotree')
-
 require('lazy').setup(vim.tbl_deep_extend('force', config.lazy, {
   spec = {
     { import = 'plugins' },
@@ -24,3 +21,6 @@ require('lazy').setup(vim.tbl_deep_extend('force', config.lazy, {
     },
   },
 }))
+
+vim.cmd.packadd('cfilter')
+vim.cmd.packadd('nvim.undotree')

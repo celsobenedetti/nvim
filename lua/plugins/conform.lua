@@ -61,7 +61,9 @@ return {
         python = { 'black' },
         vue = fmt_js,
         typst = { 'typstyle' },
+        toml = { 'taplo' },
         org = { 'org-fmt' },
+        yaml = { 'yq' },
       },
       formatters = {
         goimports = { prepend_args = { '-local', 'github.com/celsobenedetti/' } },
