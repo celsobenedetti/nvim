@@ -53,7 +53,10 @@ end
 local function do_grep(pattern, target)
   local cmd = 'silent grep ' .. vim.fn.fnameescape(pattern)
   if target then
-    cmd = cmd .. ' ' .. vim.fn.fnameescape(target)
+    -- expand cmdline-special chars (% = current file, # = alternate, ~, <cword>, ...)
+    -- so `:Grep query %` greps the current file. Only the target is expanded:
+    -- expanding the pattern would mangle regex escapes (expandcmd('\b') -> <BS>).
+    cmd = cmd .. ' ' .. vim.fn.fnameescape(vim.fn.expandcmd(target))
   end
   vim.cmd(cmd)
   vim.cmd.copen()
