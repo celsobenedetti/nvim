@@ -13,19 +13,18 @@ local function get_visual_selection_region()
   if pos1[2] == 0 or pos2[2] == 0 then
     return
   end
-  local regtype = vim.fn.visualmode()
-  local segments = vim.fn.getregionpos(pos1, pos2, {
-    type = regtype,
+  local ok, segments = pcall(vim.fn.getregionpos, pos1, pos2, {
+    type = mode,
     exclusive = vim.o.selection == 'exclusive',
   })
-  if not segments or #segments == 0 then
+  if not ok or not segments or #segments == 0 then
     return
   end
   local region = {}
   for _, seg in ipairs(segments) do
     local start_pos, end_pos = seg[1], seg[2]
     local lnum = start_pos[2] - 1
-    if regtype == 'V' then
+    if mode == 'V' then
       region[lnum] = { 0, -1 }
     else
       region[lnum] = { start_pos[3] - 1, end_pos[3] - 1 }

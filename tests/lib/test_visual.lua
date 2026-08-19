@@ -64,8 +64,9 @@ local current_mode = 'v'
 local selection_opt = 'inclusive'
 local getpos_v = { 0, 1, 1, 0 }
 local getpos_dot = { 0, 1, 1, 0 }
-local visual_regtype = 'v'
 local regionpos_segments = {}
+local regionpos_type = nil
+local getregionpos_errors = false
 local written = {}
 local used_getregionpos = false
 local used_deprecated_region = false
@@ -97,6 +98,8 @@ local function reset(buf)
   written = {}
   used_getregionpos = false
   used_deprecated_region = false
+  regionpos_type = nil
+  getregionpos_errors = false
   selection_opt = 'inclusive'
 end
 
@@ -105,7 +108,6 @@ end
 -- exclusive end columns, so a segment spanning bytes [c1, c2) has end col c2+1.
 local function select(lnum1, col1, lnum2, col2, mode, segs)
   current_mode = mode or 'v'
-  visual_regtype = mode or 'v'
   getpos_v = { 0, lnum1, col1, 0 }
   getpos_dot = { 0, lnum2, col2, 0 }
   regionpos_segments = segs or {
@@ -130,11 +132,17 @@ local function setup_vim()
         getpos = function(expr)
           return expr == 'v' and getpos_v or getpos_dot
         end,
+        -- visualmode() returns the *last* used visual mode; it is "" on the
+        -- first visual selection in a buffer. The module must not depend on it.
         visualmode = function()
-          return visual_regtype
+          return ''
         end,
         getregionpos = function(pos1, pos2, opts)
           used_getregionpos = true
+          regionpos_type = opts.type
+          if getregionpos_errors then
+            error('Vim:E475: Invalid value for argument type: ')
+          end
           return regionpos_segments
         end,
         region = function()
@@ -342,6 +350,41 @@ visual.wrap('>', '<')
 local wrapped = last_write()
 assert_eq(wrapped.new_lines[1], '>aaaa', 'first line prefixed')
 assert_eq(wrapped.new_lines[2], 'bbbb<', 'last line suffixed')
+unload_visual()
+
+-- ============================================================
+describe('lib.visual: uses the current mode, not visualmode()')
+
+-- visualmode() is "" on the first visual selection in a buffer and stale
+-- otherwise; the region type must come from nvim_get_mode().
+reset({ 'aaaa' })
+select(1, 1, 1, 4, 'v')
+setup_vim()
+visual = load_visual()
+visual.get_region()
+assert_eq(regionpos_type, 'v', 'charwise type from current mode')
+unload_visual()
+
+reset({ 'aaaa', 'bbbb' })
+select(1, 1, 2, 1, 'V', {
+  { { 0, 1, 1, 0 }, { 0, 1, 2147483647, 0 } },
+  { { 0, 2, 1, 0 }, { 0, 2, 2147483647, 0 } },
+})
+setup_vim()
+visual = load_visual()
+visual.get_region()
+assert_eq(regionpos_type, 'V', 'linewise type from current mode')
+unload_visual()
+
+-- getregionpos errors must surface as nil, not as a hard error
+reset({ 'aaaa' })
+select(1, 1, 1, 4, 'v')
+getregionpos_errors = true
+setup_vim()
+visual = load_visual()
+local ok, err = pcall(visual.get_region)
+assert_truthy(ok, 'get_region does not throw')
+assert_falsy(err, 'get_region returns nil instead of raising')
 unload_visual()
 
 -- ============================================================
