@@ -103,6 +103,7 @@ end, { expr = true, desc = 'Escape and Clear hlsearch' })
 vim.keymap.set('n', 'gy', function()
   local file = vim.fn.expand('%:p')
   file = file:gsub(' ', '\\ ')
+  file = file:gsub('oil://', '')
   vim.fn.setreg('+', file)
   Snacks.notify.info(string.format('Yanked:\n- `%s`', file), {
     title = 'Clipboard',
@@ -205,4 +206,10 @@ end, { desc = 'rg current dir' })
 
 vim.keymap.set('n', config.keys['<C-S-g>'], function()
   require('fzf-lua').live_grep()
+end)
+
+vim.keymap.set('n', '<leader>hh', function()
+  vim.cmd.tabnew()
+  vim.cmd.term('hunk diff dev...HEAD')
+  lib.tab.rename(' hunk')
 end)
