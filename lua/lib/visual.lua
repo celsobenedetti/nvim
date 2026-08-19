@@ -8,33 +8,31 @@ local function get_visual_selection_region()
   if mode ~= 'v' and mode ~= 'V' then
     return
   end
-  local options = {}
-  options.adjust = function(pos1, pos2)
-    if vim.fn.visualmode() == 'V' then
-      pos1[3] = 1
-      pos2[3] = 2 ^ 31 - 1
-    end
-    if pos1[2] > pos2[2] then
-      pos2[3], pos1[3] = pos1[3], pos2[3]
-      return pos2, pos1
-    elseif pos1[2] == pos2[2] and pos1[3] > pos2[3] then
-      return pos2, pos1
-    else
-      return pos1, pos2
-    end
-  end
-  local bufnr = 0
-  local regtype = vim.fn.visualmode()
-  local selection = vim.o.selection ~= 'exclusive'
   local pos1 = vim.fn.getpos('v')
   local pos2 = vim.fn.getpos('.')
-  pos1, pos2 = options.adjust(pos1, pos2)
-  local start = { pos1[2] - 1, pos1[3] - 1 + pos1[4] }
-  local finish = { pos2[2] - 1, pos2[3] - 1 + pos2[4] }
-  if start[2] < 0 or finish[1] < start[1] then
+  if pos1[2] == 0 or pos2[2] == 0 then
     return
   end
-  local region = vim.region(bufnr, start, finish, regtype, selection)
+  local regtype = vim.fn.visualmode()
+  local segments = vim.fn.getregionpos(pos1, pos2, {
+    type = regtype,
+    exclusive = vim.o.selection == 'exclusive',
+  })
+  if not segments or #segments == 0 then
+    return
+  end
+  local region = {}
+  for _, seg in ipairs(segments) do
+    local start_pos, end_pos = seg[1], seg[2]
+    local lnum = start_pos[2] - 1
+    if regtype == 'V' then
+      region[lnum] = { 0, -1 }
+    else
+      region[lnum] = { start_pos[3] - 1, end_pos[3] - 1 }
+    end
+  end
+  local start = { segments[1][1][2] - 1, 0 }
+  local finish = { segments[#segments][2][2] - 1, 0 }
   return region, start, finish, mode
 end
 
