@@ -19,6 +19,19 @@ M.is_file = function()
   return vim.bo.buftype ~= 'nofile' and vim.bo.buftype ~= 'nowrite'
 end
 
+---Send all open (valid, named, loaded) buffers to the quickfix list and open it.
+M.to_quickfix = function()
+  local items = {}
+  for _, buf in ipairs(M.get_valid_bufs()) do
+    local name = vim.api.nvim_buf_get_name(buf)
+    if name ~= '' and vim.api.nvim_buf_is_loaded(buf) then
+      items[#items + 1] = { filename = name, lnum = 1 }
+    end
+  end
+  vim.fn.setqflist({}, ' ', { title = 'Open buffers', items = items })
+  vim.cmd('copen')
+end
+
 ---Write all valid buffers and quit, gracefully ignoring buffers that
 ---cannot be written (unnamed, special buftypes, unmodifiable, unmodified).
 ---Aborts the quit and reports if a genuine write fails.

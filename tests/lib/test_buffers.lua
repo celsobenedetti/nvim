@@ -42,8 +42,14 @@ local buf_state = {}
 local writes = {}
 local cmd_calls = {}
 local notify_calls = {}
+local qf_calls = {}
 
 local vim_mock = {
+  fn = {
+    setqflist = function(items, action, opts)
+      qf_calls[#qf_calls + 1] = { items = items, action = action, opts = opts }
+    end,
+  },
   api = {
     nvim_list_bufs = function()
       return bufs
@@ -69,9 +75,16 @@ local vim_mock = {
       return fn()
     end,
   },
-  cmd = function(cmd)
-    cmd_calls[#cmd_calls + 1] = cmd
-  end,
+  cmd = setmetatable({}, {
+    __call = function(_, command)
+      cmd_calls[#cmd_calls + 1] = command
+    end,
+    __index = function(_, command)
+      return function()
+        cmd_calls[#cmd_calls + 1] = command
+      end
+    end,
+  }),
   notify = function(msg, level, opts)
     notify_calls[#notify_calls + 1] = { msg = msg, level = level, opts = opts }
   end,
@@ -80,7 +93,16 @@ local vim_mock = {
   },
 }
 
-mock.setup({ vim = vim_mock })
+mock.setup({
+  vim = vim_mock,
+  lib = {
+    overseer = {
+      get_active_tasks = function()
+        return {}
+      end,
+    },
+  },
+})
 
 local function reset()
   bufs = {}
@@ -88,6 +110,7 @@ local function reset()
   writes = {}
   cmd_calls = {}
   notify_calls = {}
+  qf_calls = {}
 end
 
 local function add_buf(id, overrides)
@@ -229,6 +252,38 @@ add_buf(2, { name = '/tmp/b.txt', write_error = 'Vim(write):E212: second' })
 buffers.wqa()
 assert_eq(notify_calls[1].msg, '/tmp/a.txt: E212: first\n/tmp/b.txt: E212: second', 'joins errors with newline')
 assert_eq(quit_issued(), false, 'does not quit')
+
+-- ============================================================
+describe('lib.buffers.to_quickfix: sends named loaded file buffers to the quickfix list')
+
+reset()
+add_buf(1, { name = '/tmp/a.txt' })
+add_buf(2, { name = '/tmp/b.txt' })
+buffers.to_quickfix()
+assert_eq(#qf_calls, 1, 'calls setqflist once')
+assert_eq(qf_calls[1].action, ' ', 'replaces the quickfix list')
+assert_eq(qf_calls[1].opts.title, 'Open buffers', 'sets a title')
+assert_eq(qf_calls[1].opts.items[1].filename, '/tmp/a.txt', 'first buffer filename')
+assert_eq(qf_calls[1].opts.items[1].lnum, 1, 'first buffer lnum')
+assert_eq(qf_calls[1].opts.items[2].filename, '/tmp/b.txt', 'second buffer filename')
+assert_eq(last_cmd(), 'copen', 'opens the quickfix window')
+
+-- unnamed, unloaded, and nofile buffers are skipped
+reset()
+add_buf(1, { name = '/tmp/a.txt' })
+add_buf(2, { name = '' })
+add_buf(3, { name = '/tmp/c.txt', loaded = false })
+add_buf(4, { name = '/tmp/d.txt', buftype = 'nofile' })
+buffers.to_quickfix()
+assert_eq(#qf_calls[1].opts.items, 1, 'only the valid named loaded file buffer is included')
+assert_eq(qf_calls[1].opts.items[1].filename, '/tmp/a.txt', 'keeps the file buffer')
+assert_eq(last_cmd(), 'copen', 'opens the quickfix window')
+
+-- no buffers: opens an empty quickfix list
+reset()
+buffers.to_quickfix()
+assert_eq(#qf_calls[1].opts.items, 0, 'empty items list')
+assert_eq(last_cmd(), 'copen', 'still opens the quickfix window')
 
 -- ============================================================
 io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
