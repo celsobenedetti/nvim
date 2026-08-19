@@ -30,7 +30,12 @@ local SPECIAL_FILETYPES = {
     return text
   end,
   git = function()
-    return '  ' .. vim.api.nvim_buf_get_lines(0, 0, 1, false)[1]
+    local ok, result = pcall(vim.fn.FugitiveResult, vim.api.nvim_get_current_buf())
+    local command = 'git'
+    if ok and #(result.args or {}) > 0 then
+      command = command .. ' ' .. table.concat(result.args, ' ')
+    end
+    return '   ' .. command:gsub('%%', '%%%%')
   end,
 }
 
