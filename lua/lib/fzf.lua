@@ -4,20 +4,7 @@ local M = {}
 ---fd command listing files, symlinks and directories: hidden files, no
 ---gitignore, minus a few heavy dirs (same rules as the `<c-p>` picker).
 M.fd_files_dirs_cmd = function()
-  return string.gsub(
-    [[
-  fd --color=never --type f --type l --type d --hidden --follow
---no-ignore
---exclude .git
---exclude node_modules
---exclude public
---exclude .vault
---exclude .airflow
---exclude .venv
-  ]],
-    '\n',
-    ' '
-  )
+  return string.gsub('fd --color=never --type f --type l --type d --hidden --follow' .. config.cmd.fd.ignore, '\n', ' ')
 end
 
 ---Resolve the first selection of an fzf-lua file action to an absolute path

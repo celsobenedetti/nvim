@@ -89,6 +89,20 @@ local M = {
       commits_ahead_of_origin = 'git rev-list --count HEAD ^origin/$(git branch --show-current)',
       commits_behind_origin = 'git rev-list --count ^HEAD origin/$(git branch --show-current)',
     },
+    fd = {
+      ignore = [[
+      --no-ignore
+      --exclude .git
+      --exclude node_modules
+      --exclude public
+      --exclude .vault
+      --exclude .airflow
+      --exclude .venv
+      --exclude .fallow
+      --exclude dist
+      --exclude build
+      ]],
+    },
   },
 
   ignore = {
