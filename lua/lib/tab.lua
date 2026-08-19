@@ -5,14 +5,65 @@ local M = {}
 ---@type table<number,string> tabpage id -> explicit name
 local names = {}
 
+local SEP = ((config.icons or {}).separator or {}).right or '  '
+
+-- specify tab label string or function for specific filetypes, applied when a
+-- tab contains a single buffer (analogous to the winbar's SPECIAL_FILETYPES);
+-- functions receive the tab's buffer id.
+---@type table<string,string|fun(bufnr: number): string>
+local SPECIAL_FILETYPES = {
+  fugitive = config.icons.git.git .. 'git' .. SEP .. 'fugitive',
+  snacks_picker_input = '',
+  terminal = function(bufnr)
+    local text = config.icons.term .. 'terminal'
+    if lib.term.is_toggle_term(bufnr) then
+      return text .. SEP .. 'toggle term'
+    else
+      if lib.term.is_claude(bufnr) then
+        return text .. SEP .. config.icons.agent .. 'claude'
+      else
+        if lib.term.is_opencode(bufnr) then
+          return text .. SEP .. config.icons.agent .. 'opencode'
+        end
+      end
+    end
+
+    return text
+  end,
+  git = function(bufnr)
+    local ok, result = pcall(vim.fn.FugitiveResult, bufnr)
+    local command = 'git'
+    if ok and #(result.args or {}) > 0 then
+      command = command .. ' ' .. table.concat(result.args, ' ')
+    end
+    return config.icons.git.git .. command:gsub('%%', '%%%%')
+  end,
+}
+
 ---@type string?
 local pending_name = nil
 
 ---@type boolean
 local loaded = false
 
+---Buffer shown by a tab when all its windows share a single buffer.
+---@param tabid number
+---@return number|nil bufnr, or nil when the tab shows several buffers
+local function single_buffer_bufnr(tabid)
+  local bufs = {}
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tabid)) do
+    bufs[vim.api.nvim_win_get_buf(win)] = true
+  end
+  local keys = vim.tbl_keys(bufs)
+  if #keys == 1 then
+    return keys[1]
+  end
+  return nil
+end
+
 ---Display name for a tab without an explicit one: the basename of the
----buffer shown in the tab's current window.
+---buffer shown in the tab's current window, or a filetype-specific label
+---when the tab contains a single buffer.
 ---@param tabid number
 ---@return string
 local function fallback_name(tabid)
@@ -20,6 +71,18 @@ local function fallback_name(tabid)
     return ''
   end
   local buf = vim.api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tabid))
+
+  local sbuf = single_buffer_bufnr(tabid)
+  if sbuf ~= nil then
+    local special = SPECIAL_FILETYPES[vim.bo[sbuf].filetype]
+    if special ~= nil then
+      if type(special) == 'function' then
+        return special(sbuf)
+      end
+      return special
+    end
+  end
+
   local name = vim.api.nvim_buf_get_name(buf)
   if name == '' then
     return '[No Name]'

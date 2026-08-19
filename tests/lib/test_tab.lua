@@ -41,7 +41,30 @@ local tabpages = { ids = {}, current = nil }
 local buf_names = {}
 local input_callback = nil
 local vim_g = {}
-local vim_config = { icons = { git = { git = '', diff = '' } } }
+local buf_ft = {}
+-- windows shown per tabpage id; defaults to { id } (one window per tab)
+local tab_wins = {}
+local vim_config = {
+  icons = {
+    term = '<term>',
+    agent = '<agent>',
+    git = { git = '', diff = '' },
+    separator = { right = '|' },
+  },
+}
+
+-- stub lib.term for the terminal special filetype label
+local term_mock = {
+  is_toggle_term = function()
+    return false
+  end,
+  is_claude = function()
+    return false
+  end,
+  is_opencode = function()
+    return false
+  end,
+}
 
 local vim_mock = {
   api = {
@@ -61,6 +84,9 @@ local vim_mock = {
     end,
     nvim_tabpage_is_valid = function()
       return true
+    end,
+    nvim_tabpage_list_wins = function(id)
+      return tab_wins[id] or { id }
     end,
     nvim_tabpage_get_win = function(id)
       return id
@@ -86,6 +112,20 @@ local vim_mock = {
       input_callback = cb
     end,
   },
+  bo = setmetatable({}, {
+    __index = function(_, buf)
+      return {
+        filetype = buf_ft[buf] or '',
+      }
+    end,
+  }),
+  tbl_keys = function(t)
+    local keys = {}
+    for k in pairs(t) do
+      keys[#keys + 1] = k
+    end
+    return keys
+  end,
   cmd = function() end,
   trim = function(s)
     return s:gsub('^%s+', ''):gsub('%s+$', '')
@@ -113,7 +153,7 @@ local vim_mock = {
   },
 }
 
-mock.setup({ vim = vim_mock, state = vim_g, config = vim_config })
+mock.setup({ vim = vim_mock, state = vim_g, config = vim_config, lib = { term = term_mock } })
 
 ---Point the mock at a fresh set of tabpages (ids are arbitrary numbers; the
 ---tab *number* is their 1-based position). Optionally pre-seed saved names
@@ -122,6 +162,8 @@ local function reset(tabs, names_json)
   tabpages.ids = tabs or {}
   tabpages.current = (tabs and tabs[1]) or nil
   buf_names = {}
+  buf_ft = {}
+  tab_wins = {}
   vim_g.NamedTabs = names_json
   input_callback = nil
 end
@@ -186,6 +228,55 @@ tab.rename('foo')
 buf_names[5] = '/work/project/main.lua'
 assert_eq(tab.get_name(5), 'main.lua', 'fallback to buffer basename')
 assert_eq(tab.get_name(3), '[No Name]', 'fallback for unnamed buffer')
+
+-- ============================================================
+describe('lib.tab: special filetypes (single-buffer tabs)')
+
+-- single-buffer tab with a special filetype gets the special label
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[5] = 'git'
+assert_eq(tab.get_name(5), 'git', 'special label for ft=git')
+
+-- fugitive
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[5] = 'fugitive'
+assert_eq(tab.get_name(5), 'git|fugitive', 'special label for ft=fugitive')
+
+-- picker buffer -> empty label
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[5] = 'snacks_picker_input'
+assert_eq(tab.get_name(5), '', 'empty label for picker')
+
+-- terminal defaults to the term icon + terminal
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[5] = 'terminal'
+assert_eq(tab.get_name(5), '<term>terminal', 'special label for plain terminal')
+
+-- special label beats explicit name only for unnamed tabs? explicit wins
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[5] = 'terminal'
+tab.rename('my term', 5)
+assert_eq(tab.get_name(5), 'my term', 'explicit name beats special label')
+
+-- multi-buffer tab (two windows, different buffers) -> normal fallback
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[3] = 'git'
+buf_names[3] = '/work/foo.lua' -- current window buffer (tab get_win returns id)
+tab_wins[3] = { 3, 4 } -- two windows: buffer 3 (git) and buffer 4 (lua)
+assert_eq(tab.get_name(3), 'foo.lua', 'multi-buffer tab ignores special handling')
+
+-- two windows sharing one buffer (git) -> still special
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[3] = 'git'
+tab_wins[3] = { 3, 3 } -- both windows show buffer 3
+assert_eq(tab.get_name(3), 'git', 'two windows on the same buffer keep special label')
 
 -- ============================================================
 describe('lib.tab: find')
