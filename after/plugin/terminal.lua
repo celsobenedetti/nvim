@@ -92,6 +92,74 @@ vim.api.nvim_create_autocmd('TermClose', {
   group = augroup,
 })
 
+--- @module 'terminal follow: tail output in unfocused windows'
+--- Neovim only keeps an unfocused terminal window scrolled to the newest output
+--- while that window's cursor sits exactly on the last buffer line
+--- (adjust_topline_cursor in terminal.c). TUIs like pi park their cursor a few
+--- lines above the end (input box), so the built-in tailing never engages after
+--- leaving the window. Remember whether the window was following when the user
+--- left; on new output, pin its cursor back to the end.
+local following_windows = {} -- winid -> boolean
+
+-- Coalesce per-buffer scroll work: on_lines fires per changed_lines call, which
+-- the terminal refresh path emits per scrollback line. Schedule once per event-
+-- loop batch instead of running on every callback.
+local pending_follow = {} -- buf -> true
+
+local function follow_terminal_output(buf)
+  if pending_follow[buf] then
+    return
+  end
+  pending_follow[buf] = true
+  vim.schedule(function()
+    pending_follow[buf] = nil
+    local line_count = vim.api.nvim_buf_line_count(buf)
+    local current_win = vim.api.nvim_get_current_win()
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      if
+        win ~= current_win
+        and vim.api.nvim_win_get_buf(win) == buf
+        and following_windows[win]
+        -- built-in follow already keeps a caught-up window at the end
+        and vim.api.nvim_win_get_cursor(win)[1] < line_count
+      then
+        vim.api.nvim_win_set_cursor(win, { line_count, 0 })
+      end
+    end
+  end)
+end
+
+vim.api.nvim_create_autocmd('WinLeave', {
+  desc = 'term: remember whether the terminal window was tailing output',
+  group = augroup,
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].buftype ~= 'terminal' then
+      return
+    end
+    local cursor = vim.api.nvim_win_get_cursor(win)
+    following_windows[win] = lib.term.was_following(cursor[1], vim.api.nvim_buf_line_count(buf), vim.fn.mode())
+  end,
+})
+
+vim.api.nvim_create_autocmd('TermOpen', {
+  desc = 'term: tail new output in unfocused windows showing this terminal',
+  group = augroup,
+  callback = function()
+    local buf = vim.api.nvim_get_current_buf()
+    if vim.b[buf].term_follow_attached then
+      return
+    end
+    vim.b[buf].term_follow_attached = true
+    vim.api.nvim_buf_attach(buf, false, {
+      on_lines = function()
+        follow_terminal_output(buf)
+      end,
+    })
+  end,
+})
+
 vim.api.nvim_create_autocmd('ExitPre', {
   desc = 'term: cleanup idle terminal when exiting neovim',
   callback = function()

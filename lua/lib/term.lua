@@ -5,6 +5,12 @@ local function is_term(buffer)
   return vim.bo[buffer].buftype == 'terminal'
 end
 
+--- How far above the last buffer line a terminal-window cursor can be and still
+--- count as "following" output. TUIs like pi park their cursor at an input box
+--- a few lines above the end, so the cursor is not exactly on the last line even
+--- while tailing the stream.
+local FOLLOW_TOLERANCE = 5
+
 ---@class LibTerm
 local M = {
   is_term = is_term,
@@ -47,6 +53,22 @@ local M = {
     local channel = vim.bo[buffer].channel
     local child_process = vim.api.nvim_get_proc_children(vim.fn.jobpid(channel))
     return vim.tbl_count(child_process) == 0
+  end,
+
+  --- Was a terminal window tailing output when the user left it?
+  --- While in terminal-mode the cursor is pinned to the terminal's own cursor and
+  --- cannot be scrolled, so leaving from terminal-mode always counts as following.
+  --- From normal-mode, follow only if the cursor is still near the end of the
+  --- buffer (the user may have scrolled up to read history).
+  ---@param cursor_line integer
+  ---@param line_count integer
+  ---@param mode string mode() result at leave time
+  ---@return boolean
+  was_following = function(cursor_line, line_count, mode)
+    if mode == 't' then
+      return true
+    end
+    return cursor_line >= line_count - FOLLOW_TOLERANCE
   end,
 
   startinsert = function()
