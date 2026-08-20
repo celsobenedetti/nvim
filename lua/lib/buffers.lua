@@ -70,17 +70,23 @@ M.wqa = function()
   vim.cmd('qa!')
 end
 
--- whether buffer is rendered in some window
-M.is_rendered = function(buf)
-  return vim.fn.bufwinid(buf) ~= -1
-end
-
 M.focus = function(buf)
-  if M.is_rendered(buf) then
+  local is_rendered = vim.fn.bufwinid(buf) ~= -1
+  if is_rendered then
     vim.api.nvim_set_current_win(vim.fn.bufwinid(buf))
-  else
-    vim.api.nvim_set_current_buf(buf)
+    return
   end
+
+  -- The buffer is shown in a window of another tab page: jump to that tab
+  -- instead of opening a duplicate in the current one.
+  local remote_wins = vim.fn.win_findbuf(buf)
+  if #remote_wins > 0 then
+    vim.api.nvim_set_current_tabpage(vim.api.nvim_win_get_tabpage(remote_wins[1]))
+    vim.api.nvim_set_current_win(remote_wins[1])
+    return
+  end
+
+  vim.api.nvim_set_current_buf(buf)
 end
 
 return M

@@ -44,10 +44,35 @@ local cmd_calls = {}
 local notify_calls = {}
 local qf_calls = {}
 
+-- Window/tab state the mock reads from (winid -> { tab, buf }).
+local win_state = {}
+local current_tab = 1
+local set_current_win_calls = {}
+local set_current_tab_calls = {}
+local set_current_buf_calls = {}
+
 local vim_mock = {
   fn = {
     setqflist = function(items, action, opts)
       qf_calls[#qf_calls + 1] = { items = items, action = action, opts = opts }
+    end,
+    bufwinid = function(buf)
+      for winid, st in pairs(win_state) do
+        if st.buf == buf and st.tab == current_tab then
+          return winid
+        end
+      end
+      return -1
+    end,
+    win_findbuf = function(buf)
+      local found = {}
+      for winid, st in pairs(win_state) do
+        if st.buf == buf then
+          found[#found + 1] = winid
+        end
+      end
+      table.sort(found)
+      return found
     end,
   },
   api = {
@@ -73,6 +98,20 @@ local vim_mock = {
       end
       writes[#writes + 1] = id
       return fn()
+    end,
+    nvim_win_get_tabpage = function(winid)
+      return win_state[winid].tab
+    end,
+    nvim_set_current_win = function(winid)
+      current_tab = win_state[winid].tab
+      set_current_win_calls[#set_current_win_calls + 1] = winid
+    end,
+    nvim_set_current_tabpage = function(tab)
+      current_tab = tab
+      set_current_tab_calls[#set_current_tab_calls + 1] = tab
+    end,
+    nvim_set_current_buf = function(buf)
+      set_current_buf_calls[#set_current_buf_calls + 1] = buf
     end,
   },
   cmd = setmetatable({}, {
@@ -111,6 +150,11 @@ local function reset()
   cmd_calls = {}
   notify_calls = {}
   qf_calls = {}
+  win_state = {}
+  current_tab = 1
+  set_current_win_calls = {}
+  set_current_tab_calls = {}
+  set_current_buf_calls = {}
 end
 
 local function add_buf(id, overrides)
@@ -284,6 +328,48 @@ reset()
 buffers.to_quickfix()
 assert_eq(#qf_calls[1].opts.items, 0, 'empty items list')
 assert_eq(last_cmd(), 'copen', 'still opens the quickfix window')
+
+-- ============================================================
+describe('lib.buffers.focus: focuses the buffer in the right tab page')
+
+local function add_win(winid, tab, buf)
+  win_state[winid] = { tab = tab, buf = buf }
+end
+
+-- rendered in the current tab: switch to that window, no tab change
+reset()
+add_win(3, 1, 10)
+buffers.focus(10)
+assert_eq(#set_current_win_calls, 1, 'sets the current window')
+assert_eq(set_current_win_calls[1], 3, 'to the window showing the buffer')
+assert_eq(#set_current_tab_calls, 0, 'does not switch tabs')
+assert_eq(#set_current_buf_calls, 0, 'does not set current buffer')
+
+-- rendered in another tab: switch to that tab and that window
+reset()
+add_win(5, 2, 10)
+buffers.focus(10)
+assert_eq(#set_current_tab_calls, 1, 'switches tabs')
+assert_eq(set_current_tab_calls[1], 2, 'to the tab hosting the buffer')
+assert_eq(#set_current_win_calls, 1, 'sets the current window')
+assert_eq(set_current_win_calls[1], 5, 'to the window showing the buffer')
+assert_eq(#set_current_buf_calls, 0, 'does not set current buffer')
+
+-- rendered in the current tab takes precedence over another tab
+reset()
+add_win(5, 2, 10)
+add_win(7, 1, 10)
+buffers.focus(10)
+assert_eq(#set_current_tab_calls, 0, 'does not switch tabs')
+assert_eq(set_current_win_calls[1], 7, 'focuses the window in the current tab')
+
+-- not rendered anywhere: set current buffer (opens a window in current tab)
+reset()
+buffers.focus(10)
+assert_eq(#set_current_buf_calls, 1, 'sets the current buffer')
+assert_eq(set_current_buf_calls[1], 10, 'to the requested buffer')
+assert_eq(#set_current_tab_calls, 0, 'does not switch tabs')
+assert_eq(#set_current_win_calls, 0, 'does not set current window')
 
 -- ============================================================
 io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
