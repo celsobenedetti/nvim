@@ -26,6 +26,7 @@ local M = {
       git = ' ',
       commit = ' ',
       diff = ' ',
+      revision = '󰐁',
     },
     diagnostics = {
       error = ' ',

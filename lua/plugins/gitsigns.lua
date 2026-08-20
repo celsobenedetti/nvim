@@ -70,16 +70,24 @@ return {
             gs.toggle_word_diff(false)
             gs.toggle_linehl(false)
             gs.toggle_deleted(false)
+            state.git_diff_revision = nil
+            vim.cmd('redrawstatus')
             return
           end
-          local rev = vim.fn.input('Gitsigns: diff against revision: ', 'HEAD~1')
+          local rev = vim.trim(vim.fn.input('Gitsigns: diff against revision: ', 'HEAD~1'))
           if rev == '' then
             return
           end
-          gs.change_base(vim.trim(rev))
-          gs.toggle_word_diff(true)
-          gs.toggle_linehl(true)
-          gs.toggle_deleted(true)
+          gs.change_base(rev, nil, function(err)
+            if err then
+              return
+            end
+            gs.toggle_word_diff(true)
+            gs.toggle_linehl(true)
+            gs.toggle_deleted(true)
+            state.git_diff_revision = rev
+            vim.cmd('redrawstatus')
+          end)
         end,
         desc = 'Gitsigns: toggle inline diff against revision',
       },

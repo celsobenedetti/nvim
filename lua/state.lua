@@ -11,6 +11,7 @@
 ---@field branch_commits_behind_origin number?
 ---@field NamedTabs string?
 ---@field zen_mode boolean
+---@field git_diff_revision string?
 ---@field capture boolean
 ---@field org_current_task string?
 ---@field insert_when_entering_terminal boolean
@@ -23,6 +24,7 @@ local M = {
   statusline_show_position = false,
   statusline_show_time = false,
   overseer_task_count = nil,
+  git_diff_revision = nil,
 }
 
 return M

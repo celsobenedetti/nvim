@@ -69,6 +69,7 @@ local MOCK_ICONS = {
     added = ' +',
     modified = ' ~',
     removed = ' -',
+    revision = '󰐁',
   },
   lsp = ' ',
   format = ' ',
@@ -342,6 +343,33 @@ do
   -- Test: status is empty table
   mock.setup({ vim = { b = { gitsigns_status_dict = {} }, g = { icons = MOCK_ICONS, hl = MOCK_HL } } })
   assert_empty(_git_status(), 'empty status dict')
+  mock.teardown({ 'vim' })
+end
+
+-- ============================================================
+describe('_git_diff_revision')
+
+do
+  local function _git_diff_revision()
+    if not vim.g.git_diff_revision then
+      return ''
+    end
+    return hl('Title', vim.g.icons.git.revision .. ' git diff HEAD ' .. vim.g.git_diff_revision)
+  end
+
+  -- Test: no revision set
+  mock.setup({ vim = { g = { git_diff_revision = nil, icons = MOCK_ICONS, hl = MOCK_HL } } })
+  assert_empty(_git_diff_revision(), 'no revision set')
+  mock.teardown({ 'vim' })
+
+  -- Test: revision set (HEAD~1)
+  mock.setup({ vim = { g = { git_diff_revision = 'HEAD~1', icons = MOCK_ICONS, hl = MOCK_HL } } })
+  assert_eq(_git_diff_revision(), hl('Title', '󰐁' .. ' git diff HEAD HEAD~1'), 'revision HEAD~1')
+  mock.teardown({ 'vim' })
+
+  -- Test: full hash revision
+  mock.setup({ vim = { g = { git_diff_revision = '92eb3dd', icons = MOCK_ICONS, hl = MOCK_HL } } })
+  assert_eq(_git_diff_revision(), hl('Title', '󰐁' .. ' git diff HEAD 92eb3dd'), 'full hash revision')
   mock.teardown({ 'vim' })
 end
 

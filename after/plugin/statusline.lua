@@ -99,6 +99,13 @@ local modules = {
     return lib.strings.trim(result)
   end,
 
+  _git_diff_revision = function()
+    if not state.git_diff_revision then
+      return ''
+    end
+    return hl(config.hl.text.highlight, config.icons.git.revision .. ' git diff HEAD ' .. state.git_diff_revision)
+  end,
+
   -- LSP clients attached to buffer
   _lsps = function()
     local bufnr = vim.api.nvim_get_current_buf()
@@ -369,6 +376,7 @@ function _G.MyStatusLine()
     filetype_and_lsps,
     time,
     branch,
+    modules._git_diff_revision(),
     modules._overseer_tasks(),
   }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline

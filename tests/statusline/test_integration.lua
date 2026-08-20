@@ -24,6 +24,7 @@ local function setup_vim(custom)
       zen_mode = false,
       recording_macro = false,
       overseer_task_count = nil,
+      git_diff_revision = nil,
       time = nil,
       hl = {
         text = {
@@ -36,7 +37,15 @@ local function setup_vim(custom)
         warn = 'WarningMsg',
       },
       icons = {
-        git = { branch = ' ', ahead = '', behind = '', added = ' +', modified = ' ~', removed = ' -' },
+        git = {
+          branch = ' ',
+          ahead = '',
+          behind = '',
+          added = ' +',
+          modified = ' ~',
+          removed = ' -',
+          revision = '󰐁',
+        },
         lsp = ' ',
         format = ' ',
         overseer = '> ',
@@ -200,6 +209,13 @@ local modules = {
     return hl('WarningMsg', '  recording macro ')
   end,
 
+  _git_diff_revision = function()
+    if not vim.g.git_diff_revision then
+      return ''
+    end
+    return hl('Title', vim.g.icons.git.revision .. ' git diff HEAD ' .. vim.g.git_diff_revision)
+  end,
+
   _overseer_tasks = function()
     local count = vim.g.overseer_task_count
     if not count or count == 0 then
@@ -277,6 +293,7 @@ local function MyStatusLine()
     modules._formatters(),
     modules._lsps(),
     modules._time(),
+    modules._git_diff_revision(),
     modules._overseer_tasks(),
   }, 'right')
   return string.format('%s%s%s%s%s', LEFT_PREFIX, left, '%=', right, RIGHT_SUFFIX)
@@ -579,6 +596,38 @@ setup_vim({
 })
 local result9 = MyStatusLine()
 assert_not_contains(result9, overseer_seg, 'no overseer indicator when count is 0')
+teardown_vim()
+
+-- ============================================================
+describe('MyStatusLine: git diff revision indicator on the right')
+
+-- Revision active: indicator appears in the right section
+setup_vim({
+  g = {
+    gitsigns_head = 'main',
+    statusline_show_position = false,
+    statusline_show_time = false,
+    git_diff_revision = 'HEAD~1',
+  },
+  b = {},
+})
+local result10 = MyStatusLine()
+local diff_seg = hl('Title', '󰐁' .. ' git diff HEAD HEAD~1')
+assert_contains(result10, diff_seg, 'revision diff indicator on right when active')
+teardown_vim()
+
+-- Revision not set: no indicator
+setup_vim({
+  g = {
+    gitsigns_head = 'main',
+    statusline_show_position = false,
+    statusline_show_time = false,
+    git_diff_revision = nil,
+  },
+  b = {},
+})
+local result11 = MyStatusLine()
+assert_not_contains(result11, ' git diff HEAD ', 'no indicator when revision not set')
 teardown_vim()
 
 -- ============================================================
