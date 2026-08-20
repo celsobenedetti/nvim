@@ -35,3 +35,29 @@ perceptible 50ms wait.
   `ttimeoutlen` timer (`tinput_timer_cb`), then `termkey_getkey_force`.
 - `src/nvim/getchar.c` — the "handle `<Esc>` in Insert mode" fast path
   (`inchar(..., 25)`) only applies when `typebuf.tb_maplen == 0`.
+
+## Which keys are affected
+
+Every key whose byte sequence starts with `ESC` — all arrows incl. modified
+variants (`ESC[1;5A` …), Home/End, PgUp/PgDn, Insert/Delete, Shift+Tab
+(`ESC[Z`), F-keys, Alt+any-key (`ESC`+char), Ctrl+Tab / Ctrl+Shift+Tab via
+xterm modifyOtherKeys (`ESC[27;5;9~`), Ctrl+[ (the ESC byte itself), bracketed
+paste framing. Plain letters/digits/`C-` combos are single bytes and never
+wait.
+
+Verified in this environment (nvim → tmux 3.7 → ghostty): nvim sends the kitty
+keyboard-protocol query `ESC[?u` but tmux answers it, so nvim falls back to
+xterm modifyOtherKeys (`ESC[>4;2m`) — captured nvim's raw startup bytes via
+`tmux pipe-pane`. Without tmux (ghostty directly) the kitty protocol
+negotiates and *every* key becomes `ESC[code;mods u`.
+
+## Why 10ms is safe (boundary measured)
+
+Failure requires a split sequence: bytes arriving in separate reads with a gap
+> `ttimeoutlen`. Measured by splitting `ESC[D` across reads (insert mode,
+checking mode+col): at `ttimeoutlen=10`, gaps ≤10ms keep the arrow intact,
+≥11ms fire `ESC` alone. Real gaps are ~0ms — a terminal writes a key's bytes
+in one syscall and the pty delivers them in one read, so the timer only ever
+starts for a lone `ESC`. Only pathological links (fragmented writes, very slow
+remote) exceed 10ms; the failure is a benign mis-read key. Raise `ttimeoutlen`
+when working over slow remotes.
