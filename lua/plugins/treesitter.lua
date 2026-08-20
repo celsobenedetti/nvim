@@ -38,6 +38,15 @@ return {
     opts = function()
       return { mode = 'cursor', max_lines = 3 }
     end,
+    keys = {
+      {
+        'g{',
+        function()
+          require('treesitter-context').go_to_context(vim.v.count1)
+        end,
+        desc = 'treesitter: Go to parent context',
+      },
+    },
   },
 
   {
