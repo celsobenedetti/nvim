@@ -61,12 +61,9 @@ return {
         '<leader>giR',
         function()
           local gs = package.loaded.gitsigns
-          local cache = require('gitsigns.cache').cache
-          local buf = vim.api.nvim_get_current_buf()
-          local cur = cache[buf] and cache[buf].git_obj and cache[buf].git_obj.revision
-          if cur then
+          if state.git_diff_revision then
             -- Already diffing against a revision: back to the index
-            gs.reset_base()
+            gs.reset_base(true)
             gs.toggle_word_diff(false)
             gs.toggle_linehl(false)
             gs.toggle_deleted(false)
@@ -78,7 +75,7 @@ return {
           if rev == '' then
             return
           end
-          gs.change_base(rev, nil, function(err)
+          gs.change_base(rev, true, function(err)
             if err then
               return
             end
@@ -89,7 +86,7 @@ return {
             vim.cmd('redrawstatus')
           end)
         end,
-        desc = 'Gitsigns: toggle inline diff against revision',
+        desc = 'Gitsigns: toggle global inline diff against revision',
       },
     },
   },
