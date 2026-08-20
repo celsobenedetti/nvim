@@ -69,6 +69,10 @@ vim.opt.splitkeep = 'screen'
 vim.opt.splitright = true -- Put new windows right of current
 vim.opt.termguicolors = true -- True color support
 vim.opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
+-- <Esc> in insert mode is delayed by 'ttimeoutlen' (default 50ms, perceptible).
+-- 10ms is imperceptible yet long enough for split key-code sequences (tmux/ssh)
+-- to arrive; 0 would be fully instant but risks broken cursor keys on slow links.
+vim.opt.ttimeoutlen = 10
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
 vim.opt.updatetime = 200 -- Save swap file and trigger CursorHold
