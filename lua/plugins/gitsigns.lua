@@ -57,6 +57,32 @@ return {
         end,
         desc = 'Gitsigns: toggle inline diff',
       },
+      {
+        '<leader>giR',
+        function()
+          local gs = package.loaded.gitsigns
+          local cache = require('gitsigns.cache').cache
+          local buf = vim.api.nvim_get_current_buf()
+          local cur = cache[buf] and cache[buf].git_obj and cache[buf].git_obj.revision
+          if cur then
+            -- Already diffing against a revision: back to the index
+            gs.reset_base()
+            gs.toggle_word_diff(false)
+            gs.toggle_linehl(false)
+            gs.toggle_deleted(false)
+            return
+          end
+          local rev = vim.fn.input('Gitsigns: diff against revision: ', 'HEAD~1')
+          if rev == '' then
+            return
+          end
+          gs.change_base(vim.trim(rev))
+          gs.toggle_word_diff(true)
+          gs.toggle_linehl(true)
+          gs.toggle_deleted(true)
+        end,
+        desc = 'Gitsigns: toggle inline diff against revision',
+      },
     },
   },
 }
