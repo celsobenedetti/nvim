@@ -70,4 +70,17 @@ M.wqa = function()
   vim.cmd('qa!')
 end
 
+-- whether buffer is rendered in some window
+M.is_rendered = function(buf)
+  return vim.fn.bufwinid(buf) ~= -1
+end
+
+M.focus = function(buf)
+  if M.is_rendered(buf) then
+    vim.api.nvim_set_current_win(vim.fn.bufwinid(buf))
+  else
+    vim.api.nvim_set_current_buf(buf)
+  end
+end
+
 return M

@@ -1,40 +1,55 @@
-state.claude_bufnr = 0
-state.opencode_bufnr = 0
+--- @alias Agents
+--- | 'claude'
+--- | 'opencode'
+--- | 'pi'
 
-local function focus_buf(buf)
-  local winid = vim.fn.bufwinid(buf)
-  if winid ~= -1 then
-    vim.api.nvim_set_current_win(winid)
-  else
-    vim.api.nvim_set_current_buf(buf)
-  end
+local agents = {
+  { key = '<leader>cl', cmd = 'claude' },
+  { key = '<leader>op', cmd = 'opencode' },
+  { key = '<leader>pi', cmd = 'pi' },
+}
+
+---@class AgentsState
+---@field bufnr table<Agents, number>
+local M = {
+  bufnr = {},
+}
+M.get_agent_bufnr = function(agent)
+  return M.bufnr[agent] or 0
 end
+M.set_agent_bufnr = function(agent, bufnr)
+  M.bufnr[agent] = bufnr
+end
+M.is_active = function(agent)
+  return M.get_agent_bufnr(agent) > 0
+end
+state.agents = M
 
-local function setup_agent(name, state_key, exclude_toggle_term)
-  local function is_agent_buf(buf)
-    return buf > 0
-      and buf == state[state_key]
-      and vim.api.nvim_buf_is_valid(buf)
-      and (not exclude_toggle_term or not lib.term.is_toggle_term())
-  end
+--- @param key string keymap
+--- @param agent Agents agent cli cmd
+local function setup_agent(key, agent)
+  M.set_agent_bufnr(agent, 0)
 
   -- sticky agent terminal: focus existing buffer, or start a new one
   local function open()
-    if is_agent_buf(state[state_key]) then
-      focus_buf(state[state_key])
+    local buf = M.get_agent_bufnr(agent)
+
+    if not M.is_active(agent) then
+      vim.cmd.term(agent)
+      M.set_agent_bufnr(agent, vim.api.nvim_get_current_buf())
       return
     end
-    vim.cmd.term(name)
-    state[state_key] = vim.api.nvim_get_current_buf()
+
+    lib.buffers.focus(buf)
   end
 
   vim.api.nvim_create_autocmd('TermClose', {
-    desc = name .. ': close terminal buffer when ' .. name .. ' exits',
+    desc = agent .. ': close terminal buffer when ' .. agent .. ' exits',
     callback = function(args)
-      if args.buf ~= state[state_key] then
+      if args.buf ~= M.get_agent_bufnr(agent) then
         return
       end
-      state[state_key] = 0
+      M.set_agent_bufnr(agent, 0)
       vim.schedule(function()
         if vim.api.nvim_buf_is_valid(args.buf) then
           vim.api.nvim_buf_delete(args.buf, { force = true })
@@ -43,12 +58,11 @@ local function setup_agent(name, state_key, exclude_toggle_term)
     end,
   })
 
-  local command = name:gsub('^%l', string.upper)
-  vim.api.nvim_create_user_command(command, open, { desc = 'Open or focus the ' .. name .. ' terminal' })
-
-  local lhs = name == 'claude' and '<leader>cl' or '<leader>oC'
-  vim.keymap.set('n', lhs, '<cmd>' .. command .. '<CR>', { desc = name .. ': open/focus terminal' })
+  local command = agent:gsub('^%l', string.upper)
+  vim.api.nvim_create_user_command(command, open, { desc = 'Open or focus the ' .. agent .. ' terminal' })
+  vim.keymap.set('n', key, string.format(':%s<CR>', command), { desc = agent .. ': open/focus terminal' })
 end
 
-setup_agent('claude', 'claude_bufnr', true)
-setup_agent('opencode', 'opencode_bufnr', false)
+for _, agent in ipairs(agents) do
+  setup_agent(agent.key, agent.cmd)
+end

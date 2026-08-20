@@ -1,9 +1,8 @@
 --- Global source of truth for internal app state.
 ---
 ---@class State
----@field colors table
----@field claude_bufnr number
----@field opencode_bufnr number
+---@field colors OmarchyColors
+---@field agents AgentsState
 ---@field toggle_term_bufnr number
 ---@field recording_macro boolean
 ---@field overseer_task_count number?
