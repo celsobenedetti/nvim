@@ -59,5 +59,11 @@ checking mode+col): at `ttimeoutlen=10`, gaps ≤10ms keep the arrow intact,
 ≥11ms fire `ESC` alone. Real gaps are ~0ms — a terminal writes a key's bytes
 in one syscall and the pty delivers them in one read, so the timer only ever
 starts for a lone `ESC`. Only pathological links (fragmented writes, very slow
-remote) exceed 10ms; the failure is a benign mis-read key. Raise `ttimeoutlen`
+remote) exceed 10ms. What "broken" looks like (measured): the split keypress
+becomes two inputs — a lone `ESC` (leaves insert mode) plus the trailing bytes
+reinterpreted in normal mode. CSI keys are usually harmless (the leftover
+starts with `[`, itself a normal-mode prefix that eats the rest), but SS3 keys
+(F1–F4, sometimes arrows: `ESCOP`…) are destructive: splitting F1 (`ESCOP`)
+at 11ms made `O` open a new line and insert a junk `P` — real document
+modification from one keypress. Raise `ttimeoutlen`
 when working over slow remotes.
