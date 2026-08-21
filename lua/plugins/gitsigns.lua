@@ -5,6 +5,10 @@ return {
     config = function()
       require('gitsigns').setup({
         diff_opts = {
+          -- Pin: `word_diff` (intra-line highlights) requires the internal
+          -- diff. Without this it silently no-ops if `diffopt` drops
+          -- `internal` (e.g. when a colorscheme or plugin sets it).
+          internal = true,
           -- Stack `:Gitsigns diffthis` vertically instead of side-by-side.
           -- This only affects diffthis, not inline/word diffs.
           vertical = false,
@@ -67,11 +71,25 @@ return {
         'gid',
         function()
           local gs = package.loaded.gitsigns
-          gs.toggle_word_diff()
-          gs.toggle_linehl()
-          gs.toggle_deleted()
+          -- Master toggle: read the current state from one flag and set all
+          -- layers to the same value, so word_diff and linehl can't drift
+          -- into mixed states (the old triple-invert could).
+          local on = not require('gitsigns.config').config.word_diff
+          gs.toggle_word_diff(on)
+          gs.toggle_linehl(on)
         end,
-        desc = 'Gitsigns: toggle inline diff',
+        desc = 'Gitsigns: toggle inline diff (line + word highlights)',
+      },
+      {
+        'gh',
+        function()
+          -- Replacement for the deprecated `show_deleted`/`toggle_deleted`
+          -- persistent deleted-line mode: shows the hunk under the cursor's
+          -- removed lines as virtual lines (GitSignsDeleteVirtLn + word diff,
+          -- with GitSignsVirtLnum line numbers). Clears on cursor move.
+          package.loaded.gitsigns.preview_hunk_inline()
+        end,
+        desc = 'Gitsigns: preview hunk inline (deleted lines)',
       },
       {
         '<leader>giR',
@@ -82,7 +100,6 @@ return {
             gs.reset_base(true)
             gs.toggle_word_diff(false)
             gs.toggle_linehl(false)
-            gs.toggle_deleted(false)
             state.git_diff_revision = nil
             vim.cmd('redrawstatus')
             return
@@ -97,7 +114,6 @@ return {
             end
             gs.toggle_word_diff(true)
             gs.toggle_linehl(true)
-            gs.toggle_deleted(true)
             state.git_diff_revision = rev
             vim.cmd('redrawstatus')
           end)
