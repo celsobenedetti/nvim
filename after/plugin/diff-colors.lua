@@ -13,47 +13,49 @@
 --
 -- "change" (a line modified in place) has no delta equivalent — git diff is
 -- only +/- and delta renders old/new pairs (red minus line + green plus
--- line). In gid's inline view that pairing comes from show_deleted (red
--- virt line) + the modified line itself, so the gitsigns *change* word-diff
--- regions use delta's plus-emph GREEN rather than yellow. The vim diff-mode
--- "change" groups (DiffChange/DiffText/Changed/ChangedText, and the
--- GitSignsChangeLn line wash) keep the classic Vim yellow so "modified"
--- stays distinguishable from "added" in vimdiff/:Gitsigns diffthis.
+-- line). In gid that pairing is show_deleted (red virt line) + the modified
+-- line itself, so every "change" surface here uses delta's plus-style GREEN:
+-- the modified line reads as "new" exactly like an added line. There is no
+-- yellow anywhere in this palette.
 --
 -- Delta-style mapping to editor groups:
---   plus-style     -> DiffAdd, diffAdded, diffNewFile, Added, GitSigns*Ln
---                     (linehl), GitSigns* sign glyphs, GitSignsAddPreview,
+--   plus-style     -> DiffAdd, DiffChange, diffAdded, diffChanged,
+--                     diffNewFile, Added, Changed, GitSigns*Ln (linehl),
+--                     GitSigns* sign glyphs, GitSignsAddPreview,
 --                     fugitive terminal `+` lines
 --   minus-style    -> DiffDelete, diffRemoved, diffOldFile, Removed,
 --                     GitSignsDeleteVirtLn, GitSignsDeletePreview,
 --                     fugitive terminal `-` lines
---   change         -> DiffChange, diffChanged, Changed (vim diff mode only)
---   plus-emph      -> GitSignsAddInline, GitSignsAddLnInline,
---                     GitSignsChangeInline, GitSignsChangeLnInline (delta
---                     pairs green change-emph with the red deleted line)
---   change-emph    -> DiffText, ChangedText (vimdiff/:Gitsigns diffthis
---                     intra-line change)
+--   plus-emph      -> DiffText, ChangedText, GitSignsAddInline,
+--                     GitSignsAddLnInline, GitSignsChangeInline,
+--                     GitSignsChangeLnInline (gitsigns `change` regions
+--                     pair green emphasis with the red deleted line),
+--                     codediff char_insert. Emph groups are bg + fg
+--                     (colored text) for visibility.
 --   minus-emph     -> GitSignsDeleteInline, GitSignsDeleteLnInline,
---                     GitSignsDeleteVirtLnInLine
+--                     GitSignsDeleteVirtLnInLine, codediff char_delete
+--                     (bg + fg)
 --   line-numbers   -> GitSignsVirtLnum, diffIndexLine
 
 local PALETTES = {
   dark = {
     add = '#002800', -- delta plus-style
     delete = '#3F0001', -- delta minus-style
-    change = '#403800', -- vim DiffChange wash (gitsigns change linehl)
-    add_char = '#006000', -- delta plus-emph-style
-    delete_char = '#901011', -- delta minus-emph-style
-    change_char = '#8C7A00', -- vim diff-mode intra-line change (DiffText)
+    -- Emph bg is bumped past delta's subtle default for visibility, and the
+    -- emph fg colors the changed text itself (light green on dark).
+    add_char = '#008000', -- plus-emph bg
+    add_char_fg = '#B3F9C0', -- plus-emph fg
+    delete_char = '#A01818', -- minus-emph bg
+    delete_char_fg = '#FFC8C8', -- minus-emph fg
     lnum_fg = '#444444', -- delta line-numbers-style
   },
   light = {
     add = '#D0FFD0', -- delta plus-style
     delete = '#FFE0E0', -- delta minus-style
-    change = '#FFF0B8', -- vim DiffChange wash (gitsigns change linehl)
-    add_char = '#A0EFA0', -- delta plus-emph-style
-    delete_char = '#FFC0C0', -- delta minus-emph-style
-    change_char = '#FFE08A', -- vim diff-mode intra-line change (DiffText)
+    add_char = '#7FE07F', -- plus-emph bg (darkened for light bg)
+    add_char_fg = '#003800', -- plus-emph fg
+    delete_char = '#FFA0A0', -- minus-emph bg
+    delete_char_fg = '#5C0000', -- minus-emph fg
     lnum_fg = '#444444', -- delta line-numbers-style
   },
 }
@@ -70,9 +72,10 @@ local function apply()
   -- --------------------------------------------------------------------
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })
-  vim.api.nvim_set_hl(0, 'DiffChange', { bg = p.change })
-  -- Changed chars inside a changed line (delta emph mapping).
-  vim.api.nvim_set_hl(0, 'DiffText', { bg = p.change_char })
+  -- Modified lines read as "new" (delta plus-style) - no yellow.
+  vim.api.nvim_set_hl(0, 'DiffChange', { bg = p.add })
+  -- Changed chars inside a changed line: brighter emph bg + colored text.
+  vim.api.nvim_set_hl(0, 'DiffText', { bg = p.add_char, fg = p.add_char_fg })
 
   -- nvim 0.10+ builtin groups: DiffAdd/DiffChange/DiffDelete/DiffText are
   -- linked to these by default, and gitsigns' sign groups derive from them
@@ -81,15 +84,15 @@ local function apply()
   -- bg-only here puts the sign glyphs in the palette too.
   vim.api.nvim_set_hl(0, 'Added', { bg = p.add })
   vim.api.nvim_set_hl(0, 'Removed', { bg = p.delete })
-  vim.api.nvim_set_hl(0, 'Changed', { bg = p.change })
-  vim.api.nvim_set_hl(0, 'ChangedText', { bg = p.change_char })
+  vim.api.nvim_set_hl(0, 'Changed', { bg = p.add })
+  vim.api.nvim_set_hl(0, 'ChangedText', { bg = p.add_char, fg = p.add_char_fg })
 
   -- --------------------------------------------------------------------
   -- 2. Diff syntax groups (fugitive :Gdiff / :Git diff buffers).
   -- --------------------------------------------------------------------
   vim.api.nvim_set_hl(0, 'diffAdded', { bg = p.add })
   vim.api.nvim_set_hl(0, 'diffRemoved', { bg = p.delete })
-  vim.api.nvim_set_hl(0, 'diffChanged', { bg = p.change })
+  vim.api.nvim_set_hl(0, 'diffChanged', { bg = p.add })
   vim.api.nvim_set_hl(0, 'diffOldFile', { bg = p.delete })
   vim.api.nvim_set_hl(0, 'diffNewFile', { bg = p.add })
   -- Metadata (`index abc..def`) dimmed like delta's non-diff lines.
@@ -114,22 +117,22 @@ local function apply()
   --
   -- `change` regions (modified-in-place words) use the plus-emph GREEN, not
   -- yellow: delta has no yellow, and in gid the red deleted virt line above
-  -- the modified line already conveys "old", so the changed chars should
-  -- read as "new" (green). Yellow-on-yellow (change_char on the GitSigns
-  -- ChangeLn wash) was effectively invisible.
-  vim.api.nvim_set_hl(0, 'GitSignsAddInline', { bg = p.add_char })
-  vim.api.nvim_set_hl(0, 'GitSignsChangeInline', { bg = p.add_char })
-  vim.api.nvim_set_hl(0, 'GitSignsDeleteInline', { bg = p.delete_char })
-  vim.api.nvim_set_hl(0, 'GitSignsAddLnInline', { bg = p.add_char })
-  vim.api.nvim_set_hl(0, 'GitSignsChangeLnInline', { bg = p.add_char })
-  vim.api.nvim_set_hl(0, 'GitSignsDeleteLnInline', { bg = p.delete_char })
+  -- the modified line already conveys "old", so the changed chars read as
+  -- "new" (green). Emphasis is cranked past delta's subtle default: brighter
+  -- bg plus colored text so the changed chars are unmistakable.
+  vim.api.nvim_set_hl(0, 'GitSignsAddInline', { bg = p.add_char, fg = p.add_char_fg })
+  vim.api.nvim_set_hl(0, 'GitSignsChangeInline', { bg = p.add_char, fg = p.add_char_fg })
+  vim.api.nvim_set_hl(0, 'GitSignsDeleteInline', { bg = p.delete_char, fg = p.delete_char_fg })
+  vim.api.nvim_set_hl(0, 'GitSignsAddLnInline', { bg = p.add_char, fg = p.add_char_fg })
+  vim.api.nvim_set_hl(0, 'GitSignsChangeLnInline', { bg = p.add_char, fg = p.add_char_fg })
+  vim.api.nvim_set_hl(0, 'GitSignsDeleteLnInline', { bg = p.delete_char, fg = p.delete_char_fg })
 
   -- Removed lines as virtual lines (preview_hunk_inline / show_deleted):
   -- whole line = minus-style wash, changed chars inside it = minus-emph,
   -- and the fake line numbers get delta's gray instead of inheriting the
   -- red wash via the GitSignsDeleteVirtLn fallback.
   vim.api.nvim_set_hl(0, 'GitSignsDeleteVirtLn', { bg = p.delete })
-  vim.api.nvim_set_hl(0, 'GitSignsDeleteVirtLnInLine', { bg = p.delete_char })
+  vim.api.nvim_set_hl(0, 'GitSignsDeleteVirtLnInLine', { bg = p.delete_char, fg = p.delete_char_fg })
   vim.api.nvim_set_hl(0, 'GitSignsVirtLnum', { fg = p.lnum_fg })
 
   -- Hunk preview popups (preview_hunk): added/removed line washes.
