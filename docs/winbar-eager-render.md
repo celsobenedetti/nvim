@@ -62,6 +62,15 @@ the bug was the render path, not the event set.
    `buftype == 'nofile'` early-return did **not** protect it (the old code
    transiently clobbered it and oil re-applied it; the new guard skips it
    entirely).
+4. **The autocmd skips windows that can't hold a winbar.** Setting a winbar
+   on a floating window with view height `<= 1` makes nvim raise
+   `E36: Not enough room` inside the `BufWinEnter` autocommands, which
+   aborts the caller's `nvim_open_win` — the snacks picker input window
+   (1-line float in `ivy`/`vscode` layouts) and blink.cmp's completion float
+   both died on `<leader>si`. Two guards: `nofile` buffers (pickers, cmp,
+   notifier — they render an empty bar anyway, restoring the pre-refactor
+   early-return) and floats with `winheight() <= 1` (`winheight()` returns
+   `w_view_height`, the exact value nvim checks).
 
 ## How winbar redraws are scheduled (the C side)
 

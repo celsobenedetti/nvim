@@ -150,6 +150,21 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
       return
     end
 
+    -- Skip windows that can't hold a winbar. Setting one on a floating window
+    -- with view height <= 1 makes nvim raise E36 "Not enough room" inside the
+    -- BufWinEnter autocmds, aborting the caller's nvim_open_win (snacks
+    -- picker input window, blink.cmp completion float). Scratch buffers
+    -- (nofile: pickers, cmp, notifier) render an empty bar anyway, so leave
+    -- them alone as well.
+    local buf = vim.api.nvim_win_get_buf(winid)
+    if vim.bo[buf].buftype == 'nofile' then
+      return
+    end
+    local is_float = vim.api.nvim_win_get_config(winid).relative ~= ''
+    if is_float and vim.fn.winheight(winid) <= 1 then
+      return
+    end
+
     vim.wo[winid].winbar = WINBAR_EXPR
   end,
 })
