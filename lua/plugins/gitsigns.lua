@@ -2,6 +2,22 @@ return {
   {
     'lewis6991/gitsigns.nvim',
     event = 'VeryLazy',
+    config = function()
+      require('gitsigns').setup({
+        diff_opts = {
+          -- Stack `:Gitsigns diffthis` vertically instead of side-by-side.
+          -- This only affects diffthis, not inline/word diffs.
+          vertical = false,
+        },
+        -- Where the diff buffer goes: 'aboveleft' (default) puts it above the
+        -- working file, 'belowright' below it.
+        diffthis = {
+          split = 'aboveleft',
+        },
+      })
+
+      vim.cmd.cnoreabbrev('gitsigns Gitsigns')
+    end,
     keys = {
 
       {
