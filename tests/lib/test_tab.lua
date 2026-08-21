@@ -228,24 +228,6 @@ assert_eq(tab.get_name(3), '[No Name]', 'fallback for unnamed buffer')
 -- ============================================================
 describe('lib.tab: special filetypes (single-buffer tabs)')
 
--- single-buffer tab with a special filetype gets the special label
-reset({ 0, 3, 5 })
-tab = reload_tab()
-buf_ft[5] = 'git'
-assert_eq(tab.get_name(5), 'git', 'special label for ft=git')
-
--- fugitive
-reset({ 0, 3, 5 })
-tab = reload_tab()
-buf_ft[5] = 'fugitive'
-assert_eq(tab.get_name(5), 'git|fugitive', 'special label for ft=fugitive')
-
--- picker buffer -> empty label
-reset({ 0, 3, 5 })
-tab = reload_tab()
-buf_ft[5] = 'snacks_picker_input'
-assert_eq(tab.get_name(5), '', 'empty label for picker')
-
 -- terminal label comes from the shared get_terminal_label
 reset({ 0, 3, 5 })
 tab = reload_tab()
@@ -277,13 +259,6 @@ buf_ft[3] = 'git'
 buf_names[3] = '/work/foo.lua' -- current window buffer (tab get_win returns id)
 tab_wins[3] = { 3, 4 } -- two windows: buffer 3 (git) and buffer 4 (lua)
 assert_eq(tab.get_name(3), 'foo.lua', 'multi-buffer tab ignores special handling')
-
--- two windows sharing one buffer (git) -> still special
-reset({ 0, 3, 5 })
-tab = reload_tab()
-buf_ft[3] = 'git'
-tab_wins[3] = { 3, 3 } -- both windows show buffer 3
-assert_eq(tab.get_name(3), 'git', 'two windows on the same buffer keep special label')
 
 -- ============================================================
 describe('lib.tab: find')

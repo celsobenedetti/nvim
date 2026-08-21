@@ -94,9 +94,9 @@ assert_eq(split('"\\bquoted\\b" x'), { '\\bquoted\\b', 'x' }, 'backslashes survi
 assert_eq(split('\\t'), { '\\t' }, 'backslash-t kept (rg tab escape, not a literal tab)')
 
 -- ============================================================
-describe('colored_text')
+describe('colored')
 
-local colored = strings.colored_text
+local colored = strings.colored
 set_hl_calls = {}
 assert_eq(colored('hi', '#51AF54'), '%#Hex51AF54#hi%*', 'wraps text in derived group markup')
 assert_eq(#set_hl_calls, 1, 'registers one highlight group')
