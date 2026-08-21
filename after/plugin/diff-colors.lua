@@ -30,11 +30,12 @@
 --                     GitSignsAddLnInline, GitSignsChangeInline,
 --                     GitSignsChangeLnInline (gitsigns `change` regions
 --                     pair green emphasis with the red deleted line),
---                     codediff char_insert. Emph groups are bg + fg
+--                     codediff char_insert, PlusEmph (word-level emph in
+--                     fugitive patch buffers). Emph groups are bg + fg
 --                     (colored text) for visibility.
 --   minus-emph     -> GitSignsDeleteInline, GitSignsDeleteLnInline,
---                     GitSignsDeleteVirtLnInLine, codediff char_delete
---                     (bg + fg)
+--                     GitSignsDeleteVirtLnInLine, codediff char_delete,
+--                     MinusEmph (bg + fg)
 --   line-numbers   -> GitSignsVirtLnum, diffIndexLine
 
 local function apply()
@@ -71,6 +72,13 @@ local function apply()
   vim.api.nvim_set_hl(0, 'diffNewFile', { bg = p.add })
   -- Metadata (`index abc..def`) dimmed like delta's non-diff lines.
   vim.api.nvim_set_hl(0, 'diffIndexLine', { fg = p.lnum_fg })
+
+  -- Word-level emphasis inside fugitive patch buffers (`:Git log -p`,
+  -- `:Git show`, `:Git diff`): the changed words within +/- lines, painted
+  -- by after/ftplugin/git.lua extmarks. Emphasis cranked past delta's
+  -- subtle default like the gitsigns inline groups below.
+  vim.api.nvim_set_hl(0, 'PlusEmph', { bg = p.add_char, fg = p.add_char_fg })
+  vim.api.nvim_set_hl(0, 'MinusEmph', { bg = p.delete_char, fg = p.delete_char_fg })
 
   -- --------------------------------------------------------------------
   -- 3. Gitsigns inline diffs.

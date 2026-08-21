@@ -48,3 +48,9 @@ live config, which may lag this worktree) and its Lua loader wins over
 - Test argument parsing (quoting, backslash escapes) with `nvim -l`, which runs
   Lua and exits cleanly — `-c` strings mangle regex backslashes through bash
   quoting, `-c` parsing, and `split_args`.
+- `-l` mode never delivers fugitive `:Git` job output; test fugitive buffers
+  with `-c "Git ..."` + `-c sleep N` before asserting (output streams async).
+  Also add `--cmd "filetype plugin on"` and `--cmd "set rtp+=./after"` — under
+  `-u NONE` nothing sources ftplugins otherwise, and prepending the repo to
+  rtp does not make its `after/` dir discoverable (rtp lists after dirs as
+  explicit trailing entries). See docs/diff-emph.md.
