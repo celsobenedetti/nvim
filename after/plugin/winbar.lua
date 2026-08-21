@@ -8,8 +8,43 @@
 --- their own buffer (see statusline.c: set_var before eval).
 --- 2. Path is relative to cwd when the file lives under it, absolute otherwise.
 --- 3. ft icons resolved via mini.icons.
+---
+--- Terminal windows get a label instead of a path: `   terminal`, suffixed
+--- with the terminal kind (`toggle term`, or `󰚩 pi`-style agent labels for
+--- claude/opencode/pi). The label is built by `get_terminal_label`, shared
+--- with lib.tab so tabs and winbars agree on terminal names.
 
 local SEP = ((config.icons or {}).separator or {}).right or '  '
+
+-- per-agent glyphs for agent terminals (agent cmd -> icon)
+local AGENT_ICONS = {
+  claude = '󱙺',
+  opencode = '󱙺',
+  pi = '󰚩',
+}
+
+--- Terminal label for a buffer: `   terminal`, plus a segment naming the
+--- kind: `toggle term`, or `<icon> <agent>` for agent terminals (claude,
+--- opencode, pi). Shared with lib.tab so tabs and winbars agree.
+---@param bufnr? number defaults to the current buffer
+---@return string
+_G.get_terminal_label = function(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  local text = '  terminal'
+  if lib.term.is_toggle_term(bufnr) then
+    return text .. SEP .. 'toggle term'
+  end
+
+  local agent = (lib.term.is_claude(bufnr) and 'claude')
+    or (lib.term.is_opencode(bufnr) and 'opencode')
+    or (lib.term.is_pi(bufnr) and 'pi')
+  if agent then
+    return text .. SEP .. (AGENT_ICONS[agent] or '') .. ' ' .. agent
+  end
+
+  return text
+end
 
 -- winbar content for specific filetypes. Functions receive the buffer being
 -- rendered — the *window's* buffer, which may differ from the focused one.
@@ -23,17 +58,7 @@ local SPECIAL_FILETYPES = {
   fugitive = ' git' .. SEP .. ' fugitive',
   snacks_picker_input = '',
   terminal = function(buf)
-    local text = '  terminal'
-    if lib.term.is_toggle_term(buf) then
-      return text .. SEP .. 'toggle term'
-    end
-    local agent = (lib.term.is_claude(buf) and 'claude')
-      or (lib.term.is_opencode(buf) and 'opencode')
-      or (lib.term.is_pi(buf) and 'pi')
-    if agent then
-      return text .. SEP .. '󱙺 ' .. agent
-    end
-    return text
+    return _G.get_terminal_label(buf)
   end,
   git = function(buf)
     local ok, result = pcall(vim.fn.FugitiveResult, buf)

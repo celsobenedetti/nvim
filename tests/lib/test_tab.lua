@@ -53,21 +53,14 @@ local vim_config = {
   },
 }
 
--- stub lib.term for the terminal special filetype label
-local term_mock = {
-  is_toggle_term = function()
-    return false
-  end,
-  is_claude = function()
-    return false
-  end,
-  is_opencode = function()
-    return false
-  end,
-  is_pi = function()
-    return false
-  end,
-}
+-- stub the shared terminal label (defined in after/plugin/winbar.lua): tabs
+-- delegate terminal naming to it instead of building their own label.
+_G.get_terminal_label = function(bufnr)
+  if buf_ft[bufnr] == 'terminal' then
+    return '<term>terminal'
+  end
+  return ''
+end
 
 local vim_mock = {
   api = {
@@ -156,7 +149,7 @@ local vim_mock = {
   },
 }
 
-mock.setup({ vim = vim_mock, state = vim_g, config = vim_config, lib = { term = term_mock } })
+mock.setup({ vim = vim_mock, state = vim_g, config = vim_config })
 
 ---Point the mock at a fresh set of tabpages (ids are arbitrary numbers; the
 ---tab *number* is their 1-based position). Optionally pre-seed saved names
@@ -253,11 +246,22 @@ tab = reload_tab()
 buf_ft[5] = 'snacks_picker_input'
 assert_eq(tab.get_name(5), '', 'empty label for picker')
 
--- terminal defaults to the term icon + terminal
+-- terminal label comes from the shared get_terminal_label
 reset({ 0, 3, 5 })
 tab = reload_tab()
 buf_ft[5] = 'terminal'
 assert_eq(tab.get_name(5), '<term>terminal', 'special label for plain terminal')
+
+-- delegation is proven by a distinctive shared label
+reset({ 0, 3, 5 })
+tab = reload_tab()
+buf_ft[5] = 'terminal'
+local shared_label = _G.get_terminal_label
+_G.get_terminal_label = function(bufnr)
+  return 'shared:' .. bufnr
+end
+assert_eq(tab.get_name(5), 'shared:5', 'tab terminal label delegates to get_terminal_label')
+_G.get_terminal_label = shared_label
 
 -- special label beats explicit name only for unnamed tabs? explicit wins
 reset({ 0, 3, 5 })

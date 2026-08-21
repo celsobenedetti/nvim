@@ -5,25 +5,14 @@ local M = {}
 ---@type table<number,string> tabpage id -> explicit name
 local names = {}
 
-local SEP = ((config.icons or {}).separator or {}).right or '  '
-
 -- specify tab label string or function for specific filetypes, applied when a
 -- tab contains a single buffer (analogous to the winbar's SPECIAL_FILETYPES);
--- functions receive the tab's buffer id.
+-- functions receive the tab's buffer id. Terminal labels are shared with the
+-- winbar (after/plugin/winbar.lua) via get_terminal_label.
 ---@type table<string,string|fun(bufnr: number): string>
 local SPECIAL_FILETYPES = {
   terminal = function(bufnr)
-    local text = config.icons.term .. 'terminal'
-    if lib.term.is_toggle_term(bufnr) then
-      return text .. SEP .. 'toggle term'
-    end
-    local agent = (lib.term.is_claude(bufnr) and 'claude')
-      or (lib.term.is_opencode(bufnr) and 'opencode')
-      or (lib.term.is_pi(bufnr) and 'pi')
-    if agent then
-      return text .. SEP .. config.icons.agent .. agent
-    end
-    return text
+    return _G.get_terminal_label(bufnr)
   end,
 }
 
