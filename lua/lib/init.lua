@@ -3,7 +3,7 @@
 --- Individual modules are loaded JIT when first accessed.
 ---
 ---@class Lib
----@field awesome_diff LibAwesomeDiff
+---@field Diff LibDiff
 ---@field buffers LibBuffers
 ---@field cmd LibCmd
 ---@field cmd_output LibCmdOutput

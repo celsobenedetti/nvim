@@ -132,7 +132,7 @@ vim.api.nvim_create_user_command('Diff', function(opts)
     vim.notify('Usage: :Diff <rev1> <rev2>', vim.log.levels.WARN)
     return
   end
-  lib.awesome_diff.open(args[1], args[2])
+  lib.Diff.open(args[1], args[2])
 end, { nargs = '*', desc = 'fugitive: diff two revisions (tab + quickfix)' })
 
 local keymaps = function()
