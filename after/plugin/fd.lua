@@ -11,6 +11,13 @@ vim.api.nvim_create_user_command('Fd', function(opts)
       local files = vim.split(result.stdout or '', '\n', { trimempty = true })
       if #files == 0 then
         Snacks.notify.warn('no results', { title = 'Fd' })
+        vim.cmd.cclose()
+        return
+      end
+
+      if #files == 1 then
+        vim.cmd.edit(vim.fn.fnameescape(files[1]))
+        vim.cmd.cclose()
         return
       end
 
