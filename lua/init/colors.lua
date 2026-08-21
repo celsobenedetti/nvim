@@ -1,5 +1,18 @@
 local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.toml')
 
+--- @class DiffPalette
+--- @field add string
+--- @field delete string
+--- @field add_char string
+--- @field add_char_fg string
+--- @field delete_char string
+--- @field delete_char_fg string
+--- @field lnum_fg string
+
+--- @class DiffColors
+--- @field dark DiffPalette
+--- @field light DiffPalette
+
 --- @class OmarchyColors
 --- @field color0 string
 --- @field mode string
@@ -26,6 +39,7 @@ local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.t
 --- @field bright_blue string
 --- @field bright_magenta string
 --- @field bright_cyan string
+--- @field diff DiffColors
 local colors = {}
 
 local file = io.open(colors_path, 'r')
@@ -42,6 +56,30 @@ end
 colors.bg = colors.background
 colors.fg = colors.foreground
 colors.secondary = colors.selection
+
+-- Consolidated diff color palette, taken from delta
+colors.diff = {
+  dark = {
+    add = '#002800', -- delta plus-style
+    delete = '#3F0001', -- delta minus-style
+    -- Emph bg is bumped past delta's subtle default for visibility, and the
+    -- emph fg colors the changed text itself (light green on dark).
+    add_char = '#008000', -- plus-emph bg
+    add_char_fg = '#B3F9C0', -- plus-emph fg
+    delete_char = '#A01818', -- minus-emph bg
+    delete_char_fg = '#FFC8C8', -- minus-emph fg
+    lnum_fg = '#444444', -- delta line-numbers-style
+  },
+  light = {
+    add = '#D0FFD0', -- delta plus-style
+    delete = '#FFE0E0', -- delta minus-style
+    add_char = '#7FE07F', -- plus-emph bg (darkened for light bg)
+    add_char_fg = '#003800', -- plus-emph fg
+    delete_char = '#FFA0A0', -- minus-emph bg
+    delete_char_fg = '#5C0000', -- minus-emph fg
+    lnum_fg = '#444444', -- delta line-numbers-style
+  },
+}
 
 local themes = require('plugins.theme')
 

@@ -62,4 +62,14 @@ M.update = function(new_colors)
   state.colors = colors
 end
 
+--- Returns the middle ground between two hex colors
+--- @param hex1 string RGB hex string, e.g. '#rrggbb'
+--- @param hex2 string RGB hex string, e.g. '#rrggbb'
+--- @return string
+M.blend = function(hex1, hex2)
+  local r1, g1, b1 = hex_to_rgb(hex1)
+  local r2, g2, b2 = hex_to_rgb(hex2)
+  return rgb_to_hex(math.floor((r1 + r2) / 2 + 0.5), math.floor((g1 + g2) / 2 + 0.5), math.floor((b1 + b2) / 2 + 0.5))
+end
+
 return M

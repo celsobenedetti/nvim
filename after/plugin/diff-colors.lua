@@ -37,31 +37,8 @@
 --                     (bg + fg)
 --   line-numbers   -> GitSignsVirtLnum, diffIndexLine
 
-local PALETTES = {
-  dark = {
-    add = '#002800', -- delta plus-style
-    delete = '#3F0001', -- delta minus-style
-    -- Emph bg is bumped past delta's subtle default for visibility, and the
-    -- emph fg colors the changed text itself (light green on dark).
-    add_char = '#008000', -- plus-emph bg
-    add_char_fg = '#B3F9C0', -- plus-emph fg
-    delete_char = '#A01818', -- minus-emph bg
-    delete_char_fg = '#FFC8C8', -- minus-emph fg
-    lnum_fg = '#444444', -- delta line-numbers-style
-  },
-  light = {
-    add = '#D0FFD0', -- delta plus-style
-    delete = '#FFE0E0', -- delta minus-style
-    add_char = '#7FE07F', -- plus-emph bg (darkened for light bg)
-    add_char_fg = '#003800', -- plus-emph fg
-    delete_char = '#FFA0A0', -- minus-emph bg
-    delete_char_fg = '#5C0000', -- minus-emph fg
-    lnum_fg = '#444444', -- delta line-numbers-style
-  },
-}
-
 local function palette()
-  return PALETTES[vim.o.background] or PALETTES.dark
+  return state.colors.diff[vim.o.background] or state.colors.diff.dark
 end
 
 local function apply()
@@ -120,6 +97,7 @@ local function apply()
   -- the modified line already conveys "old", so the changed chars read as
   -- "new" (green). Emphasis is cranked past delta's subtle default: brighter
   -- bg plus colored text so the changed chars are unmistakable.
+  vim.api.nvim_set_hl(0, 'GitSignsAdd', { fg = p.add_char })
   vim.api.nvim_set_hl(0, 'GitSignsAddInline', { bg = p.add_char, fg = p.add_char_fg })
   vim.api.nvim_set_hl(0, 'GitSignsChangeInline', { bg = p.add_char, fg = p.add_char_fg })
   vim.api.nvim_set_hl(0, 'GitSignsDeleteInline', { bg = p.delete_char, fg = p.delete_char_fg })
