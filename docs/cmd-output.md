@@ -6,6 +6,9 @@ buffer is listed (`:ls`, `:bnext`, `Ctrl-w` all work), named `[cmd] man tmux`,
 gets `filetype=man` for man pages, and is reused across commands via a sticky
 window (mirroring the sticky terminal).
 
+General ui2 findings (the sinks, message routing, event consumption,
+gotchas) live in `ui2.md`.
+
 ## How `:!` output actually flows
 
 `:!cmd` output is not TTY passthrough in Neovim — it is piped and replayed
