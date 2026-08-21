@@ -36,8 +36,8 @@ Unit tests run through `make test` (luajit with mocked `vim`, see `tests/`).
 Integration-test user commands against real nvim (run from the repo root):
 `nvim --headless -u NONE --cmd "set rtp^=." -c "luafile after/plugin/grep.lua" -c "Grep foo %" -c "qa!"`.
 The `set rtp^=.` prepends the repo to 'runtimepath' so `require('lib.*')`
-resolves here — with `-u NONE` nvim's rtp still has `~/.config/nvim` first
-(the live config, which may lag this worktree) and its Lua loader wins over
+resolves here — with `-u NONE` nvim's rtp still has `~/.config/nvim` first (the
+live config, which may lag this worktree) and its Lua loader wins over
 `package.path`.
 
 - End every headless `-c` chain with `qa!` (or `cquit`): a `:q` that closes one

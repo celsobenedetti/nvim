@@ -48,7 +48,7 @@ return {
       { ']g', ':Gitsigns next_hunk<CR>', desc = 'Next git diff hunk' },
 
       {
-        '<leader>gid',
+        'gid',
         function()
           local gs = package.loaded.gitsigns
           gs.toggle_word_diff()
