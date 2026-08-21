@@ -5,6 +5,7 @@
 ---@class Lib
 ---@field buffers LibBuffers
 ---@field cmd LibCmd
+---@field cmd_output LibCmdOutput
 ---@field cmdline LibCmdline
 ---@field colors LibColors
 ---@field cwd LibCwd
