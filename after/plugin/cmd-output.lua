@@ -144,7 +144,7 @@ local function show_output(job)
   setup_buffer(buf)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.api.nvim_buf_set_name(buf, '[cmd] ' .. job.cmd)
-  vim.bo[buf].filetype = lib.cmd_output.filetype_for(job.cmd) or ''
+  vim.bo[buf].filetype = lib.cmd_output.filetype_for(job.cmd) or 'cmd-output'
   vim.keymap.set('n', 'q', function()
     vim.cmd('close') -- bufhidden=wipe cleans up the buffer
   end, { buffer = buf, silent = true, desc = 'Close command output' })

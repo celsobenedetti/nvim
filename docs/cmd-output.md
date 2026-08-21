@@ -3,8 +3,8 @@
 `after/plugin/cmd-output.lua` makes `:!man tmux` open the output in a **real
 buffer in a normal window** instead of the transient ui2 pager overlay. The
 buffer is listed (`:ls`, `:bnext`, `Ctrl-w` all work), named `[cmd] man tmux`,
-gets `filetype=man` for man pages, and is reused across commands via a sticky
-window (mirroring the sticky terminal).
+gets `filetype=man` for man pages (`cmd-output` otherwise), and is reused
+across commands via a sticky window (mirroring the sticky terminal).
 
 General ui2 findings (the sinks, message routing, event consumption,
 gotchas) live in `ui2.md`.
