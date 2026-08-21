@@ -1,23 +1,61 @@
--- Global diff color convention (same mechanism as tufte.nvim, colorscheme-
--- agnostic): bg-only DiffAdd/DiffDelete washes, pushed into codediff.nvim's
--- own config for the char-level emphasis pair, and a bg-only extmark wash
--- for vim-fugitive's `-p`/`-i` terminal patch prompts (raw ANSI diff output
--- there has no background, only foreground). Palette picked from
--- `vim.o.background`, reapplied on every ColorScheme/background change so
--- it survives switching colorschemes.
+-- Consolidated diff color palette, colorscheme-agnostic, delta north star.
+--
+-- Line/char values are delta 0.19.2's actual default theme, extracted from
+-- its ANSI output (not approximated), so every diff surface in this editor
+-- matches what `git diff | delta` shows:
+--
+--   delta concept             dark      light      usage here
+--   plus-style           #002800   #D0FFD0   whole added line
+--   minus-style          #3F0001   #FFE0E0   whole removed line
+--   plus-emph-style      #006000   #A0EFA0   changed chars in added line
+--   minus-emph-style     #901011   #FFC0C0   changed chars in removed line
+--   line-numbers-style   #444444   #444444   fg of line numbers / metadata
+--
+-- "change" (a line modified in place) has no delta equivalent — git diff is
+-- only +/- and delta renders old/new pairs (red minus line + green plus
+-- line). In gid's inline view that pairing comes from show_deleted (red
+-- virt line) + the modified line itself, so the gitsigns *change* word-diff
+-- regions use delta's plus-emph GREEN rather than yellow. The vim diff-mode
+-- "change" groups (DiffChange/DiffText/Changed/ChangedText, and the
+-- GitSignsChangeLn line wash) keep the classic Vim yellow so "modified"
+-- stays distinguishable from "added" in vimdiff/:Gitsigns diffthis.
+--
+-- Delta-style mapping to editor groups:
+--   plus-style     -> DiffAdd, diffAdded, diffNewFile, Added, GitSigns*Ln
+--                     (linehl), GitSigns* sign glyphs, GitSignsAddPreview,
+--                     fugitive terminal `+` lines
+--   minus-style    -> DiffDelete, diffRemoved, diffOldFile, Removed,
+--                     GitSignsDeleteVirtLn, GitSignsDeletePreview,
+--                     fugitive terminal `-` lines
+--   change         -> DiffChange, diffChanged, Changed (vim diff mode only)
+--   plus-emph      -> GitSignsAddInline, GitSignsAddLnInline,
+--                     GitSignsChangeInline, GitSignsChangeLnInline (delta
+--                     pairs green change-emph with the red deleted line),
+--                     codediff char_insert
+--   change-emph    -> DiffText, ChangedText (vimdiff/:Gitsigns diffthis
+--                     intra-line change)
+--   minus-emph     -> GitSignsDeleteInline, GitSignsDeleteLnInline,
+--                     GitSignsDeleteVirtLnInLine, codediff char_delete
+--   line-numbers   -> GitSignsVirtLnum, diffIndexLine
 
 local PALETTES = {
   dark = {
-    add = '#004b00', -- line-level add background
-    delete = '#3f0000', -- line-level delete background
-    add_char = '#006f00', -- char-level add emphasis (more saturated)
-    delete_char = '#6f0c10', -- char-level delete emphasis (more saturated)
+    add = '#002800', -- delta plus-style
+    delete = '#3F0001', -- delta minus-style
+    change = '#403800', -- vim DiffChange wash (gitsigns change linehl)
+    add_char = '#006000', -- delta plus-emph-style
+    delete_char = '#901011', -- delta minus-emph-style
+    change_char = '#8C7A00', -- vim diff-mode intra-line change (DiffText)
+    lnum_fg = '#444444', -- delta line-numbers-style
   },
   light = {
-    add = '#d0ffd0', -- line-level add background
-    delete = '#ffd7d7', -- line-level delete background
-    add_char = '#afffaf', -- char-level add emphasis (more saturated)
-    delete_char = '#ffb6b6', -- char-level delete emphasis (more saturated)
+    add = '#D0FFD0', -- delta plus-style
+    delete = '#FFE0E0', -- delta minus-style
+    change = '#FFF0B8', -- vim DiffChange wash (gitsigns change linehl)
+    add_char = '#A0EFA0', -- delta plus-emph-style
+    delete_char = '#FFC0C0', -- delta minus-emph-style
+    change_char = '#FFE08A', -- vim diff-mode intra-line change (DiffText)
+    lnum_fg = '#444444', -- delta line-numbers-style
   },
 }
 
@@ -28,21 +66,90 @@ end
 local function apply()
   local p = palette()
 
+  -- --------------------------------------------------------------------
+  -- 1. Core diff groups (vimdiff, :Gitsigns diffthis, diff-mode).
+  -- --------------------------------------------------------------------
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })
+  vim.api.nvim_set_hl(0, 'DiffChange', { bg = p.change })
+  -- Changed chars inside a changed line (delta emph mapping).
+  vim.api.nvim_set_hl(0, 'DiffText', { bg = p.change_char })
 
-  -- Vim's stock syntax/diff.vim groups: vim-fugitive's :Gdiff/:Git diff
-  -- buffers and expanded :Git status hunks use these directly.
+  -- nvim 0.10+ builtin groups: DiffAdd/DiffChange/DiffDelete/DiffText are
+  -- linked to these by default, and gitsigns' sign groups derive from them
+  -- (highlight.lua fallback chain includes 'Added'/'Removed'/'Changed' for
+  -- nvim >= 0.10). Delta renders the +/- markers with the line's wash, so
+  -- bg-only here puts the sign glyphs in the palette too.
+  vim.api.nvim_set_hl(0, 'Added', { bg = p.add })
+  vim.api.nvim_set_hl(0, 'Removed', { bg = p.delete })
+  vim.api.nvim_set_hl(0, 'Changed', { bg = p.change })
+  vim.api.nvim_set_hl(0, 'ChangedText', { bg = p.change_char })
+
+  -- --------------------------------------------------------------------
+  -- 2. Diff syntax groups (fugitive :Gdiff / :Git diff buffers).
+  -- --------------------------------------------------------------------
   vim.api.nvim_set_hl(0, 'diffAdded', { bg = p.add })
   vim.api.nvim_set_hl(0, 'diffRemoved', { bg = p.delete })
+  vim.api.nvim_set_hl(0, 'diffChanged', { bg = p.change })
   vim.api.nvim_set_hl(0, 'diffOldFile', { bg = p.delete })
   vim.api.nvim_set_hl(0, 'diffNewFile', { bg = p.add })
+  -- Metadata (`index abc..def`) dimmed like delta's non-diff lines.
+  vim.api.nvim_set_hl(0, 'diffIndexLine', { fg = p.lnum_fg })
 
-  -- codediff.nvim re-derives CodeDiffLine*/CodeDiffChar* from its own
-  -- `highlights` config every time its setup() runs or `ColorScheme` fires,
-  -- without a `default = true` guard, so it clobbers plain nvim_set_hl()
-  -- calls for those groups. Push colors through its config instead, then
-  -- force an immediate re-derive.
+  -- --------------------------------------------------------------------
+  -- 3. Gitsigns inline diffs.
+  -- --------------------------------------------------------------------
+  -- Line-level (`linehl`): GitSigns*Ln, *Nr, *Cul and the sign-column
+  -- groups derive from DiffAdd/DiffChange/DiffDelete via gitsigns' fallback
+  -- chain (highlight.lua), so they pick up the washes in section 1
+  -- automatically. GitSignsStaged* derive the same backgrounds (fg_factor
+  -- only blends fg, which is nil for bg-only groups), matching delta's
+  -- indifference to staged/unstaged — no explicit setup needed here.
+
+  -- Char-level (`word_diff`): gitsigns' fallback for every *Inline group is
+  -- TermCursor, so without these they render as a block cursor. Map them to
+  -- delta's emph styles instead:
+  --   GitSigns*Inline    -> word diff in previews (preview_hunk /
+  --                          preview_hunk_inline added lines)
+  --   GitSigns*LnInline  -> word diff in the buffer (`word_diff`)
+  --
+  -- `change` regions (modified-in-place words) use the plus-emph GREEN, not
+  -- yellow: delta has no yellow, and in gid the red deleted virt line above
+  -- the modified line already conveys "old", so the changed chars should
+  -- read as "new" (green). Yellow-on-yellow (change_char on the GitSigns
+  -- ChangeLn wash) was effectively invisible.
+  vim.api.nvim_set_hl(0, 'GitSignsAddInline', { bg = p.add_char })
+  vim.api.nvim_set_hl(0, 'GitSignsChangeInline', { bg = p.add_char })
+  vim.api.nvim_set_hl(0, 'GitSignsDeleteInline', { bg = p.delete_char })
+  vim.api.nvim_set_hl(0, 'GitSignsAddLnInline', { bg = p.add_char })
+  vim.api.nvim_set_hl(0, 'GitSignsChangeLnInline', { bg = p.add_char })
+  vim.api.nvim_set_hl(0, 'GitSignsDeleteLnInline', { bg = p.delete_char })
+
+  -- Removed lines as virtual lines (preview_hunk_inline / show_deleted):
+  -- whole line = minus-style wash, changed chars inside it = minus-emph,
+  -- and the fake line numbers get delta's gray instead of inheriting the
+  -- red wash via the GitSignsDeleteVirtLn fallback.
+  vim.api.nvim_set_hl(0, 'GitSignsDeleteVirtLn', { bg = p.delete })
+  vim.api.nvim_set_hl(0, 'GitSignsDeleteVirtLnInLine', { bg = p.delete_char })
+  vim.api.nvim_set_hl(0, 'GitSignsVirtLnum', { fg = p.lnum_fg })
+
+  -- Hunk preview popups (preview_hunk): added/removed line washes.
+  vim.api.nvim_set_hl(0, 'GitSignsAddPreview', { bg = p.add })
+  vim.api.nvim_set_hl(0, 'GitSignsDeletePreview', { bg = p.delete })
+  -- GitSignsNoEOLPreview / GitSignsCurrentLineBlame are not diff colors;
+  -- left to the colorscheme.
+  --
+  -- NOTE: the word_diff config docs mention GitSignsAddVirtLnInline /
+  -- GitSignsChangeVirtLnInline for word diff in virtual lines, but those
+  -- groups are not defined upstream (commented out in highlight.lua);
+  -- removed virt lines only ever use GitSignsDeleteVirtLnInLine.
+
+  -- --------------------------------------------------------------------
+  -- 4. codediff.nvim: re-derives CodeDiffLine*/CodeDiffChar* from its own
+  -- `highlights` config on setup()/ColorScheme without a `default` guard,
+  -- so it clobbers plain nvim_set_hl() calls for those groups. Push colors
+  -- through its config instead, then force an immediate re-derive.
+  -- --------------------------------------------------------------------
   local ok_config, cd_config = pcall(require, 'codediff.config')
   if ok_config then
     cd_config.options.highlights.line_insert = p.add
@@ -70,7 +177,7 @@ vim.api.nvim_create_autocmd('OptionSet', { group = augroup, pattern = 'backgroun
 -- plain ANSI foreground only (no background). Recreate the DiffAdd/
 -- DiffDelete wash by layering a bg-only extmark over the terminal buffer's
 -- `+`/`-` lines (bg-only so the terminal's ANSI foreground for that cell is
--- preserved underneath).
+-- preserved underneath). DiffAdd/DiffDelete carry the palette from section 1.
 -- -----------------------------------------------------------------------
 
 local patch_ns = vim.api.nvim_create_namespace('diff_colors_fugitive_patch')
