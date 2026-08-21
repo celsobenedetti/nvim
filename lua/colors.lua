@@ -9,10 +9,6 @@ local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.t
 --- @field delete_char_fg string
 --- @field lnum_fg string
 
---- @class DiffColors
---- @field dark DiffPalette
---- @field light DiffPalette
-
 --- @class OmarchyColors
 --- @field color0 string
 --- @field mode string
@@ -39,7 +35,7 @@ local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.t
 --- @field bright_blue string
 --- @field bright_magenta string
 --- @field bright_cyan string
---- @field diff DiffColors
+--- @field diff DiffPalette
 local M = {}
 
 local file = io.open(colors_path, 'r')
@@ -57,8 +53,11 @@ M.bg = M.background
 M.fg = M.foreground
 M.secondary = M.selection
 
--- Consolidated diff color palette, taken from delta
-M.diff = {
+-- Consolidated diff color palette, taken from delta. Stored per-background
+-- and exposed through a metatable so `colors.diff.<key>` resolves against
+-- vim.o.background at access time: callers read flat palette keys and never
+-- branch on background themselves.
+local diff_palettes = {
   dark = {
     add = '#002800', -- delta plus-style
     delete = '#3F0001', -- delta minus-style
@@ -80,6 +79,13 @@ M.diff = {
     lnum_fg = '#444444', -- delta line-numbers-style
   },
 }
+
+M.diff = setmetatable({}, {
+  __index = function(_, key)
+    local palette = diff_palettes[vim.o.background] or diff_palettes.dark
+    return palette[key]
+  end,
+})
 
 local themes = require('plugins.theme')
 

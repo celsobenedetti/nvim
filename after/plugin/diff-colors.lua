@@ -37,13 +37,9 @@
 --                     (bg + fg)
 --   line-numbers   -> GitSignsVirtLnum, diffIndexLine
 
--- TODO: fix this diff color access
-local function palette()
-  return colors.diff[vim.o.background] or colors.diff.dark
-end
-
 local function apply()
-  local p = palette()
+  -- colors.diff keys resolve against vim.o.background at access time.
+  local p = colors.diff
 
   -- --------------------------------------------------------------------
   -- 1. Core diff groups (vimdiff, :Gitsigns diffthis, diff-mode).
