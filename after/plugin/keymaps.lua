@@ -215,7 +215,7 @@ vim.keymap.set('n', '<leader>hh', function()
 end)
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'terminal', 'git' },
+  pattern = config.filetypes.gf_open_in_top_split,
   -- augroup = vim.api.nvim_create_augroup('keymap:gf:open-file-in-top-split', { clear = true }),
   callback = function()
     vim.api.nvim_buf_set_keymap(0, 'n', 'gf', ':lua lib.fs.open_file_in("top_split")<CR>', {

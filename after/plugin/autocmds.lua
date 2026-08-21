@@ -49,7 +49,7 @@ end
 -- close some filetypes with <q>
 vim.api.nvim_create_autocmd('FileType', {
   group = groups.close_with_q,
-  pattern = config.close_with_q,
+  pattern = config.filetypes.close_with_q,
   callback = function(event)
     vim.bo[event.buf].buflisted = false
     vim.schedule(function()
