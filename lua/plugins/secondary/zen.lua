@@ -41,7 +41,7 @@ return {
 
         vim.cmd('norm zt')
 
-        vim.api.nvim_set_hl(0, 'Folded', { fg = state.colors.bg, bg = 'none' })
+        vim.api.nvim_set_hl(0, 'Folded', { fg = colors.bg, bg = 'none' })
       end,
       on_close = function()
         state.zen_mode = false

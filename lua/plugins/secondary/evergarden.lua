@@ -24,26 +24,26 @@ return {
 
       lib.colors.update({
         white = '#F8F9E8',
-        red = state.colors.color1,
-        yellow = state.colors.color3,
-        gray = state.colors.color8,
-        lime = state.colors.color2,
+        red = colors.color1,
+        yellow = colors.color3,
+        gray = colors.color8,
+        lime = colors.color2,
         orange = '#F7A182',
-        skye = state.colors.color0,
-        secondary = state.colors.color7,
+        skye = colors.color0,
+        secondary = colors.color7,
         mantle = '#1c2225',
         blue = '#B2CAED',
         purple = '#D2BDF3',
         green = '#CBE3B3',
-        links = state.colors.accent,
+        links = colors.accent,
         folded = folded,
       })
 
       local config = {
         highlights = {
-          keyword = { fg = state.colors.red, style = { 'nocombine' } },
-          type = { state.colors.yellow, style = { 'nocombine' } },
-          comment = { fg = state.colors.gray, style = { 'italic' } },
+          keyword = { fg = colors.red, style = { 'nocombine' } },
+          type = { colors.yellow, style = { 'nocombine' } },
+          comment = { fg = colors.gray, style = { 'italic' } },
         },
       }
 
@@ -55,23 +55,23 @@ return {
       }
 
       local overrides_dark = vim.tbl_extend('force', global_overrides, {
-        ['@annotation'] = { state.colors.white, style = { 'bold' } },
-        ['@constant'] = { fg = state.colors.white },
-        ['@attribute'] = { state.colors.orange },
-        ['@markup.italic'] = { state.colors.lime, style = { 'italic' } },
-        ['@markup.link.label.markdown_inline'] = { state.colors.skye, style = { 'bold' } },
-        ['TreesitterContext'] = { bg = state.colors.mantle },
+        ['@annotation'] = { colors.white, style = { 'bold' } },
+        ['@constant'] = { fg = colors.white },
+        ['@attribute'] = { colors.orange },
+        ['@markup.italic'] = { colors.lime, style = { 'italic' } },
+        ['@markup.link.label.markdown_inline'] = { colors.skye, style = { 'bold' } },
+        ['TreesitterContext'] = { bg = colors.mantle },
 
-        -- ['typescriptVariable'] = { state.colors.orange },
+        -- ['typescriptVariable'] = { colors.orange },
         -- SpellBad = { style = { 'italic', 'underdotted' } },
-        -- TabLineSel = { bg = state.colors.inactivegray },
+        -- TabLineSel = { bg = colors.inactivegray },
       })
 
       local overrides_light = vim.tbl_extend('force', global_overrides, {
-        -- ['WinSeparator'] = { fg = state.colors.summer.surface2 },
-        -- ['@keyword'] = { fg = state.colors.summer.red, style = { 'nocombine' } },
-        -- ['@constant'] = { fg = state.colors.summer.text },
-        -- ['@annotation'] = { state.colors.summer.snow },
+        -- ['WinSeparator'] = { fg = colors.summer.surface2 },
+        -- ['@keyword'] = { fg = colors.summer.red, style = { 'nocombine' } },
+        -- ['@constant'] = { fg = colors.summer.text },
+        -- ['@annotation'] = { colors.summer.snow },
       })
 
       local overrides = light and overrides_light or overrides_dark

@@ -13,8 +13,8 @@ return {
   opts = {
     keywords = {
       WIP = { icon = ' ', color = 'warning' },
-      NOTE = { icon = '󰂺 ', color = state.colors.lightgray },
-      TODO = { icon = ' ', color = state.colors.lightgray },
+      NOTE = { icon = '󰂺 ', color = colors.lightgray },
+      TODO = { icon = ' ', color = colors.lightgray },
     },
   },
 }

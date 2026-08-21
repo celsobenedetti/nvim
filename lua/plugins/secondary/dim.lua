@@ -123,7 +123,7 @@ return {
         },
       }
 
-      local bg = lib.colors.darken(state.colors.bg, 0.1)
+      local bg = lib.colors.darken(colors.bg, 0.1)
       vim.api.nvim_set_hl(0, 'SnacksDim', {
         bg = bg,
         fg = bg,

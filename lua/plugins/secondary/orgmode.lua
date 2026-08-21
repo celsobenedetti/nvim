@@ -94,14 +94,14 @@ local agenda_files = {
 }
 
 local function set_highlights()
-  if state.colors.done then
-    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = state.colors.done })
+  if colors.done then
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = colors.done })
   else
     vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
   end
 
-  if state.colors.todo then
-    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = state.colors.todo })
+  if colors.todo then
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = colors.todo })
   else
     vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
   end

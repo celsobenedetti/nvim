@@ -286,7 +286,7 @@ return {
 
     vim.api.nvim_set_hl(0, 'ObsidianRefText', {
       bg = 'none',
-      fg = state.colors.links or state.colors.purple or state.colors.primary,
+      fg = colors.links or colors.purple or colors.primary,
       underline = true,
       bold = true,
     })

@@ -40,25 +40,25 @@ local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.t
 --- @field bright_magenta string
 --- @field bright_cyan string
 --- @field diff DiffColors
-local colors = {}
+local M = {}
 
 local file = io.open(colors_path, 'r')
 if file then
   for line in file:lines() do
     local key, value = line:match('^([%w_]+)%s*=%s*"(.*)"')
     if key and value then
-      colors[key] = value
+      M[key] = value
     end
   end
   file:close()
 end
 
-colors.bg = colors.background
-colors.fg = colors.foreground
-colors.secondary = colors.selection
+M.bg = M.background
+M.fg = M.foreground
+M.secondary = M.selection
 
 -- Consolidated diff color palette, taken from delta
-colors.diff = {
+M.diff = {
   dark = {
     add = '#002800', -- delta plus-style
     delete = '#3F0001', -- delta minus-style
@@ -97,14 +97,10 @@ vim.api.nvim_create_autocmd('User', {
     if state.omarchy_colorscheme.colorscheme == 'default' then
       return
     end
-    vim.api.nvim_set_hl(0, 'Bold', { fg = state.colors.fg, bold = true, cterm = { bold = true } })
+    vim.api.nvim_set_hl(0, 'Bold', { fg = colors.fg, bold = true, cterm = { bold = true } })
     vim.api.nvim_set_hl(0, 'MsgArea', { link = config.hl.text_secondary }) -------- transparency changes -----------
 
-    vim.api.nvim_set_hl(0, 'TextSecondary', { fg = state.colors.secondary or state.colors.fg })
-
-    if state.colors.colorcolumn then
-      vim.api.nvim_set_hl(0, 'ColorColumn', { bg = state.colors.colorcolumn })
-    end
+    vim.api.nvim_set_hl(0, 'TextSecondary', { fg = colors.secondary or colors.fg })
 
     -- vim.api.nvim_set_hl( 0, 'TabLine', { bg = colors.get_color('StatusLine', 'bg'), fg = colors.get_color(config.hl.text.subtext, 'fg') })
     -- vim.api.nvim_set_hl(0, 'TabLineFill', { bg = colors.get_color('StatusLine', 'bg') })
@@ -240,10 +236,10 @@ vim.api.nvim_create_autocmd('User', {
       { bg = 'none', fg = lib.colors.get_color('@markup.link.label.markdown_inline', 'fg'), italic = true }
     )
 
-    if state.colors.folded then
-      vim.api.nvim_set_hl(0, 'Folded', { bg = state.colors.folded })
+    if colors.folded then
+      vim.api.nvim_set_hl(0, 'Folded', { bg = colors.folded })
     end
   end,
 })
 
-state.colors = colors
+return M

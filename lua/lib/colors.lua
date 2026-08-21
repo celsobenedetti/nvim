@@ -52,14 +52,14 @@ M.get_color = function(hl_group, attr)
   return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_group)), attr)
 end
 
---- updates state.colors
----@param new_colors k,v table for state.colors
+--- updates colors
+---@param new_colors k,v table for colors
 M.update = function(new_colors)
-  local colors = state.colors
+  local colors = colors
   for k, v in pairs(new_colors) do
     colors[k] = v
   end
-  state.colors = colors
+  colors = colors
 end
 
 --- Returns the middle ground between two hex colors
