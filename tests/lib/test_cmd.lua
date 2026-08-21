@@ -37,7 +37,7 @@ local function describe(label)
 end
 
 -- In-memory command history: hist[n] returns entry for index n, '' for gaps.
-local history = { 'git status', 'CodeDiff main HEAD', 'git log --oneline' }
+local history = { 'git status', 'git show abc123', 'git log --oneline' }
 
 local function setup_hist(entries)
   history = entries
@@ -63,7 +63,7 @@ local cmd
 -- ============================================================
 describe('lib.cmd: get_last_command')
 
-setup_hist({ 'git status', 'CodeDiff main HEAD', 'git log --oneline' })
+setup_hist({ 'git status', 'git show abc123', 'git log --oneline' })
 cmd = require('lib.cmd')
 assert_eq(cmd.get_last_command(), 'git log --oneline', 'returns most recent command')
 mock.teardown({ 'vim' })
@@ -78,11 +78,11 @@ package.loaded['lib.cmd'] = nil
 -- ============================================================
 describe('lib.cmd: get_command_history')
 
-setup_hist({ 'git status', 'CodeDiff main HEAD', 'git log --oneline' })
+setup_hist({ 'git status', 'git show abc123', 'git log --oneline' })
 cmd = require('lib.cmd')
 local got = cmd.get_command_history()
 assert_eq(got[1], 'git log --oneline', 'most recent first')
-assert_eq(got[2], 'CodeDiff main HEAD', 'second entry')
+assert_eq(got[2], 'git show abc123', 'second entry')
 assert_eq(got[3], 'git status', 'oldest last')
 assert_eq(#got, 3, 'all entries returned')
 mock.teardown({ 'vim' })

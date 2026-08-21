@@ -1,18 +1,10 @@
--- filetypes of git/codediff tabs that get named on creation
+-- filetypes of git tabs that get named on creation
 local GIT_TAB_FILETYPES = {
   git = true,
   fugitive = true,
-  ['codediff-explorer'] = true,
-  ['codediff-history'] = true,
 }
 
-local function default_tabname(ft)
-  if ft == 'codediff-history' then
-    return config.icons.git.git .. 'git log'
-  end
-  if ft == 'codediff-explorer' then
-    return config.icons.git.diff .. 'git diff'
-  end
+local function default_tabname()
   return config.icons.git.git .. 'git status'
 end
 
@@ -168,7 +160,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('TabNew', {
-  desc = 'term: detach toggle term; name git/codediff tabs',
+  desc = 'term: detach toggle term; name git tabs',
   pattern = '*',
   callback = function()
     if lib.term.is_toggle_term() then
@@ -188,7 +180,7 @@ vim.api.nvim_create_autocmd('TabNew', {
       end
       local name = lib.tab.consume_next_name()
         or lib.tab.name_from_command(lib.cmd.get_last_command())
-        or default_tabname(ft)
+        or default_tabname()
       if name then
         lib.tab.rename(name, tabid)
       end

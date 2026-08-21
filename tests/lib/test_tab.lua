@@ -315,11 +315,8 @@ assert_eq(tab.name_from_command('Git show abc123'), 'git show abc123', 'Git with
 assert_eq(tab.name_from_command('tab Git show abc123'), 'git show abc123', 'tab Git with args')
 assert_eq(tab.name_from_command(':Git show abc123'), 'git show abc123', 'leading colon')
 assert_eq(tab.name_from_command('tab Git diff abc123..def456'), 'git diff abc123..def456', 'hash range')
-assert_eq(tab.name_from_command('CodeDiff main HEAD'), 'diff main HEAD', 'CodeDiff with args')
-assert_eq(tab.name_from_command('CodeDiff history'), 'diff history', 'CodeDiff history')
 assert_eq(tab.name_from_command('tab Git'), nil, 'bare Git -> nil (defaults)')
 assert_eq(tab.name_from_command('Git'), nil, 'bare Git no space -> nil')
-assert_eq(tab.name_from_command('CodeDiff'), nil, 'bare CodeDiff -> nil (defaults)')
 assert_eq(tab.name_from_command('e foo.lua'), nil, 'unrelated command -> nil')
 assert_eq(tab.name_from_command(''), nil, 'empty command -> nil')
 

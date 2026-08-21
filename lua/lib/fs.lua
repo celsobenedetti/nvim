@@ -75,7 +75,7 @@ M.is_current_buffer_a_file = function()
 end
 
 ---Open the file under the cursor at a specific location.
----@param location? 'top_split'|'first_tab'
+---@param location? 'top_split'
 M.open_file_in = function(location)
   local file = vim.fn.expand('<cfile>')
   if file == '' then
@@ -84,8 +84,6 @@ M.open_file_in = function(location)
 
   if location == 'top_split' then
     vim.cmd('wincmd k')
-  elseif location == 'first_tab' then
-    vim.cmd('tabfirst')
   end
 
   vim.cmd('edit ' .. vim.fn.fnameescape(file))

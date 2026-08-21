@@ -30,12 +30,11 @@
 --   change         -> DiffChange, diffChanged, Changed (vim diff mode only)
 --   plus-emph      -> GitSignsAddInline, GitSignsAddLnInline,
 --                     GitSignsChangeInline, GitSignsChangeLnInline (delta
---                     pairs green change-emph with the red deleted line),
---                     codediff char_insert
+--                     pairs green change-emph with the red deleted line)
 --   change-emph    -> DiffText, ChangedText (vimdiff/:Gitsigns diffthis
 --                     intra-line change)
 --   minus-emph     -> GitSignsDeleteInline, GitSignsDeleteLnInline,
---                     GitSignsDeleteVirtLnInLine, codediff char_delete
+--                     GitSignsDeleteVirtLnInLine
 --   line-numbers   -> GitSignsVirtLnum, diffIndexLine
 
 local PALETTES = {
@@ -143,25 +142,6 @@ local function apply()
   -- GitSignsChangeVirtLnInline for word diff in virtual lines, but those
   -- groups are not defined upstream (commented out in highlight.lua);
   -- removed virt lines only ever use GitSignsDeleteVirtLnInLine.
-
-  -- --------------------------------------------------------------------
-  -- 4. codediff.nvim: re-derives CodeDiffLine*/CodeDiffChar* from its own
-  -- `highlights` config on setup()/ColorScheme without a `default` guard,
-  -- so it clobbers plain nvim_set_hl() calls for those groups. Push colors
-  -- through its config instead, then force an immediate re-derive.
-  -- --------------------------------------------------------------------
-  local ok_config, cd_config = pcall(require, 'codediff.config')
-  if ok_config then
-    cd_config.options.highlights.line_insert = p.add
-    cd_config.options.highlights.line_delete = p.delete
-    cd_config.options.highlights.char_insert = p.add_char
-    cd_config.options.highlights.char_delete = p.delete_char
-
-    local ok_hl, cd_highlights = pcall(require, 'codediff.ui.highlights')
-    if ok_hl then
-      cd_highlights.setup()
-    end
-  end
 end
 
 apply()

@@ -183,10 +183,10 @@ M.find = function(pattern)
   return nil
 end
 
----Derive a git/codediff tab name from a command string, e.g. `tab Git show
----abc123` -> ` git show abc123`, `CodeDiff main HEAD` -> ` diff main HEAD`.
+---Derive a git tab name from a command string, e.g. `tab Git show
+---abc123` -> ` git show abc123`.
 ---@param last string
----@return string? nil when the command is not a Git/CodeDiff command
+---@return string? nil when the command is not a Git command
 M.name_from_command = function(last)
   if last == '' then
     return nil
@@ -195,15 +195,11 @@ M.name_from_command = function(last)
   if git_args and git_args ~= '' then
     return config.icons.git.git .. 'git ' .. vim.trim(git_args)
   end
-  local cdiff_args = last:match('^:?%s*CodeDiff%s+(.*)$')
-  if cdiff_args and cdiff_args ~= '' then
-    return config.icons.git.diff .. 'diff ' .. vim.trim(cdiff_args)
-  end
   return nil
 end
 
----Queue a tab name to be applied by the next tab that opens (e.g. CodeDiff
----opens asynchronously); consumed via `M.consume_next_name`.
+---Queue a tab name to be applied by the next tab that opens (tabs that
+---appear asynchronously, e.g. git tooling); consumed via `M.consume_next_name`.
 ---@param name string
 M.set_next_name = function(name)
   pending_name = name
