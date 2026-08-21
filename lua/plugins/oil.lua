@@ -28,6 +28,7 @@ return {
         ['<C-l>'] = false,
         ['<C-p>'] = false,
         ['<C-s>'] = false,
+        ['gs'] = false,
         ['gp'] = 'actions.preview',
         ['ge'] = open_in_snacks_explorer,
       },
