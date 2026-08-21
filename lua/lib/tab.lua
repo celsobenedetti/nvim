@@ -16,16 +16,13 @@ local SPECIAL_FILETYPES = {
     local text = config.icons.term .. 'terminal'
     if lib.term.is_toggle_term(bufnr) then
       return text .. SEP .. 'toggle term'
-    else
-      if lib.term.is_claude(bufnr) then
-        return text .. SEP .. config.icons.agent .. 'claude'
-      else
-        if lib.term.is_opencode(bufnr) then
-          return text .. SEP .. config.icons.agent .. 'opencode'
-        end
-      end
     end
-
+    local agent = (lib.term.is_claude(bufnr) and 'claude')
+      or (lib.term.is_opencode(bufnr) and 'opencode')
+      or (lib.term.is_pi(bufnr) and 'pi')
+    if agent then
+      return text .. SEP .. config.icons.agent .. agent
+    end
     return text
   end,
 }

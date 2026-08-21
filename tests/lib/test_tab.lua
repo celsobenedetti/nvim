@@ -64,6 +64,9 @@ local term_mock = {
   is_opencode = function()
     return false
   end,
+  is_pi = function()
+    return false
+  end,
 }
 
 local vim_mock = {

@@ -27,11 +27,11 @@ local SPECIAL_FILETYPES = {
     if lib.term.is_toggle_term(buf) then
       return text .. SEP .. 'toggle term'
     end
-    if lib.term.is_claude(buf) then
-      return text .. SEP .. '󱙺 claude'
-    end
-    if lib.term.is_opencode(buf) then
-      return text .. SEP .. '󱙺 opencode'
+    local agent = (lib.term.is_claude(buf) and 'claude')
+      or (lib.term.is_opencode(buf) and 'opencode')
+      or (lib.term.is_pi(buf) and 'pi')
+    if agent then
+      return text .. SEP .. '󱙺 ' .. agent
     end
     return text
   end,

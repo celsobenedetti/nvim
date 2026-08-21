@@ -4,7 +4,12 @@ state.insert_when_entering_terminal = true
 --- upsert terminal in current window (resume if available, create new otherwise)
 local function sticky_terminal()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if lib.term.is_term(buf) and not lib.term.is_toggle_term(buf) and lib.term.terminal_is_available(buf) then
+    if
+      lib.term.is_term(buf)
+      and not lib.term.is_toggle_term(buf)
+      and not lib.term.is_agent(buf)
+      and lib.term.terminal_is_available(buf)
+    then
       vim.api.nvim_set_current_buf(buf)
       return
     end

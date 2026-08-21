@@ -5,6 +5,47 @@ local function is_term(buffer)
   return vim.bo[buffer].buftype == 'terminal'
 end
 
+--- Is the buffer the sticky terminal of one of the agents managed by
+--- state.agents (claude, opencode, pi)?
+---@param buffer integer?
+---@param agent Agents
+---@return boolean
+local function is_agent_named(buffer, agent)
+  if not buffer then
+    buffer = vim.api.nvim_get_current_buf()
+  end
+  if not is_term(buffer) then
+    return false
+  end
+  local agents = state.agents
+  if not agents then
+    return false
+  end
+  return buffer == agents.get_agent_bufnr(agent)
+end
+
+--- Is the buffer the sticky terminal of any agent managed by state.agents?
+---@param buffer integer?
+---@return boolean
+local function is_agent(buffer)
+  if not buffer then
+    buffer = vim.api.nvim_get_current_buf()
+  end
+  if not is_term(buffer) then
+    return false
+  end
+  local agents = state.agents
+  if not agents then
+    return false
+  end
+  for _, agent_buf in pairs(agents.bufnr) do
+    if agent_buf == buffer then
+      return true
+    end
+  end
+  return false
+end
+
 --- How far above the last buffer line a terminal-window cursor can be and still
 --- count as "following" output. TUIs like pi park their cursor at an input box
 --- a few lines above the end, so the cursor is not exactly on the last line even
@@ -23,17 +64,15 @@ local M = {
   end,
 
   is_claude = function(buffer)
-    if not buffer then
-      buffer = vim.api.nvim_get_current_buf()
-    end
-    return is_term(buffer) and buffer == state.claude_bufnr
+    return is_agent_named(buffer, 'claude')
   end,
   is_opencode = function(buffer)
-    if not buffer then
-      buffer = vim.api.nvim_get_current_buf()
-    end
-    return is_term(buffer) and buffer == state.opencode_bufnr
+    return is_agent_named(buffer, 'opencode')
   end,
+  is_pi = function(buffer)
+    return is_agent_named(buffer, 'pi')
+  end,
+  is_agent = is_agent,
 
   -- Returns true if buffer is terminal, and has no running command
   -- https://github.com/neovim/neovim/issues/31313
