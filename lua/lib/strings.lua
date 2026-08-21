@@ -104,4 +104,20 @@ M.hl = function(hl, text)
   return '%#' .. hl .. '#' .. text .. '%*'
 end
 
+--- Returns text wrapped in statusline highlight markup, foregrounded with the
+--- given hex color. Registers (and reuses) a global highlight group derived
+--- from the hex, since %#..# markup only accepts named groups.
+--- @param text string the text to highlight
+--- @param hex string? the hex color; without one, text is returned as-is
+--- @return string
+M.colored = function(text, hex)
+  if not hex then
+    return text
+  end
+
+  local group = 'Hex' .. hex:gsub('#', '')
+  vim.api.nvim_set_hl(0, group, { fg = hex })
+  return M.hl(group, text)
+end
+
 return M

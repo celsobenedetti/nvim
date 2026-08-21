@@ -88,7 +88,8 @@ local modules = {
 
     local result = ''
     if added > 0 then
-      result = result .. hl('GitSignsAdd', config.icons.git.added .. added)
+      -- TODO: fix this diff color access
+      result = result .. lib.strings.colored(config.icons.git.added .. added, state.colors.diff.light.add_char_fg)
     end
     if modified > 0 then
       result = result .. hl('GitSignsChange', config.icons.git.modified .. modified)
