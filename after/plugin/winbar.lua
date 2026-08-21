@@ -2,35 +2,41 @@
 --- Lightweight dropbar.nvim replacement: renders the current file path as a
 --- segmented winbar above the window, e.g. `after  plugin  󰢱 winbar.lua`.
 ---
---- 1. Each window renders its own buffer's path, set in vim.wo[winid].winbar,
---- and resolved via g:statusline_winid.
+--- 1. Every window's winbar is the `%!` expression below, re-evaluated on each
+--- redraw, so the bar always reflects the buffer's current state. Neovim sets
+--- g:statusline_winid to the window being drawn, so unfocused windows resolve
+--- their own buffer (see statusline.c: set_var before eval).
 --- 2. Path is relative to cwd when the file lives under it, absolute otherwise.
 --- 3. ft icons resolved via mini.icons.
 
 local SEP = ((config.icons or {}).separator or {}).right or '  '
 
--- specify winbar string or function for specific filetypes
+-- winbar content for specific filetypes. Functions receive the buffer being
+-- rendered — the *window's* buffer, which may differ from the focused one.
+--
+-- These are resolved inside get_winbar() (at render time) rather than set as
+-- static strings at BufWinEnter: a fresh `:term` gets its filetype only in
+-- TermOpen, which fires *after* BufWinEnter, so a BufWinEnter-time check would
+-- miss it and install the generic path bar (which renders '' for terminal
+-- buftype). Evaluating per-redraw sidesteps the ordering entirely.
 local SPECIAL_FILETYPES = {
   fugitive = ' git' .. SEP .. ' fugitive',
   snacks_picker_input = '',
-  terminal = function()
+  terminal = function(buf)
     local text = '  terminal'
-    if lib.term.is_toggle_term() then
+    if lib.term.is_toggle_term(buf) then
       return text .. SEP .. 'toggle term'
-    else
-      if lib.term.is_claude() then
-        return text .. SEP .. '󱙺 claude'
-      else
-        if lib.term.is_opencode() then
-          return text .. SEP .. '󱙺 opencode'
-        end
-      end
     end
-
+    if lib.term.is_claude(buf) then
+      return text .. SEP .. '󱙺 claude'
+    end
+    if lib.term.is_opencode(buf) then
+      return text .. SEP .. '󱙺 opencode'
+    end
     return text
   end,
-  git = function()
-    local ok, result = pcall(vim.fn.FugitiveResult, vim.api.nvim_get_current_buf())
+  git = function(buf)
+    local ok, result = pcall(vim.fn.FugitiveResult, buf)
     local command = 'git'
     if ok and #(result.args or {}) > 0 then
       command = command .. ' ' .. table.concat(result.args, ' ')
@@ -71,14 +77,26 @@ end
 
 ---@return string
 _G.get_winbar = function()
-  -- `%!` expressions are evaluated in the context of the *current* (focused)
-  -- window, so resolve the window this bar belongs to via g:statusline_winid.
+  -- Neovim sets g:statusline_winid to the window being drawn while evaluating
+  -- its winbar, so resolve the window this bar belongs to via that variable.
   local winid = vim.g.statusline_winid
   if not winid or not vim.api.nvim_win_is_valid(winid) then
     winid = vim.api.nvim_get_current_win()
   end
 
   local buf = vim.api.nvim_win_get_buf(winid)
+
+  -- Special filetypes first: their content depends on live buffer state (e.g.
+  -- which terminal kind), and filetype may only be set after the winbar was
+  -- installed (TermOpen fires after BufWinEnter for a fresh `:term`).
+  local special = SPECIAL_FILETYPES[vim.bo[buf].filetype]
+  if special ~= nil then
+    if type(special) == 'function' then
+      return special(buf)
+    end
+    return special
+  end
+
   if vim.bo[buf].buftype ~= '' then
     return ''
   end
@@ -113,30 +131,25 @@ _G.get_winbar = function()
   return ' ' .. table.concat(parts, lib.strings.hl('WinBar', SEP))
 end
 
+local WINBAR_EXPR = '%!v:lua.get_winbar()'
+
 vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
   group = vim.api.nvim_create_augroup('Winbar', { clear = true }),
   callback = function()
-    if vim.bo.buftype == 'nofile' then
+    -- BufWinEnter covers buffer switches in the same window; WinEnter covers
+    -- entering a new window (e.g. a fresh split). Both install the same `%!`
+    -- expression, so the bar is re-derived from live state on the next redraw.
+    --
+    -- Windows whose winbar is neither empty nor ours are left alone: a plugin
+    -- owns that bar (oil sets %!v:lua.get_oil_winbar() the moment its buffer is
+    -- shown, and its buftype is not yet 'nofile' at BufWinEnter), and we'd
+    -- clobber it otherwise.
+    local winid = vim.api.nvim_get_current_win()
+    local winbar = vim.wo[winid].winbar
+    if winbar ~= '' and winbar ~= WINBAR_EXPR then
       return
     end
 
-    local bufnr = vim.api.nvim_get_current_buf()
-    local winid = vim.api.nvim_get_current_win()
-    local filetype = vim.bo[bufnr].filetype
-
-    for ft, custom_winbar in pairs(SPECIAL_FILETYPES) do
-      if filetype == ft then
-        if type(custom_winbar) == 'function' then
-          vim.wo[winid].winbar = custom_winbar()
-        end
-        if type(custom_winbar) == 'string' then
-          vim.wo[winid].winbar = custom_winbar
-        end
-
-        return
-      end
-    end
-
-    vim.wo[winid].winbar = '%!v:lua.get_winbar()'
+    vim.wo[winid].winbar = WINBAR_EXPR
   end,
 })
