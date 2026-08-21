@@ -138,6 +138,8 @@ local keymaps = function()
   vim.keymap.set('n', 'gA', function() vim.cmd('tab Git add -p') end, { desc = 'git: Git add -p`', })
   vim.keymap.set('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
   vim.keymap.set('n', 'gcA', function() vim.cmd("tab Git commit --amend") end, { desc = 'git: Git commit --amend' })
+  vim.keymap.set('n', 'glf', ":Git log -p %<cr>", { desc = 'git: git log % (fugitive)' })
+  vim.keymap.set('n', 'gll', ":Git log --name-only -n 20<cr>", { desc = 'git: git log --name-only -n 20 (fugitive)' })
 
   vim.keymap.set('n', '<leader>gd', function() vim.cmd('vertical Git diff ' .. main_branch() .. ' -- %') end,
     { desc = "git: Git diff main -- %" })

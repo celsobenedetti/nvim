@@ -213,3 +213,14 @@ vim.keymap.set('n', '<leader>hh', function()
   vim.cmd.term('hunk diff dev...HEAD')
   lib.tab.rename(' hunk')
 end)
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'terminal', 'git' },
+  -- augroup = vim.api.nvim_create_augroup('keymap:gf:open-file-in-top-split', { clear = true }),
+  callback = function()
+    vim.api.nvim_buf_set_keymap(0, 'n', 'gf', ':lua lib.fs.open_file_in("top_split")<CR>', {
+      desc = 'terminal: open file in top split',
+    })
+  end,
+  desc = 'Set gf keymap: open file in top split',
+})
