@@ -2,6 +2,7 @@ local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.t
 
 --- @class DiffPalette
 --- @field add string
+--- @field add_fg string
 --- @field delete string
 --- @field add_char string
 --- @field add_char_fg string
@@ -61,6 +62,7 @@ local diff_palettes = {
   dark = {
     add = '#002800', -- delta plus-style
     delete = '#3F0001', -- delta minus-style
+    add_fg = '#6fbf6f',
     -- Emph bg is bumped past delta's subtle default for visibility, and the
     -- emph fg colors the changed text itself (light green on dark).
     add_char = '#008000', -- plus-emph bg
@@ -71,6 +73,7 @@ local diff_palettes = {
   },
   light = {
     add = '#D0FFD0', -- delta plus-style
+    add_fg = '#002800',
     delete = '#FFE0E0', -- delta minus-style
     add_char = '#7FE07F', -- plus-emph bg (darkened for light bg)
     add_char_fg = '#003800', -- plus-emph fg

@@ -45,6 +45,7 @@ local function apply()
   -- --------------------------------------------------------------------
   -- 1. Core diff groups (vimdiff, :Gitsigns diffthis, diff-mode).
   -- --------------------------------------------------------------------
+  vim.api.nvim_set_hl(0, 'diffFile', { link = 'Comment' })
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })
   -- Modified lines read as "new" (delta plus-style) - no yellow.
@@ -65,7 +66,7 @@ local function apply()
   -- --------------------------------------------------------------------
   -- 2. Diff syntax groups (fugitive :Gdiff / :Git diff buffers).
   -- --------------------------------------------------------------------
-  vim.api.nvim_set_hl(0, 'diffAdded', { bg = p.add })
+  vim.api.nvim_set_hl(0, 'diffAdded', { bg = p.add, fg = p.add_fg })
   vim.api.nvim_set_hl(0, 'diffRemoved', { bg = p.delete })
   vim.api.nvim_set_hl(0, 'diffChanged', { bg = p.add })
   vim.api.nvim_set_hl(0, 'diffOldFile', { bg = p.delete })
