@@ -152,51 +152,16 @@ end, { silent = true, desc = 'Disable ZZ' })
 -- Insert mode: Ctrl+B to go back one character (shell-like behavior)
 vim.keymap.set('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
 
-vim.keymap.set('n', '<leader>rg', function()
+vim.keymap.set('n', config.keys['<C-S-g>'], function()
   local cwd = lib.cwd.cwd()
-  lib.fzf.grep({
-    cmd = {
-      'rg',
-      '--no-heading',
-      '--no-ignore',
-      '--line-number',
-      '--max-filesize',
-      '1M',
-      '-g',
-      '!.git*',
-      '-g',
-      '!*.min.js',
-      '-g',
-      '!pnpm-lock.yaml',
-      '-g',
-      '!frontend/public*',
-      '-g',
-      '!frontend/vantine*',
-      '-g',
-      '!*.scss',
-      '-g',
-      '!*.css',
-      '-g',
-      '!*.html',
-      '-g',
-      '!*.txt',
-      '-g',
-      '!*.key',
-      '-g',
-      '!*static*',
-      '-g',
-      '!*build*',
-      '-g',
-      '!*drupal*',
-      '-v',
-      'ARCHIVE_OLPATH',
-      cwd,
-    },
-    cwd = cwd,
-  })
+  local cmd = { 'rg' }
+  vim.list_extend(cmd, config.cmd.rg.ignore)
+  vim.list_extend(cmd, { cwd })
+
+  lib.fzf.grep({ cmd = cmd, cwd = cwd })
 end, { desc = 'rg current dir' })
 
-vim.keymap.set('n', config.keys['<C-S-g>'], function()
+vim.keymap.set('n', '<leader>rg', function()
   require('fzf-lua').live_grep()
 end)
 

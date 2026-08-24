@@ -26,7 +26,7 @@ local AGENT_ICONS = {
   pi = '󰚩',
 }
 
-local CMD_OUTPUT_ICON = ''
+local CMD_OUTPUT_ICON = ' '
 
 --- Terminal label for a buffer: `   terminal`, plus a segment naming the
 --- kind: `toggle term`, or `<icon> <agent>` for agent terminals (claude,
@@ -66,7 +66,7 @@ local SPECIAL_FILETYPES = {
     -- nvim_buf_set_name resolves the name against cwd, so the marker is
     -- embedded in an absolute path rather than leading it.
     local cmd = vim.api.nvim_buf_get_name(buf):match('.*%[cmd%] (.*)$') or ''
-    return ' ' .. CMD_OUTPUT_ICON .. ' cmd' .. SEP .. cmd:gsub('%%', '%%%%')
+    return ' ' .. CMD_OUTPUT_ICON .. cmd:gsub('%%', '%%%%')
   end,
   snacks_picker_input = '',
   terminal = function(buf)

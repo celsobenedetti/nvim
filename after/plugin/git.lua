@@ -178,7 +178,7 @@ local keymaps = function()
       return
     end
 
-    vim.cmd('tab Git add -p %')
+    vim.cmd('vertical Git add -p %')
   end, { desc = 'git: git add -p current file' })
 
   -- git: compare branch with HEAD in a fugitive diff tab
