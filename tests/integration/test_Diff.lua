@@ -84,5 +84,51 @@ vim.api.nvim_buf_set_lines(empty, 0, -1, false, { 'commit abc123', '    some sub
 vim.bo[empty].filetype = 'git'
 assert_eq(require('lib.Diff').parse_items(empty), {}, 'no blocks, no items')
 
+-- ------------------------------------------------------------------
+-- <CR> in the qf window must reuse the window showing the diff buffer
+-- instead of splitting a new one. Native nvim jump only reuses windows
+-- whose buffer is a normal buffer; fugitive's Git output buffers are
+-- buftype=nowrite (autoload/fugitive.vim:3357), so a tab with only the
+-- diff + qf windows has no normal buffer and the default <CR> splits
+-- (qf_find_win_with_normal_buf -> qf_open_new_file_win).
+-- lib.Diff.install_qf_jump works around it. The tab must contain NO
+-- normal-buffer window here, or native cc would reuse that one and the
+-- test would pass for the wrong reason.
+local diff_buf = vim.api.nvim_create_buf(false, true)
+vim.api.nvim_buf_set_lines(diff_buf, 0, -1, false, {
+  'diff --git a/a.txt b/a.txt',
+  'index 1111111..2222222 100644',
+  '@@ -1 +1 @@',
+  '-x',
+  '+y',
+})
+vim.bo[diff_buf].filetype = 'git'
+vim.bo[diff_buf].buftype = 'nowrite' -- as fugitive sets on Git output buffers
+
+vim.api.nvim_win_set_buf(0, diff_buf) -- reuse the initial window: no normal buffer left in the tab
+vim.fn.setqflist({}, ' ', {
+  title = 'Diff (working tree)',
+  items = {
+    { bufnr = diff_buf, lnum = 3, text = 'a.txt' },
+    { bufnr = diff_buf, lnum = 5, text = 'b.txt' },
+  },
+})
+vim.cmd('botright copen')
+require('lib.Diff').install_qf_jump()
+
+local wins_before = #vim.api.nvim_tabpage_list_wins(0)
+vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'x', false)
+vim.wait(300)
+assert_eq(#vim.api.nvim_tabpage_list_wins(0), wins_before, 'no new window on <CR>')
+assert_eq(vim.api.nvim_win_get_buf(vim.api.nvim_get_current_win()), diff_buf, 'cursor lands in diff window')
+assert_eq(vim.fn.line('.'), 3, 'cursor at qf entry 1 lnum')
+
+-- back to the qf window, move to entry 2: jump follows the cursor line,
+-- not the list's idx (native <CR> is `:.cc`).
+vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>pj<CR>', true, false, true), 'x', false)
+vim.wait(300)
+assert_eq(#vim.api.nvim_tabpage_list_wins(0), wins_before, 'still no new window')
+assert_eq(vim.fn.line('.'), 5, 'cursor at qf entry 2 lnum')
+
 print('OK: lib.Diff treesitter quickfix items')
 vim.cmd('qa!')

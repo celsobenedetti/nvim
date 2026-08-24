@@ -2,8 +2,11 @@
 --- A dedicated tab shows the fugitive raw-output buffer (`filetype=git`)
 --- for the requested diff; a quickfix list below has one entry per affected
 --- file, pointing at the file's `diff --git` header (the treesitter `block`
---- start) inside the buffer. Native <CR> in the quickfix jumps the top
---- window to that line.
+--- start) inside the buffer. A buffer-local <CR> in the quickfix window
+--- jumps the top window to that line — native nvim <CR> would split a new
+--- window instead, because fugitive's `Git` output buffers are
+--- `buftype=nowrite` and the native jump only reuses windows whose buffer
+--- is a "normal" buffer (see M.install_qf_jump).
 ---
 --- The per-file sections are located with the `diff` treesitter grammar,
 --- which after/plugin/autocmds.lua aliases onto the `git` filetype fugitive
@@ -63,6 +66,39 @@ M.parse_items = function(bufnr)
   return items
 end
 
+---Install a `<CR>` mapping on the current (quickfix) window's buffer that
+---reuses the window showing the diff buffer instead of letting nvim split a
+---new one. nvim's native quickfix jump only reuses windows whose buffer is
+---a "normal" buffer (`buftype` empty); fugitive's `Git` output buffers are
+---`buftype=nowrite`, so the default <CR> always opens a new split above the
+---quickfix window. The mapping is scoped to `:Diff` lists via the qf title
+---(the qf buffer is shared across lists, e.g. `:grep` reuses it); other
+---lists fall through to the native `:cc`.
+M.install_qf_jump = function()
+  local qf_buf = vim.api.nvim_win_get_buf(vim.api.nvim_get_current_win())
+  vim.keymap.set('n', '<CR>', function()
+    -- The qf window's line number equals the entry number (native <CR> is
+    -- `:.cc`); the list's `idx` does NOT follow the cursor.
+    local qf_line = vim.fn.line('.')
+    local list = vim.fn.getqflist({ items = 1, title = 1 })
+    local item = list.items and list.items[qf_line]
+    if not item or item.bufnr == 0 or not (list.title or ''):match('^Diff') then
+      vim.cmd('cc ' .. qf_line) -- not ours (or nothing to jump to): native behavior
+      return
+    end
+    -- All :Diff items point into the diff buffer; move to a window already
+    -- showing it (never the quickfix window), then let `:cc <nr>` jump there.
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+      local buf = vim.api.nvim_win_get_buf(win)
+      if buf == item.bufnr and vim.bo[buf].buftype ~= 'quickfix' then
+        vim.api.nvim_set_current_win(win)
+        break
+      end
+    end
+    vim.cmd('cc ' .. qf_line)
+  end, { buffer = qf_buf, desc = 'Diff: jump top window to quickfix entry' })
+end
+
 ---Open `:Diff` in a dedicated tab: fugitive patch on top, quickfix of
 ---changed files below (focused). Completion is tracked through fugitive's
 ---own async job (fugitive#Result/fugitive#Wait) — the buffer is empty until
@@ -117,6 +153,7 @@ M.open = function(args)
   if #items > 0 then
     vim.fn.setqflist({}, ' ', { title = qf_title, items = items })
     vim.cmd('botright copen')
+    M.install_qf_jump()
     return
   end
 
