@@ -1,7 +1,9 @@
 # Custom quickfix rendering with 'quickfixtextfunc'
 
-How `:Diff`'s pretty, aligned quickfix table works — and the native nvim
+How `:DiffQf`'s pretty, aligned quickfix table works — and the native nvim
 hook behind it. Knowledge captured from implementing lib.Diff's qf rows.
+(`:DiffQf` was `:Diff` until the DiffTree sidebar became the default index;
+`docs/diff-tree.md`.)
 
 ## The core idea: data is separate from display
 
@@ -113,23 +115,23 @@ mapping (`install_qf_jump`) keeps working: it reads `line('.')` and runs
 The qf window's winbar leads with the qf buffer's own (special) name
 (`[Quickfix List]`, or `[Location List]` for loclists — buf_spname in
 buffer.c, not exposed by nvim_buf_get_name), then ` > ` and the
-breadcrumb tail: `<icon> Diff <args>` for `:Diff` lists, `<icon> git log`
+breadcrumb tail: `<icon> Diff <args>` for `:DiffQf` lists, `<icon> git log`
 for the fugitive `:Gclog` stamp.
 
-`:Diff` creates its list with `setqflist()`, which does **not** fire
+`:DiffQf` creates its list with `setqflist()`, which does **not** fire
 `QuickFixCmdPost`, so the Gclog-style stamping hook never runs for it.
 Instead:
 
 - lib.Diff keeps a registry `qf list id → winbar text`
-  (`M.record_winbar` in `open()`, `M.winbar_text` lookup).
+  (`M.record_winbar` in `open_qf()`, `M.winbar_text` lookup).
 - `get_winbar()` adds a quickfix-buffer branch: for `buftype == 'quickfix'`
   it reads the *current* list id (`getqflist({ id = 0 }).id`) and
   renders `name > tail`, or just the buffer name when there's no tail.
 
 Resolving by list id at render time is self-cleaning — no stamp to clear:
-a new list (grep, another `:Diff`) has a new id and simply doesn't match.
+a new list (grep, another `:DiffQf`) has a new id and simply doesn't match.
 Because each `setqflist` pushes onto the qf stack (old ids stay valid),
-`:colder` back to a previous `:Diff` list keeps its bar.
+`:colder` back to a previous `:DiffQf` list keeps its bar.
 
 ## Testing
 

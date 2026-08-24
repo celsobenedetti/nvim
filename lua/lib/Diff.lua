@@ -277,13 +277,7 @@ M.install_qf_jump = function()
   end, { buffer = qf_buf, desc = 'Diff: jump top window to quickfix entry' })
 end
 
----Open `:Diff` in a dedicated tab: fugitive patch on top, quickfix of
----changed files below (focused). Completion is tracked through fugitive's
----own async job (fugitive#Result/fugitive#Wait) — the buffer is empty until
----the job finishes, so the treesitter parse must wait for it
----(docs/diff-emph.md gotcha #3). A non-zero git exit status means failure
----(the error stays visible in the tab); an empty patch with status 0 closes
----the tab again.
+---Argument normalization shared by M.open / M.open_qf.
 ---@param args string[]|string 0, 1, or 2 revision arguments; a single
 ---argument containing `..` (e.g. `dev..HEAD`, `dev...HEAD`) is treated as
 ---a diff range rather than a `git show` rev. Also accepts the legacy call
@@ -291,34 +285,46 @@ end
 ---command in after/plugin/git.lua called it that way, and a running nvim
 ---session registered before the fix still does (the lib itself loads
 ---lazily from disk, so the old command pairs with the new module).
-M.open = function(args, ...)
+---@return string[]
+local function normalize_args(args, ...)
   if type(args) ~= 'table' then
-    args = { args, ... }
+    return { args, ... }
   end
+  return args
+end
+
+---Open the fugitive patch for `args` in a dedicated tab and wait for its job.
+---Completion is tracked through fugitive's own async job
+---(fugitive#Result/fugitive#Wait) — the buffer is empty until the job
+---finishes, so the treesitter parse must wait for it (docs/diff-emph.md
+---gotcha #3).
+---@param args string[]
+---@return integer? bufnr the patch buffer, nil when `:Git` itself failed
+---@return table? result fugitive's job result (exit_status, job)
+---@return string? title `Diff <args>`, for the quickfix list and its winbar
+local function patch_tab(args)
   local n = #args
-  local cmd, title, qf_title, git_args
+  local git_args, title
   if n == 0 then
     git_args = 'diff'
-    qf_title = 'Diff (working tree)'
+    title = 'Diff (working tree)'
   elseif n == 1 then
     -- A single arg with `..` (two- or three-dot) is a range, not a rev:
     -- `git diff -p dev..HEAD` / `dev...HEAD`. Valid refnames never
     -- contain `..` (git check-ref-format), so the check is unambiguous.
     git_args = (args[1]:find('..', 1, true) and 'diff -p ' or 'show ') .. args[1]
-    qf_title = 'Diff ' .. args[1]
+    title = 'Diff ' .. args[1]
   else
     git_args = 'diff -p ' .. args[1] .. ' ' .. args[2]
-    qf_title = 'Diff ' .. args[1] .. '..' .. args[2]
+    title = 'Diff ' .. args[1] .. '..' .. args[2]
   end
-  cmd = 'tab Git ' .. git_args
-  title = 'git ' .. git_args
 
-  lib.tab.set_next_name(config.icons.git.git .. title)
-  local ok, err = pcall(vim.cmd, cmd)
+  lib.tab.set_next_name(config.icons.git.git .. 'git ' .. git_args)
+  local ok, err = pcall(vim.cmd, 'tab Git ' .. git_args)
   if not ok then
     lib.tab.set_next_name(nil)
     vim.notify('Diff: ' .. tostring(err), vim.log.levels.ERROR)
-    return
+    return nil, nil, nil
   end
 
   -- fugitive runs `Git ...` as a job writing into the new buffer; ask it
@@ -331,6 +337,66 @@ M.open = function(args, ...)
   end
   if result.job ~= nil then
     vim.fn['fugitive#Wait'](result, 5000)
+  end
+  return bufnr, result, title
+end
+
+---A patch with no per-file sections: still rendering (leave the tab alone),
+---genuinely empty (close it again), or a git failure worth leaving on screen.
+---@param result table fugitive's job result
+---@param args string[]
+local function report_empty(result, args)
+  if result.exit_status == nil then
+    -- Wait timed out (huge diff); leave the tab open for it to finish.
+    vim.notify('Diff: diff still rendering', vim.log.levels.INFO)
+  elseif result.exit_status == 0 then
+    vim.cmd('tabclose')
+    vim.notify(
+      'Diff: no changes' .. (#args > 0 and (' between ' .. table.concat(args, ' ')) or ''),
+      vim.log.levels.INFO
+    )
+  else
+    vim.notify('Diff: git exited with ' .. result.exit_status .. '; see the error in the new tab', vim.log.levels.WARN)
+  end
+end
+
+---`:Diff` — the patch in a dedicated tab with the DiffTree sidebar (per-file
+---blocks and their hunks) open on the left and focused, so hovering a row
+---previews the section (`docs/diff-tree.md`). M.open_qf is the older
+---quickfix-of-files flavour, kept as `:DiffQf`.
+---@param args string[]|string see normalize_args
+M.open = function(args, ...)
+  args = normalize_args(args, ...)
+  local bufnr, result = patch_tab(args)
+  if not bufnr then
+    return
+  end
+
+  local ok, rows = pcall(M.tree_rows, bufnr)
+  if not ok then
+    vim.notify('Diff: treesitter diff parser unavailable: ' .. tostring(rows), vim.log.levels.WARN)
+    return
+  end
+
+  if #rows > 0 then
+    -- The patch window is current, so the tree attaches to it (and its own
+    -- parse of the same, already-cached tree yields these rows again).
+    M.open_tree()
+    return
+  end
+
+  report_empty(result, args)
+end
+
+---`:DiffQf` — the patch in a dedicated tab with a quickfix list of the changed
+---files below it (focused), one entry per `diff --git` block. Was `:Diff`
+---until the tree became the default.
+---@param args string[]|string see normalize_args
+M.open_qf = function(args, ...)
+  args = normalize_args(args, ...)
+  local bufnr, result, qf_title = patch_tab(args)
+  if not bufnr then
+    return
   end
 
   local ok_parse, items = pcall(M.parse_items, bufnr)
@@ -351,22 +417,14 @@ M.open = function(args, ...)
     -- winbar tail for the qf window: `<icon> Diff <args>`; the
     -- after/plugin/winbar.lua quickfix branch prefixes it with the buffer
     -- name and a ` > ` separator (`[Quickfix List] > <icon> Diff <args>`).
-    local args_text = n > 0 and (' ' .. table.concat(args, ' ')) or ''
+    local args_text = #args > 0 and (' ' .. table.concat(args, ' ')) or ''
     M.record_winbar(vim.fn.getqflist({ id = 0 }).id, config.icons.git.git .. ' Diff' .. args_text)
     vim.cmd('botright copen')
     M.install_qf_jump()
     return
   end
 
-  if result.exit_status == nil then
-    -- Wait timed out (huge diff); leave the tab open for it to finish.
-    vim.notify('Diff: diff still rendering', vim.log.levels.INFO)
-  elseif result.exit_status == 0 then
-    vim.cmd('tabclose')
-    vim.notify('Diff: no changes' .. (n > 0 and (' between ' .. table.concat(args, ' ')) or ''), vim.log.levels.INFO)
-  else
-    vim.notify('Diff: git exited with ' .. result.exit_status .. '; see the error in the new tab', vim.log.levels.WARN)
-  end
+  report_empty(result, args)
 end
 
 ---Nodes of `kind` in document order (their start rows are ascending:
@@ -792,8 +850,9 @@ M.tree_fold = function(tree_buf, key)
   return closed
 end
 
----Highlight the section under the tree cursor in the source buffer and scroll
----the source window to reveal it (without moving its cursor). Hunks highlight
+---Highlight the section under the tree cursor in the source buffer and park it
+---on the source window's first line (`zt`; the source cursor moves there too,
+---see below, but focus stays in the tree). Hunks highlight
 ---their whole range with Visual; blocks light up lib.diff_filepath's overlay
 ---bar instead — the header line's visible pixels belong to that extmark, whose
 ---virt_text chunks no second extmark can restyle. Exposed as M.tree_focus for
@@ -825,8 +884,14 @@ M.tree_focus = function(tree_buf, tree_win)
     })
   end
 
-  -- Scroll without moving the cursor: winrestview with only topline set
-  -- leaves the cursor where it is (unlike win_set_cursor).
+  -- Park the section on the diff window's first line (`zt`) on every hover,
+  -- not only when it is off-screen. The cursor has to come along: nvim keeps a
+  -- window's cursor on screen, so a topline that would scroll it out of view
+  -- is simply undone — which is why setting topline alone (the previous
+  -- reveal-if-off-screen scroll) did nothing for distant sections. open_tree
+  -- zeroes this window's 'scrolloff', so `zt` lands the line on row 1 exactly.
+  -- Moving a non-current window's cursor fires no CursorMoved, so the
+  -- source->tree sync autocmd can't loop back on this.
   local src_win = vim.b[tree_buf].diff_tree_src_win
   if not src_win or not vim.api.nvim_win_is_valid(src_win) then
     local wins = vim.fn.win_findbuf(src_buf)
@@ -834,14 +899,26 @@ M.tree_focus = function(tree_buf, tree_win)
     vim.b[tree_buf].diff_tree_src_win = src_win
   end
   if src_win then
+    vim.api.nvim_win_set_cursor(src_win, { srow + 1, 0 })
     vim.api.nvim_win_call(src_win, function()
-      local topline = vim.fn.line('w0')
-      local botline = vim.fn.line('w$')
-      if srow + 1 < topline or srow + 1 > botline then
-        vim.fn.winrestview({ topline = srow + 1 })
-      end
+      vim.cmd('normal! zt')
     end)
   end
+end
+
+---Restore the diff window's 'scrolloff', zeroed for as long as the tree is
+---attached so hover's `zt` can land a section on the very first row
+---(M.tree_focus). No-op when nothing was saved.
+---@param src_buf integer
+local function restore_scrolloff(src_buf)
+  local saved = vim.b[src_buf].diff_tree_src_scrolloff
+  if saved == nil then
+    return
+  end
+  for _, win in ipairs(vim.fn.win_findbuf(src_buf)) do
+    vim.wo[win].scrolloff = saved
+  end
+  vim.b[src_buf].diff_tree_src_scrolloff = nil
 end
 
 ---Toggle the diff tree sidebar for the current buffer: a left-side vertical
@@ -860,6 +937,7 @@ M.open_tree = function()
   if existing and vim.api.nvim_win_is_valid(existing) then
     vim.api.nvim_win_close(existing, true)
     vim.b[src_buf].diff_tree_win = nil
+    restore_scrolloff(src_buf)
     if vim.b[src_buf].diff_tree_group then
       pcall(vim.api.nvim_del_augroup_by_id, vim.b[src_buf].diff_tree_group)
       vim.b[src_buf].diff_tree_group = nil
@@ -925,6 +1003,11 @@ M.open_tree = function()
   vim.b[tree_buf].diff_tree_src_win = src_win
   vim.b[src_buf].diff_tree_win = tree_win
 
+  -- Hover parks a section on the diff window's first row, which 'scrolloff'
+  -- would otherwise keep N lines below the top; restored on close.
+  vim.b[src_buf].diff_tree_src_scrolloff = vim.wo[src_win].scrolloff
+  vim.wo[src_win].scrolloff = 0
+
   vim.wo[tree_win].wrap = false
   vim.wo[tree_win].foldmethod = 'expr'
   vim.wo[tree_win].foldexpr = 'v:lua.lib.Diff.tree_foldexpr()'
@@ -940,6 +1023,7 @@ M.open_tree = function()
     if vim.api.nvim_buf_is_loaded(src_buf) then
       vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
       filepath_bar().set_hover(src_buf, nil)
+      restore_scrolloff(src_buf)
       vim.b[src_buf].diff_tree_win = nil
       vim.b[src_buf].diff_tree_group = nil
     end

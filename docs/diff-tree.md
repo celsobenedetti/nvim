@@ -3,18 +3,25 @@
 An InspectTree-like outline of a `filetype=git` diff buffer, in a left-side
 split. It shows only the `diff` grammar's two navigable sections — per-file
 `block`s and their `hunk`s — and reuses `:InspectTree`'s interaction model:
-hovering a row previews/highlights the section in the diff buffer, `<CR>`
-jumps there, and the diff buffer's own cursor keeps the tree in sync.
+hovering a row scrolls the section to the top of the diff buffer and
+highlights it, `<CR>` jumps there, and the diff buffer's own cursor keeps the
+tree in sync.
 
 ## Surface
 
+- `:Diff [rev] [rev2]` — the default index for a new diff tab: the patch on
+  the right, this tree on the left and focused (`lib.Diff.open`). `:DiffQf` is
+  the older quickfix-of-files flavour (`lib.Diff.open_qf`); both share
+  `patch_tab()`, which opens the fugitive tab and waits for its job. See
+  `after/plugin/Diff.lua`.
 - `:DiffTree` (any buffer that parses as `diff`) — see `after/plugin/Diff.lua`.
 - `glt` in `filetype=git` patch buffers — see `after/ftplugin/git.lua`.
-- Both call `lib.Diff.open_tree()`, which toggles: a second call closes the tree.
+- The last two call `lib.Diff.open_tree()`, which toggles: a second call closes
+  the tree.
 
 The git→diff treesitter alias (`after/plugin/autocmds.lua`, see
 `docs/ts-git-diff-alias.md`) makes fugitive patch buffers parse with the
-`diff` grammar, so `:DiffTree` works on `:Diff`, `:Git diff/show/log -p`.
+`diff` grammar, so the tree works on `:Diff`, `:Git diff/show/log -p`.
 
 ## Rows
 
@@ -37,9 +44,11 @@ used for containment and hover highlight). Hunk rows also carry their block's
 - **Hover** — `CursorMoved` in the tree clears the previous highlight and
   paints an extmark (`hl_group = Visual`) in the diff buffer: blocks
   highlight just their `diff --git` header line, hunks highlight their whole
-  range. The source window scrolls to reveal the section via
-  `winrestview({ topline = … })`, which moves the view **without moving the
-  cursor** (so hover ≠ jump).
+  range. The section is then parked on the diff window's **first line** (`zt`),
+  every hover, not only when it is off-screen. That needs the diff window's
+  cursor to move there too (see the gotcha below) and its `'scrolloff'` zeroed
+  — `open_tree` saves and zeroes it, `close_tree`/the toggle restore it. Focus
+  stays in the tree, so hover still isn't a jump; only `<CR>` moves you.
 - **`<CR>`** — jumps the diff window's cursor to the row's `lnum`, reusing a
   window that already shows the diff buffer (never splitting a new one; the
   same workaround as `lib.Diff.install_qf_jump` for `buftype=nowrite`).
@@ -81,17 +90,20 @@ used for containment and hover highlight). Hunk rows also carry their block's
 
 ## Lifecycle
 
-`open_tree` records the tree window and an augroup on the source buffer
-(`vim.b.diff_tree_win` / `diff_tree_group`). The tree closes (and the group is
-deleted) on: `q`, a second `:DiffTree`, or `BufHidden`/`BufUnload` of the
-source buffer. Leaving the tree clears the hover highlight.
+`open_tree` records the tree window, an augroup, and the diff window's saved
+`'scrolloff'` on the source buffer (`vim.b.diff_tree_win` /
+`diff_tree_group` / `diff_tree_src_scrolloff`). The tree closes (and the group
+is deleted, the `'scrolloff'` restored) on: `q`, a second `:DiffTree`, or
+`BufHidden`/`BufUnload` of the source buffer. Leaving the tree clears the hover
+highlight.
 
 ## Testing
 
 `tests/integration/test_diff_tree.lua` (`make test-integration`) covers
 `tree_rows` (paths, summaries, `@@` text, ranges), the pure hover/containment
 helpers, the rendered buffer lines, the fold options **and the resulting fold
-levels**, the initial highlight extmark, the `<CR>` jump, every forwarded fold
+levels**, the initial highlight extmark, hover's `zt` (topline, the source
+cursor, the `'scrolloff'` zero/restore), the `<CR>` jump, every forwarded fold
 command (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on both row kinds, `zR`/`zM`/`zr` incl. a
 count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
 `lib.git`, and the toggle-close.
@@ -100,6 +112,12 @@ count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
 
 ## Gotchas
 
+- **A window's cursor pins its view.** nvim keeps the cursor on screen, so a
+  `winrestview({ topline = … })` that would scroll it out of view is undone —
+  the pre-`zt` "reveal if off-screen" scroll therefore did nothing for any
+  section further away than a screen. Hover moves the diff window's cursor to
+  the section and then `zt`s. Moving a **non-current** window's cursor fires no
+  `CursorMoved`, so the source→tree sync autocmd cannot loop back on this.
 - **`CursorMoved` never fires under `--headless`** (no UI). The hover and
   bidirectional autocmds can't be driven by feeding cursor moves in tests;
   their logic is extracted into `tree_hl_range` / `tree_row_containing` and

@@ -62,7 +62,7 @@ context buffer.
 ## Data
 
 `lib.Diff.parse_blocks(bufnr)` is the shared parse behind both this feature
-and the `:Diff` quickfix (`M.parse_items`). Each block:
+and the `:DiffQf` quickfix (`M.parse_items`). Each block:
 
 ```
 { row, lnum, path, icon, icon_hl, adds, dels, summary }
