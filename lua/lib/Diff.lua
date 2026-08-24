@@ -57,6 +57,34 @@ local function block_start(node)
   return nil
 end
 
+local has_icons, mini_icons = pcall(require, 'mini.icons')
+
+---Filetype glyph for a path ('' when mini.icons is unavailable).
+---@param path string
+---@return string
+local function file_icon(path)
+  if not has_icons then
+    return ''
+  end
+  local glyph = mini_icons.get('file', path)
+  return glyph or ''
+end
+
+---Delta-style change summary: `+N -M`, zero sides omitted.
+---@param adds integer
+---@param dels integer
+---@return string
+local function summary_text(adds, dels)
+  local s = ''
+  if adds > 0 then
+    s = s .. ' +' .. adds
+  end
+  if dels > 0 then
+    s = s .. ' -' .. dels
+  end
+  return s
+end
+
 ---New path from a filename node: strip the standard git prefix
 ---(`a/`, `b/`, `i/`, `w/` — git >= 2.50 uses `i/`/`w/` for index/worktree
 ---diffs), tolerating git's C-style quoting of paths with special
@@ -72,10 +100,12 @@ local function new_path(node, bufnr)
 end
 
 ---Collect quickfix items from a fugitive patch buffer: one entry per
----treesitter `block`, `lnum` = the block's header line. `text` is the new
----path with a delta-style change summary appended (`path +N -M`, sides
----with zero changes omitted); binary/rename sections without hunks show
----just the path. Uniform across text hunks, new files, binary, renames.
+---treesitter `block`, `lnum` = the block's header line. `text` is a
+---tabular row: `[icon ]path ... +N -M` — the icon comes from mini.icons,
+---paths are padded to the widest label and lnums to the widest lnum so
+---the path and summary columns align in the quickfix window (the lnum
+---column compensates for `|1|` vs `|186|` prefix widths). Binary/rename
+---sections without hunks show just the padded path.
 ---@param bufnr number
 ---@return table[] items quickfix items {bufnr, lnum, text}
 M.parse_items = function(bufnr)
@@ -98,27 +128,38 @@ M.parse_items = function(bufnr)
     end
   end
 
-  local block_cap = CAPTURE_IDS.block
-  local file_cap = CAPTURE_IDS.file
-  local new_cap = CAPTURE_IDS.new
-  local items = {}
+  -- Collect rows first so the text can be padded to the widest lnum/label.
+  local rows = {}
+  local block_cap, file_cap, new_cap = CAPTURE_IDS.block, CAPTURE_IDS.file, CAPTURE_IDS.new
   for _, match in BLOCK_QUERY:iter_matches(root, bufnr, 0, -1) do
     local block = match[block_cap] and match[block_cap][1]
     if block then
       -- `+++ b/x` when present (cleanest); otherwise the last command filename
       local name_node = (match[new_cap] and match[new_cap][1]) or (match[file_cap] and match[file_cap][1])
-      local text = name_node and new_path(name_node, bufnr) or ''
+      local path = name_node and new_path(name_node, bufnr) or ''
+      local icon = file_icon(path)
       local s = stats[block:start()]
-      if s and (s.adds > 0 or s.dels > 0) then
-        if s.adds > 0 then
-          text = text .. ' +' .. s.adds
-        end
-        if s.dels > 0 then
-          text = text .. ' -' .. s.dels
-        end
-      end
-      items[#items + 1] = { bufnr = bufnr, lnum = block:range() + 1, text = text }
+      rows[#rows + 1] = {
+        lnum = block:range() + 1,
+        label = icon ~= '' and (icon .. ' ' .. path) or path,
+        summary = summary_text(s and s.adds or 0, s and s.dels or 0),
+      }
     end
+  end
+
+  local max_lnum_w, max_label_w = 0, 0
+  for _, r in ipairs(rows) do
+    max_lnum_w = math.max(max_lnum_w, vim.fn.strwidth(tostring(r.lnum)))
+    max_label_w = math.max(max_label_w, vim.fn.strwidth(r.label))
+  end
+
+  local items = {}
+  for _, r in ipairs(rows) do
+    local text = string.rep(' ', max_lnum_w - vim.fn.strwidth(tostring(r.lnum)))
+      .. r.label
+      .. string.rep(' ', max_label_w - vim.fn.strwidth(r.label) + 1)
+      .. r.summary
+    items[#items + 1] = { bufnr = bufnr, lnum = r.lnum, text = text }
   end
   return items
 end

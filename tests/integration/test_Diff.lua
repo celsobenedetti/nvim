@@ -70,13 +70,15 @@ end
 assert(parsed, 'diff parser parsed buffer')
 
 local items = require('lib.Diff').parse_items(buf)
+-- No mini.icons under -u NONE, so labels are bare paths. Rows are padded:
+-- lnums to the widest (2), labels to the widest (11: newfile.txt).
 assert_eq(items, {
-  { bufnr = buf, lnum = 1, text = 'foo.txt +1 -1' },
-  { bufnr = buf, lnum = 9, text = 'newfile.txt +1' },
-  { bufnr = buf, lnum = 16, text = 'logo.png' },
-  { bufnr = buf, lnum = 19, text = 'renamed.txt' },
-  { bufnr = buf, lnum = 23, text = 'work.txt +1 -1' },
-}, 'one quickfix entry per file block: lnum at header, text with change summary')
+  { bufnr = buf, lnum = 1, text = ' foo.txt      +1 -1' },
+  { bufnr = buf, lnum = 9, text = ' newfile.txt  +1' },
+  { bufnr = buf, lnum = 16, text = 'logo.png    ' },
+  { bufnr = buf, lnum = 19, text = 'renamed.txt ' },
+  { bufnr = buf, lnum = 23, text = 'work.txt     +1 -1' },
+}, 'tabular qf rows: lnum at header, aligned path + change summary')
 
 -- Non-patch content parses to ERROR nodes, no blocks -> no items.
 local empty = vim.api.nvim_create_buf(false, true)
