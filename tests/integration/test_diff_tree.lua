@@ -80,16 +80,16 @@ assert_eq(rows[1].path, 'foo.txt', 'block 1 path (b/ prefix stripped)')
 assert_eq(rows[1].summary, ' +2 -2', 'block 1 summary')
 assert_eq(rows[2].kind, 'hunk', 'row 2 is a hunk')
 assert_eq(rows[2].lnum, 5, 'hunk 1 lnum')
-assert_eq(rows[2].summary, ' +1 -1', 'hunk 1 summary')
+assert_eq(rows[2].text, '@@ -1,2 +1,2 @@', 'hunk 1 @@ line')
 assert_eq(rows[3].lnum, 9, 'hunk 2 lnum')
-assert_eq(rows[3].summary, ' +1 -1', 'hunk 2 summary')
+assert_eq(rows[3].text, '@@ -5,1 +5,1 @@ function bar()', 'hunk 2 @@ line keeps the heading')
 assert_eq(rows[4].kind, 'block', 'row 4 is a block')
 assert_eq(rows[4].lnum, 12, 'block 2 lnum')
 assert_eq(rows[4].path, 'b.txt', 'block 2 path')
 assert_eq(rows[4].summary, ' +1 -1', 'block 2 summary')
 assert_eq(rows[5].kind, 'hunk', 'row 5 is a hunk')
 assert_eq(rows[5].lnum, 16, 'hunk 3 lnum')
-assert_eq(rows[5].summary, ' +1 -1', 'hunk 3 summary')
+assert_eq(rows[5].text, '@@ -1 +1 @@', 'hunk 3 @@ line')
 -- ranges: block 1 spans rows 0..11, hunk 1 rows 4..8 (0-based).
 assert_eq(rows[1].range[1], 0, 'block 1 range start')
 assert_eq(rows[1].range[3], 11, 'block 1 range end')
@@ -127,10 +127,10 @@ assert_eq(vim.wo[tree_win].foldexpr, 'v:lua.lib.Diff.tree_foldexpr()', 'tree fol
 -- align (widest label 'foo.txt' = 7).
 assert_eq(vim.api.nvim_buf_get_lines(tree_buf, 0, -1, false), {
   'foo.txt  +2 -2',
-  '   +1 -1',
-  '   +1 -1',
+  '  @@ -1,2 +1,2 @@',
+  '  @@ -5,1 +5,1 @@ function bar()',
   'b.txt    +1 -1',
-  '   +1 -1',
+  '  @@ -1 +1 @@',
 }, 'tree renders block/hunk rows')
 
 -- open_tree focused the first row: its header line is highlighted.
@@ -150,46 +150,8 @@ assert_eq(vim.api.nvim_get_current_win(), src_win, 'jump focuses the source wind
 assert_eq(vim.fn.line('.'), 5, '<CR> on hunk 1 jumps to its @@ line')
 
 -- ------------------------------------------------------------------
--- Section navigation on the tree itself: `]`/`[` (hunk), `,`/`.` (block),
--- with count support, mirroring after/ftplugin/git.lua.
+-- Toggle: a second open_tree() closes the tree window.
 -- ------------------------------------------------------------------
-local function feed(keys)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'x', false)
-  vim.wait(50)
-end
-local function tree_cursor()
-  return vim.api.nvim_win_get_cursor(tree_win)[1]
-end
-
-vim.api.nvim_set_current_win(tree_win)
-vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
-feed(']')
-assert_eq(tree_cursor(), 2, '] -> next hunk')
-assert_eq(vim.api.nvim_buf_get_extmarks(buf, ns, 0, -1, {})[1][2], 4, '] updates the hover highlight')
-feed(']')
-assert_eq(tree_cursor(), 3, '] -> next hunk (2)')
-feed(']')
-assert_eq(tree_cursor(), 5, '] -> next hunk (3, skipping block 2)')
-feed(']')
-assert_eq(tree_cursor(), 5, '] from last hunk: no-op')
-feed('[')
-assert_eq(tree_cursor(), 3, '[ -> previous hunk')
-feed('[')
-assert_eq(tree_cursor(), 2, '[ -> previous hunk (2)')
-feed(',')
-assert_eq(tree_cursor(), 1, ', -> previous block')
-feed('.')
-assert_eq(tree_cursor(), 4, '. -> next block')
-feed('.')
-assert_eq(tree_cursor(), 4, '. from last block: no-op')
-vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
-feed('2]')
-assert_eq(tree_cursor(), 3, '2] -> second next hunk')
-
--- ------------------------------------------------------------------
--- Toggle: a second open_tree() (from the source window) closes the tree.
--- ------------------------------------------------------------------
-vim.api.nvim_set_current_win(src_win)
 Diff.open_tree()
 vim.wait(50)
 assert_true(not vim.api.nvim_win_is_valid(tree_win), 'second DiffTree closes the tree')

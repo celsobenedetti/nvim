@@ -25,8 +25,8 @@ section, in document order:
   line (falling back to the `diff --git` command's last path token, and to
   `/dev/null`-aware handling for deletions); summary is the `+N -M` delta,
   padded so summaries align.
-- **hunk** (indented two spaces under its block): a compact `+N -M` delta
-  summary, like the block row's.
+- **hunk** (indented two spaces under its block): the full `@@ -a,b +c,d @@`
+  line, including git's trailing function/class heading.
 
 Each row carries `lnum` (1-based jump target) and `range` (0-based node span,
 used for containment and hover highlight).
@@ -42,9 +42,6 @@ used for containment and hover highlight).
 - **`<CR>`** — jumps the diff window's cursor to the row's `lnum`, reusing a
   window that already shows the diff buffer (never splitting a new one; the
   same workaround as `lib.Diff.install_qf_jump` for `buftype=nowrite`).
-- **`]` / `[` / `.` / `,`** — next/previous hunk and next/previous file,
-  navigating the tree itself (same keys and count semantics as
-  `after/ftplugin/git.lua`); each move re-runs the hover preview.
 - **`q`** — closes the tree.
 - **Bidirectional** — `CursorMoved` in the diff buffer moves the tree cursor
   to the deepest row (hunk over block) containing the source cursor.
@@ -62,10 +59,9 @@ source buffer. Leaving the tree clears the hover highlight.
 ## Testing
 
 `tests/integration/test_diff_tree.lua` (`make test-integration`) covers
-`tree_rows` (paths, `+N -M` summaries, ranges), the pure hover/containment
+`tree_rows` (paths, summaries, `@@` text, ranges), the pure hover/containment
 helpers, the rendered buffer lines, the fold options, the initial highlight
-extmark, the `<CR>` jump, the `]`/`[`/`,`/`.` section navigation, and the
-toggle-close.
+extmark, the `<CR>` jump, and the toggle-close.
 
 ## Gotchas
 

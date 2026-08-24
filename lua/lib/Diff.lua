@@ -437,7 +437,7 @@ end
 -- ---------------------------------------------------------------------------
 -- Diff tree sidebar: an InspectTree-like outline of a `filetype=git` diff
 -- buffer on the left, showing only per-file `block`s (top level, rendered
--- `<icon> <path> <summary>`) and their `hunk`s (nested `+N -M` summaries). Focus
+-- `<icon> <path> <summary>`) and their `hunk`s (nested `@@` lines). Focus
 -- (CursorMoved) highlights the section in the diff buffer and scrolls it into
 -- view; <CR> jumps there; the diff buffer's own cursor keeps the tree in sync
 -- (bidirectional). Blocks fold their hunks with native expr folding.
@@ -469,32 +469,26 @@ local function block_path(block, bufnr)
   return command_text or ''
 end
 
----Delta summary for a hunk: count its +/- body lines (the `changes` node's
----children are `addition`/`deletion`/`context`/... lines), skipping context.
+---The `@@` header line of a hunk (git appends the enclosing function/class
+---heading after the second `@@`, so this reads e.g. `@@ -10,3 +10,4 @@ foo()`).
 ---@param hunk TSNode
+---@param bufnr number
 ---@return string
-local function hunk_summary(hunk)
-  local adds, dels = 0, 0
+local function hunk_text(hunk, bufnr)
   for child in hunk:iter_children() do
-    if child:type() == 'changes' then
-      for line in child:iter_children() do
-        if line:type() == 'addition' then
-          adds = adds + 1
-        elseif line:type() == 'deletion' then
-          dels = dels + 1
-        end
-      end
+    if child:type() == 'location' then
+      return vim.treesitter.get_node_text(child, bufnr)
     end
   end
-  return summary_text(adds, dels)
+  return '@@'
 end
 
 ---One row per block/hunk in document order, for the diff tree sidebar.
 ---Blocks are top-level entries (`path` + `summary`); hunks are nested under
----their block (each with its own `+N -M` `summary`). `lnum` is the 1-based
----jump target (block: `diff --git` header; hunk: `@@` header); `range` is the
----node's 0-based span (block: whole section, used for containment; hunk:
----whole hunk, used for both containment and hover highlight).
+---their block (`text` = the `@@` line). `lnum` is the 1-based jump target
+---(block: `diff --git` header; hunk: `@@` header); `range` is the node's
+---0-based span (block: whole section, used for containment; hunk: whole hunk,
+---used for both containment and hover highlight).
 ---@param bufnr number
 ---@return table[]
 M.tree_rows = function(bufnr)
@@ -519,7 +513,7 @@ M.tree_rows = function(bufnr)
           rows[#rows + 1] = {
             kind = 'hunk',
             lnum = hunk:start() + 1,
-            summary = hunk_summary(hunk),
+            text = hunk_text(hunk, bufnr),
             range = { hunk:range() },
           }
         end
@@ -550,7 +544,7 @@ end
 
 ---Render a tree row into a display line. Block rows are `<icon> <path>`,
 ---padded so their `+N -M` summaries align (no padding when the summary is
----empty); hunk rows are two-space-indented `+N -M` summaries under their block.
+---empty); hunk rows are two-space-indented `@@` lines under their block.
 ---@param row table
 ---@param label_w integer width of the widest block label
 ---@return string
@@ -563,7 +557,7 @@ local function render_row(row, label_w)
     end
     return label .. string.rep(' ', label_w - vim.fn.strwidth(label) + 1) .. row.summary
   end
-  return '  ' .. row.summary
+  return '  ' .. row.text
 end
 
 ---Tree row (1-based) whose range contains the given 0-based source row,
@@ -662,48 +656,9 @@ local function focus_row(tree_buf, tree_win)
   end
 end
 
----Move the tree cursor to the `count`-th `kind` row strictly before/after the
----cursor (`'block'` = file, `'hunk'` = hunk), mirroring the diff buffer's
----`[`/`]` (hunk) and `,`/`.` (block) navigation. Strict, so a repeated press
----always moves past the current row; no-op past either end.
----@param kind 'block' | 'hunk'
----@param dir 1 | -1
-local function goto_tree_row(kind, dir)
-  local rows = vim.b.diff_tree_rows
-  if not rows then
-    return
-  end
-  local cur = vim.fn.line('.') -- 1-based tree line
-  local targets = {}
-  for i, r in ipairs(rows) do
-    if r.kind == kind then
-      targets[#targets + 1] = i
-    end
-  end
-
-  local count = vim.v.count1
-  local target
-  if dir == 1 then
-    local i = 1
-    while i <= #targets and targets[i] <= cur do
-      i = i + 1
-    end
-    target = targets[i + count - 1]
-  else
-    local i = #targets
-    while i >= 1 and targets[i] >= cur do
-      i = i - 1
-    end
-    target = targets[i - count + 1]
-  end
-  if target then
-    vim.api.nvim_win_set_cursor(0, { target, 0 })
-  end
-end
-
 ---Toggle the diff tree sidebar for the current buffer: a left-side vertical
 ---split listing each per-file `block` (`<icon> <path> <summary>`) with its
----`hunk`s (nested `+N -M` summaries). Focus (CursorMoved) highlights the
+---`hunk`s (`@@` lines) nested underneath. Focus (CursorMoved) highlights the
 ---section in the diff buffer and scrolls it into view; <CR> jumps there; the
 ---diff buffer's own cursor keeps the tree in sync. Blocks fold their hunks
 ---with native expr folding (`zc`/`zo`). Requires the current buffer to parse
@@ -793,19 +748,6 @@ M.open_tree = function()
     jump_to_row(tree_buf)
   end, { buffer = tree_buf, desc = 'Diff tree: jump to section' })
   vim.keymap.set('n', 'q', close_tree, { buffer = tree_buf, desc = 'Diff tree: close' })
-
-  -- Diff-buffer-style section navigation, on the tree itself (same count
-  -- semantics as after/ftplugin/git.lua's `[`/`]` and `,`/`.`).
-  local function tree_nav(kind, dir)
-    return function()
-      goto_tree_row(kind, dir)
-      focus_row(tree_buf, tree_win)
-    end
-  end
-  vim.keymap.set('n', ']', tree_nav('hunk', 1), { buffer = tree_buf, desc = 'Diff tree: next hunk' })
-  vim.keymap.set('n', '[', tree_nav('hunk', -1), { buffer = tree_buf, desc = 'Diff tree: previous hunk' })
-  vim.keymap.set('n', '.', tree_nav('block', 1), { buffer = tree_buf, desc = 'Diff tree: next file' })
-  vim.keymap.set('n', ',', tree_nav('block', -1), { buffer = tree_buf, desc = 'Diff tree: previous file' })
 
   -- Hover (tree cursor moves): highlight + scroll the source.
   vim.api.nvim_create_autocmd('CursorMoved', {
