@@ -53,8 +53,15 @@ vim.keymap.set('n', 'ga', function()
   lib.git.add(path)
 end, { buffer = 0, desc = 'git: git add -p file under cursor' })
 
--- Left-side tree of the file/hunk sections (lib.Diff.open_tree).
+-- Left-side tree of the file/hunk sections (lib.Diff.open_tree). `s` is the
+-- quick toggle — buffer-local, so it shadows flash.nvim's jump only inside
+-- patch buffers (`S`, `f`/`t` are untouched), and normal-mode `s` has nothing
+-- to substitute in a `buftype=nowrite` buffer anyway. The tree buffer binds
+-- the same key to close, so one key toggles the sidebar from either side.
 vim.keymap.set('n', 'glt', function()
+  lib.Diff.open_tree()
+end, { buffer = 0, desc = 'diff: toggle file/hunk tree' })
+vim.keymap.set('n', 's', function()
   lib.Diff.open_tree()
 end, { buffer = 0, desc = 'diff: toggle file/hunk tree' })
 

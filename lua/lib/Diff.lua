@@ -771,10 +771,39 @@ M.tree_foldexpr = function()
   return '2'
 end
 
----Sidebar geometry: the split's width, and the text column inside it — the
----last cell stays blank so a right-aligned summary doesn't touch the edge.
+---Default sidebar width, for the first open of a buffer. The text column
+---inside it is one cell narrower, so a right-aligned summary doesn't touch the
+---edge.
 local TREE_WIDTH = 30
-local TREE_TEXT_WIDTH = TREE_WIDTH - 1
+
+---Width for a new tree: the share of the editor's width the sidebar had when
+---it was last closed for this buffer, so toggling it off and back on (`s`)
+---restores what you had, resizes included — and a terminal resized in between
+---keeps the proportion rather than the column count. TREE_WIDTH the first
+---time, and never so wide that the diff window is left under 10 columns.
+---@param src_buf integer
+---@param src_win integer
+---@return integer
+local function tree_width(src_buf, src_win)
+  local ratio = vim.b[src_buf].diff_tree_ratio
+  local width = TREE_WIDTH
+  if type(ratio) == 'number' and ratio > 0 then
+    width = math.floor(ratio * vim.o.columns + 0.5)
+  end
+  return math.max(10, math.min(width, vim.api.nvim_win_get_width(src_win) - 10))
+end
+
+---Record that share before the tree goes away (see tree_width). Against
+---'columns' rather than the two windows' combined width: in the `:Diff` tab
+---they are the same thing, and it stays right when the sidebar is the only
+---split of a wider layout.
+---@param src_buf integer
+---@param tree_win integer
+local function record_tree_ratio(src_buf, tree_win)
+  if vim.api.nvim_win_is_valid(tree_win) and vim.o.columns > 0 and vim.api.nvim_buf_is_loaded(src_buf) then
+    vim.b[src_buf].diff_tree_ratio = vim.api.nvim_win_get_width(tree_win) / vim.o.columns
+  end
+end
 
 ---Truncate to `width` display cells, marking the cut with an ellipsis. Cells,
 ---not characters: a path can hold a wide glyph, and the summary column has to
@@ -800,11 +829,13 @@ end
 --- * dir — the group's path, trailing slash kept, at column 0.
 --- * block — ` <status> <icon> <name>`: the basename only, the directory being
 ---   the header above it, with the `+N -M` summary right-aligned at the
----   sidebar's edge and the label truncated where the two would collide.
+---   sidebar's edge (`text_width`, so a resized sidebar still lines up) and
+---   the label truncated where the two would collide.
 --- * hunk — the `@@` line, indented under its file.
 ---@param row table
+---@param text_width integer cells available (the sidebar minus its last cell)
 ---@return string
-local function render_row(row)
+local function render_row(row, text_width)
   if row.kind == 'dir' then
     return row.dir
   end
@@ -814,9 +845,9 @@ local function render_row(row)
   local icon = row.icon ~= '' and (row.icon .. ' ') or ''
   local label = ' ' .. row.status .. ' ' .. icon .. row.name
   if row.summary == '' then
-    return fit(label, TREE_TEXT_WIDTH)
+    return fit(label, text_width)
   end
-  local room = TREE_TEXT_WIDTH - vim.fn.strwidth(row.summary)
+  local room = text_width - vim.fn.strwidth(row.summary)
   label = fit(label, room)
   return label .. string.rep(' ', room - vim.fn.strwidth(label)) .. row.summary
 end
@@ -1144,8 +1175,9 @@ end
 ---Toggle the diff tree sidebar for the current buffer: a left-side vertical
 ---split grouping the patch by parent directory — a `dir` header per directory,
 ---its files under it (` <status> <icon> <name>` + right-aligned `+N -M`), and
----each file's `hunk`s (`@@` lines) under that. Focus (CursorMoved) parks the
----section at the top of the diff window; <CR> jumps there; the
+---each file's `hunk`s (`@@` lines) under that. It opens at the width it had
+---when it was last closed for this buffer (tree_width). Focus (CursorMoved)
+---parks the section at the top of the diff window; <CR> jumps there; the
 ---diff buffer's own cursor keeps the tree in sync. Native expr folding follows
 ---the levels (`zc` on a directory hides its files, on a file its hunks).
 ---Requires the current buffer to parse
@@ -1157,6 +1189,7 @@ M.open_tree = function()
   -- Toggle off: close the tree window this buffer already owns.
   local existing = vim.b[src_buf].diff_tree_win
   if existing and vim.api.nvim_win_is_valid(existing) then
+    record_tree_ratio(src_buf, existing)
     vim.api.nvim_win_close(existing, true)
     vim.b[src_buf].diff_tree_win = nil
     if vim.b[src_buf].diff_tree_group then
@@ -1178,12 +1211,13 @@ M.open_tree = function()
 
   local src_win = vim.api.nvim_get_current_win()
 
+  local width = tree_width(src_buf, src_win)
   local lines = {}
   for _, r in ipairs(rows) do
-    lines[#lines + 1] = render_row(r)
+    lines[#lines + 1] = render_row(r, width - 1)
   end
 
-  vim.cmd('leftabove ' .. TREE_WIDTH .. 'vnew')
+  vim.cmd('leftabove ' .. width .. 'vnew')
   local tree_win = vim.api.nvim_get_current_win()
   local tree_buf = vim.api.nvim_get_current_buf()
 
@@ -1233,6 +1267,10 @@ M.open_tree = function()
   vim.b[src_buf].diff_tree_win = tree_win
 
   vim.wo[tree_win].wrap = false
+  -- No number column: 30-odd columns are all label, and the rows are their own
+  -- index (both 'number' and 'relativenumber', or the latter still paints one).
+  vim.wo[tree_win].number = false
+  vim.wo[tree_win].relativenumber = false
   vim.wo[tree_win].foldmethod = 'expr'
   vim.wo[tree_win].foldexpr = 'v:lua.lib.Diff.tree_foldexpr()'
   vim.wo[tree_win].foldlevel = 99
@@ -1241,6 +1279,7 @@ M.open_tree = function()
   vim.b[src_buf].diff_tree_group = group
 
   local function close_tree()
+    record_tree_ratio(src_buf, tree_win)
     if vim.api.nvim_win_is_valid(tree_win) then
       vim.api.nvim_win_close(tree_win, true)
     end
@@ -1253,12 +1292,15 @@ M.open_tree = function()
     pcall(vim.api.nvim_del_augroup_by_id, group)
   end
 
-  -- <CR> jumps to the section; q closes the tree; ga stages the row's file;
-  -- the z fold commands fold the diff buffer (and mirror onto the tree).
+  -- <CR> jumps to the section; q and s close the tree (`s` is the same toggle
+  -- as in the diff buffer, see after/ftplugin/git.lua, so one key opens and
+  -- closes it from either side); ga stages the row's file; the z fold commands
+  -- fold the diff buffer (and mirror onto the tree).
   vim.keymap.set('n', '<CR>', function()
     jump_to_row(tree_buf)
   end, { buffer = tree_buf, desc = 'Diff tree: jump to section' })
   vim.keymap.set('n', 'q', close_tree, { buffer = tree_buf, desc = 'Diff tree: close' })
+  vim.keymap.set('n', 's', close_tree, { buffer = tree_buf, desc = 'Diff tree: close (toggle)' })
   vim.keymap.set('n', 'ga', function()
     M.tree_stage(tree_buf)
   end, { buffer = tree_buf, desc = "Diff tree: git add the row's file" })

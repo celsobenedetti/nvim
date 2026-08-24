@@ -135,6 +135,8 @@ assert_true(tree_win ~= src_win, 'tree opened in a new window')
 assert_eq(#vim.api.nvim_tabpage_list_wins(0), 2, 'two windows in the tab')
 assert_eq(vim.api.nvim_win_get_position(tree_win)[2], 0, 'tree window is on the left')
 assert_eq(vim.bo[tree_buf].filetype, 'diff-tree', 'tree buffer filetype')
+assert_eq(vim.api.nvim_win_get_width(tree_win), 30, 'the first open uses the default width')
+assert_eq({ vim.wo[tree_win].number, vim.wo[tree_win].relativenumber }, { false, false }, 'no number column')
 assert_eq(vim.wo[tree_win].foldmethod, 'expr', 'tree folds with expr')
 assert_eq(vim.wo[tree_win].foldexpr, 'v:lua.lib.Diff.tree_foldexpr()', 'tree foldexpr wired')
 -- The rows must be stored before 'foldmethod' is set: that assignment
@@ -429,12 +431,28 @@ assert_eq(staged, { 'foo.txt', 'b.txt' }, 'ga on a file row stages that file')
 git.add = real_add
 
 -- ------------------------------------------------------------------
--- Toggle: a second open_tree() closes the tree window.
+-- Toggle: a second open_tree() closes the tree window, and the next open
+-- restores the width it had (kept as a share of 'columns', see tree_width).
 -- ------------------------------------------------------------------
+vim.api.nvim_win_set_width(tree_win, 40) -- as a <C-w>> resize would
+vim.api.nvim_set_current_win(src_win)
 Diff.open_tree()
 vim.wait(50)
 assert_true(not vim.api.nvim_win_is_valid(tree_win), 'second DiffTree closes the tree')
 assert_eq(#vim.api.nvim_tabpage_list_wins(0), 1, 'back to a single window')
+
+Diff.open_tree()
+local tree_win2 = vim.api.nvim_get_current_win()
+assert_eq(vim.api.nvim_win_get_width(tree_win2), 40, 'reopening restores the sidebar width')
+-- The rows were rendered for that width, so the summaries still sit at the
+-- right edge: 39 cells, the sidebar minus its blank last one.
+assert_eq(vim.fn.strwidth(vim.api.nvim_buf_get_lines(0, 1, 2, false)[1]), 39, 'the summary column follows the width')
+
+-- `s` closes the tree, the same toggle the diff buffer binds it to
+-- (after/ftplugin/git.lua, which -u NONE does not source here).
+feed('s')
+assert_true(not vim.api.nvim_win_is_valid(tree_win2), 's closes the tree')
+assert_eq(#vim.api.nvim_tabpage_list_wins(0), 1, 'back to a single window again')
 assert_eq(vim.wo[src_win].scrolloff, 4, 'the diff window scrolloff was never touched')
 
 -- ------------------------------------------------------------------

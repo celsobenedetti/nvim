@@ -29,9 +29,22 @@ keeps the tree in sync.
   `patch_tab()`, which opens the fugitive tab and waits for its job. See
   `after/plugin/Diff.lua`.
 - `:DiffTree` (any buffer that parses as `diff`) — see `after/plugin/Diff.lua`.
-- `glt` in `filetype=git` patch buffers — see `after/ftplugin/git.lua`.
-- The last two call `lib.Diff.open_tree()`, which toggles: a second call closes
+- `glt` and `s` in `filetype=git` patch buffers — see `after/ftplugin/git.lua`.
+  `s` is the quick toggle and is bound in the tree buffer too, so one key opens
+  and closes the sidebar from either side. Being buffer-local it shadows
+  flash.nvim's `s` only inside patch buffers (`S` and `f`/`t` are untouched),
+  and normal-mode `s` has nothing to substitute in a `buftype=nowrite` buffer
+  anyway.
+- All of these call `lib.Diff.open_tree()`, which toggles: a second call closes
   the tree.
+
+The sidebar opens 30 columns wide the first time, and after that at **the share
+of `'columns'` it had when it was last closed** for that buffer (`tree_width` /
+`record_tree_ratio`) — so toggling it off and on keeps a `<C-w>>` resize, and a
+terminal resized in between keeps the proportion rather than the column count.
+It never opens so wide that the diff window is left under 10 columns. Rows are
+rendered for the actual width, so the `+N -M` column follows the right edge.
+The window carries no number column (`nonumber` + `norelativenumber`).
 
 The git→diff treesitter alias (`after/plugin/autocmds.lua`, see
 `docs/ts-git-diff-alias.md`) makes fugitive patch buffers parse with the
@@ -118,7 +131,7 @@ mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
 - **`<CR>`** — jumps the diff window's cursor to the row's `lnum`, reusing a
   window that already shows the diff buffer (never splitting a new one; the
   same workaround as `lib.Diff.install_qf_jump` for `buftype=nowrite`).
-- **`q`** — closes the tree.
+- **`q`** / **`s`** — close the tree (`s` is the toggle from the diff side).
 - **`ga`** — stages the row's file via `lib.git.add` (same flow as
   `ga` in a normal buffer or in the patch buffer — `Git add -p` for unstaged
   changes, plain `git add` when untracked). Focus moves to the diff window
@@ -183,7 +196,9 @@ drops the hovered block's bar back to its normal palette.
 `tests/integration/test_diff_tree.lua` (`make test-integration`) covers
 `tree_rows` (the dir/file/hunk shape, paths, statuses, summaries, `@@` text,
 ranges, a group's `blocks`), `tree_row_containing`, the rendered buffer lines,
-the fold options **and the resulting fold levels**, the hovered file's bar (and
+the fold options **and the resulting fold levels**, the default width and
+the missing number column, the width restored on reopen (and its summary
+column), `s` closing the tree, the hovered file's bar (and
 that a dir row previews its first file), hover's `zt` (topline with a non-zero
 `'scrolloff'`, the source cursor, and that a closed section stays closed), the
 hovered hunk's `@@` highlight (its exact span, that only one exists at a time,
