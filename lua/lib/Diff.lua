@@ -106,8 +106,15 @@ end
 ---(docs/diff-emph.md gotcha #3). A non-zero git exit status means failure
 ---(the error stays visible in the tab); an empty patch with status 0 closes
 ---the tab again.
----@param args string[] 0, 1, or 2 revision arguments
-M.open = function(args)
+---@param args string[]|string 0, 1, or 2 revision arguments. Also accepts
+---the legacy call `open(rev1, rev2)` (two strings) — the pre-0913e74 `:Diff`
+---command in after/plugin/git.lua called it that way, and a running nvim
+---session registered before the fix still does (the lib itself loads
+---lazily from disk, so the old command pairs with the new module).
+M.open = function(args, ...)
+  if type(args) ~= 'table' then
+    args = { args, ... }
+  end
   local n = #args
   local cmd, title, qf_title
   if n == 0 then
