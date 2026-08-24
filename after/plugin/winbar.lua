@@ -130,7 +130,7 @@ _G.get_winbar = function()
     local name = wininfo and wininfo.loclist == 1 and '[Location List]' or '[Quickfix List]'
     local qfid = vim.fn.getqflist({ id = 0 }).id
     local tail = vim.b[buf].winbar or (qfid ~= 0 and lib.Diff.winbar_text(qfid))
-    return lib.strings.hl('WinBar', tail and (name .. SEP .. tail) or name)
+    return lib.strings.hl('WinBar', tail and (name .. ' > ' .. tail) or name)
   end
 
   if vim.b[buf].winbar then
@@ -233,7 +233,7 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
 -- vim.b. Any other quickfix command clears the override: the qf buffer is
 -- reused across lists, so a later :grep would otherwise inherit the stale
 -- git-log bar.
-local FUGITIVE_LOG_WINBAR = GIT_ICON .. ' git > ' .. GIT_ICON .. ' git log'
+local FUGITIVE_LOG_WINBAR = GIT_ICON .. ' git log'
 
 vim.api.nvim_create_autocmd('QuickFixCmdPost', {
   group = 'Winbar',

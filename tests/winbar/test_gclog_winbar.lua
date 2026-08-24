@@ -26,7 +26,7 @@ _G.lib = { strings = {
   end,
 } }
 
-local FUGITIVE_LOG_WINBAR = ' git >  git log' -- icon is '' in this harness; winbar.lua composes it from config
+local FUGITIVE_LOG_WINBAR = ' git log' -- icon is '' in this harness; winbar.lua composes it from config
 
 local tests_run = 0
 local tests_passed = 0
@@ -68,7 +68,7 @@ vim.api.nvim_set_current_win(qf_win)
 vim.g.statusline_winid = qf_win
 local bar = vim.fn.eval('v:lua.get_winbar()')
 ok(bar:find('[Quickfix List]', 1, true) ~= nil, 'winbar leads with the qf buffer name')
-ok(bar:find('git >', 1, true) ~= nil, 'winbar shows the git breadcrumb')
+ok(bar:find(' > ', 1, true) ~= nil, 'winbar separates name from tail with >')
 ok(bar:find('git log', 1, true) ~= nil, 'winbar mentions git log')
 
 -- Issue 1 regression: other splits must NOT inherit the override while the

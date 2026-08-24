@@ -110,9 +110,11 @@ mapping (`install_qf_jump`) keeps working: it reads `line('.')` and runs
 
 ## Winbar for the qf window
 
-The qf window's winbar shows a breadcrumb for `:Diff` lists —
-`quickfix: <icon> git > <icon> git <args>` (e.g. `git diff -p dev..HEAD`)
-— mirroring the fugitive `:Gclog` winbar stamp in after/plugin/winbar.lua.
+The qf window's winbar leads with the qf buffer's own (special) name
+(`[Quickfix List]`, or `[Location List]` for loclists — buf_spname in
+buffer.c, not exposed by nvim_buf_get_name), then ` > ` and the
+breadcrumb tail: `<icon> Diff <args>` for `:Diff` lists, `<icon> git log`
+for the fugitive `:Gclog` stamp.
 
 `:Diff` creates its list with `setqflist()`, which does **not** fire
 `QuickFixCmdPost`, so the Gclog-style stamping hook never runs for it.
@@ -121,8 +123,8 @@ Instead:
 - lib.Diff keeps a registry `qf list id → winbar text`
   (`M.record_winbar` in `open()`, `M.winbar_text` lookup).
 - `get_winbar()` adds a quickfix-buffer branch: for `buftype == 'quickfix'`
-  it reads the *current* list id (`getqflist({ id = 0 }).id`) and renders
-  the registered bar, else `''`.
+  it reads the *current* list id (`getqflist({ id = 0 }).id`) and
+  renders `name > tail`, or just the buffer name when there's no tail.
 
 Resolving by list id at render time is self-cleaning — no stamp to clear:
 a new list (grep, another `:Diff`) has a new id and simply doesn't match.

@@ -48,9 +48,9 @@ vim.fn.setqflist({}, ' ', {
   items = { { bufnr = 1, lnum = 7, text = ' 7 a.txt  +1' } },
 })
 local qfid = vim.fn.getqflist({ id = 0 }).id
-lib.Diff.record_winbar(qfid, ' git >  Diff HEAD') -- icon is '' in this harness
+lib.Diff.record_winbar(qfid, ' Diff HEAD') -- icon is '' in this harness
 vim.cmd('botright copen')
-assert_eq(bar_for_qf_window(), '[Quickfix List] |  git >  Diff HEAD', 'Diff list: buffer name + breadcrumb')
+assert_eq(bar_for_qf_window(), '[Quickfix List] >  Diff HEAD', 'Diff list: buffer name > breadcrumb')
 
 -- Replacing the list (e.g. :grep) creates a new id -> only the prefix stays.
 vim.fn.setqflist({}, ' ', {
