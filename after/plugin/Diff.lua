@@ -1,0 +1,20 @@
+--- @module "Diff"
+--- Simple user command `:Diff` designed to be a simple git viewer.
+--- Simple premise:
+--- 1. diff as regular buffer with `filetype=git`
+--- 2. quickfix entry for each file affected
+---
+--- We use vim-fugitive's `:Git` primitive to get diff in regular, navigable, `filetype` buffer.
+--- Single buffer with whole diff.
+--- Calculate location of heaer line for each affected file within buffer.
+--- - We use treesitter query in the buffer to get the starting location of each `block`
+--- Populate quickfix list with treesitter-backed location for each affected file.
+---
+--- Usages:
+--- `:Diff`                 -> `Git diff` working tree
+--- `:Diff <rev>`           -> `Git show <rev>`
+--- `:Diff <rev1> <rev2>`   -> `Git diff <rev1> <rev2>`
+---
+---
+--- TODO: implement this module
+local M = {}

@@ -120,4 +120,12 @@ M.colored = function(text, hex)
   return M.hl(group, text)
 end
 
+M.split = function(s, sep)
+  local fields = {}
+  string.gsub(s, string.format('([^%s]+)', sep), function(c)
+    table.insert(fields, c)
+  end)
+  return fields
+end
+
 return M
