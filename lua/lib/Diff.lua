@@ -57,6 +57,29 @@ local function block_start(node)
   return nil
 end
 
+---Per-block +/- line counts, keyed by block start row (0-based). Blocks
+---without hunks (binary, rename, pure metadata) have no entry.
+---@param root TSNode
+---@param bufnr number
+---@return table<integer, {adds:integer, dels:integer}>
+local function block_stats(root, bufnr)
+  local stats = {}
+  local add_cap, del_cap = CAPTURE_IDS.add, CAPTURE_IDS.del
+  for id, node in STATS_QUERY:iter_captures(root, bufnr, 0, -1) do
+    local sr = block_start(node)
+    if sr then
+      local s = stats[sr] or { adds = 0, dels = 0 }
+      if id == add_cap then
+        s.adds = s.adds + 1
+      else
+        s.dels = s.dels + 1
+      end
+      stats[sr] = s
+    end
+  end
+  return stats
+end
+
 local has_icons, mini_icons = pcall(require, 'mini.icons')
 
 ---Filetype glyph and its highlight for a path ('' / nil when mini.icons is
@@ -112,20 +135,7 @@ M.parse_blocks = function(bufnr)
   local root = tree:root()
 
   -- Per-block +/- line counts, keyed by block start row.
-  local stats = {}
-  local add_cap, del_cap = CAPTURE_IDS.add, CAPTURE_IDS.del
-  for id, node in STATS_QUERY:iter_captures(root, bufnr, 0, -1) do
-    local sr = block_start(node)
-    if sr then
-      local s = stats[sr] or { adds = 0, dels = 0 }
-      if id == add_cap then
-        s.adds = s.adds + 1
-      else
-        s.dels = s.dels + 1
-      end
-      stats[sr] = s
-    end
-  end
+  local stats = block_stats(root, bufnr)
 
   local blocks = {}
   local block_cap, file_cap, new_cap = CAPTURE_IDS.block, CAPTURE_IDS.file, CAPTURE_IDS.new
@@ -422,6 +432,370 @@ M.goto_node = function(kind, dir)
 
   vim.cmd("normal! m'") -- jumplist entry; <C-o> returns
   vim.api.nvim_win_set_cursor(0, { target + 1, 0 })
+end
+
+-- ---------------------------------------------------------------------------
+-- Diff tree sidebar: an InspectTree-like outline of a `filetype=git` diff
+-- buffer on the left, showing only per-file `block`s (top level, rendered
+-- `<icon> <path> <summary>`) and their `hunk`s (nested `@@` lines). Focus
+-- (CursorMoved) highlights the section in the diff buffer and scrolls it into
+-- view; <CR> jumps there; the diff buffer's own cursor keeps the tree in sync
+-- (bidirectional). Blocks fold their hunks with native expr folding.
+-- ---------------------------------------------------------------------------
+
+local TREE_NS = vim.api.nvim_create_namespace('lib.diff.tree')
+
+---New path for a `block` node: prefer the `+++ b/x` line unless it names
+---`/dev/null` (git emits that for deletions), else the last path token of the
+---`diff --git` command line (covers binary/rename sections and deletions).
+---Returns '' when neither is parseable.
+---@param block TSNode
+---@param bufnr number
+---@return string
+local function block_path(block, bufnr)
+  local command_text = nil
+  local new_file_text = nil
+  for child in block:iter_children() do
+    local t = child:type()
+    if t == 'command' then
+      command_text = new_path(child, bufnr)
+    elseif t == 'new_file' then
+      new_file_text = new_path(child, bufnr)
+    end
+  end
+  if new_file_text and new_file_text ~= '/dev/null' then
+    return new_file_text
+  end
+  return command_text or ''
+end
+
+---The `@@` header line of a hunk (git appends the enclosing function/class
+---heading after the second `@@`, so this reads e.g. `@@ -10,3 +10,4 @@ foo()`).
+---@param hunk TSNode
+---@param bufnr number
+---@return string
+local function hunk_text(hunk, bufnr)
+  for child in hunk:iter_children() do
+    if child:type() == 'location' then
+      return vim.treesitter.get_node_text(child, bufnr)
+    end
+  end
+  return '@@'
+end
+
+---One row per block/hunk in document order, for the diff tree sidebar.
+---Blocks are top-level entries (`path` + `summary`); hunks are nested under
+---their block (`text` = the `@@` line). `lnum` is the 1-based jump target
+---(block: `diff --git` header; hunk: `@@` header); `range` is the node's
+---0-based span (block: whole section, used for containment; hunk: whole hunk,
+---used for both containment and hover highlight).
+---@param bufnr number
+---@return table[]
+M.tree_rows = function(bufnr)
+  local tree = vim.treesitter.get_parser(bufnr):parse()[1]
+  local root = tree:root()
+  local stats = block_stats(root, bufnr)
+
+  local rows = {}
+  local function walk(node)
+    for child in node:iter_children() do
+      if child:type() == 'block' then
+        local path = block_path(child, bufnr)
+        local s = stats[child:start()]
+        rows[#rows + 1] = {
+          kind = 'block',
+          lnum = child:start() + 1,
+          path = path,
+          summary = summary_text(s and s.adds or 0, s and s.dels or 0),
+          range = { child:range() },
+        }
+        for _, hunk in ipairs(collect_nodes(child, 'hunk')) do
+          rows[#rows + 1] = {
+            kind = 'hunk',
+            lnum = hunk:start() + 1,
+            text = hunk_text(hunk, bufnr),
+            range = { hunk:range() },
+          }
+        end
+      else
+        walk(child)
+      end
+    end
+  end
+  walk(root)
+  return rows
+end
+
+---Foldexpr for the tree window (`foldmethod=expr`): a block is a fold header
+---(`>1` starts the fold) when it has hunks; hunks sit inside it (`1`). Blocks
+---without hunks (binary/rename) don't fold.
+M.tree_foldexpr = function()
+  local rows = vim.b.diff_tree_rows
+  local r = rows and rows[vim.v.lnum]
+  if not r then
+    return '0'
+  end
+  if r.kind == 'block' then
+    local next = rows[vim.v.lnum + 1]
+    return (next and next.kind == 'hunk') and '>1' or '0'
+  end
+  return '1'
+end
+
+---Render a tree row into a display line. Block rows are `<icon> <path>`,
+---padded so their `+N -M` summaries align (no padding when the summary is
+---empty); hunk rows are two-space-indented `@@` lines under their block.
+---@param row table
+---@param label_w integer width of the widest block label
+---@return string
+local function render_row(row, label_w)
+  if row.kind == 'block' then
+    local icon = file_icon(row.path)
+    local label = icon ~= '' and (icon .. ' ' .. row.path) or row.path
+    if row.summary == '' then
+      return label
+    end
+    return label .. string.rep(' ', label_w - vim.fn.strwidth(label) + 1) .. row.summary
+  end
+  return '  ' .. row.text
+end
+
+---Tree row (1-based) whose range contains the given 0-based source row,
+---preferring the deepest (a hunk over its enclosing block), or nil.
+---@param rows table[]
+---@param srow integer
+---@return integer?
+M.tree_row_containing = function(rows, srow)
+  for i = #rows, 1, -1 do
+    local start_row, _, end_row = unpack(rows[i].range)
+    if srow >= start_row and srow <= end_row then
+      return i
+    end
+  end
+  return nil
+end
+
+---0-based source highlight range for a tree row: blocks highlight just their
+---`diff --git` header line; hunks highlight their whole node range.
+---@param bufnr number
+---@param row table
+---@return integer srow
+---@return integer erow
+---@return integer ecol
+M.tree_hl_range = function(bufnr, row)
+  if row.kind == 'block' then
+    local srow = row.lnum - 1
+    return srow, srow, #(vim.api.nvim_buf_get_lines(bufnr, srow, srow + 1, false)[1] or '')
+  end
+  local srow, _, erow, ecol = unpack(row.range)
+  return srow, erow, math.max(0, ecol)
+end
+
+---Move the diff buffer's cursor to the tree row under the cursor, reusing a
+---window that already shows it (never the tree window itself).
+local function jump_to_row(tree_buf)
+  local row = vim.fn.line('.')
+  local rows = vim.b[tree_buf].diff_tree_rows
+  local r = rows and rows[row]
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not r or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return
+  end
+  local src_win
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if win ~= vim.api.nvim_get_current_win() and vim.api.nvim_win_get_buf(win) == src_buf then
+      src_win = win
+      break
+    end
+  end
+  if not src_win then
+    return
+  end
+  vim.api.nvim_set_current_win(src_win)
+  vim.api.nvim_win_set_cursor(src_win, { r.lnum, 0 })
+end
+
+---Highlight the section under the tree cursor in the source buffer and scroll
+---the source window to reveal it (without moving its cursor). Blocks highlight
+---just their `diff --git` header line; hunks highlight their whole range.
+local function focus_row(tree_buf, tree_win)
+  local row = vim.fn.line('.')
+  local rows = vim.b[tree_buf].diff_tree_rows
+  local r = rows and rows[row]
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not r or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return
+  end
+
+  vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
+
+  local srow, erow, ecol = M.tree_hl_range(src_buf, r)
+
+  vim.api.nvim_buf_set_extmark(src_buf, TREE_NS, srow, 0, {
+    end_row = erow,
+    end_col = ecol,
+    hl_group = 'Visual',
+  })
+
+  -- Scroll without moving the cursor: winrestview with only topline set
+  -- leaves the cursor where it is (unlike win_set_cursor).
+  local src_win = vim.b[tree_buf].diff_tree_src_win
+  if not src_win or not vim.api.nvim_win_is_valid(src_win) then
+    local wins = vim.fn.win_findbuf(src_buf)
+    src_win = wins[1]
+    vim.b[tree_buf].diff_tree_src_win = src_win
+  end
+  if src_win then
+    vim.api.nvim_win_call(src_win, function()
+      local topline = vim.fn.line('w0')
+      local botline = vim.fn.line('w$')
+      if srow + 1 < topline or srow + 1 > botline then
+        vim.fn.winrestview({ topline = srow + 1 })
+      end
+    end)
+  end
+end
+
+---Toggle the diff tree sidebar for the current buffer: a left-side vertical
+---split listing each per-file `block` (`<icon> <path> <summary>`) with its
+---`hunk`s (`@@` lines) nested underneath. Focus (CursorMoved) highlights the
+---section in the diff buffer and scrolls it into view; <CR> jumps there; the
+---diff buffer's own cursor keeps the tree in sync. Blocks fold their hunks
+---with native expr folding (`zc`/`zo`). Requires the current buffer to parse
+---as `diff` (the git->diff alias in after/plugin/autocmds.lua makes fugitive
+---patch buffers qualify).
+M.open_tree = function()
+  local src_buf = vim.api.nvim_get_current_buf()
+
+  -- Toggle off: close the tree window this buffer already owns.
+  local existing = vim.b[src_buf].diff_tree_win
+  if existing and vim.api.nvim_win_is_valid(existing) then
+    vim.api.nvim_win_close(existing, true)
+    vim.b[src_buf].diff_tree_win = nil
+    if vim.b[src_buf].diff_tree_group then
+      pcall(vim.api.nvim_del_augroup_by_id, vim.b[src_buf].diff_tree_group)
+      vim.b[src_buf].diff_tree_group = nil
+    end
+    return
+  end
+
+  local ok, rows = pcall(M.tree_rows, src_buf)
+  if not ok then
+    vim.notify('DiffTree: ' .. tostring(rows), vim.log.levels.WARN)
+    return
+  end
+  if #rows == 0 then
+    vim.notify('DiffTree: no diff sections in this buffer', vim.log.levels.INFO)
+    return
+  end
+
+  local src_win = vim.api.nvim_get_current_win()
+
+  -- Build display lines, padding block labels so summaries align.
+  local label_w = 0
+  for _, r in ipairs(rows) do
+    if r.kind == 'block' then
+      local icon = file_icon(r.path)
+      local label = icon ~= '' and (icon .. ' ' .. r.path) or r.path
+      label_w = math.max(label_w, vim.fn.strwidth(label))
+    end
+  end
+  local lines = {}
+  for _, r in ipairs(rows) do
+    lines[#lines + 1] = render_row(r, label_w)
+  end
+
+  vim.cmd('leftabove 30vnew')
+  local tree_win = vim.api.nvim_get_current_win()
+  local tree_buf = vim.api.nvim_get_current_buf()
+
+  vim.bo[tree_buf].buftype = 'nofile'
+  vim.bo[tree_buf].buflisted = false
+  vim.bo[tree_buf].bufhidden = 'wipe'
+  vim.bo[tree_buf].swapfile = false
+  vim.bo[tree_buf].filetype = 'diff-tree'
+  vim.bo[tree_buf].modifiable = true
+  vim.api.nvim_buf_set_lines(tree_buf, 0, -1, false, lines)
+  vim.bo[tree_buf].modifiable = false
+
+  vim.wo[tree_win].wrap = false
+  vim.wo[tree_win].foldmethod = 'expr'
+  vim.wo[tree_win].foldexpr = 'v:lua.lib.Diff.tree_foldexpr()'
+  vim.wo[tree_win].foldlevel = 99
+
+  vim.b[tree_buf].diff_tree_rows = rows
+  vim.b[tree_buf].diff_tree_src = src_buf
+  vim.b[tree_buf].diff_tree_src_win = src_win
+  vim.b[src_buf].diff_tree_win = tree_win
+
+  local group = vim.api.nvim_create_augroup('lib.diff.tree.' .. src_buf, { clear = true })
+  vim.b[src_buf].diff_tree_group = group
+
+  local function close_tree()
+    if vim.api.nvim_win_is_valid(tree_win) then
+      vim.api.nvim_win_close(tree_win, true)
+    end
+    if vim.api.nvim_buf_is_loaded(src_buf) then
+      vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
+      vim.b[src_buf].diff_tree_win = nil
+      vim.b[src_buf].diff_tree_group = nil
+    end
+    pcall(vim.api.nvim_del_augroup_by_id, group)
+  end
+
+  -- <CR> jumps to the section; q closes the tree.
+  vim.keymap.set('n', '<CR>', function()
+    jump_to_row(tree_buf)
+  end, { buffer = tree_buf, desc = 'Diff tree: jump to section' })
+  vim.keymap.set('n', 'q', close_tree, { buffer = tree_buf, desc = 'Diff tree: close' })
+
+  -- Hover (tree cursor moves): highlight + scroll the source.
+  vim.api.nvim_create_autocmd('CursorMoved', {
+    group = group,
+    buffer = tree_buf,
+    callback = function()
+      focus_row(tree_buf, tree_win)
+    end,
+  })
+
+  -- Bidirectional: source cursor moves -> move tree cursor to the containing
+  -- section (deepest first: hunk over block).
+  vim.api.nvim_create_autocmd('CursorMoved', {
+    group = group,
+    buffer = src_buf,
+    callback = function()
+      if not vim.api.nvim_buf_is_loaded(tree_buf) or not vim.api.nvim_win_is_valid(tree_win) then
+        pcall(vim.api.nvim_del_augroup_by_id, group)
+        return
+      end
+      local idx = M.tree_row_containing(vim.b[tree_buf].diff_tree_rows, vim.fn.line('.') - 1)
+      if idx then
+        vim.api.nvim_win_set_cursor(tree_win, { idx, 0 })
+      end
+    end,
+  })
+
+  -- Leaving the tree clears the hover highlight.
+  vim.api.nvim_create_autocmd('BufLeave', {
+    group = group,
+    buffer = tree_buf,
+    callback = function()
+      if vim.api.nvim_buf_is_loaded(src_buf) then
+        vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
+      end
+    end,
+  })
+
+  -- Close the tree when the diff buffer is hidden/unloaded.
+  vim.api.nvim_create_autocmd({ 'BufHidden', 'BufUnload' }, {
+    group = group,
+    buffer = src_buf,
+    callback = close_tree,
+  })
+
+  -- Show the first row and highlight it.
+  vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
+  focus_row(tree_buf, tree_win)
 end
 
 return M

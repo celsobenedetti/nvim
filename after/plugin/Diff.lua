@@ -28,3 +28,9 @@ vim.api.nvim_create_user_command('Diff', function(opts)
   end
   lib.Diff.open(args)
 end, { nargs = '*', force = true, desc = 'git: diff working tree, show <rev>, or diff <rev1> <rev2> (tab + quickfix)' })
+
+-- Left-side tree of the current diff buffer's per-file `block`s and their
+-- `hunk`s (see lua/lib/Diff.lua M.open_tree). Toggle: a second call closes it.
+vim.api.nvim_create_user_command('DiffTree', function()
+  lib.Diff.open_tree()
+end, { desc = 'diff: toggle file/hunk tree sidebar (left split)' })

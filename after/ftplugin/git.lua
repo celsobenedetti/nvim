@@ -19,6 +19,11 @@ vim.keymap.set('n', '[', nav('hunk', -1), { buffer = 0, desc = 'diff: previous h
 vim.keymap.set('n', '.', nav('block', 1), { buffer = 0, desc = 'diff: next file' })
 vim.keymap.set('n', ',', nav('block', -1), { buffer = 0, desc = 'diff: previous file' })
 
+-- Left-side tree of the file/hunk sections (lib.Diff.open_tree).
+vim.keymap.set('n', 'glt', function()
+  lib.Diff.open_tree()
+end, { buffer = 0, desc = 'diff: toggle file/hunk tree' })
+
 -- Inline filepath bars for `diff --git` header lines (lib.diff_filepath).
 -- Fugitive creates the buffer and sets filetype=git BEFORE its job streams
 -- the diff into it, so a once-only render at FileType time would be a no-op:
