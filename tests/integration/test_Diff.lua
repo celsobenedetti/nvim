@@ -70,15 +70,35 @@ end
 assert(parsed, 'diff parser parsed buffer')
 
 local items = require('lib.Diff').parse_items(buf)
--- No mini.icons under -u NONE, so labels are bare paths. Rows are padded:
--- lnums to the widest (2), labels to the widest (11: newfile.txt).
+-- No mini.icons under -u NONE, so labels are bare paths. Rows: right-aligned
+-- lnum column (widest = 2), label padded to the widest (11: newfile.txt).
 assert_eq(items, {
-  { bufnr = buf, lnum = 1, text = ' foo.txt      +1 -1' },
-  { bufnr = buf, lnum = 9, text = ' newfile.txt  +1' },
-  { bufnr = buf, lnum = 16, text = 'logo.png    ' },
-  { bufnr = buf, lnum = 19, text = 'renamed.txt ' },
-  { bufnr = buf, lnum = 23, text = 'work.txt     +1 -1' },
-}, 'tabular qf rows: lnum at header, aligned path + change summary')
+  { bufnr = buf, lnum = 1, text = ' 1 foo.txt      +1 -1' },
+  { bufnr = buf, lnum = 9, text = ' 9 newfile.txt  +1' },
+  { bufnr = buf, lnum = 16, text = '16 logo.png    ' },
+  { bufnr = buf, lnum = 19, text = '19 renamed.txt ' },
+  { bufnr = buf, lnum = 23, text = '23 work.txt     +1 -1' },
+}, 'tabular qf rows: right-aligned lnum, aligned path + change summary')
+
+-- ------------------------------------------------------------------
+-- The per-list 'quickfixtextfunc' must render the precomputed text
+-- verbatim: no file|lnum| prefix, and leading padding preserved (the
+-- native format runs skipwhite() on the text, which would eat it).
+_G.lib = require('lib')
+vim.fn.setqflist({}, ' ', {
+  title = 'Diff (working tree)',
+  items = items,
+  quickfixtextfunc = 'v:lua.lib.Diff.qf_line',
+})
+vim.cmd('botright copen')
+local qf_buf = vim.api.nvim_win_get_buf(vim.api.nvim_get_current_win())
+local rendered = vim.api.nvim_buf_get_lines(qf_buf, 0, -1, false)
+local expected = {}
+for _, it in ipairs(items) do
+  expected[#expected + 1] = it.text
+end
+assert_eq(rendered, expected, 'quickfixtextfunc renders rows verbatim (no prefix, padding kept)')
+vim.cmd('cclose')
 
 -- Non-patch content parses to ERROR nodes, no blocks -> no items.
 local empty = vim.api.nvim_create_buf(false, true)

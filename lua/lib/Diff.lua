@@ -101,11 +101,11 @@ end
 
 ---Collect quickfix items from a fugitive patch buffer: one entry per
 ---treesitter `block`, `lnum` = the block's header line. `text` is a
----tabular row: `[icon ]path ... +N -M` — the icon comes from mini.icons,
----paths are padded to the widest label and lnums to the widest lnum so
----the path and summary columns align in the quickfix window (the lnum
----column compensates for `|1|` vs `|186|` prefix widths). Binary/rename
----sections without hunks show just the padded path.
+---tabular row rendered by M.qf_line (`'quickfixtextfunc'`, which replaces
+---the native `file|lnum|text` format — including its leading-whitespace
+---stripping): right-aligned lnum column, mini.icons glyph + path padded to
+---the widest label, and the `+N -M` summary. Binary/rename sections
+---without hunks show just the padded path.
 ---@param bufnr number
 ---@return table[] items quickfix items {bufnr, lnum, text}
 M.parse_items = function(bufnr)
@@ -156,12 +156,30 @@ M.parse_items = function(bufnr)
   local items = {}
   for _, r in ipairs(rows) do
     local text = string.rep(' ', max_lnum_w - vim.fn.strwidth(tostring(r.lnum)))
+      .. r.lnum
+      .. ' '
       .. r.label
       .. string.rep(' ', max_label_w - vim.fn.strwidth(r.label) + 1)
       .. r.summary
     items[#items + 1] = { bufnr = bufnr, lnum = r.lnum, text = text }
   end
   return items
+end
+
+---`'quickfixtextfunc'` renderer for `:Diff` lists: return each entry's
+---precomputed text verbatim. Replacing the native `file|lnum|text` format
+---keeps the leading padding (native rendering runs `skipwhite()` on the
+---text) and drops the fugitive temp-file path from the display. The jump
+---target is unaffected — `bufnr`/`lnum` drive that.
+---@param info table {id, start_idx, end_idx}
+---@return string[]
+M.qf_line = function(info)
+  local items = vim.fn.getqflist({ id = info.id, items = 1 }).items or {}
+  local lines = {}
+  for idx = info.start_idx, info.end_idx do
+    lines[#lines + 1] = items[idx] and items[idx].text or ''
+  end
+  return lines
 end
 
 ---Install a `<CR>` mapping on the current (quickfix) window's buffer that
@@ -262,7 +280,14 @@ M.open = function(args, ...)
   end
 
   if #items > 0 then
-    vim.fn.setqflist({}, ' ', { title = qf_title, items = items })
+    -- per-list quickfixtextfunc renders the tabular rows (M.qf_line); it
+    -- overrides the native file|lnum|text format and survives only while
+    -- this list is current.
+    vim.fn.setqflist({}, ' ', {
+      title = qf_title,
+      items = items,
+      quickfixtextfunc = 'v:lua.lib.Diff.qf_line',
+    })
     vim.cmd('botright copen')
     M.install_qf_jump()
     return
