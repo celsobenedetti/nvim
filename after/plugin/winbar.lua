@@ -196,3 +196,30 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
     vim.wo[winid].winbar = WINBAR_EXPR
   end,
 })
+
+-- Fugitive's :Gclog fills the quickfix list with log entries; stamp that qf
+-- buffer with its own breadcrumb winbar (` qf >  git >  git log`) instead
+-- of the empty bar quickfix windows otherwise get (buftype 'quickfix'
+-- renders ''). Rendered via the vim.b.winbar override in get_winbar() above.
+--
+-- Fugitive fires `QuickFixCmdPost cfugitive-log` for :Gclog (`lfugitive-log`
+-- for :Gllog's location list, `cfugitive-difftool` for :Gdiff's qf). At that
+-- point the qf window is open but fugitive has already switched back to the
+-- invoking window, so target the qf buffer via getwininfo() rather than
+-- vim.b. Any other quickfix command clears the override: the qf buffer is
+-- reused across lists, so a later :grep would otherwise inherit the stale
+-- git-log bar.
+local FUGITIVE_LOG_WINBAR = 'quickfix:  git >  git log'
+
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+  group = 'Winbar',
+  pattern = '*',
+  callback = function(args)
+    local winbar = args.match == 'cfugitive-log' and FUGITIVE_LOG_WINBAR or nil
+    for _, info in ipairs(vim.fn.getwininfo()) do
+      if info.quickfix == 1 then
+        vim.b[info.bufnr].winbar = winbar
+      end
+    end
+  end,
+})
