@@ -133,12 +133,40 @@ assert_eq(vim.api.nvim_buf_get_lines(tree_buf, 0, -1, false), {
   '  @@ -1 +1 @@',
 }, 'tree renders block/hunk rows')
 
--- open_tree focused the first row: its header line is highlighted.
-local ns = vim.api.nvim_get_namespaces()['lib.diff.tree']
-local marks = vim.api.nvim_buf_get_extmarks(buf, ns, 0, -1, {})
-assert_eq(#marks, 1, 'opening highlights the first block')
-assert_eq(marks[1][2], 0, 'highlight starts on the diff --git line (0-based)')
-assert_eq(marks[1][3], 0, 'highlight starts at col 0')
+-- open_tree focused the first row (a block): its filepath bar is re-emitted
+-- on the Hover palette (lib.diff_filepath.set_hover), and no Visual mark is
+-- painted — a second extmark can't restyle the bar's baked-in virt_text.
+local bar_ns = vim.api.nvim_get_namespaces()['nvim.diff_filepath']
+local bars = vim.api.nvim_buf_get_extmarks(buf, bar_ns, 0, -1, { details = true })
+assert_eq(#bars, 2, 'one filepath bar per block')
+assert_eq(bars[1][2], 0, 'first bar sits on the diff --git line (0-based)')
+assert_eq(bars[1][4].hl_group, 'DiffFileBarHover', 'hovered bar range group')
+assert_eq(bars[1][4].virt_text, {
+  { 'foo.txt', 'DiffFileBarHoverPath' },
+  { ' +2 -2', 'DiffFileBarHoverSummary' },
+}, 'hovered bar chunks use the Hover palette')
+assert_eq(require('lib.diff_filepath').hover(buf), 0, 'hover state records block 1 row')
+
+-- Hunk rows in the tree buffer are dimmed as Comment.
+local tree_ns = vim.api.nvim_get_namespaces()['lib.diff.tree']
+local tree_marks = vim.api.nvim_buf_get_extmarks(tree_buf, tree_ns, 0, -1, { details = true })
+assert_eq(#tree_marks, 3, 'three hunk rows carry Comment marks')
+assert_eq({ tree_marks[1][2], tree_marks[1][3] }, { 1, 0 }, 'first mark on tree line 2')
+assert_eq(tree_marks[1][4].hl_group, 'Comment', 'hunk rows use Comment')
+assert_eq({ tree_marks[3][2], tree_marks[3][3] }, { 4, 0 }, 'last mark on tree line 5')
+
+-- Moving to a hunk row restores the bar's normal palette and paints Visual
+-- over the hunk instead (driven via M.tree_focus; CursorMoved never fires
+-- under --headless, so the autocmd wiring is covered by the keymap test).
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 })
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(require('lib.diff_filepath').hover(buf), nil, 'hunk hover clears the bar hover')
+bars = vim.api.nvim_buf_get_extmarks(buf, bar_ns, 0, -1, { details = true })
+assert_eq(bars[1][4].hl_group, 'DiffFileBar', 'bar range back to normal palette')
+assert_eq(bars[1][4].virt_text[1][2], 'DiffFileBarPath', 'bar chunks back to normal palette')
+local src_marks = vim.api.nvim_buf_get_extmarks(buf, tree_ns, 0, -1, {})
+assert_eq(#src_marks, 1, 'hunk hover paints the source range')
+assert_eq(src_marks[1][2], 4, 'Visual starts on hunk 1 @@ line')
 
 -- ------------------------------------------------------------------
 -- <CR> jumps the source cursor to the row's lnum (keymaps do fire headless).

@@ -57,6 +57,17 @@ local function apply()
   vim.api.nvim_set_hl(0, 'DiffFileBarPath', { bg = p.header, fg = p.header_fg })
   vim.api.nvim_set_hl(0, 'DiffFileBarSummary', { bg = p.header, fg = p.header_summary_fg })
 
+  -- DiffTree sidebar hover (lib.Diff focus_row -> lib.diff_filepath
+  -- set_hover): hovering a tree file row re-emits that block's bar on
+  -- Visual's background — an extmark's hl_group can't restyle another
+  -- extmark's virt_text, so the bar itself must carry the hover palette.
+  -- Visual usually defines only a bg; without one, fall back to the header
+  -- fg so the hover state is still a visible change.
+  local hover_bg = vim.api.nvim_get_hl(0, { name = 'Visual' }).bg or p.header_fg
+  vim.api.nvim_set_hl(0, 'DiffFileBarHover', { bg = hover_bg })
+  vim.api.nvim_set_hl(0, 'DiffFileBarHoverPath', { bg = hover_bg, fg = p.header_fg })
+  vim.api.nvim_set_hl(0, 'DiffFileBarHoverSummary', { bg = hover_bg, fg = p.header_summary_fg })
+
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })
   -- Modified lines read as "new" (delta plus-style) - no yellow.

@@ -445,6 +445,13 @@ end
 
 local TREE_NS = vim.api.nvim_create_namespace('lib.diff.tree')
 
+---lib.diff_filepath handle, required on first use: it requires this module at
+---its own load time, so requiring it at the top of the file would be a
+---load-order cycle.
+local function filepath_bar()
+  return require('lib.diff_filepath')
+end
+
 ---New path for a `block` node: prefer the `+++ b/x` line unless it names
 ---`/dev/null` (git emits that for deletions), else the last path token of the
 ---`diff --git` command line (covers binary/rename sections and deletions).
@@ -613,12 +620,16 @@ local function jump_to_row(tree_buf)
   end
   vim.api.nvim_set_current_win(src_win)
   vim.api.nvim_win_set_cursor(src_win, { r.lnum, 0 })
+  vim.cmd.norm('zt')
 end
 
 ---Highlight the section under the tree cursor in the source buffer and scroll
----the source window to reveal it (without moving its cursor). Blocks highlight
----just their `diff --git` header line; hunks highlight their whole range.
-local function focus_row(tree_buf, tree_win)
+---the source window to reveal it (without moving its cursor). Hunks highlight
+---their whole range with Visual; blocks light up lib.diff_filepath's overlay
+---bar instead — the header line's visible pixels belong to that extmark, whose
+---virt_text chunks no second extmark can restyle. Exposed as M.tree_focus for
+---the headless integration test (CursorMoved never fires under --headless).
+M.tree_focus = function(tree_buf, tree_win)
   local row = vim.fn.line('.')
   local rows = vim.b[tree_buf].diff_tree_rows
   local r = rows and rows[row]
@@ -631,11 +642,19 @@ local function focus_row(tree_buf, tree_win)
 
   local srow, erow, ecol = M.tree_hl_range(src_buf, r)
 
-  vim.api.nvim_buf_set_extmark(src_buf, TREE_NS, srow, 0, {
-    end_row = erow,
-    end_col = ecol,
-    hl_group = 'Visual',
-  })
+  if r.kind == 'block' then
+    -- Re-emit the hovered block's bar on the hover palette; a plain extmark
+    -- here would only paint over the raw text, which DiffFileBar's fg==bg
+    -- already keeps invisible beneath the overlay.
+    filepath_bar().set_hover(src_buf, r.lnum - 1)
+  else
+    filepath_bar().set_hover(src_buf, nil)
+    vim.api.nvim_buf_set_extmark(src_buf, TREE_NS, srow, 0, {
+      end_row = erow,
+      end_col = ecol,
+      hl_group = 'Visual',
+    })
+  end
 
   -- Scroll without moving the cursor: winrestview with only topline set
   -- leaves the cursor where it is (unlike win_set_cursor).
@@ -716,6 +735,16 @@ M.open_tree = function()
   vim.bo[tree_buf].filetype = 'diff-tree'
   vim.bo[tree_buf].modifiable = true
   vim.api.nvim_buf_set_lines(tree_buf, 0, -1, false, lines)
+  -- Hunk rows dimmed as comments (block rows keep the default look). The tree
+  -- buffer is wiped on close, so these marks need no explicit teardown.
+  for i, r in ipairs(rows) do
+    if r.kind == 'hunk' then
+      vim.api.nvim_buf_set_extmark(tree_buf, TREE_NS, i - 1, 0, {
+        end_row = i,
+        hl_group = 'Comment',
+      })
+    end
+  end
   vim.bo[tree_buf].modifiable = false
 
   vim.wo[tree_win].wrap = false
@@ -737,6 +766,7 @@ M.open_tree = function()
     end
     if vim.api.nvim_buf_is_loaded(src_buf) then
       vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
+      filepath_bar().set_hover(src_buf, nil)
       vim.b[src_buf].diff_tree_win = nil
       vim.b[src_buf].diff_tree_group = nil
     end
@@ -754,7 +784,7 @@ M.open_tree = function()
     group = group,
     buffer = tree_buf,
     callback = function()
-      focus_row(tree_buf, tree_win)
+      M.tree_focus(tree_buf, tree_win)
     end,
   })
 
@@ -782,6 +812,7 @@ M.open_tree = function()
     callback = function()
       if vim.api.nvim_buf_is_loaded(src_buf) then
         vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
+        filepath_bar().set_hover(src_buf, nil)
       end
     end,
   })
@@ -795,7 +826,7 @@ M.open_tree = function()
 
   -- Show the first row and highlight it.
   vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
-  focus_row(tree_buf, tree_win)
+  M.tree_focus(tree_buf, tree_win)
 end
 
 return M
