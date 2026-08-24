@@ -1,11 +1,11 @@
 -- Integration test (real nvim, headless): the :DiffTree sidebar
--- (lib.Diff.open_tree / tree_rows / tree_hl_range / tree_row_containing).
+-- (lib.Diff.open_tree / tree_rows / tree_focus / tree_row_containing).
 --
 -- Run via `make test-integration` (nvim --headless -u NONE -l).
 --
 -- Note: `CursorMoved` never fires under --headless (no UI), so the hover and
--- bidirectional-sync autocmds are exercised through their pure helpers
--- (tree_hl_range / tree_row_containing) instead of by feeding cursor moves.
+-- bidirectional-sync autocmds are exercised by calling tree_focus /
+-- tree_row_containing directly instead of by feeding cursor moves.
 
 local cwd = vim.fn.getcwd()
 vim.opt.rtp:prepend(cwd)
@@ -107,14 +107,11 @@ assert_eq(Diff.tree_row_containing(rows, 16), 5, 'inside hunk 3 -> hunk row')
 assert_eq(Diff.tree_row_containing(rows, 11), 4, 'block 2 header -> block row')
 assert_eq(Diff.tree_row_containing(rows, 100), nil, 'past the end -> no row')
 
-assert_eq({ Diff.tree_hl_range(buf, rows[1]) }, { 0, 0, 30 }, 'block highlight = header line')
-assert_eq({ Diff.tree_hl_range(buf, rows[2]) }, { 4, 8, 0 }, 'hunk highlight = full hunk range')
-
 -- ------------------------------------------------------------------
--- open_tree: left split, rendered lines, fold options, initial highlight.
+-- open_tree: left split, rendered lines, fold options, initial focus.
 -- ------------------------------------------------------------------
 -- A window shorter than the 18-line diff, so 'topline' can actually move, and
--- a non-zero 'scrolloff' to prove the tree zeroes and restores it.
+-- a non-zero 'scrolloff' to prove hover's `zt` respects it.
 vim.o.lines = 12
 vim.o.scrolloff = 4
 
@@ -172,23 +169,23 @@ assert_eq({ tree_marks[1][2], tree_marks[1][3] }, { 1, 0 }, 'first mark on tree 
 assert_eq(tree_marks[1][4].hl_group, 'Comment', 'hunk rows use Comment')
 assert_eq({ tree_marks[3][2], tree_marks[3][3] }, { 4, 0 }, 'last mark on tree line 5')
 
--- Moving to a hunk row restores the bar's normal palette and paints Visual
--- over the hunk instead (driven via M.tree_focus; CursorMoved never fires
--- under --headless, so the autocmd wiring is covered by the keymap test).
+-- Moving to a hunk row restores the bar's normal palette; hunk rows get no
+-- highlight of their own in the diff buffer, the scroll is the feedback
+-- (driven via M.tree_focus; CursorMoved never fires under --headless, so the
+-- autocmd wiring is covered by the keymap test).
 vim.api.nvim_win_set_cursor(tree_win, { 2, 0 })
 Diff.tree_focus(tree_buf, tree_win)
 assert_eq(require('lib.diff_filepath').hover(buf), nil, 'hunk hover clears the bar hover')
 bars = vim.api.nvim_buf_get_extmarks(buf, bar_ns, 0, -1, { details = true })
 assert_eq(bars[1][4].hl_group, 'DiffFileBar', 'bar range back to normal palette')
 assert_eq(bars[1][4].virt_text[1][2], 'DiffFileBarPath', 'bar chunks back to normal palette')
-local src_marks = vim.api.nvim_buf_get_extmarks(buf, tree_ns, 0, -1, {})
-assert_eq(#src_marks, 1, 'hunk hover paints the source range')
-assert_eq(src_marks[1][2], 4, 'Visual starts on hunk 1 @@ line')
+assert_eq(vim.api.nvim_buf_get_extmarks(buf, tree_ns, 0, -1, {}), {}, 'hunk hover paints no source mark')
 
 -- ------------------------------------------------------------------
--- Hover parks the section on the diff window's first line (`zt`).
+-- Hover parks the section at the top of the diff window (`zt`), 'scrolloff'
+-- lines of context above it.
 -- ------------------------------------------------------------------
-assert_eq(vim.wo[src_win].scrolloff, 0, 'tree zeroes the diff window scrolloff (exact zt)')
+assert_eq(vim.wo[src_win].scrolloff, 4, 'the diff window keeps its scrolloff')
 
 local function src_topline()
   return vim.api.nvim_win_call(src_win, function()
@@ -198,7 +195,7 @@ end
 
 vim.api.nvim_win_set_cursor(tree_win, { 4, 0 }) -- block 2, source line 12
 Diff.tree_focus(tree_buf, tree_win)
-assert_eq(src_topline(), 12, 'hovering block 2 puts its header on the first line')
+assert_eq(src_topline(), 8, 'hovering block 2 tops its header, minus the scrolloff margin')
 -- The cursor comes along: nvim keeps a window's cursor visible, so a topline
 -- that would scroll it away is undone (setting topline alone did nothing).
 assert_eq(vim.api.nvim_win_get_cursor(src_win)[1], 12, 'source cursor follows the hover')
@@ -206,11 +203,11 @@ assert_eq(vim.api.nvim_get_current_win(), tree_win, 'focus stays in the tree')
 
 vim.api.nvim_win_set_cursor(tree_win, { 5, 0 }) -- hunk 3, source line 16
 Diff.tree_focus(tree_buf, tree_win)
-assert_eq(src_topline(), 16, 'hovering hunk 3 puts its @@ line on top')
+assert_eq(src_topline(), 12, 'hovering hunk 3 tops its @@ line, minus the margin')
 
 vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- back to block 1, line 1
 Diff.tree_focus(tree_buf, tree_win)
-assert_eq(src_topline(), 1, 'hovering block 1 scrolls back to the top')
+assert_eq(src_topline(), 1, 'hovering block 1 scrolls back to the top (no margin to keep)')
 
 -- ------------------------------------------------------------------
 -- <CR> jumps the source cursor to the row's lnum (keymaps do fire headless).
@@ -249,6 +246,19 @@ local function feed(keys)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'x', false)
   vim.wait(50)
 end
+
+-- Hover unfolds the section it parks on top: `:{a},{b}foldopen!` over the
+-- row's whole range, so a file row reveals its hunks too (a plain `zO` would
+-- only open the folds containing the cursor line).
+vim.api.nvim_set_current_win(tree_win)
+vim.wo[src_win].foldlevel = 0 -- everything closed
+assert_eq(src_foldclosed(1), 1, 'block 1 starts closed')
+vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- block foo.txt
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(src_foldclosed(1), -1, 'hover opens the hovered block')
+assert_eq(src_foldclosed(5), -1, 'and the hunk folds nested inside it')
+assert_eq(src_foldclosed(12), 12, 'other blocks stay folded')
+vim.wo[src_win].foldlevel = 99 -- back to all-open for the fold-command tests
 
 assert_eq(src_foldclosed(1), -1, 'source starts unfolded')
 
@@ -351,7 +361,7 @@ Diff.open_tree()
 vim.wait(50)
 assert_true(not vim.api.nvim_win_is_valid(tree_win), 'second DiffTree closes the tree')
 assert_eq(#vim.api.nvim_tabpage_list_wins(0), 1, 'back to a single window')
-assert_eq(vim.wo[src_win].scrolloff, 4, 'closing restores the diff window scrolloff')
+assert_eq(vim.wo[src_win].scrolloff, 4, 'the diff window scrolloff was never touched')
 
 print('OK: DiffTree sidebar')
 vim.cmd('qa!')

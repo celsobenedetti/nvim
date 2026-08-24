@@ -496,8 +496,8 @@ end
 -- Diff tree sidebar: an InspectTree-like outline of a `filetype=git` diff
 -- buffer on the left, showing only per-file `block`s (top level, rendered
 -- `<icon> <path> <summary>`) and their `hunk`s (nested `@@` lines). Focus
--- (CursorMoved) highlights the section in the diff buffer and scrolls it into
--- view; <CR> jumps there; the diff buffer's own cursor keeps the tree in sync
+-- (CursorMoved) parks the section at the top of the diff window and unfolds
+-- it; <CR> jumps there; the diff buffer's own cursor keeps the tree in sync
 -- (bidirectional). Blocks fold their hunks with native expr folding.
 -- ---------------------------------------------------------------------------
 
@@ -673,22 +673,6 @@ M.tree_row_containing = function(rows, srow)
   return nil
 end
 
----0-based source highlight range for a tree row: blocks highlight just their
----`diff --git` header line; hunks highlight their whole node range.
----@param bufnr number
----@param row table
----@return integer srow
----@return integer erow
----@return integer ecol
-M.tree_hl_range = function(bufnr, row)
-  if row.kind == 'block' then
-    local srow = row.lnum - 1
-    return srow, srow, #(vim.api.nvim_buf_get_lines(bufnr, srow, srow + 1, false)[1] or '')
-  end
-  local srow, _, erow, ecol = unpack(row.range)
-  return srow, erow, math.max(0, ecol)
-end
-
 ---The tree row under the tree cursor (`vim.b.diff_tree_rows` is 1:1 with the
 ---tree buffer's lines), or nil.
 ---@param tree_buf integer
@@ -850,13 +834,15 @@ M.tree_fold = function(tree_buf, key)
   return closed
 end
 
----Highlight the section under the tree cursor in the source buffer and park it
----on the source window's first line (`zt`; the source cursor moves there too,
----see below, but focus stays in the tree). Hunks highlight
----their whole range with Visual; blocks light up lib.diff_filepath's overlay
----bar instead — the header line's visible pixels belong to that extmark, whose
----virt_text chunks no second extmark can restyle. Exposed as M.tree_focus for
----the headless integration test (CursorMoved never fires under --headless).
+---Focus the section under the tree cursor in the diff window: open every fold
+---inside it (`zO`, so a file row reveals all of its hunks) and park it at the
+---top of the window (`zt`, which honours the window's 'scrolloff'). Focus
+---stays in the tree, so hover still isn't a jump. A block row also lights up
+---lib.diff_filepath's overlay bar on its hover palette — the header line's
+---visible pixels belong to that extmark, whose virt_text chunks no second
+---extmark can restyle; hunk rows get no highlight at all, the scroll is the
+---feedback. Exposed as M.tree_focus for the headless integration test
+---(CursorMoved never fires under --headless).
 M.tree_focus = function(tree_buf, tree_win)
   local row = vim.fn.line('.')
   local rows = vim.b[tree_buf].diff_tree_rows
@@ -866,32 +852,12 @@ M.tree_focus = function(tree_buf, tree_win)
     return
   end
 
-  vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
+  filepath_bar().set_hover(src_buf, r.kind == 'block' and r.lnum - 1 or nil)
 
-  local srow, erow, ecol = M.tree_hl_range(src_buf, r)
-
-  if r.kind == 'block' then
-    -- Re-emit the hovered block's bar on the hover palette; a plain extmark
-    -- here would only paint over the raw text, which DiffFileBar's fg==bg
-    -- already keeps invisible beneath the overlay.
-    filepath_bar().set_hover(src_buf, r.lnum - 1)
-  else
-    filepath_bar().set_hover(src_buf, nil)
-    vim.api.nvim_buf_set_extmark(src_buf, TREE_NS, srow, 0, {
-      end_row = erow,
-      end_col = ecol,
-      hl_group = 'Visual',
-    })
-  end
-
-  -- Park the section on the diff window's first line (`zt`) on every hover,
-  -- not only when it is off-screen. The cursor has to come along: nvim keeps a
-  -- window's cursor on screen, so a topline that would scroll it out of view
-  -- is simply undone — which is why setting topline alone (the previous
-  -- reveal-if-off-screen scroll) did nothing for distant sections. open_tree
-  -- zeroes this window's 'scrolloff', so `zt` lands the line on row 1 exactly.
-  -- Moving a non-current window's cursor fires no CursorMoved, so the
-  -- source->tree sync autocmd can't loop back on this.
+  -- The diff window's cursor has to move to the section: nvim keeps a window's
+  -- cursor on screen, so a topline that would scroll it out of view is simply
+  -- undone — which is why setting topline alone (the previous reveal-if-off-
+  -- screen scroll) did nothing for distant sections.
   local src_win = vim.b[tree_buf].diff_tree_src_win
   if not src_win or not vim.api.nvim_win_is_valid(src_win) then
     local wins = vim.fn.win_findbuf(src_buf)
@@ -899,32 +865,34 @@ M.tree_focus = function(tree_buf, tree_win)
     vim.b[tree_buf].diff_tree_src_win = src_win
   end
   if src_win then
-    vim.api.nvim_win_set_cursor(src_win, { srow + 1, 0 })
+    local srow, _, erow, ecol = unpack(r.range)
+    -- A node that ends at a line break reports the *next* row with column 0
+    -- (block 1 of a two-file patch ends on block 2's `diff --git` row), which
+    -- would unfold the neighbouring section too.
+    local last = (ecol == 0 and erow > srow) and erow or erow + 1
+    -- Cursor first, and from outside nvim_win_call: moving a non-current
+    -- window's cursor fires no CursorMoved, so the source->tree sync autocmd
+    -- can't loop back on it.
+    vim.api.nvim_win_set_cursor(src_win, { r.lnum, 0 })
     vim.api.nvim_win_call(src_win, function()
+      -- `zO` over the whole section, as the range form: `:{a},{b}foldopen!`
+      -- opens every fold in the range, nested ones included, so a file row
+      -- reveals its hunks too — plain `zO` would only open the folds that
+      -- contain the cursor line, leaving the hunks below it closed. Nothing
+      -- foldable in the range is an E490: a silent no-op here, unlike the
+      -- explicit `zo` mapping, which reports it.
+      pcall(vim.cmd, string.format('%d,%dfoldopen!', srow + 1, last))
+      -- Then park the section on top, on every hover and not only when it is
+      -- off-screen. 'scrolloff' keeps its usual margin of context above it.
       vim.cmd('normal! zt')
     end)
   end
 end
 
----Restore the diff window's 'scrolloff', zeroed for as long as the tree is
----attached so hover's `zt` can land a section on the very first row
----(M.tree_focus). No-op when nothing was saved.
----@param src_buf integer
-local function restore_scrolloff(src_buf)
-  local saved = vim.b[src_buf].diff_tree_src_scrolloff
-  if saved == nil then
-    return
-  end
-  for _, win in ipairs(vim.fn.win_findbuf(src_buf)) do
-    vim.wo[win].scrolloff = saved
-  end
-  vim.b[src_buf].diff_tree_src_scrolloff = nil
-end
-
 ---Toggle the diff tree sidebar for the current buffer: a left-side vertical
 ---split listing each per-file `block` (`<icon> <path> <summary>`) with its
----`hunk`s (`@@` lines) nested underneath. Focus (CursorMoved) highlights the
----section in the diff buffer and scrolls it into view; <CR> jumps there; the
+---`hunk`s (`@@` lines) nested underneath. Focus (CursorMoved) parks the
+---section at the top of the diff window and unfolds it; <CR> jumps there; the
 ---diff buffer's own cursor keeps the tree in sync. Blocks fold their hunks
 ---with native expr folding (`zc`/`zo`). Requires the current buffer to parse
 ---as `diff` (the git->diff alias in after/plugin/autocmds.lua makes fugitive
@@ -937,7 +905,6 @@ M.open_tree = function()
   if existing and vim.api.nvim_win_is_valid(existing) then
     vim.api.nvim_win_close(existing, true)
     vim.b[src_buf].diff_tree_win = nil
-    restore_scrolloff(src_buf)
     if vim.b[src_buf].diff_tree_group then
       pcall(vim.api.nvim_del_augroup_by_id, vim.b[src_buf].diff_tree_group)
       vim.b[src_buf].diff_tree_group = nil
@@ -1003,11 +970,6 @@ M.open_tree = function()
   vim.b[tree_buf].diff_tree_src_win = src_win
   vim.b[src_buf].diff_tree_win = tree_win
 
-  -- Hover parks a section on the diff window's first row, which 'scrolloff'
-  -- would otherwise keep N lines below the top; restored on close.
-  vim.b[src_buf].diff_tree_src_scrolloff = vim.wo[src_win].scrolloff
-  vim.wo[src_win].scrolloff = 0
-
   vim.wo[tree_win].wrap = false
   vim.wo[tree_win].foldmethod = 'expr'
   vim.wo[tree_win].foldexpr = 'v:lua.lib.Diff.tree_foldexpr()'
@@ -1021,9 +983,7 @@ M.open_tree = function()
       vim.api.nvim_win_close(tree_win, true)
     end
     if vim.api.nvim_buf_is_loaded(src_buf) then
-      vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
       filepath_bar().set_hover(src_buf, nil)
-      restore_scrolloff(src_buf)
       vim.b[src_buf].diff_tree_win = nil
       vim.b[src_buf].diff_tree_group = nil
     end
@@ -1045,7 +1005,7 @@ M.open_tree = function()
     end, { buffer = tree_buf, desc = 'Diff tree: ' .. key .. ' in the diff buffer' })
   end
 
-  -- Hover (tree cursor moves): highlight + scroll the source.
+  -- Hover (tree cursor moves): scroll + unfold the source section.
   vim.api.nvim_create_autocmd('CursorMoved', {
     group = group,
     buffer = tree_buf,
@@ -1071,13 +1031,12 @@ M.open_tree = function()
     end,
   })
 
-  -- Leaving the tree clears the hover highlight.
+  -- Leaving the tree drops the hovered block's bar back to its normal palette.
   vim.api.nvim_create_autocmd('BufLeave', {
     group = group,
     buffer = tree_buf,
     callback = function()
       if vim.api.nvim_buf_is_loaded(src_buf) then
-        vim.api.nvim_buf_clear_namespace(src_buf, TREE_NS, 0, -1)
         filepath_bar().set_hover(src_buf, nil)
       end
     end,
@@ -1090,7 +1049,7 @@ M.open_tree = function()
     callback = close_tree,
   })
 
-  -- Show the first row and highlight it.
+  -- Show the first row and focus its section.
   vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
   M.tree_focus(tree_buf, tree_win)
 end

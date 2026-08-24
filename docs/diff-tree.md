@@ -3,9 +3,9 @@
 An InspectTree-like outline of a `filetype=git` diff buffer, in a left-side
 split. It shows only the `diff` grammar's two navigable sections — per-file
 `block`s and their `hunk`s — and reuses `:InspectTree`'s interaction model:
-hovering a row scrolls the section to the top of the diff buffer and
-highlights it, `<CR>` jumps there, and the diff buffer's own cursor keeps the
-tree in sync.
+hovering a row scrolls the section to the top of the diff buffer and unfolds
+it, `<CR>` jumps there, and the diff buffer's own cursor keeps the tree in
+sync.
 
 ## Surface
 
@@ -36,19 +36,33 @@ section, in document order:
   line, including git's trailing function/class heading.
 
 Each row carries `lnum` (1-based jump target) and `range` (0-based node span,
-used for containment and hover highlight). Hunk rows also carry their block's
-`path`, so file-scoped actions (`ga`) work from either row kind.
+used for containment and for the range hover unfolds). Hunk rows also carry
+their block's `path`, so file-scoped actions (`ga`) work from either row kind.
 
 ## Interaction (mirrors `:InspectTree`)
 
-- **Hover** — `CursorMoved` in the tree clears the previous highlight and
-  paints an extmark (`hl_group = Visual`) in the diff buffer: blocks
-  highlight just their `diff --git` header line, hunks highlight their whole
-  range. The section is then parked on the diff window's **first line** (`zt`),
-  every hover, not only when it is off-screen. That needs the diff window's
-  cursor to move there too (see the gotcha below) and its `'scrolloff'` zeroed
-  — `open_tree` saves and zeroes it, `close_tree`/the toggle restore it. Focus
-  stays in the tree, so hover still isn't a jump; only `<CR>` moves you.
+- **Hover** — `CursorMoved` in the tree (`M.tree_focus`) does three things to
+  the diff window, and never moves focus out of the tree; only `<CR>` moves
+  you:
+  1. **unfold the section** — `zO` over the row's whole `range`, sent as the
+     range form `:{a},{b}foldopen!` (every fold in the range, nested ones
+     included), so a file row reveals all of its hunks. A plain `zO` would only
+     open the folds *containing the cursor line*, leaving the hunks below it
+     closed. A node that ends at a line break reports the next row with column
+     0, so the last line is `erow` when `ecol == 0` — otherwise a block would
+     unfold its neighbour's first fold too. Nothing foldable in the range is an
+     `E490`, silently ignored here (unlike the explicit `zo` mapping, which
+     reports it).
+  2. **park it on top** — `zt`, on every hover and not only when the section is
+     off-screen. It **respects the diff window's `'scrolloff'`**: the section
+     lands that many lines below the top edge, keeping the usual margin of
+     context. That needs the diff window's cursor to move there too (see the
+     gotcha below).
+  3. **highlight, blocks only** — a block row re-emits lib.diff_filepath's
+     overlay bar on its hover palette (`DiffFileBarHover*`); the header line's
+     visible pixels belong to that extmark, whose `virt_text` chunks no second
+     extmark can restyle. Hunk rows paint nothing in the diff buffer — the
+     scroll is the feedback.
 - **`<CR>`** — jumps the diff window's cursor to the row's `lnum`, reusing a
   window that already shows the diff buffer (never splitting a new one; the
   same workaround as `lib.Diff.install_qf_jump` for `buftype=nowrite`).
@@ -90,23 +104,22 @@ used for containment and hover highlight). Hunk rows also carry their block's
 
 ## Lifecycle
 
-`open_tree` records the tree window, an augroup, and the diff window's saved
-`'scrolloff'` on the source buffer (`vim.b.diff_tree_win` /
-`diff_tree_group` / `diff_tree_src_scrolloff`). The tree closes (and the group
-is deleted, the `'scrolloff'` restored) on: `q`, a second `:DiffTree`, or
-`BufHidden`/`BufUnload` of the source buffer. Leaving the tree clears the hover
-highlight.
+`open_tree` records the tree window and an augroup on the source buffer
+(`vim.b.diff_tree_win` / `diff_tree_group`); it changes no window options
+there. The tree closes (and the group is deleted) on: `q`, a second
+`:DiffTree`, or `BufHidden`/`BufUnload` of the source buffer. Leaving the tree
+drops the hovered block's bar back to its normal palette.
 
 ## Testing
 
 `tests/integration/test_diff_tree.lua` (`make test-integration`) covers
-`tree_rows` (paths, summaries, `@@` text, ranges), the pure hover/containment
-helpers, the rendered buffer lines, the fold options **and the resulting fold
-levels**, the initial highlight extmark, hover's `zt` (topline, the source
-cursor, the `'scrolloff'` zero/restore), the `<CR>` jump, every forwarded fold
-command (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on both row kinds, `zR`/`zM`/`zr` incl. a
-count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
-`lib.git`, and the toggle-close.
+`tree_rows` (paths, summaries, `@@` text, ranges), `tree_row_containing`, the
+rendered buffer lines, the fold options **and the resulting fold levels**, the
+hovered block's bar (and that hunk rows paint nothing), hover's `zt` (topline
+with a non-zero `'scrolloff'`, the source cursor) and its unfold, the `<CR>`
+jump, every forwarded fold command (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on both row
+kinds, `zR`/`zM`/`zr` incl. a count, plus the tree mirror and the no-op
+repeats), the `ga` hand-off to `lib.git`, and the toggle-close.
 `lib.git.add` itself is covered against a throwaway repo in
 `tests/integration/test_diff_ga.lua`.
 
@@ -120,8 +133,7 @@ count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
   `CursorMoved`, so the source→tree sync autocmd cannot loop back on this.
 - **`CursorMoved` never fires under `--headless`** (no UI). The hover and
   bidirectional autocmds can't be driven by feeding cursor moves in tests;
-  their logic is extracted into `tree_hl_range` / `tree_row_containing` and
-  tested directly.
+  `tree_focus` / `tree_row_containing` are called directly instead.
 - **`index` commit hashes must be 4–64 hex chars** for the `diff` grammar to
   keep parsing a block; short fake hashes (`index 111..222`) turn the section
   into an ERROR node and drop its hunks. Tests use `1111111..2222222`.
