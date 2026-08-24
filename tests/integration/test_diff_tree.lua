@@ -274,17 +274,17 @@ local function feed(keys)
   vim.wait(50)
 end
 
--- Hover unfolds the section it parks on top: `:{a},{b}foldopen!` over the
--- row's whole range, so a file row reveals its hunks too (a plain `zO` would
--- only open the folds containing the cursor line).
+-- Hover leaves the fold state alone: it scrolls the section to the top and
+-- nothing more, so a closed section stays closed until `zo`/`zO` opens it.
 vim.api.nvim_set_current_win(tree_win)
 vim.wo[src_win].foldlevel = 0 -- everything closed
 assert_eq(src_foldclosed(1), 1, 'block 1 starts closed')
 vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- block foo.txt
 Diff.tree_focus(tree_buf, tree_win)
-assert_eq(src_foldclosed(1), -1, 'hover opens the hovered block')
-assert_eq(src_foldclosed(5), -1, 'and the hunk folds nested inside it')
-assert_eq(src_foldclosed(12), 12, 'other blocks stay folded')
+assert_eq(src_foldclosed(1), 1, 'hover does not open the hovered block')
+assert_eq(src_foldclosed(5), 1, 'nor the hunk folds inside it')
+assert_eq(src_foldclosed(12), 12, 'nor anything else')
+assert_eq(vim.api.nvim_win_get_cursor(src_win)[1], 1, 'it still moves the source cursor there')
 vim.wo[src_win].foldlevel = 99 -- back to all-open for the fold-command tests
 
 assert_eq(src_foldclosed(1), -1, 'source starts unfolded')

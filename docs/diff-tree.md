@@ -18,8 +18,8 @@ lua/plugins/
 ```
 
 Interaction follows `:InspectTree`: hovering a row scrolls the section to the
-top of the diff buffer and unfolds it, `<CR>` jumps there, and the diff
-buffer's own cursor keeps the tree in sync.
+top of the diff buffer, `<CR>` jumps there, and the diff buffer's own cursor
+keeps the tree in sync.
 
 ## Surface
 
@@ -63,8 +63,8 @@ open `a/` twice. Files pulled up to their group keep their own `lnum`, so
 nothing about the jump targets changes.
 
 Every row carries `lnum` (1-based jump target) and `range` (0-based node span,
-used for containment and for the range hover unfolds); a dir row borrows both
-from its first file, which is what hover and `<CR>` act on there. Hunk rows
+used for containment); a dir row borrows both from its first file, which is
+what hover and `<CR>` act on there. Hunk rows
 also carry their block's `path`, so file-scoped actions (`ga`) work from any
 row kind but a dir. Dir rows instead carry `blocks`, the header line of every
 file in the group, so one fold command can fold all of them.
@@ -75,31 +75,24 @@ mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
 
 ## Interaction (mirrors `:InspectTree`)
 
-- **Hover** — `CursorMoved` in the tree (`M.tree_focus`) does four things to
+- **Hover** — `CursorMoved` in the tree (`M.tree_focus`) does three things to
   the diff window, and never moves focus out of the tree; only `<CR>` moves
   you. A dir row acts on its first file, so hovering a group previews where it
-  starts:
-  1. **unfold the section** — `zO` over the row's whole `range`, sent as the
-     range form `:{a},{b}foldopen!` (every fold in the range, nested ones
-     included), so a file row reveals all of its hunks. A plain `zO` would only
-     open the folds *containing the cursor line*, leaving the hunks below it
-     closed. A node that ends at a line break reports the next row with column
-     0, so the last line is `erow` when `ecol == 0` — otherwise a block would
-     unfold its neighbour's first fold too. Nothing foldable in the range is an
-     `E490`, silently ignored here (unlike the explicit `zo` mapping, which
-     reports it).
-  2. **park it on top** — `zt`, on every hover and not only when the section is
+  starts. **Folds are left exactly as they are**: hovering is a scroll, not an
+  edit of the fold state, so a closed section stays closed until `zo`/`zO` on
+  the row opens it.
+  1. **park it on top** — `zt`, on every hover and not only when the section is
      off-screen. It **respects the diff window's `'scrolloff'`**: the section
      lands that many lines below the top edge, keeping the usual margin of
      context. That needs the diff window's cursor to move there too (see the
      gotcha below).
-  3. **highlight, files only** — a block row re-emits lib.diff_filepath's
+  2. **highlight, files only** — a block row re-emits lib.diff_filepath's
      overlay bar on its hover palette (`DiffFileBarHover*`); the header line's
      visible pixels belong to that extmark, whose `virt_text` chunks no second
      extmark can restyle. A dir row previews its first file, so it lights up
      that file's bar. Hunk rows paint nothing in the diff buffer — the scroll
      is the feedback.
-  4. **refresh the sticky context** — nvim-treesitter-context for the *diff*
+  3. **refresh the sticky context** — nvim-treesitter-context for the *diff*
      window, so hovering a hunk keeps its `diff --git` header (filepath bar
      included, see `docs/diff-filepath-bar.md`) pinned above it even though the
      cursor is in the tree. The plugin only ever updates the **current** window
@@ -183,8 +176,9 @@ drops the hovered block's bar back to its normal palette.
 ranges, a group's `blocks`), `tree_row_containing`, the rendered buffer lines,
 the fold options **and the resulting fold levels**, the hovered file's bar (and
 that hunk rows paint nothing, and that a dir row previews its first file),
-hover's `zt` (topline with a non-zero `'scrolloff'`, the source cursor) and its
-unfold, the `<CR>` jump, every forwarded fold command
+hover's `zt` (topline with a non-zero `'scrolloff'`, the source cursor, and
+that a closed section stays closed), the `<CR>` jump, every forwarded fold
+command
 (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on all three row kinds, `zR`/`zM`/`zr` incl. a
 count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
 `lib.git`, and the toggle-close. A second fixture covers the grouping itself:

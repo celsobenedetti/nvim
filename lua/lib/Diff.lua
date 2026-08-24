@@ -497,10 +497,10 @@ end
 -- buffer on the left, in three levels — a directory group header per parent
 -- dir (`lua/lib/`), the files changed in it (` M <icon> Diff.lua    +40 -8`,
 -- basename only, summary right-aligned), and each file's `hunk`s (`@@` lines).
--- Focus (CursorMoved) parks the section at the top of the diff window and
--- unfolds it; <CR> jumps there; the diff buffer's own cursor keeps the tree in
--- sync (bidirectional). Native expr folding matches the levels: a directory
--- folds away its files, a file its hunks.
+-- Focus (CursorMoved) parks the section at the top of the diff window (folds
+-- are left as they are); <CR> jumps there; the diff buffer's own cursor keeps
+-- the tree in sync (bidirectional). Native expr folding matches the levels: a
+-- directory folds away its files, a file its hunks.
 -- ---------------------------------------------------------------------------
 
 local TREE_NS = vim.api.nvim_create_namespace('lib.diff.tree')
@@ -1061,10 +1061,11 @@ M.tree_fold = function(tree_buf, key)
   return closed
 end
 
----Focus the section under the tree cursor in the diff window: open every fold
----inside it (`zO`, so a file row reveals all of its hunks) and park it at the
----top of the window (`zt`, which honours the window's 'scrolloff'). Focus
----stays in the tree, so hover still isn't a jump. A block row also lights up
+---Focus the section under the tree cursor in the diff window: park it at the
+---top of the window (`zt`, which honours the window's 'scrolloff'). Folds are
+---left exactly as they are — hovering is a scroll, not an edit of the fold
+---state; `zo`/`zO` on the row is how you open one. Focus stays in the tree, so
+---hover still isn't a jump. A block row also lights up
 ---lib.diff_filepath's overlay bar on its hover palette — the header line's
 ---visible pixels belong to that extmark, whose virt_text chunks no second
 ---extmark can restyle; hunk rows get no highlight at all, the scroll is the
@@ -1096,24 +1097,12 @@ M.tree_focus = function(tree_buf, tree_win)
     vim.b[tree_buf].diff_tree_src_win = src_win
   end
   if src_win then
-    local srow, _, erow, ecol = unpack(r.range)
-    -- A node that ends at a line break reports the *next* row with column 0
-    -- (block 1 of a two-file patch ends on block 2's `diff --git` row), which
-    -- would unfold the neighbouring section too.
-    local last = (ecol == 0 and erow > srow) and erow or erow + 1
     -- Cursor first, and from outside nvim_win_call: moving a non-current
     -- window's cursor fires no CursorMoved, so the source->tree sync autocmd
     -- can't loop back on it.
     vim.api.nvim_win_set_cursor(src_win, { r.lnum, 0 })
     vim.api.nvim_win_call(src_win, function()
-      -- `zO` over the whole section, as the range form: `:{a},{b}foldopen!`
-      -- opens every fold in the range, nested ones included, so a file row
-      -- reveals its hunks too — plain `zO` would only open the folds that
-      -- contain the cursor line, leaving the hunks below it closed. Nothing
-      -- foldable in the range is an E490: a silent no-op here, unlike the
-      -- explicit `zo` mapping, which reports it.
-      pcall(vim.cmd, string.format('%d,%dfoldopen!', srow + 1, last))
-      -- Then park the section on top, on every hover and not only when it is
+      -- Park the section on top, on every hover and not only when it is
       -- off-screen. 'scrolloff' keeps its usual margin of context above it —
       -- which is also the room nvim-treesitter-context's float needs, so its
       -- sticky lines land above the section instead of covering it.
@@ -1128,7 +1117,7 @@ end
 ---split grouping the patch by parent directory — a `dir` header per directory,
 ---its files under it (` <status> <icon> <name>` + right-aligned `+N -M`), and
 ---each file's `hunk`s (`@@` lines) under that. Focus (CursorMoved) parks the
----section at the top of the diff window and unfolds it; <CR> jumps there; the
+---section at the top of the diff window; <CR> jumps there; the
 ---diff buffer's own cursor keeps the tree in sync. Native expr folding follows
 ---the levels (`zc` on a directory hides its files, on a file its hunks).
 ---Requires the current buffer to parse
@@ -1250,7 +1239,7 @@ M.open_tree = function()
     end, { buffer = tree_buf, desc = 'Diff tree: ' .. key .. ' in the diff buffer' })
   end
 
-  -- Hover (tree cursor moves): scroll + unfold the source section.
+  -- Hover (tree cursor moves): scroll the source section to the top.
   vim.api.nvim_create_autocmd('CursorMoved', {
     group = group,
     buffer = tree_buf,
