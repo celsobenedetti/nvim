@@ -20,7 +20,11 @@ dofile(repo_root .. '/after/plugin/winbar.lua')
 
 -- get_winbar()'s vim.b.winbar branch renders through lib.strings.hl; stub it
 -- the way the real env provides it (the float test never reaches that path).
-_G.lib = { strings = { hl = function(_, text) return text end } }
+_G.lib = { strings = {
+  hl = function(_, text)
+    return text
+  end,
+} }
 
 local FUGITIVE_LOG_WINBAR = 'quickfix:  git >  git log'
 

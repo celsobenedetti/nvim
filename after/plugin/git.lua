@@ -124,6 +124,17 @@ local function git_pickaxe(opts)
   end)
 end
 
+-- Dedicated tab: fugitive `Git diff -p <rev1> <rev2>` patch on top, quickfix
+-- of changed files below; <CR> on a file scrolls the patch to its first hunk.
+vim.api.nvim_create_user_command('Diff', function(opts)
+  local args = lib.strings.split_args(opts.args)
+  if #args ~= 2 then
+    vim.notify('Usage: :Diff <rev1> <rev2>', vim.log.levels.WARN)
+    return
+  end
+  lib.Diff.open(args[1], args[2])
+end, { nargs = '*', desc = 'fugitive: diff two revisions (tab + quickfix)' })
+
 local keymaps = function()
   -- stylua: ignore start
   vim.keymap.set('n', '<leader>G', ":Git<CR>", { desc = 'git: status (fugitive)' })
@@ -139,7 +150,7 @@ local keymaps = function()
   vim.keymap.set('n', 'gR', function() vim.cmd("tab Git restore -p") end, { desc = 'git: Git restore -p ' })
   vim.keymap.set('n', 'gcA', function() vim.cmd("tab Git commit --amend") end, { desc = 'git: Git commit --amend' })
   vim.keymap.set('n', 'glf', ":Git log -p %<cr>", { desc = 'git: git log % (fugitive)' })
-  vim.keymap.set('n', 'gll', ":Gclog<CR>", { desc = 'git: git log --name-only -n 20 (fugitive)' })
+  vim.keymap.set('n', 'gll', ":Git log --name-only -n 20<cr>", { desc = 'git: git log --name-only -n 20 (fugitive)' })
   vim.keymap.set('n', 'glo', ":Git log --oneline -n 20<cr>", { desc = 'git: git log --oneline -n 20 (fugitive)' })
 
   vim.keymap.set('n', '<leader>gd', function() vim.cmd('vertical Git diff ' .. main_branch() .. ' -- %') end,
