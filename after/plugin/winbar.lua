@@ -110,8 +110,13 @@ _G.get_winbar = function()
   end
 
   local buf = vim.api.nvim_win_get_buf(winid)
-  if vim.b.winbar then
-    return lib.strings.hl('WinBar', vim.b.winbar)
+  -- Per-buffer winbar override (e.g. the fugitive :Gclog quickfix bar below).
+  -- Keyed off the *window's* buffer, not the current one: g:statusline_winid
+  -- makes this run for every window on redraw, so a current-buffer read
+  -- (vim.b.winbar) would leak the override into every other split, and the
+  -- owning window's bar would vanish as soon as the buffer lost focus.
+  if vim.b[buf].winbar then
+    return lib.strings.hl('WinBar', vim.b[buf].winbar)
   end
 
   -- Special filetypes first: their content depends on live buffer state (e.g.
@@ -200,7 +205,8 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
 -- Fugitive's :Gclog fills the quickfix list with log entries; stamp that qf
 -- buffer with its own breadcrumb winbar (` qf >  git >  git log`) instead
 -- of the empty bar quickfix windows otherwise get (buftype 'quickfix'
--- renders ''). Rendered via the vim.b.winbar override in get_winbar() above.
+-- renders ''). Rendered via the per-buffer vim.b[buf].winbar override in
+-- get_winbar() above.
 --
 -- Fugitive fires `QuickFixCmdPost cfugitive-log` for :Gclog (`lfugitive-log`
 -- for :Gllog's location list, `cfugitive-difftool` for :Gdiff's qf). At that

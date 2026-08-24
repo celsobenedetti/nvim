@@ -1,6 +1,6 @@
 --- Headless integration test: fugitive's :Gclog fills the quickfix list with
 --- log entries; the winbar QuickFixCmdPost autocmd must stamp the qf buffer
---- with its own breadcrumb winbar (` qf >  git >  git log`) and clear it
+--- with its own breadcrumb winbar (`quickfix:  git >  git log`) and clear it
 --- again when a non-fugitive quickfix command (e.g. :grep) reuses that buffer.
 ---
 --- Fugitive fires `QuickFixCmdPost cfugitive-log` for :Gclog (see
@@ -22,7 +22,7 @@ dofile(repo_root .. '/after/plugin/winbar.lua')
 -- the way the real env provides it (the float test never reaches that path).
 _G.lib = { strings = { hl = function(_, text) return text end } }
 
-local FUGITIVE_LOG_WINBAR = ' qf >  git >  git log'
+local FUGITIVE_LOG_WINBAR = 'quickfix:  git >  git log'
 
 local tests_run = 0
 local tests_passed = 0
@@ -58,13 +58,34 @@ ok(vim.b[qf_buf].winbar == nil, 'qf buffer starts without a winbar override')
 vim.cmd('doautocmd QuickFixCmdPost cfugitive-log')
 ok(vim.b[qf_buf].winbar == FUGITIVE_LOG_WINBAR, 'cfugitive-log stamps the git-log winbar')
 
--- The vim.b.winbar override in get_winbar() surfaces it when the qf buffer is
--- current (which is the only window whose bar we can see anyway).
+-- The vim.b[buf].winbar override in get_winbar() surfaces it for the qf
+-- window regardless of which buffer is current.
 vim.api.nvim_set_current_win(qf_win)
 vim.g.statusline_winid = qf_win
 local bar = vim.fn.eval('v:lua.get_winbar()')
-ok(bar:find('qf', 1, true) ~= nil, 'winbar renders the qf override')
+ok(bar:find('quickfix', 1, true) ~= nil, 'winbar renders the qf override')
 ok(bar:find('git log', 1, true) ~= nil, 'winbar mentions git log')
+
+-- Issue 1 regression: other splits must NOT inherit the override while the
+-- qf buffer is current (g:statusline_winid renders every window, so a
+-- current-buffer read would leak the bar into all of them).
+vim.cmd('split') -- new split showing the unnamed buffer
+local other_win = vim.api.nvim_get_current_win()
+local other_buf = vim.api.nvim_win_get_buf(other_win)
+vim.api.nvim_set_current_win(qf_win) -- qf buffer current again
+vim.g.statusline_winid = other_win
+local other_bar = vim.fn.eval('v:lua.get_winbar()')
+ok(other_bar:find('git log', 1, true) == nil, 'other splits do not inherit the git-log bar')
+vim.api.nvim_win_close(other_win, true)
+
+-- Issue 2 regression: leaving the qf buffer must not blank its own bar (the
+-- lookup is by the window's buffer, not the current one).
+vim.api.nvim_set_current_win(qf_win)
+local before = vim.fn.eval('v:lua.get_winbar()')
+vim.cmd('wincmd w') -- focus the other (file) window, leaving the qf buffer
+vim.g.statusline_winid = qf_win
+local after = vim.fn.eval('v:lua.get_winbar()')
+ok(before == after and after:find('git log', 1, true) ~= nil, 'qf bar survives losing focus')
 
 -- A later non-fugitive quickfix command (e.g. :grep) reuses the same qf
 -- buffer; the override must be cleared, not left stale.
