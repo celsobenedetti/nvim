@@ -33,6 +33,32 @@ return {
               { 'label', 'label_description', gap = 1 },
               { 'kind_icon', 'kind', gap = 1 },
             },
+            -- lib.blink: fall back to LSP `detail` for import-path hints
+            -- (gopls unimported packages); native labelDetails still wins.
+            components = {
+              label_description = {
+                width = { max = 30 },
+                text = function(ctx)
+                  if ctx.label_description and ctx.label_description ~= '' then
+                    return ctx.label_description
+                  end
+
+                  local detail = type(ctx.item) == 'table' and ctx.item.detail or nil
+                  if type(detail) ~= 'string' then
+                    return nil
+                  end
+
+                  -- Import paths only: word chars plus ./-:_ (net/http, node:fs, ./utils)
+                  local path = detail:match('^"([%w%.%-%_/%:]*)"$')
+                  if path == nil or path == '' then
+                    return nil
+                  end
+
+                  return path
+                end,
+                highlight = 'BlinkCmpLabelDescription',
+              },
+            },
           },
         },
         documentation = { auto_show = true, window = { border = 'single' } },
