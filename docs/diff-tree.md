@@ -63,6 +63,20 @@ their block's `path`, so file-scoped actions (`ga`) work from either row kind.
      visible pixels belong to that extmark, whose `virt_text` chunks no second
      extmark can restyle. Hunk rows paint nothing in the diff buffer — the
      scroll is the feedback.
+  4. **refresh the sticky context** — nvim-treesitter-context for the *diff*
+     window, so hovering a hunk keeps its `diff --git` header (filepath bar
+     included, see `docs/diff-filepath-bar.md`) pinned above it even though the
+     cursor is in the tree. The plugin only ever updates the **current** window
+     (`nvim_get_current_win()` in its `CursorMoved`/`WinScrolled` handler, and
+     `WinScrolled` is not one of its multiwindow events), so `refresh_context`
+     drives its two winid-parameterized internals for the diff window itself:
+     `treesitter-context.context.get(win)` → `render.open(win, …)`, or
+     `render.close(win)` when there is no context. It no-ops when the plugin is
+     absent (`-u NONE` in the tests) or switched off (`:TSContextToggle`), and
+     runs *after* the `zt` — the context is computed from the window's topline.
+     The diff grammar's context query is `[(block) (hunk)] @context`, so a hunk
+     hover pins the file header and a block hover has nothing above it to pin
+     (the float is closed).
 - **`<CR>`** — jumps the diff window's cursor to the row's `lnum`, reusing a
   window that already shows the diff buffer (never splitting a new one; the
   same workaround as `lib.Diff.install_qf_jump` for `buftype=nowrite`).
@@ -101,6 +115,10 @@ their block's `path`, so file-scoped actions (`ga`) work from either row kind.
   `lib.Diff.tree_foldexpr()`: a block is a fold header (`>1`) when it has
   hunks, hunks sit inside it (`1`). `zc`/`zo` on a block folds its hunks;
   blocks without hunks (binary/rename) don't fold.
+
+`'scrolloff'` doubles as the room the context float needs: at the default 4,
+`zt` leaves four lines above the section and the float (`max_lines = 3`) paints
+over those instead of over the section itself.
 
 ## Lifecycle
 
@@ -143,6 +161,13 @@ repeats), the `ga` hand-off to `lib.git`, and the toggle-close.
   every line, and — nothing ever edits the tree buffer to invalidate the cache
   — no row folded, in the tree or (once the `z` forwarding existed) anywhere. The rows are now
   stored first; the test asserts `foldlevel()`, not just the option values.
+- **`multiwindow = true` is required** (`lua/plugins/treesitter.lua`). With it
+  off, nvim-treesitter-context binds its close handler to `WinLeave`/`BufLeave`
+  — entering the tree would close the diff window's context — and every update
+  it runs for the tree window calls `Render.close_contexts({ tree_win })`,
+  garbage-collecting the context we just opened for the diff window. The flag
+  is global, so contexts now render in every visible window, not only the
+  current one.
 - **Folds in the diff window**: the forwarded `z` commands need real folds
   there, so
   `after/ftplugin/git.lua` sets `foldmethod=expr` +

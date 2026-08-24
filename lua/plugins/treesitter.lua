@@ -36,7 +36,12 @@ return {
     'nvim-treesitter/nvim-treesitter-context',
     event = 'VeryLazy',
     opts = function()
-      return { mode = 'cursor', max_lines = 3 }
+      -- multiwindow: render the context of every visible window, not only the
+      -- current one. The DiffTree sidebar depends on it — hovering a row there
+      -- refreshes the *diff* window's context (lib.Diff.tree_focus), and with
+      -- this off the plugin closes it on `WinLeave` and garbage-collects it on
+      -- its next update for the tree window. See docs/diff-tree.md.
+      return { mode = 'cursor', max_lines = 3, multiwindow = true }
     end,
     keys = {
       {

@@ -673,6 +673,41 @@ M.tree_row_containing = function(rows, srow)
   return nil
 end
 
+---Refresh nvim-treesitter-context's sticky context for a window we are *not*
+---focused in — the diff window, while the cursor lives in the tree.
+---
+---The plugin only ever updates the current window (its CursorMoved /
+---WinScrolled handler reads `nvim_get_current_win()`, and `WinScrolled` is not
+---one of its multiwindow events), so a hover would leave the diff window's
+---context showing whatever section was last focused. Its two internals are
+---fully winid-parameterized, so drive them for that window directly.
+---
+---`multiwindow = true` (lua/plugins/treesitter.lua) is what keeps the result
+---alive: with it off, the plugin binds its close handler to `WinLeave`
+---(entering the tree would close this context) and every update for the tree
+---window garbage-collects the other windows' contexts.
+---
+---No-op when the plugin isn't installed (`-u NONE` in the tests), when the user
+---turned it off with `:TSContextToggle`, and if its internals ever move.
+---@param win integer
+local function refresh_context(win)
+  local ok, tsc = pcall(require, 'treesitter-context')
+  if not ok or not tsc.enabled() then
+    return
+  end
+  -- Private modules, so the whole hand-off is guarded: a rename upstream must
+  -- degrade to "no context on hover", not throw on every CursorMoved.
+  pcall(function()
+    local ranges, lines = require('treesitter-context.context').get(win)
+    local render = require('treesitter-context.render')
+    if ranges and #ranges > 0 and lines then
+      render.open(win, ranges, lines)
+    else
+      render.close(win)
+    end
+  end)
+end
+
 ---The tree row under the tree cursor (`vim.b.diff_tree_rows` is 1:1 with the
 ---tree buffer's lines), or nil.
 ---@param tree_buf integer
@@ -841,7 +876,9 @@ end
 ---lib.diff_filepath's overlay bar on its hover palette — the header line's
 ---visible pixels belong to that extmark, whose virt_text chunks no second
 ---extmark can restyle; hunk rows get no highlight at all, the scroll is the
----feedback. Exposed as M.tree_focus for the headless integration test
+---feedback. Finally nvim-treesitter-context is refreshed for the diff window
+---(refresh_context), so a hovered hunk keeps its `diff --git` header pinned
+---above it. Exposed as M.tree_focus for the headless integration test
 ---(CursorMoved never fires under --headless).
 M.tree_focus = function(tree_buf, tree_win)
   local row = vim.fn.line('.')
@@ -883,9 +920,13 @@ M.tree_focus = function(tree_buf, tree_win)
       -- explicit `zo` mapping, which reports it.
       pcall(vim.cmd, string.format('%d,%dfoldopen!', srow + 1, last))
       -- Then park the section on top, on every hover and not only when it is
-      -- off-screen. 'scrolloff' keeps its usual margin of context above it.
+      -- off-screen. 'scrolloff' keeps its usual margin of context above it —
+      -- which is also the room nvim-treesitter-context's float needs, so its
+      -- sticky lines land above the section instead of covering it.
       vim.cmd('normal! zt')
     end)
+    -- After the scroll: the context is computed from the window's topline.
+    refresh_context(src_win)
   end
 end
 
