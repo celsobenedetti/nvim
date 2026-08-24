@@ -11,9 +11,11 @@
 --- `diff --git` header line (see lua/lib/Diff.lua).
 ---
 --- Usages:
---- `:Diff`                 -> `Git diff` working tree
---- `:Diff <rev>`           -> `Git show <rev>`
---- `:Diff <rev1> <rev2>`   -> `Git diff <rev1> <rev2>`
+--- `:Diff`                          -> `Git diff` working tree
+--- `:Diff <rev>`                    -> `Git show <rev>`
+--- `:Diff <rev1> <rev2>`            -> `Git diff <rev1> <rev2>`
+--- `:Diff <rev1>..<rev2>`           -> `Git diff <rev1>..<rev2>`
+--- `:Diff <rev1>...<rev2>`          -> `Git diff <rev1>...<rev2>`
 
 vim.api.nvim_create_user_command('Diff', function(opts)
   local args = lib.strings.split_args(opts.args)

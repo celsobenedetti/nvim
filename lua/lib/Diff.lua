@@ -163,8 +163,10 @@ end
 ---(docs/diff-emph.md gotcha #3). A non-zero git exit status means failure
 ---(the error stays visible in the tab); an empty patch with status 0 closes
 ---the tab again.
----@param args string[]|string 0, 1, or 2 revision arguments. Also accepts
----the legacy call `open(rev1, rev2)` (two strings) — the pre-0913e74 `:Diff`
+---@param args string[]|string 0, 1, or 2 revision arguments; a single
+---argument containing `..` (e.g. `dev..HEAD`, `dev...HEAD`) is treated as
+---a diff range rather than a `git show` rev. Also accepts the legacy call
+---`open(rev1, rev2)` (two strings) — the pre-0913e74 `:Diff`
 ---command in after/plugin/git.lua called it that way, and a running nvim
 ---session registered before the fix still does (the lib itself loads
 ---lazily from disk, so the old command pairs with the new module).
@@ -179,8 +181,12 @@ M.open = function(args, ...)
     title = 'git diff'
     qf_title = 'Diff (working tree)'
   elseif n == 1 then
-    cmd = 'tab Git show ' .. args[1]
-    title = 'git show ' .. args[1]
+    -- A single arg with `..` (two- or three-dot) is a range, not a rev:
+    -- `git diff -p dev..HEAD` / `dev...HEAD`. Valid refnames never
+    -- contain `..` (git check-ref-format), so the check is unambiguous.
+    local cmd_prefix = args[1]:find('..', 1, true) and 'diff -p ' or 'show '
+    cmd = 'tab Git ' .. cmd_prefix .. args[1]
+    title = 'git ' .. cmd_prefix .. args[1]
     qf_title = 'Diff ' .. args[1]
   else
     cmd = 'tab Git diff -p ' .. args[1] .. ' ' .. args[2]
