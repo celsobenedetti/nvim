@@ -17,6 +17,9 @@
 --- `:Diff <rev1>..<rev2>`           -> `Git diff <rev1>..<rev2>`
 --- `:Diff <rev1>...<rev2>`          -> `Git diff <rev1>...<rev2>`
 
+-- The canonical `:Diff` (an old duplicate once lived in after/plugin/git.lua;
+-- nvim_create_user_command silently replaces, and git.lua sources later, so
+-- the stale one could shadow this definition). force keeps the intent clear.
 vim.api.nvim_create_user_command('Diff', function(opts)
   local args = lib.strings.split_args(opts.args)
   if #args > 2 then
@@ -24,4 +27,4 @@ vim.api.nvim_create_user_command('Diff', function(opts)
     return
   end
   lib.Diff.open(args)
-end, { nargs = '*', desc = 'git: diff working tree, show <rev>, or diff <rev1> <rev2> (tab + quickfix)' })
+end, { nargs = '*', force = true, desc = 'git: diff working tree, show <rev>, or diff <rev1> <rev2> (tab + quickfix)' })
