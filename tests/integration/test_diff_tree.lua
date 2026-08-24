@@ -239,6 +239,55 @@ assert_eq(tree_foldclosed(2), -1, 'hunk rows have no tree fold to mirror')
 feed('za')
 assert_eq(src_foldclosed(5), -1, 'za reopens the hunk')
 
+-- `zc` / `zo`: single level, and idempotent on a repeated press.
+vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
+feed('zc')
+assert_eq({ src_foldclosed(1), tree_foldclosed(1) }, { 1, 1 }, 'zc closes the block (and the tree row)')
+feed('zc')
+assert_eq(src_foldclosed(1), 1, 'zc again is a no-op')
+feed('zo')
+assert_eq({ src_foldclosed(1), tree_foldclosed(1) }, { -1, -1 }, 'zo reopens both')
+feed('zo')
+assert_eq(src_foldclosed(1), -1, 'zo again is a no-op')
+
+-- On a hunk row, `zc` closes just that hunk; `zC` recurses out to the block
+-- (fold commands act on the folds containing the cursor line).
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 })
+feed('zc')
+assert_eq({ src_foldclosed(5), src_foldclosed(1) }, { 5, -1 }, 'zc on a hunk row closes only the hunk')
+feed('zo')
+assert_eq(src_foldclosed(5), -1, 'zo reopens the hunk')
+feed('zC')
+assert_eq(src_foldclosed(1), 1, 'zC on a hunk row closes its block too (recursive)')
+feed('zO')
+assert_eq({ src_foldclosed(1), src_foldclosed(5) }, { -1, -1 }, 'zO reopens every level')
+
+-- `zA` toggles recursively from the same row.
+feed('zA')
+assert_eq(src_foldclosed(1), 1, 'zA closes hunk + block')
+feed('zA')
+assert_eq({ src_foldclosed(1), src_foldclosed(5) }, { -1, -1 }, 'zA toggles all of it back open')
+
+-- ------------------------------------------------------------------
+-- Window-wide fold commands: forwarded verbatim, mirrored in the tree.
+-- ------------------------------------------------------------------
+feed('zM')
+assert_eq({ src_foldclosed(1), src_foldclosed(12) }, { 1, 12 }, 'zM closes every block in the diff')
+assert_eq(vim.wo[src_win].foldlevel, 0, 'zM zeroes the diff foldlevel')
+assert_eq(tree_foldclosed(1), 1, 'and collapses the tree to one row per file')
+
+feed('zr')
+assert_eq(vim.wo[src_win].foldlevel, 1, 'zr lifts the diff foldlevel by one')
+assert_eq({ src_foldclosed(1), src_foldclosed(5) }, { -1, 5 }, 'blocks open, hunks still folded')
+assert_eq(tree_foldclosed(1), -1, 'the tree (one fold level) is fully expanded again')
+
+feed('zM')
+feed('2zr')
+assert_eq(vim.wo[src_win].foldlevel, 2, 'counts are forwarded (2zr)')
+
+feed('zR')
+assert_eq({ src_foldclosed(1), src_foldclosed(5), tree_foldclosed(1) }, { -1, -1, -1 }, 'zR opens everything')
+
 -- ------------------------------------------------------------------
 -- `ga`: stages the row's file through lib.git (covered against a real repo
 -- in tests/integration/test_diff_ga.lua; here just the hand-off).

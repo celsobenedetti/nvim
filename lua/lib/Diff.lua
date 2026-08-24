@@ -695,45 +695,99 @@ M.tree_stage = function(tree_buf)
   require('lib.git').add(r.path)
 end
 
----`za` in the tree: toggle the fold of the diff section the row points at —
----a file row folds its whole `diff --git` block, a hunk row its `@@` section.
----The folds are the `diff` grammar's (folds.scm captures `block`/`hunks`/
----`hunk`; after/ftplugin/git.lua puts treesitter's foldexpr on patch
----windows). Range-form `:{lnum}foldclose` acts on a line without moving the
----diff window's cursor, unlike a `normal! za`. Block rows mirror the result
----onto the tree's own fold, so a collapsed file hides its hunk rows here too.
----Returns the new state (`true` = closed) for the headless test, or nil when
----there was no fold to act on.
+---Fold commands the tree forwards to the diff buffer, keyed by the mapping
+---they are bound to. Two families:
+---
+--- * line-scoped (`za zA zc zC zo zO`) — act on the row's section. `close`
+---   picks the direction, `toggle` derives it from the current state, `bang`
+---   is `:foldopen!`/`:foldclose!` (recursive, so a file row also folds its
+---   hunks' own folds).
+--- * window-wide (`zR zM zr zm`) — only move the window's 'foldlevel', so
+---   they are cursor-independent and can be forwarded verbatim (with a count:
+---   `3zm`).
+local TREE_FOLD_ACTIONS = {
+  za = { toggle = true },
+  zA = { toggle = true, bang = true },
+  zc = { close = true },
+  zC = { close = true, bang = true },
+  zo = { close = false },
+  zO = { close = false, bang = true },
+  zR = { global = true },
+  zM = { global = true },
+  zr = { global = true },
+  zm = { global = true },
+}
+
+---Run one of the tree's fold mappings (see TREE_FOLD_ACTIONS) against the diff
+---buffer, then mirror the result onto the tree's own folds. The folds are the
+---`diff` grammar's (folds.scm captures `block`/`hunks`/`hunk`;
+---after/ftplugin/git.lua puts treesitter's foldexpr on patch windows).
+---
+---Line-scoped commands use the range form (`:{lnum}foldclose`), which acts on
+---a line without moving the diff window's cursor — unlike `normal! zc`. A file
+---row folds its whole `diff --git` block, a hunk row its `@@` section; only
+---file rows have a fold to mirror in the tree (see M.tree_foldexpr), and
+---closing theirs hides their hunk rows here too.
+---
+---Window-wide commands re-run in the tree window as well, so `zM` collapses
+---the tree to one row per file and `zR` expands both again.
+---
+---Returns the new closed state for line-scoped commands (`true` = closed) —
+---the headless test reads it — or nil for window-wide ones and when the row
+---has no fold.
 ---@param tree_buf integer
+---@param key string a key of TREE_FOLD_ACTIONS
 ---@return boolean?
-M.tree_toggle_fold = function(tree_buf)
-  local r = row_under_cursor(tree_buf)
+M.tree_fold = function(tree_buf, key)
+  local spec = TREE_FOLD_ACTIONS[key]
   local src_win = tree_src_win(tree_buf)
-  if not r or not src_win then
+  if not spec or not src_win then
+    return nil
+  end
+
+  if spec.global then
+    local keys = (vim.v.count > 0 and vim.v.count or '') .. key
+    vim.api.nvim_win_call(src_win, function()
+      vim.cmd('normal! ' .. keys)
+    end)
+    -- Same command in the tree: its foldlevel tracks the diff's.
+    vim.cmd('normal! ' .. keys)
+    return nil
+  end
+
+  local r = row_under_cursor(tree_buf)
+  if not r then
     return nil
   end
 
   local tree_lnum = vim.fn.line('.')
   local closed = vim.api.nvim_win_call(src_win, function()
-    -- foldclosed() reports the *innermost closed* fold's start line, so a hunk
-    -- inside an already-closed block reads as closed and opens that block —
-    -- exactly what `za` on the hunk's line would do.
-    local was_closed = vim.fn.foldclosed(r.lnum) ~= -1
-    local ok = pcall(vim.cmd, r.lnum .. (was_closed and 'foldopen' or 'foldclose'))
-    if not ok then
+    if vim.fn.foldlevel(r.lnum) == 0 then
+      -- Nothing folds there at all (a binary/rename block, or folds turned
+      -- off): worth saying, unlike a `zo` on an already-open fold.
+      vim.notify('DiffTree: no fold at that section', vim.log.levels.INFO)
       return nil
     end
-    return not was_closed
+    -- foldclosed() reports the *innermost closed* fold's start line, so a hunk
+    -- inside an already-closed block reads as closed and toggles that block
+    -- open — exactly what `za` on the hunk's line would do.
+    local close = spec.close
+    if spec.toggle then
+      close = vim.fn.foldclosed(r.lnum) == -1
+    end
+    -- Already open/closed in that direction is an E490 from :foldopen /
+    -- :foldclose; a repeated press is a no-op, not something to report.
+    pcall(vim.cmd, string.format('%d%s%s', r.lnum, close and 'foldclose' or 'foldopen', spec.bang and '!' or ''))
+    return close
   end)
 
   if closed == nil then
-    vim.notify('DiffTree: no fold at that section', vim.log.levels.INFO)
     return nil
   end
 
   -- Mirror onto the tree (only blocks fold here, see M.tree_foldexpr).
   if r.kind == 'block' then
-    pcall(vim.cmd, tree_lnum .. (closed and 'foldclose' or 'foldopen'))
+    pcall(vim.cmd, string.format('%d%s%s', tree_lnum, closed and 'foldclose' or 'foldopen', spec.bang and '!' or ''))
   end
   return closed
 end
@@ -893,7 +947,7 @@ M.open_tree = function()
   end
 
   -- <CR> jumps to the section; q closes the tree; ga stages the row's file;
-  -- za folds the section in the diff buffer.
+  -- the z fold commands fold the diff buffer (and mirror onto the tree).
   vim.keymap.set('n', '<CR>', function()
     jump_to_row(tree_buf)
   end, { buffer = tree_buf, desc = 'Diff tree: jump to section' })
@@ -901,9 +955,11 @@ M.open_tree = function()
   vim.keymap.set('n', 'ga', function()
     M.tree_stage(tree_buf)
   end, { buffer = tree_buf, desc = "Diff tree: git add the row's file" })
-  vim.keymap.set('n', 'za', function()
-    M.tree_toggle_fold(tree_buf)
-  end, { buffer = tree_buf, desc = 'Diff tree: fold/unfold the section in the diff buffer' })
+  for key in pairs(TREE_FOLD_ACTIONS) do
+    vim.keymap.set('n', key, function()
+      M.tree_fold(tree_buf, key)
+    end, { buffer = tree_buf, desc = 'Diff tree: ' .. key .. ' in the diff buffer' })
+  end
 
   -- Hover (tree cursor moves): highlight + scroll the source.
   vim.api.nvim_create_autocmd('CursorMoved', {

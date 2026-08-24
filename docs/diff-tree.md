@@ -50,12 +50,28 @@ used for containment and hover highlight). Hunk rows also carry their block's
   first, so fugitive's interactive split doesn't open inside the 30-column
   sidebar. From a hunk row it stages the whole file (rows carry their block's
   path).
-- **`za`** — toggles the fold of the section **in the diff buffer**: a file row
-  folds its whole `diff --git` block, a hunk row its `@@` section. Uses the
-  range form (`:{lnum}foldclose` / `foldopen`), which acts on a line without
-  moving the diff window's cursor. File rows mirror the new state onto the
-  tree's own fold, so a collapsed file hides its hunk rows here too. Other fold
-  actions (`zc`/`zo`/`zR`…) still act on the tree only.
+- **`z` fold commands** — fold the **diff buffer**, mirrored onto the tree.
+  `lib.Diff.tree_fold(tree_buf, key)` drives all of them from one spec table
+  (`TREE_FOLD_ACTIONS`):
+  - *line-scoped* `za` `zA` `zc` `zC` `zo` `zO` — act on the row's section: a
+    file row folds its whole `diff --git` block, a hunk row its `@@` section.
+    `toggle` (`za`/`zA`) reads the current state, the capitals pass `!` for the
+    recursive form. Sent as the range form (`:{lnum}foldclose`), which acts on
+    a line **without moving the diff window's cursor** — unlike `normal! zc`.
+    Note the native scoping: a command only touches folds containing that line,
+    so `zC` from a *hunk* row is what closes the enclosing block.
+    File rows mirror the new state onto the tree's own fold, so a collapsed
+    file hides its hunk rows here too; hunk rows have no tree fold to mirror.
+  - *window-wide* `zR` `zM` `zr` `zm` — only move the window's `'foldlevel'`,
+    so they are cursor-independent and get forwarded verbatim (with a count:
+    `3zm`), then re-run in the tree window: `zM` collapses the tree to one row
+    per file, `zR` expands both again.
+  - not forwarded (act on the tree only): `zv`, `zx`/`zX`, `zn`/`zN`/`zi`, and
+    the `zj`/`zk` motions. Folding in the diff buffer itself is not mirrored
+    back onto the tree.
+  - a row with no fold at all (binary/rename block, or folds off) notifies
+    once; a repeated `zo`/`zc` in the same direction is a silent no-op (that is
+    an `E490` from `:foldopen`/`:foldclose`).
 - **Bidirectional** — `CursorMoved` in the diff buffer moves the tree cursor
   to the deepest row (hunk over block) containing the source cursor.
 - **Fold (the tree's own)** — `foldmethod=expr` +
@@ -75,8 +91,10 @@ source buffer. Leaving the tree clears the hover highlight.
 `tests/integration/test_diff_tree.lua` (`make test-integration`) covers
 `tree_rows` (paths, summaries, `@@` text, ranges), the pure hover/containment
 helpers, the rendered buffer lines, the fold options **and the resulting fold
-levels**, the initial highlight extmark, the `<CR>` jump, `za` (both row kinds,
-plus the tree mirror), the `ga` hand-off to `lib.git`, and the toggle-close.
+levels**, the initial highlight extmark, the `<CR>` jump, every forwarded fold
+command (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on both row kinds, `zR`/`zM`/`zr` incl. a
+count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
+`lib.git`, and the toggle-close.
 `lib.git.add` itself is covered against a throwaway repo in
 `tests/integration/test_diff_ga.lua`.
 
@@ -93,9 +111,10 @@ plus the tree mirror), the `ga` hand-off to `lib.git`, and the toggle-close.
   foldexpr immediately. `open_tree` used to store `vim.b.diff_tree_rows` after
   setting the option, so that first evaluation saw no rows, cached level 0 for
   every line, and — nothing ever edits the tree buffer to invalidate the cache
-  — no row folded, in the tree or (once `za` existed) anywhere. The rows are now
+  — no row folded, in the tree or (once the `z` forwarding existed) anywhere. The rows are now
   stored first; the test asserts `foldlevel()`, not just the option values.
-- **Folds in the diff window**: `za` needs real folds there, so
+- **Folds in the diff window**: the forwarded `z` commands need real folds
+  there, so
   `after/ftplugin/git.lua` sets `foldmethod=expr` +
   `v:lua.vim.treesitter.foldexpr()` per patch window (the diff grammar's
   `folds.scm` captures `block`, `hunks`, `hunk`). The global default is
