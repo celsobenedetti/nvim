@@ -71,12 +71,12 @@ assert(parsed, 'diff parser parsed buffer')
 
 local items = require('lib.Diff').parse_items(buf)
 assert_eq(items, {
-  { bufnr = buf, lnum = 1, text = 'foo.txt' },
-  { bufnr = buf, lnum = 9, text = 'newfile.txt' },
+  { bufnr = buf, lnum = 1, text = 'foo.txt +1 -1' },
+  { bufnr = buf, lnum = 9, text = 'newfile.txt +1' },
   { bufnr = buf, lnum = 16, text = 'logo.png' },
   { bufnr = buf, lnum = 19, text = 'renamed.txt' },
-  { bufnr = buf, lnum = 23, text = 'work.txt' },
-}, 'one quickfix entry per file block, lnum at diff --git header')
+  { bufnr = buf, lnum = 23, text = 'work.txt +1 -1' },
+}, 'one quickfix entry per file block: lnum at header, text with change summary')
 
 -- Non-patch content parses to ERROR nodes, no blocks -> no items.
 local empty = vim.api.nvim_create_buf(false, true)

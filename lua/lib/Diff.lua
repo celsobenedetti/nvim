@@ -19,14 +19,42 @@ local M = {}
 --- filenames in the `diff --git` command line (the grammar folds both
 --- paths into one `filename` node; the `b/` side is its last token).
 --- Parsed once; independent of the parser being installed.
-local QUERY =
+local BLOCK_QUERY =
   vim.treesitter.query.parse('diff', '(block (command (filename) @file) (new_file (filename) @new)?) @block')
 
+--- Per-hunk +/- content lines, for per-file change summaries. `addition` /
+--- `deletion` are the `+`/`-` body lines (headers, `@@` locations, and
+--- context lines are other node types). Two patterns so hunks that contain
+--- only additions or only deletions still count.
+local STATS_QUERY = vim.treesitter.query.parse(
+  'diff',
+  [[
+(changes (addition) @add)
+(changes (deletion) @del)
+]]
+)
+
 -- `query.captures` is an id -> name list; build the name -> id map for
--- `iter_matches` results.
+-- `iter_matches`/`iter_captures` results (ids are per-query).
 local CAPTURE_IDS = {}
-for id, name in ipairs(QUERY.captures) do
-  CAPTURE_IDS[name] = id
+for _, q in ipairs({ BLOCK_QUERY, STATS_QUERY }) do
+  for id, name in ipairs(q.captures) do
+    CAPTURE_IDS[name] = id
+  end
+end
+
+---Start row of the `block` a node belongs to, or nil.
+---@param node TSNode
+---@return integer?
+local function block_start(node)
+  local p = node:parent()
+  while p do
+    if p:type() == 'block' then
+      return p:start()
+    end
+    p = p:parent()
+  end
+  return nil
 end
 
 ---New path from a filename node: strip the standard git prefix
@@ -44,22 +72,51 @@ local function new_path(node, bufnr)
 end
 
 ---Collect quickfix items from a fugitive patch buffer: one entry per
----treesitter `block`, `lnum` = the block's header line, `text` = the new
----path. Uniform across text hunks, new files, binary sections, and renames.
+---treesitter `block`, `lnum` = the block's header line. `text` is the new
+---path with a delta-style change summary appended (`path +N -M`, sides
+---with zero changes omitted); binary/rename sections without hunks show
+---just the path. Uniform across text hunks, new files, binary, renames.
 ---@param bufnr number
 ---@return table[] items quickfix items {bufnr, lnum, text}
 M.parse_items = function(bufnr)
   local tree = vim.treesitter.get_parser(bufnr):parse()[1]
+  local root = tree:root()
+
+  -- Per-block +/- line counts, keyed by block start row.
+  local stats = {}
+  local add_cap, del_cap = CAPTURE_IDS.add, CAPTURE_IDS.del
+  for id, node in STATS_QUERY:iter_captures(root, bufnr, 0, -1) do
+    local sr = block_start(node)
+    if sr then
+      local s = stats[sr] or { adds = 0, dels = 0 }
+      if id == add_cap then
+        s.adds = s.adds + 1
+      else
+        s.dels = s.dels + 1
+      end
+      stats[sr] = s
+    end
+  end
+
   local block_cap = CAPTURE_IDS.block
   local file_cap = CAPTURE_IDS.file
   local new_cap = CAPTURE_IDS.new
   local items = {}
-  for _, match in QUERY:iter_matches(tree:root(), bufnr, 0, -1) do
+  for _, match in BLOCK_QUERY:iter_matches(root, bufnr, 0, -1) do
     local block = match[block_cap] and match[block_cap][1]
     if block then
       -- `+++ b/x` when present (cleanest); otherwise the last command filename
       local name_node = (match[new_cap] and match[new_cap][1]) or (match[file_cap] and match[file_cap][1])
       local text = name_node and new_path(name_node, bufnr) or ''
+      local s = stats[block:start()]
+      if s and (s.adds > 0 or s.dels > 0) then
+        if s.adds > 0 then
+          text = text .. ' +' .. s.adds
+        end
+        if s.dels > 0 then
+          text = text .. ' -' .. s.dels
+        end
+      end
       items[#items + 1] = { bufnr = bufnr, lnum = block:range() + 1, text = text }
     end
   end
