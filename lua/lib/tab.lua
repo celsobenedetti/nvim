@@ -22,13 +22,41 @@ local pending_name = nil
 ---@type boolean
 local loaded = false
 
----Buffer shown by a tab when all its windows share a single buffer.
+---The window a tab "shows": its current window, unless that is a floating
+---window. While nvim_open_win creates a float Neovim transiently makes it the
+---tab's current window (even with enter=false), and autocmds firing inside
+---that window (e.g. BufWinEnter → redrawtabline when blink.cmp pops its
+---completion menu) would otherwise resolve names from the float's unnamed
+---scratch buffer — rendering tabs as `[No Name]` for one redraw, i.e. the
+---per-tab flicker when the menu appears. Falls back to the tab's first normal
+---window; every tabpage owns at least one, so the loop always matches.
+---@param tabid number
+---@return integer winid
+local function shown_window(tabid)
+  local cur = vim.api.nvim_tabpage_get_win(tabid)
+  if vim.api.nvim_win_get_config(cur).relative == '' then
+    return cur
+  end
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tabid)) do
+    if vim.api.nvim_win_get_config(win).relative == '' then
+      return win
+    end
+  end
+  return cur
+end
+
+---Buffer shown by a tab when all its *normal* windows share a single buffer.
+---Floating windows are excluded: completion menus etc. add scratch buffers to
+---the tabpage while open, which would hide the special label of single-buffer
+---(terminal) tabs whenever any float was up.
 ---@param tabid number
 ---@return number|nil bufnr, or nil when the tab shows several buffers
 local function single_buffer_bufnr(tabid)
   local bufs = {}
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tabid)) do
-    bufs[vim.api.nvim_win_get_buf(win)] = true
+    if vim.api.nvim_win_get_config(win).relative == '' then
+      bufs[vim.api.nvim_win_get_buf(win)] = true
+    end
   end
   local keys = vim.tbl_keys(bufs)
   if #keys == 1 then
@@ -46,7 +74,7 @@ local function fallback_name(tabid)
   if not vim.api.nvim_tabpage_is_valid(tabid) then
     return ''
   end
-  local buf = vim.api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tabid))
+  local buf = vim.api.nvim_win_get_buf(shown_window(tabid))
 
   local sbuf = single_buffer_bufnr(tabid)
   if sbuf ~= nil then

@@ -44,6 +44,9 @@ local vim_g = {}
 local buf_ft = {}
 -- windows shown per tabpage id; defaults to { id } (one window per tab)
 local tab_wins = {}
+-- floating windows: win id -> relative kind ('win'/'cursor'/...); every other
+-- window counts as a normal (non-floating) one
+local win_rel = {}
 local vim_config = {
   icons = {
     term = '<term>',
@@ -86,6 +89,9 @@ local vim_mock = {
     end,
     nvim_tabpage_get_win = function(id)
       return id
+    end,
+    nvim_win_get_config = function(win)
+      return { relative = win_rel[win] or '' }
     end,
     nvim_win_get_buf = function(win)
       return win
@@ -160,6 +166,7 @@ local function reset(tabs, names_json)
   buf_names = {}
   buf_ft = {}
   tab_wins = {}
+  win_rel = {}
   vim_g.NamedTabs = names_json
   input_callback = nil
 end
@@ -317,6 +324,29 @@ assert_eq(type(line), 'string', 'render returns a string')
 assert_eq(line:find('alpha', 1, true) ~= nil, true, 'render includes tab name')
 assert_eq(line:find('%1T', 1, true) ~= nil, true, 'render emits native tabpage labels')
 assert_eq(line:find('%#Normal# ', 1, true) ~= nil, true, 'render spaces tabs apart with Normal hl')
+
+-- ============================================================
+describe('lib.tab: get_name ignores floating windows')
+
+-- Regression: while nvim_open_win creates a float (e.g. blink.cmp's completion
+-- menu), the float is transiently the tab's current window and its unnamed
+-- scratch buffer leaks into labels ([No Name] flicker). Float windows must be
+-- skipped both when counting a tab's buffers and when resolving its current one.
+reset({ 0 })
+tab = reload_tab()
+tab_wins[0] = { 0, 99 } -- main window + a completion-menu float
+win_rel[99] = 'cursor' -- blink-style float anchored to the cursor
+buf_ft[0] = 'terminal'
+assert_eq(tab.get_name(0), '<term>terminal', 'special label survives an open float')
+
+-- same, with the float as the tab's current window (mid-open transient state)
+local real_tabpage_get_win = vim.api.nvim_tabpage_get_win
+vim.api.nvim_tabpage_get_win = function()
+  return 99
+end
+local name_during_transient = tab.get_name(0)
+vim.api.nvim_tabpage_get_win = real_tabpage_get_win
+assert_eq(name_during_transient, '<term>terminal', 'label ignores the transiently-current float')
 
 -- ============================================================
 io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
