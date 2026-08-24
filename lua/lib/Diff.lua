@@ -332,4 +332,69 @@ M.open = function(args, ...)
   end
 end
 
+---Nodes of `kind` in document order (their start rows are ascending:
+---blocks/hunks never overlap).
+---@param root TSNode
+---@param kind string
+---@return TSNode[]
+local function collect_nodes(root, kind)
+  local nodes = {}
+  local function walk(node)
+    for child in node:iter_children() do
+      if child:type() == kind then
+        nodes[#nodes + 1] = child
+      end
+      walk(child)
+    end
+  end
+  walk(root)
+  return nodes
+end
+
+---Jump the cursor to the `count`-th `kind` section before/after the cursor:
+---`'block'` = per-file section (`diff --git` header), `'hunk'` = per-hunk
+---section (`@@` header). `dir = 1` goes forward (next), `-1` backward
+---(previous); strict, so a repeated press always moves past the current
+---section. No-op when nothing matches in that direction (or the buffer has
+---no `diff` parse tree). Leaves a jumplist entry so <C-o> returns.
+---@param kind 'block' | 'hunk'
+---@param dir 1 | -1
+M.goto_node = function(kind, dir)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ok, tree = pcall(function()
+    return vim.treesitter.get_parser(bufnr):parse()[1]
+  end)
+  if not ok or not tree then
+    return
+  end
+
+  local cur = vim.fn.line('.') - 1 -- 0-based cursor row
+  local rows = {}
+  for _, node in ipairs(collect_nodes(tree:root(), kind)) do
+    rows[#rows + 1] = node:start()
+  end
+
+  local count = vim.v.count1
+  local target
+  if dir == 1 then
+    local i = 1
+    while i <= #rows and rows[i] <= cur do
+      i = i + 1
+    end
+    target = rows[i + count - 1]
+  else
+    local i = #rows
+    while i >= 1 and rows[i] >= cur do
+      i = i - 1
+    end
+    target = rows[i - count + 1]
+  end
+  if not target then
+    return
+  end
+
+  vim.cmd("normal! m'") -- jumplist entry; <C-o> returns
+  vim.api.nvim_win_set_cursor(0, { target + 1, 0 })
+end
+
 return M
