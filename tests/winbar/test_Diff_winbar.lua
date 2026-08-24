@@ -11,8 +11,9 @@ package.path = repo_root .. '/lua/?.lua;' .. package.path
 vim.opt.rtp:prepend(repo_root)
 
 -- Load the real winbar plugin with minimal globals (only `config` at load
--- time; `lib` is referenced lazily inside render functions).
-_G.config = { icons = {} }
+-- time; `lib` is referenced lazily inside render functions). Plain separator
+-- so expected strings are ASCII (the default SEP embeds a glyph).
+_G.config = { icons = { separator = { right = ' | ' } } }
 _G.lib = { strings = {
   hl = function(_, text)
     return text
@@ -40,22 +41,23 @@ local function bar_for_qf_window()
   error('no quickfix window found')
 end
 
--- :Diff-style list: register its winbar, open the qf window, expect the bar.
+-- :Diff-style list: register its winbar tail, open the qf window, expect
+-- the buffer-name prefix + breadcrumb.
 vim.fn.setqflist({}, ' ', {
   title = 'Diff HEAD',
   items = { { bufnr = 1, lnum = 7, text = ' 7 a.txt  +1' } },
 })
 local qfid = vim.fn.getqflist({ id = 0 }).id
-lib.Diff.record_winbar(qfid, 'quickfix:  git >  git show HEAD')
+lib.Diff.record_winbar(qfid, ' git >  Diff HEAD') -- icon is '' in this harness
 vim.cmd('botright copen')
-assert_eq(bar_for_qf_window(), 'quickfix:  git >  git show HEAD', 'Diff list renders its breadcrumb')
+assert_eq(bar_for_qf_window(), '[Quickfix List] |  git >  Diff HEAD', 'Diff list: buffer name + breadcrumb')
 
--- Replacing the list (e.g. :grep) creates a new id -> no registered bar.
+-- Replacing the list (e.g. :grep) creates a new id -> only the prefix stays.
 vim.fn.setqflist({}, ' ', {
   title = 'grep foo',
   items = { { filename = '/tmp/x.txt', lnum = 1, text = 'x' } },
 })
-assert_eq(bar_for_qf_window(), '', 'foreign list gets the empty bar')
+assert_eq(bar_for_qf_window(), '[Quickfix List]', 'foreign list shows just the buffer name')
 
 print('OK: Diff qf winbar breadcrumb')
 vim.cmd('qa!')

@@ -1,6 +1,6 @@
 --- Headless integration test: fugitive's :Gclog fills the quickfix list with
 --- log entries; the winbar QuickFixCmdPost autocmd must stamp the qf buffer
---- with its own breadcrumb winbar (`quickfix:  git >  git log`) and clear it
+--- with its own breadcrumb winbar (`[Quickfix List]  git >  git log`) and clear it
 --- again when a non-fugitive quickfix command (e.g. :grep) reuses that buffer.
 ---
 --- Fugitive fires `QuickFixCmdPost cfugitive-log` for :Gclog (see
@@ -26,7 +26,7 @@ _G.lib = { strings = {
   end,
 } }
 
-local FUGITIVE_LOG_WINBAR = 'quickfix:  git >  git log'
+local FUGITIVE_LOG_WINBAR = ' git >  git log' -- icon is '' in this harness; winbar.lua composes it from config
 
 local tests_run = 0
 local tests_passed = 0
@@ -67,7 +67,8 @@ ok(vim.b[qf_buf].winbar == FUGITIVE_LOG_WINBAR, 'cfugitive-log stamps the git-lo
 vim.api.nvim_set_current_win(qf_win)
 vim.g.statusline_winid = qf_win
 local bar = vim.fn.eval('v:lua.get_winbar()')
-ok(bar:find('quickfix', 1, true) ~= nil, 'winbar renders the qf override')
+ok(bar:find('[Quickfix List]', 1, true) ~= nil, 'winbar leads with the qf buffer name')
+ok(bar:find('git >', 1, true) ~= nil, 'winbar shows the git breadcrumb')
 ok(bar:find('git log', 1, true) ~= nil, 'winbar mentions git log')
 
 -- Issue 1 regression: other splits must NOT inherit the override while the

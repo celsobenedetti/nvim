@@ -17,6 +17,9 @@
 local SEP = ((config.icons or {}).separator or {}).right or '  '
 
 -- per-agent glyphs for agent terminals (agent cmd -> icon)
+-- git glyph shared by the qf breadcrumb bars (Gclog stamp and :Diff bar)
+local GIT_ICON = ((config.icons or {}).git or {}).git or ''
+
 local AGENT_ICONS = {
   claude = '󱙺',
   opencode = '󱙺',
@@ -115,25 +118,23 @@ _G.get_winbar = function()
   -- makes this run for every window on redraw, so a current-buffer read
   -- (vim.b.winbar) would leak the override into every other split, and the
   -- owning window's bar would vanish as soon as the buffer lost focus.
-  if vim.b[buf].winbar then
-    return lib.strings.hl('WinBar', vim.b[buf].winbar)
+  -- Quickfix windows: always lead with the qf buffer's own (special) name
+  -- — `[Quickfix List]`, or `[Location List]` for location lists
+  -- (buf_spname in buffer.c; not exposed by nvim_buf_get_name). Then the
+  -- breadcrumb tail — the fugitive Gclog stamp (vim.b override) or the
+  -- :Diff list's registered bar (lib.Diff.winbar_text, resolved by current
+  -- list id at render time, so nothing needs clearing: a new list has a new
+  -- id and simply doesn't match). Lists without a tail show just the name.
+  if vim.bo[buf].buftype == 'quickfix' then
+    local wininfo = vim.fn.getwininfo(winid)[1]
+    local name = wininfo and wininfo.loclist == 1 and '[Location List]' or '[Quickfix List]'
+    local qfid = vim.fn.getqflist({ id = 0 }).id
+    local tail = vim.b[buf].winbar or (qfid ~= 0 and lib.Diff.winbar_text(qfid))
+    return lib.strings.hl('WinBar', tail and (name .. SEP .. tail) or name)
   end
 
-  -- Quickfix windows: render the :Diff list's breadcrumb bar
-  -- (`quickfix: <icon> git > <icon> git <args>`) via lib.Diff's qf-list
-  -- registry, resolved at render time by the current list id. Unlike the
-  -- stamped vim.b override above, nothing needs clearing: a new list has a
-  -- new id, so a stale entry is simply not found. Lists lib.Diff didn't
-  -- create (grep, Gclog without a stamp, …) get the usual empty bar.
-  if vim.bo[buf].buftype == 'quickfix' then
-    local qfid = vim.fn.getqflist({ id = 0 }).id
-    if qfid ~= 0 then
-      local bar = lib.Diff.winbar_text(qfid)
-      if bar then
-        return lib.strings.hl('WinBar', bar)
-      end
-    end
-    return ''
+  if vim.b[buf].winbar then
+    return lib.strings.hl('WinBar', vim.b[buf].winbar)
   end
 
   -- Special filetypes first: their content depends on live buffer state (e.g.
@@ -232,7 +233,7 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter' }, {
 -- vim.b. Any other quickfix command clears the override: the qf buffer is
 -- reused across lists, so a later :grep would otherwise inherit the stale
 -- git-log bar.
-local FUGITIVE_LOG_WINBAR = 'quickfix:  git >  git log'
+local FUGITIVE_LOG_WINBAR = GIT_ICON .. ' git > ' .. GIT_ICON .. ' git log'
 
 vim.api.nvim_create_autocmd('QuickFixCmdPost', {
   group = 'Winbar',

@@ -310,11 +310,13 @@ M.open = function(args, ...)
       items = items,
       quickfixtextfunc = 'v:lua.lib.Diff.qf_line',
     })
-    -- winbar for the qf window: `quickfix: <icon> git > <icon> git <args>`
-    -- (rendered by after/plugin/winbar.lua via the list id).
+    -- winbar tail for the qf window: `<icon> git > <icon> Diff <args>`;
+    -- after/plugin/winbar.lua prefixes it with the qf buffer name
+    -- (`[Quickfix List]`).
+    local args_text = n > 0 and (' ' .. table.concat(args, ' ')) or ''
     M.record_winbar(
       vim.fn.getqflist({ id = 0 }).id,
-      'quickfix: ' .. config.icons.git.git .. ' git > ' .. config.icons.git.git .. ' git ' .. git_args
+      config.icons.git.git .. ' git > ' .. config.icons.git.git .. ' Diff' .. args_text
     )
     vim.cmd('botright copen')
     M.install_qf_jump()
