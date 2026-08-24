@@ -29,6 +29,17 @@ if not wh:find('Folded:', 1, true) then
   vim.wo[0][0].winhighlight = wh == '' and 'Folded:DiffFolded' or (wh .. ',Folded:DiffFolded')
 end
 
+-- Treesitter folds (the `diff` grammar's folds.scm captures `block`, `hunks`,
+-- `hunk`) drive `zc`/`za` here and the DiffTree's `za` mirror. Set per
+-- buffer-in-window: the global default is `indent`, and the treesitter plugin
+-- only stamps expr folding on whatever window is current when it configures
+-- itself, so a patch window that came later can be left without it. 'foldlevel'
+-- stays as-is (99 from lua/init/options.lua), so nothing starts folded.
+if vim.wo[0][0].foldmethod ~= 'expr' then
+  vim.wo[0][0].foldmethod = 'expr'
+  vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+end
+
 -- `ga` stages the file section (`block`) the cursor sits in, running the same
 -- flow as the global `ga` (after/plugin/git.lua) on that path: `Git add -p`
 -- for unstaged changes, plain `git add` for an untracked file. The patch text

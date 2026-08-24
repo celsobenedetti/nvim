@@ -81,6 +81,7 @@ assert_eq(rows[1].summary, ' +2 -2', 'block 1 summary')
 assert_eq(rows[2].kind, 'hunk', 'row 2 is a hunk')
 assert_eq(rows[2].lnum, 5, 'hunk 1 lnum')
 assert_eq(rows[2].text, '@@ -1,2 +1,2 @@', 'hunk 1 @@ line')
+assert_eq(rows[2].path, 'foo.txt', 'hunk rows carry their block path (file actions)')
 assert_eq(rows[3].lnum, 9, 'hunk 2 lnum')
 assert_eq(rows[3].text, '@@ -5,1 +5,1 @@ function bar()', 'hunk 2 @@ line keeps the heading')
 assert_eq(rows[4].kind, 'block', 'row 4 is a block')
@@ -90,6 +91,7 @@ assert_eq(rows[4].summary, ' +1 -1', 'block 2 summary')
 assert_eq(rows[5].kind, 'hunk', 'row 5 is a hunk')
 assert_eq(rows[5].lnum, 16, 'hunk 3 lnum')
 assert_eq(rows[5].text, '@@ -1 +1 @@', 'hunk 3 @@ line')
+assert_eq(rows[5].path, 'b.txt', 'hunk 3 path is block 2')
 -- ranges: block 1 spans rows 0..11, hunk 1 rows 4..8 (0-based).
 assert_eq(rows[1].range[1], 0, 'block 1 range start')
 assert_eq(rows[1].range[3], 11, 'block 1 range end')
@@ -122,6 +124,16 @@ assert_eq(vim.api.nvim_win_get_position(tree_win)[2], 0, 'tree window is on the 
 assert_eq(vim.bo[tree_buf].filetype, 'diff-tree', 'tree buffer filetype')
 assert_eq(vim.wo[tree_win].foldmethod, 'expr', 'tree folds with expr')
 assert_eq(vim.wo[tree_win].foldexpr, 'v:lua.lib.Diff.tree_foldexpr()', 'tree foldexpr wired')
+-- The rows must be stored before 'foldmethod' is set: that assignment
+-- evaluates the foldexpr immediately, and with `diff_tree_rows` still unset
+-- every line cached level 0 (nothing edits this buffer to invalidate it).
+assert_eq(
+  vim.api.nvim_win_call(tree_win, function()
+    return { vim.fn.foldlevel(1), vim.fn.foldlevel(2) }
+  end),
+  { 1, 1 },
+  'block row opens a fold its hunk rows sit in'
+)
 
 -- No mini.icons under -u NONE: labels are bare paths, padded so summaries
 -- align (widest label 'foo.txt' = 7).
@@ -176,6 +188,80 @@ vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true),
 vim.wait(100)
 assert_eq(vim.api.nvim_get_current_win(), src_win, 'jump focuses the source window')
 assert_eq(vim.fn.line('.'), 5, '<CR> on hunk 1 jumps to its @@ line')
+
+-- ------------------------------------------------------------------
+-- `za`: folds the section in the diff buffer, mirrored on the tree's own
+-- fold for file rows.
+-- ------------------------------------------------------------------
+-- after/ftplugin/git.lua puts treesitter folds on patch windows; -u NONE
+-- sources no ftplugin here, and the default 'foldlevel' is 0 (all closed), so
+-- set the same state up by hand.
+vim.wo[src_win].foldmethod = 'expr'
+vim.wo[src_win].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.wo[src_win].foldlevel = 99
+vim.wo[src_win].foldenable = true
+
+local function src_foldclosed(lnum)
+  return vim.api.nvim_win_call(src_win, function()
+    return vim.fn.foldclosed(lnum)
+  end)
+end
+
+local function tree_foldclosed(lnum)
+  return vim.api.nvim_win_call(tree_win, function()
+    return vim.fn.foldclosed(lnum)
+  end)
+end
+
+local function feed(keys)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'x', false)
+  vim.wait(50)
+end
+
+assert_eq(src_foldclosed(1), -1, 'source starts unfolded')
+
+vim.api.nvim_set_current_win(tree_win)
+vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- block foo.txt
+feed('za')
+assert_eq(src_foldclosed(1), 1, 'za on a file row closes its block in the diff')
+assert_eq(tree_foldclosed(1), 1, 'and mirrors onto the tree row (hides its hunks)')
+assert_eq(vim.api.nvim_get_current_win(), tree_win, 'focus stays in the tree')
+
+feed('za')
+assert_eq(src_foldclosed(1), -1, 'za again reopens the block')
+assert_eq(tree_foldclosed(1), -1, 'tree fold reopens too')
+
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- hunk 1
+feed('za')
+assert_eq(src_foldclosed(5), 5, 'za on a hunk row closes that hunk')
+assert_eq(src_foldclosed(1), -1, 'the enclosing block stays open')
+assert_eq(tree_foldclosed(2), -1, 'hunk rows have no tree fold to mirror')
+feed('za')
+assert_eq(src_foldclosed(5), -1, 'za reopens the hunk')
+
+-- ------------------------------------------------------------------
+-- `ga`: stages the row's file through lib.git (covered against a real repo
+-- in tests/integration/test_diff_ga.lua; here just the hand-off).
+-- ------------------------------------------------------------------
+local git = require('lib.git')
+local real_add = git.add
+local staged = {}
+git.add = function(file)
+  staged[#staged + 1] = file
+end
+
+vim.api.nvim_set_current_win(tree_win)
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- hunk 1, under foo.txt
+feed('ga')
+assert_eq(staged, { 'foo.txt' }, 'ga on a hunk row stages its block file')
+assert_eq(vim.api.nvim_get_current_win(), src_win, 'ga focuses the diff window for the add -p split')
+
+vim.api.nvim_set_current_win(tree_win)
+vim.api.nvim_win_set_cursor(tree_win, { 4, 0 }) -- block b.txt
+feed('ga')
+assert_eq(staged, { 'foo.txt', 'b.txt' }, 'ga on a file row stages that file')
+
+git.add = real_add
 
 -- ------------------------------------------------------------------
 -- Toggle: a second open_tree() closes the tree window.

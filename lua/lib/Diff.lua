@@ -522,7 +522,8 @@ end
 
 ---One row per block/hunk in document order, for the diff tree sidebar.
 ---Blocks are top-level entries (`path` + `summary`); hunks are nested under
----their block (`text` = the `@@` line). `lnum` is the 1-based jump target
+---their block (`text` = the `@@` line, plus their block's `path`, so
+---file-scoped actions work from a hunk row). `lnum` is the 1-based jump target
 ---(block: `diff --git` header; hunk: `@@` header); `range` is the node's
 ---0-based span (block: whole section, used for containment; hunk: whole hunk,
 ---used for both containment and hover highlight).
@@ -551,6 +552,8 @@ M.tree_rows = function(bufnr)
             kind = 'hunk',
             lnum = hunk:start() + 1,
             text = hunk_text(hunk, bufnr),
+            -- Its block's path: file actions (`ga`) work from a hunk row too.
+            path = path,
             range = { hunk:range() },
           }
         end
@@ -628,29 +631,111 @@ M.tree_hl_range = function(bufnr, row)
   return srow, erow, math.max(0, ecol)
 end
 
+---The tree row under the tree cursor (`vim.b.diff_tree_rows` is 1:1 with the
+---tree buffer's lines), or nil.
+---@param tree_buf integer
+---@return table? row
+local function row_under_cursor(tree_buf)
+  local rows = vim.b[tree_buf].diff_tree_rows
+  return rows and rows[vim.fn.line('.')] or nil
+end
+
+---Window in this tabpage showing the tree's source diff buffer (never the
+---tree window itself), plus that buffer. The window is cached on the tree
+---buffer by open_tree; the scan covers it having been closed since.
+---@param tree_buf integer
+---@return integer? src_win
+---@return integer? src_buf
+local function tree_src_win(tree_buf)
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return nil, nil
+  end
+  local cached = vim.b[tree_buf].diff_tree_src_win
+  if cached and vim.api.nvim_win_is_valid(cached) and vim.api.nvim_win_get_buf(cached) == src_buf then
+    return cached, src_buf
+  end
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_get_buf(win) == src_buf then
+      return win, src_buf
+    end
+  end
+  return nil, src_buf
+end
+
 ---Move the diff buffer's cursor to the tree row under the cursor, reusing a
 ---window that already shows it (never the tree window itself).
 local function jump_to_row(tree_buf)
-  local row = vim.fn.line('.')
-  local rows = vim.b[tree_buf].diff_tree_rows
-  local r = rows and rows[row]
-  local src_buf = vim.b[tree_buf].diff_tree_src
-  if not r or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
-    return
-  end
-  local src_win
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    if win ~= vim.api.nvim_get_current_win() and vim.api.nvim_win_get_buf(win) == src_buf then
-      src_win = win
-      break
-    end
-  end
-  if not src_win then
+  local r = row_under_cursor(tree_buf)
+  local src_win = tree_src_win(tree_buf)
+  if not r or not src_win then
     return
   end
   vim.api.nvim_set_current_win(src_win)
   vim.api.nvim_win_set_cursor(src_win, { r.lnum, 0 })
   vim.cmd.norm('zt')
+end
+
+---`ga` in the tree: stage the row's file through lib.git.add (the same flow
+---as `ga` in a normal buffer or in the patch buffer itself). Hunk rows carry
+---their block's path, so either row kind stages the whole file. Focus moves
+---to the diff window first, so fugitive's interactive `Git add -p` split
+---opens there rather than inside the 30-column sidebar. Exposed for the
+---headless test.
+---@param tree_buf integer
+M.tree_stage = function(tree_buf)
+  local r = row_under_cursor(tree_buf)
+  if not r or not r.path or r.path == '' then
+    return
+  end
+  local src_win = tree_src_win(tree_buf)
+  if src_win then
+    vim.api.nvim_set_current_win(src_win)
+  end
+  require('lib.git').add(r.path)
+end
+
+---`za` in the tree: toggle the fold of the diff section the row points at —
+---a file row folds its whole `diff --git` block, a hunk row its `@@` section.
+---The folds are the `diff` grammar's (folds.scm captures `block`/`hunks`/
+---`hunk`; after/ftplugin/git.lua puts treesitter's foldexpr on patch
+---windows). Range-form `:{lnum}foldclose` acts on a line without moving the
+---diff window's cursor, unlike a `normal! za`. Block rows mirror the result
+---onto the tree's own fold, so a collapsed file hides its hunk rows here too.
+---Returns the new state (`true` = closed) for the headless test, or nil when
+---there was no fold to act on.
+---@param tree_buf integer
+---@return boolean?
+M.tree_toggle_fold = function(tree_buf)
+  local r = row_under_cursor(tree_buf)
+  local src_win = tree_src_win(tree_buf)
+  if not r or not src_win then
+    return nil
+  end
+
+  local tree_lnum = vim.fn.line('.')
+  local closed = vim.api.nvim_win_call(src_win, function()
+    -- foldclosed() reports the *innermost closed* fold's start line, so a hunk
+    -- inside an already-closed block reads as closed and opens that block —
+    -- exactly what `za` on the hunk's line would do.
+    local was_closed = vim.fn.foldclosed(r.lnum) ~= -1
+    local ok = pcall(vim.cmd, r.lnum .. (was_closed and 'foldopen' or 'foldclose'))
+    if not ok then
+      return nil
+    end
+    return not was_closed
+  end)
+
+  if closed == nil then
+    vim.notify('DiffTree: no fold at that section', vim.log.levels.INFO)
+    return nil
+  end
+
+  -- Mirror onto the tree (only blocks fold here, see M.tree_foldexpr).
+  if r.kind == 'block' then
+    pcall(vim.cmd, tree_lnum .. (closed and 'foldclose' or 'foldopen'))
+  end
+  return closed
 end
 
 ---Highlight the section under the tree cursor in the source buffer and scroll
@@ -777,15 +862,19 @@ M.open_tree = function()
   end
   vim.bo[tree_buf].modifiable = false
 
-  vim.wo[tree_win].wrap = false
-  vim.wo[tree_win].foldmethod = 'expr'
-  vim.wo[tree_win].foldexpr = 'v:lua.lib.Diff.tree_foldexpr()'
-  vim.wo[tree_win].foldlevel = 99
-
+  -- Buffer vars first: M.tree_foldexpr reads `diff_tree_rows`, and setting
+  -- 'foldmethod' evaluates the foldexpr right away — with the rows still
+  -- unset every line came back level 0 and the cached result never got
+  -- invalidated (nothing edits this buffer afterwards), so no row folded.
   vim.b[tree_buf].diff_tree_rows = rows
   vim.b[tree_buf].diff_tree_src = src_buf
   vim.b[tree_buf].diff_tree_src_win = src_win
   vim.b[src_buf].diff_tree_win = tree_win
+
+  vim.wo[tree_win].wrap = false
+  vim.wo[tree_win].foldmethod = 'expr'
+  vim.wo[tree_win].foldexpr = 'v:lua.lib.Diff.tree_foldexpr()'
+  vim.wo[tree_win].foldlevel = 99
 
   local group = vim.api.nvim_create_augroup('lib.diff.tree.' .. src_buf, { clear = true })
   vim.b[src_buf].diff_tree_group = group
@@ -803,11 +892,18 @@ M.open_tree = function()
     pcall(vim.api.nvim_del_augroup_by_id, group)
   end
 
-  -- <CR> jumps to the section; q closes the tree.
+  -- <CR> jumps to the section; q closes the tree; ga stages the row's file;
+  -- za folds the section in the diff buffer.
   vim.keymap.set('n', '<CR>', function()
     jump_to_row(tree_buf)
   end, { buffer = tree_buf, desc = 'Diff tree: jump to section' })
   vim.keymap.set('n', 'q', close_tree, { buffer = tree_buf, desc = 'Diff tree: close' })
+  vim.keymap.set('n', 'ga', function()
+    M.tree_stage(tree_buf)
+  end, { buffer = tree_buf, desc = "Diff tree: git add the row's file" })
+  vim.keymap.set('n', 'za', function()
+    M.tree_toggle_fold(tree_buf)
+  end, { buffer = tree_buf, desc = 'Diff tree: fold/unfold the section in the diff buffer' })
 
   -- Hover (tree cursor moves): highlight + scroll the source.
   vim.api.nvim_create_autocmd('CursorMoved', {
