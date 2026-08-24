@@ -20,12 +20,6 @@ local SEP = ((config.icons or {}).separator or {}).right or '  '
 -- git glyph shared by the qf breadcrumb bars (Gclog stamp and :Diff bar)
 local GIT_ICON = ((config.icons or {}).git or {}).git or ''
 
-local AGENT_ICONS = {
-  claude = '󱙺',
-  opencode = '󱙺',
-  pi = '󰚩',
-}
-
 local CMD_OUTPUT_ICON = ' '
 
 --- Terminal label for a buffer: `   terminal`, plus a segment naming the
@@ -45,7 +39,7 @@ _G.get_terminal_label = function(bufnr)
     or (lib.term.is_opencode(bufnr) and 'opencode')
     or (lib.term.is_pi(bufnr) and 'pi')
   if agent then
-    return text .. SEP .. (AGENT_ICONS[agent] or '') .. ' ' .. agent
+    return text .. SEP .. config.icons.agent .. ' ' .. agent
   end
 
   return text

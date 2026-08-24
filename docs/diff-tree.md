@@ -1,11 +1,25 @@
 # Diff tree sidebar (`:DiffTree`)
 
 An InspectTree-like outline of a `filetype=git` diff buffer, in a left-side
-split. It shows only the `diff` grammar's two navigable sections — per-file
-`block`s and their `hunk`s — and reuses `:InspectTree`'s interaction model:
-hovering a row scrolls the section to the top of the diff buffer and unfolds
-it, `<CR>` jumps there, and the diff buffer's own cursor keeps the tree in
-sync.
+split, in three levels: a **directory group header** per parent directory, the
+**files** changed in it, and each file's **hunks**. The lower two are the `diff`
+grammar's navigable sections (`block`, `hunk`); the group headers are ours, so
+files sharing a parent directory sit together (mini.icons puts a glyph in
+front of each basename; not shown here):
+
+```
+lua/lib/
+ M Diff.lua         +407 -168
+   @@ -496,6 +496,7 @@
+   @@ -604,11 +612,7 @@
+ A git.lua                +86
+lua/plugins/
+ M treesitter.lua       +6 -1
+```
+
+Interaction follows `:InspectTree`: hovering a row scrolls the section to the
+top of the diff buffer and unfolds it, `<CR>` jumps there, and the diff
+buffer's own cursor keeps the tree in sync.
 
 ## Surface
 
@@ -25,25 +39,46 @@ The git→diff treesitter alias (`after/plugin/autocmds.lua`, see
 
 ## Rows
 
-`lib.Diff.tree_rows(bufnr)` walks the parse tree and emits one row per
-section, in document order:
+`lib.Diff.tree_rows(bufnr)` walks the parse tree and returns one flat list of
+three row kinds:
 
-- **block** (top level): `<icon> <path> <summary>` — path from the `+++ b/x`
-  line (falling back to the `diff --git` command's last path token, and to
-  `/dev/null`-aware handling for deletions); summary is the `+N -M` delta,
-  padded so summaries align.
-- **hunk** (indented two spaces under its block): the full `@@ -a,b +c,d @@`
-  line, including git's trailing function/class heading.
+- **dir** (column 0): the parent directory with its trailing slash (`lua/lib/`,
+  `./` for repo-root files). Emitted once per directory, in first-appearance
+  order, with every file of that directory underneath it.
+- **block** (a file, one space in): ` <status> <icon> <name> <summary>` — the
+  **basename** only, since the directory is the header above it. `status` is
+  `A`/`D`/`R`/`M` (added / deleted / renamed / modified), read from git's
+  `new file mode` / `deleted file mode` / `rename from|to` line and falling
+  back to the `/dev/null` side of the `---`/`+++` pair. The path itself comes
+  from the `+++ b/x` line (falling back to the `diff --git` command's last path
+  token, `/dev/null`-aware for deletions). The `+N -M` summary is
+  **right-aligned** at the sidebar's text width, and the label is truncated
+  with `…` where the two would collide.
+- **hunk** (indented under its file): the full `@@ -a,b +c,d @@` line,
+  including git's trailing function/class heading.
 
-Each row carries `lnum` (1-based jump target) and `range` (0-based node span,
-used for containment and for the range hover unfolds). Hunk rows also carry
-their block's `path`, so file-scoped actions (`ga`) work from either row kind.
+Grouping is by directory **key**, not by consecutive runs: git's path sort
+interleaves them (`a/b.txt`, `a/bb/z.txt`, `a/c.txt`), which would otherwise
+open `a/` twice. Files pulled up to their group keep their own `lnum`, so
+nothing about the jump targets changes.
+
+Every row carries `lnum` (1-based jump target) and `range` (0-based node span,
+used for containment and for the range hover unfolds); a dir row borrows both
+from its first file, which is what hover and `<CR>` act on there. Hunk rows
+also carry their block's `path`, so file-scoped actions (`ga`) work from any
+row kind but a dir. Dir rows instead carry `blocks`, the header line of every
+file in the group, so one fold command can fold all of them.
+
+Colours come from extmarks in the `lib.diff.tree` namespace: the group header
+as `Directory`, the status letter as `Added`/`Removed`/`Changed`, the
+mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
 
 ## Interaction (mirrors `:InspectTree`)
 
-- **Hover** — `CursorMoved` in the tree (`M.tree_focus`) does three things to
+- **Hover** — `CursorMoved` in the tree (`M.tree_focus`) does four things to
   the diff window, and never moves focus out of the tree; only `<CR>` moves
-  you:
+  you. A dir row acts on its first file, so hovering a group previews where it
+  starts:
   1. **unfold the section** — `zO` over the row's whole `range`, sent as the
      range form `:{a},{b}foldopen!` (every fold in the range, nested ones
      included), so a file row reveals all of its hunks. A plain `zO` would only
@@ -58,11 +93,12 @@ their block's `path`, so file-scoped actions (`ga`) work from either row kind.
      lands that many lines below the top edge, keeping the usual margin of
      context. That needs the diff window's cursor to move there too (see the
      gotcha below).
-  3. **highlight, blocks only** — a block row re-emits lib.diff_filepath's
+  3. **highlight, files only** — a block row re-emits lib.diff_filepath's
      overlay bar on its hover palette (`DiffFileBarHover*`); the header line's
      visible pixels belong to that extmark, whose `virt_text` chunks no second
-     extmark can restyle. Hunk rows paint nothing in the diff buffer — the
-     scroll is the feedback.
+     extmark can restyle. A dir row previews its first file, so it lights up
+     that file's bar. Hunk rows paint nothing in the diff buffer — the scroll
+     is the feedback.
   4. **refresh the sticky context** — nvim-treesitter-context for the *diff*
      window, so hovering a hunk keeps its `diff --git` header (filepath bar
      included, see `docs/diff-filepath-bar.md`) pinned above it even though the
@@ -86,23 +122,32 @@ their block's `path`, so file-scoped actions (`ga`) work from either row kind.
   changes, plain `git add` when untracked). Focus moves to the diff window
   first, so fugitive's interactive split doesn't open inside the 30-column
   sidebar. From a hunk row it stages the whole file (rows carry their block's
-  path).
+  path); on a dir row it does nothing — group headers carry no path, and
+  staging a whole directory is not what `ga` means anywhere else.
 - **`z` fold commands** — fold the **diff buffer**, mirrored onto the tree.
   `lib.Diff.tree_fold(tree_buf, key)` drives all of them from one spec table
   (`TREE_FOLD_ACTIONS`):
   - *line-scoped* `za` `zA` `zc` `zC` `zo` `zO` — act on the row's section: a
-    file row folds its whole `diff --git` block, a hunk row its `@@` section.
+    file row folds its whole `diff --git` block, a hunk row its `@@` section,
+    and a **dir row every block in its group** (the diff buffer has no
+    directory level of its own, so the command is sent once per member file,
+    and the direction comes from the tree's own fold — that is what `za`
+    toggles there).
     `toggle` (`za`/`zA`) reads the current state, the capitals pass `!` for the
     recursive form. Sent as the range form (`:{lnum}foldclose`), which acts on
     a line **without moving the diff window's cursor** — unlike `normal! zc`.
     Note the native scoping: a command only touches folds containing that line,
     so `zC` from a *hunk* row is what closes the enclosing block.
-    File rows mirror the new state onto the tree's own fold, so a collapsed
-    file hides its hunk rows here too; hunk rows have no tree fold to mirror.
+    Dir and file rows mirror the new state onto their own fold here, so a
+    collapsed directory hides its files and a collapsed file its hunk rows;
+    hunk rows have no tree fold to mirror. The mirror only acts when the row's
+    fold isn't already in that state (see the `:foldclose` gotcha below).
   - *window-wide* `zR` `zM` `zr` `zm` — only move the window's `'foldlevel'`,
     so they are cursor-independent and get forwarded verbatim (with a count:
-    `3zm`), then re-run in the tree window: `zM` collapses the tree to one row
-    per file, `zR` expands both again.
+    `3zm`), then re-run in the tree window. The tree simply has one level more
+    than the diff: `zM` collapses it to one row per **directory** (the diff to
+    one line per file), `zr` from there reveals the file rows, `zR` expands
+    everything again.
   - not forwarded (act on the tree only): `zv`, `zx`/`zX`, `zn`/`zN`/`zi`, and
     the `zj`/`zk` motions. Folding in the diff buffer itself is not mirrored
     back onto the tree.
@@ -112,9 +157,12 @@ their block's `path`, so file-scoped actions (`ga`) work from either row kind.
 - **Bidirectional** — `CursorMoved` in the diff buffer moves the tree cursor
   to the deepest row (hunk over block) containing the source cursor.
 - **Fold (the tree's own)** — `foldmethod=expr` +
-  `lib.Diff.tree_foldexpr()`: a block is a fold header (`>1`) when it has
-  hunks, hunks sit inside it (`1`). `zc`/`zo` on a block folds its hunks;
-  blocks without hunks (binary/rename) don't fold.
+  `lib.Diff.tree_foldexpr()`, three levels mirroring the rows: a dir header
+  opens level 1, a file row opens level 2 when it has hunks, and hunk rows sit
+  at level 2. So `zc` on a directory hides its whole subtree, `zc` on a file
+  hides its hunks, and `'foldlevel'` 0/1/2 gives dirs / dirs+files /
+  everything. A file without hunks (binary/rename) is a plain line inside its
+  group.
 
 `'scrolloff'` doubles as the room the context float needs: at the default 4,
 `zt` leaves four lines above the section and the float (`max_lines = 3`) paints
@@ -131,13 +179,18 @@ drops the hovered block's bar back to its normal palette.
 ## Testing
 
 `tests/integration/test_diff_tree.lua` (`make test-integration`) covers
-`tree_rows` (paths, summaries, `@@` text, ranges), `tree_row_containing`, the
-rendered buffer lines, the fold options **and the resulting fold levels**, the
-hovered block's bar (and that hunk rows paint nothing), hover's `zt` (topline
-with a non-zero `'scrolloff'`, the source cursor) and its unfold, the `<CR>`
-jump, every forwarded fold command (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on both row
-kinds, `zR`/`zM`/`zr` incl. a count, plus the tree mirror and the no-op
-repeats), the `ga` hand-off to `lib.git`, and the toggle-close.
+`tree_rows` (the dir/file/hunk shape, paths, statuses, summaries, `@@` text,
+ranges, a group's `blocks`), `tree_row_containing`, the rendered buffer lines,
+the fold options **and the resulting fold levels**, the hovered file's bar (and
+that hunk rows paint nothing, and that a dir row previews its first file),
+hover's `zt` (topline with a non-zero `'scrolloff'`, the source cursor) and its
+unfold, the `<CR>` jump, every forwarded fold command
+(`za`/`zA`/`zc`/`zC`/`zo`/`zO` on all three row kinds, `zR`/`zM`/`zr` incl. a
+count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
+`lib.git`, and the toggle-close. A second fixture covers the grouping itself:
+files spread over `./`, `lua/`, `lua/lib/` and `new/`, with `lua/lib/`
+interrupted mid-patch, one file of every status, a rename with no hunks, and a
+name long enough to be truncated.
 `lib.git.add` itself is covered against a throwaway repo in
 `tests/integration/test_diff_ga.lua`.
 
@@ -161,6 +214,12 @@ repeats), the `ga` hand-off to `lib.git`, and the toggle-close.
   every line, and — nothing ever edits the tree buffer to invalidate the cache
   — no row folded, in the tree or (once the `z` forwarding existed) anywhere. The rows are now
   stored first; the test asserts `foldlevel()`, not just the option values.
+- **`:foldclose` climbs.** On a line whose innermost fold is already closed it
+  closes the *enclosing* one — native `zc` behaviour. The tree has a directory
+  level the diff buffer hasn't, so a second `zc` on a file row would fold its
+  whole group away here while nothing moves there. The mirror therefore only
+  runs when the row's own fold isn't already in the wanted state
+  (`mirror_fold`).
 - **`multiwindow = true` is required** (`lua/plugins/treesitter.lua`). With it
   off, nvim-treesitter-context binds its close handler to `WinLeave`/`BufLeave`
   — entering the tree would close the diff window's context — and every update

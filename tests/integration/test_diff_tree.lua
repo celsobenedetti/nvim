@@ -70,41 +70,52 @@ assert_true(parsed, 'diff parser parsed buffer')
 local Diff = require('lib.Diff')
 
 -- ------------------------------------------------------------------
--- tree_rows: blocks + nested hunks in document order.
+-- tree_rows: a directory group header, its files, their hunks. Both files
+-- here live at the repo root, so they share one `./` group.
 -- ------------------------------------------------------------------
 local rows = Diff.tree_rows(buf)
-assert_eq(#rows, 5, 'two blocks, three hunks')
-assert_eq(rows[1].kind, 'block', 'row 1 is a block')
-assert_eq(rows[1].lnum, 1, 'block 1 lnum')
-assert_eq(rows[1].path, 'foo.txt', 'block 1 path (b/ prefix stripped)')
-assert_eq(rows[1].summary, ' +2 -2', 'block 1 summary')
-assert_eq(rows[2].kind, 'hunk', 'row 2 is a hunk')
-assert_eq(rows[2].lnum, 5, 'hunk 1 lnum')
-assert_eq(rows[2].text, '@@ -1,2 +1,2 @@', 'hunk 1 @@ line')
-assert_eq(rows[2].path, 'foo.txt', 'hunk rows carry their block path (file actions)')
-assert_eq(rows[3].lnum, 9, 'hunk 2 lnum')
-assert_eq(rows[3].text, '@@ -5,1 +5,1 @@ function bar()', 'hunk 2 @@ line keeps the heading')
-assert_eq(rows[4].kind, 'block', 'row 4 is a block')
-assert_eq(rows[4].lnum, 12, 'block 2 lnum')
-assert_eq(rows[4].path, 'b.txt', 'block 2 path')
-assert_eq(rows[4].summary, ' +1 -1', 'block 2 summary')
-assert_eq(rows[5].kind, 'hunk', 'row 5 is a hunk')
-assert_eq(rows[5].lnum, 16, 'hunk 3 lnum')
-assert_eq(rows[5].text, '@@ -1 +1 @@', 'hunk 3 @@ line')
-assert_eq(rows[5].path, 'b.txt', 'hunk 3 path is block 2')
--- ranges: block 1 spans rows 0..11, hunk 1 rows 4..8 (0-based).
-assert_eq(rows[1].range[1], 0, 'block 1 range start')
-assert_eq(rows[1].range[3], 11, 'block 1 range end')
-assert_eq(rows[2].range[1], 4, 'hunk 1 range start')
-assert_eq(rows[2].range[3], 8, 'hunk 1 range end')
+assert_eq(#rows, 6, 'one dir group, two blocks, three hunks')
+assert_eq(rows[1].kind, 'dir', 'row 1 is the group header')
+assert_eq(rows[1].dir, './', 'repo-root files group under ./')
+assert_eq(rows[1].lnum, 1, "the group's jump target is its first file")
+assert_eq(rows[1].blocks, { 1, 12 }, 'the group carries every file header (fold forwarding)')
+assert_eq(rows[2].kind, 'block', 'row 2 is a block')
+assert_eq(rows[2].lnum, 1, 'block 1 lnum')
+assert_eq(rows[2].path, 'foo.txt', 'block 1 path (b/ prefix stripped)')
+assert_eq(rows[2].name, 'foo.txt', 'block 1 basename (what the row shows)')
+assert_eq(rows[2].status, 'M', 'block 1 is a content change')
+assert_eq(rows[2].summary, ' +2 -2', 'block 1 summary')
+assert_eq(rows[3].kind, 'hunk', 'row 3 is a hunk')
+assert_eq(rows[3].lnum, 5, 'hunk 1 lnum')
+assert_eq(rows[3].text, '@@ -1,2 +1,2 @@', 'hunk 1 @@ line')
+assert_eq(rows[3].path, 'foo.txt', 'hunk rows carry their block path (file actions)')
+assert_eq(rows[4].lnum, 9, 'hunk 2 lnum')
+assert_eq(rows[4].text, '@@ -5,1 +5,1 @@ function bar()', 'hunk 2 @@ line keeps the heading')
+assert_eq(rows[5].kind, 'block', 'row 5 is a block')
+assert_eq(rows[5].lnum, 12, 'block 2 lnum')
+assert_eq(rows[5].path, 'b.txt', 'block 2 path')
+assert_eq(rows[5].summary, ' +1 -1', 'block 2 summary')
+assert_eq(rows[6].kind, 'hunk', 'row 6 is a hunk')
+assert_eq(rows[6].lnum, 16, 'hunk 3 lnum')
+assert_eq(rows[6].text, '@@ -1 +1 @@', 'hunk 3 @@ line')
+assert_eq(rows[6].path, 'b.txt', 'hunk 3 path is block 2')
+-- ranges: block 1 spans rows 0..11, hunk 1 rows 4..8 (0-based); the group
+-- header borrows its first file's, so hover/`<CR>` land on that file.
+assert_eq(rows[1].range, rows[2].range, "the group header borrows its first file's range")
+assert_eq(rows[2].range[1], 0, 'block 1 range start')
+assert_eq(rows[2].range[3], 11, 'block 1 range end')
+assert_eq(rows[3].range[1], 4, 'hunk 1 range start')
+assert_eq(rows[3].range[3], 8, 'hunk 1 range end')
 
 -- ------------------------------------------------------------------
--- Pure helpers backing the hover and bidirectional-sync autocmds.
+-- Pure helpers backing the hover and bidirectional-sync autocmds. Group
+-- headers are skipped: their range is a copy of a file's, and it is the file
+-- row the source cursor should sync to.
 -- ------------------------------------------------------------------
-assert_eq(Diff.tree_row_containing(rows, 0), 1, 'block header -> block row')
-assert_eq(Diff.tree_row_containing(rows, 6), 2, 'inside hunk 1 -> hunk row')
-assert_eq(Diff.tree_row_containing(rows, 16), 5, 'inside hunk 3 -> hunk row')
-assert_eq(Diff.tree_row_containing(rows, 11), 4, 'block 2 header -> block row')
+assert_eq(Diff.tree_row_containing(rows, 0), 2, 'block header -> block row')
+assert_eq(Diff.tree_row_containing(rows, 6), 3, 'inside hunk 1 -> hunk row')
+assert_eq(Diff.tree_row_containing(rows, 16), 6, 'inside hunk 3 -> hunk row')
+assert_eq(Diff.tree_row_containing(rows, 11), 5, 'block 2 header -> block row')
 assert_eq(Diff.tree_row_containing(rows, 100), nil, 'past the end -> no row')
 
 -- ------------------------------------------------------------------
@@ -131,21 +142,22 @@ assert_eq(vim.wo[tree_win].foldexpr, 'v:lua.lib.Diff.tree_foldexpr()', 'tree fol
 -- every line cached level 0 (nothing edits this buffer to invalidate it).
 assert_eq(
   vim.api.nvim_win_call(tree_win, function()
-    return { vim.fn.foldlevel(1), vim.fn.foldlevel(2) }
+    return { vim.fn.foldlevel(1), vim.fn.foldlevel(2), vim.fn.foldlevel(3) }
   end),
-  { 1, 1 },
-  'block row opens a fold its hunk rows sit in'
+  { 1, 2, 2 },
+  'dir fold (level 1) holds the file folds (level 2) holding the hunk rows'
 )
 
--- No mini.icons under -u NONE: labels are bare paths, padded so summaries
--- align (widest label 'foo.txt' = 7).
+-- No mini.icons under -u NONE, so no glyph column: ` <status> <basename>`,
+-- with the summary right-aligned at the sidebar's text width (29).
 assert_eq(vim.api.nvim_buf_get_lines(tree_buf, 0, -1, false), {
-  'foo.txt  +2 -2',
-  '  @@ -1,2 +1,2 @@',
-  '  @@ -5,1 +5,1 @@ function bar()',
-  'b.txt    +1 -1',
-  '  @@ -1 +1 @@',
-}, 'tree renders block/hunk rows')
+  './',
+  ' M foo.txt              +2 -2',
+  '   @@ -1,2 +1,2 @@',
+  '   @@ -5,1 +5,1 @@ function bar()',
+  ' M b.txt                +1 -1',
+  '   @@ -1 +1 @@',
+}, 'tree renders dir/block/hunk rows')
 
 -- open_tree focused the first row (a block): its filepath bar is re-emitted
 -- on the Hover palette (lib.diff_filepath.set_hover), and no Visual mark is
@@ -161,19 +173,24 @@ assert_eq(bars[1][4].virt_text, {
 }, 'hovered bar chunks use the Hover palette')
 assert_eq(require('lib.diff_filepath').hover(buf), 0, 'hover state records block 1 row')
 
--- Hunk rows in the tree buffer are dimmed as Comment.
+-- Row colours: the group header as a Directory, each status letter in a diff
+-- group, hunk rows dimmed as Comment (no icon marks without mini.icons).
 local tree_ns = vim.api.nvim_get_namespaces()['lib.diff.tree']
 local tree_marks = vim.api.nvim_buf_get_extmarks(tree_buf, tree_ns, 0, -1, { details = true })
-assert_eq(#tree_marks, 3, 'three hunk rows carry Comment marks')
-assert_eq({ tree_marks[1][2], tree_marks[1][3] }, { 1, 0 }, 'first mark on tree line 2')
-assert_eq(tree_marks[1][4].hl_group, 'Comment', 'hunk rows use Comment')
-assert_eq({ tree_marks[3][2], tree_marks[3][3] }, { 4, 0 }, 'last mark on tree line 5')
+assert_eq(#tree_marks, 6, 'one dir mark, two status letters, three hunk rows')
+assert_eq({ tree_marks[1][2], tree_marks[1][3] }, { 0, 0 }, 'the dir mark spans its whole line')
+assert_eq(tree_marks[1][4].hl_group, 'Directory', 'group headers use Directory')
+assert_eq({ tree_marks[2][2], tree_marks[2][3] }, { 1, 1 }, "block 1's status letter, column 2")
+assert_eq({ tree_marks[2][4].end_col, tree_marks[2][4].hl_group }, { 2, 'Changed' }, 'M is a Changed letter')
+assert_eq({ tree_marks[3][2], tree_marks[3][3] }, { 2, 0 }, 'first hunk mark on tree line 3')
+assert_eq(tree_marks[3][4].hl_group, 'Comment', 'hunk rows use Comment')
+assert_eq({ tree_marks[6][2], tree_marks[6][3] }, { 5, 0 }, 'last mark on tree line 6')
 
 -- Moving to a hunk row restores the bar's normal palette; hunk rows get no
 -- highlight of their own in the diff buffer, the scroll is the feedback
 -- (driven via M.tree_focus; CursorMoved never fires under --headless, so the
 -- autocmd wiring is covered by the keymap test).
-vim.api.nvim_win_set_cursor(tree_win, { 2, 0 })
+vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1
 Diff.tree_focus(tree_buf, tree_win)
 assert_eq(require('lib.diff_filepath').hover(buf), nil, 'hunk hover clears the bar hover')
 bars = vim.api.nvim_buf_get_extmarks(buf, bar_ns, 0, -1, { details = true })
@@ -193,7 +210,7 @@ local function src_topline()
   end)
 end
 
-vim.api.nvim_win_set_cursor(tree_win, { 4, 0 }) -- block 2, source line 12
+vim.api.nvim_win_set_cursor(tree_win, { 5, 0 }) -- block 2, source line 12
 Diff.tree_focus(tree_buf, tree_win)
 assert_eq(src_topline(), 8, 'hovering block 2 tops its header, minus the scrolloff margin')
 -- The cursor comes along: nvim keeps a window's cursor visible, so a topline
@@ -201,18 +218,28 @@ assert_eq(src_topline(), 8, 'hovering block 2 tops its header, minus the scrollo
 assert_eq(vim.api.nvim_win_get_cursor(src_win)[1], 12, 'source cursor follows the hover')
 assert_eq(vim.api.nvim_get_current_win(), tree_win, 'focus stays in the tree')
 
-vim.api.nvim_win_set_cursor(tree_win, { 5, 0 }) -- hunk 3, source line 16
+vim.api.nvim_win_set_cursor(tree_win, { 6, 0 }) -- hunk 3, source line 16
 Diff.tree_focus(tree_buf, tree_win)
 assert_eq(src_topline(), 12, 'hovering hunk 3 tops its @@ line, minus the margin')
 
-vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- back to block 1, line 1
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- back to block 1, line 1
 Diff.tree_focus(tree_buf, tree_win)
 assert_eq(src_topline(), 1, 'hovering block 1 scrolls back to the top (no margin to keep)')
+
+-- A group header previews its first file, so hovering `./` is hovering
+-- foo.txt: same scroll, and the bar lights up on the Hover palette.
+vim.api.nvim_win_set_cursor(tree_win, { 5, 0 })
+Diff.tree_focus(tree_buf, tree_win)
+vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- the ./ header
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(src_topline(), 1, "hovering a group tops its first file's header")
+assert_eq(vim.api.nvim_win_get_cursor(src_win)[1], 1, 'and moves the source cursor there')
+assert_eq(require('lib.diff_filepath').hover(buf), 0, "the group hover lights that file's bar")
 
 -- ------------------------------------------------------------------
 -- <CR> jumps the source cursor to the row's lnum (keymaps do fire headless).
 -- ------------------------------------------------------------------
-vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- hunk 1
+vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1
 vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'x', false)
 vim.wait(100)
 assert_eq(vim.api.nvim_get_current_win(), src_win, 'jump focuses the source window')
@@ -253,7 +280,7 @@ end
 vim.api.nvim_set_current_win(tree_win)
 vim.wo[src_win].foldlevel = 0 -- everything closed
 assert_eq(src_foldclosed(1), 1, 'block 1 starts closed')
-vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- block foo.txt
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- block foo.txt
 Diff.tree_focus(tree_buf, tree_win)
 assert_eq(src_foldclosed(1), -1, 'hover opens the hovered block')
 assert_eq(src_foldclosed(5), -1, 'and the hunk folds nested inside it')
@@ -263,38 +290,53 @@ vim.wo[src_win].foldlevel = 99 -- back to all-open for the fold-command tests
 assert_eq(src_foldclosed(1), -1, 'source starts unfolded')
 
 vim.api.nvim_set_current_win(tree_win)
-vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- block foo.txt
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- block foo.txt
 feed('za')
 assert_eq(src_foldclosed(1), 1, 'za on a file row closes its block in the diff')
-assert_eq(tree_foldclosed(1), 1, 'and mirrors onto the tree row (hides its hunks)')
+assert_eq(tree_foldclosed(2), 2, 'and mirrors onto the tree row (hides its hunks)')
 assert_eq(vim.api.nvim_get_current_win(), tree_win, 'focus stays in the tree')
 
 feed('za')
 assert_eq(src_foldclosed(1), -1, 'za again reopens the block')
-assert_eq(tree_foldclosed(1), -1, 'tree fold reopens too')
+assert_eq(tree_foldclosed(2), -1, 'tree fold reopens too')
 
-vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- hunk 1
+vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1
 feed('za')
 assert_eq(src_foldclosed(5), 5, 'za on a hunk row closes that hunk')
 assert_eq(src_foldclosed(1), -1, 'the enclosing block stays open')
-assert_eq(tree_foldclosed(2), -1, 'hunk rows have no tree fold to mirror')
+assert_eq(tree_foldclosed(3), -1, 'hunk rows have no tree fold to mirror')
 feed('za')
 assert_eq(src_foldclosed(5), -1, 'za reopens the hunk')
 
--- `zc` / `zo`: single level, and idempotent on a repeated press.
-vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
+-- A group header folds every file in it (it owns no fold in the diff itself),
+-- and its own tree fold hides the whole subtree.
+vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- the ./ header
+feed('za')
+assert_eq({ src_foldclosed(1), src_foldclosed(12) }, { 1, 12 }, 'za on a group closes all of its files')
+assert_eq(tree_foldclosed(1), 1, 'and closes the tree group (hides its files and hunks)')
+feed('za')
+assert_eq({ src_foldclosed(1), src_foldclosed(12) }, { -1, -1 }, 'za reopens all of them')
+assert_eq(tree_foldclosed(1), -1, 'the tree group reopens too')
+
 feed('zc')
-assert_eq({ src_foldclosed(1), tree_foldclosed(1) }, { 1, 1 }, 'zc closes the block (and the tree row)')
+assert_eq({ src_foldclosed(12), tree_foldclosed(1) }, { 12, 1 }, 'zc on a group closes it')
+feed('zo')
+assert_eq({ src_foldclosed(12), tree_foldclosed(1) }, { -1, -1 }, 'zo on a group reopens it')
+
+-- `zc` / `zo`: single level, and idempotent on a repeated press.
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 })
+feed('zc')
+assert_eq({ src_foldclosed(1), tree_foldclosed(2) }, { 1, 2 }, 'zc closes the block (and the tree row)')
 feed('zc')
 assert_eq(src_foldclosed(1), 1, 'zc again is a no-op')
 feed('zo')
-assert_eq({ src_foldclosed(1), tree_foldclosed(1) }, { -1, -1 }, 'zo reopens both')
+assert_eq({ src_foldclosed(1), tree_foldclosed(2) }, { -1, -1 }, 'zo reopens both')
 feed('zo')
 assert_eq(src_foldclosed(1), -1, 'zo again is a no-op')
 
 -- On a hunk row, `zc` closes just that hunk; `zC` recurses out to the block
 -- (fold commands act on the folds containing the cursor line).
-vim.api.nvim_win_set_cursor(tree_win, { 2, 0 })
+vim.api.nvim_win_set_cursor(tree_win, { 3, 0 })
 feed('zc')
 assert_eq({ src_foldclosed(5), src_foldclosed(1) }, { 5, -1 }, 'zc on a hunk row closes only the hunk')
 feed('zo')
@@ -316,12 +358,12 @@ assert_eq({ src_foldclosed(1), src_foldclosed(5) }, { -1, -1 }, 'zA toggles all 
 feed('zM')
 assert_eq({ src_foldclosed(1), src_foldclosed(12) }, { 1, 12 }, 'zM closes every block in the diff')
 assert_eq(vim.wo[src_win].foldlevel, 0, 'zM zeroes the diff foldlevel')
-assert_eq(tree_foldclosed(1), 1, 'and collapses the tree to one row per file')
+assert_eq(tree_foldclosed(1), 1, 'and collapses the tree to one row per directory')
 
 feed('zr')
 assert_eq(vim.wo[src_win].foldlevel, 1, 'zr lifts the diff foldlevel by one')
 assert_eq({ src_foldclosed(1), src_foldclosed(5) }, { -1, 5 }, 'blocks open, hunks still folded')
-assert_eq(tree_foldclosed(1), -1, 'the tree (one fold level) is fully expanded again')
+assert_eq({ tree_foldclosed(1), tree_foldclosed(2) }, { -1, 2 }, 'the tree shows its files, hunks folded')
 
 feed('zM')
 feed('2zr')
@@ -342,13 +384,13 @@ git.add = function(file)
 end
 
 vim.api.nvim_set_current_win(tree_win)
-vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- hunk 1, under foo.txt
+vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1, under foo.txt
 feed('ga')
 assert_eq(staged, { 'foo.txt' }, 'ga on a hunk row stages its block file')
 assert_eq(vim.api.nvim_get_current_win(), src_win, 'ga focuses the diff window for the add -p split')
 
 vim.api.nvim_set_current_win(tree_win)
-vim.api.nvim_win_set_cursor(tree_win, { 4, 0 }) -- block b.txt
+vim.api.nvim_win_set_cursor(tree_win, { 5, 0 }) -- block b.txt
 feed('ga')
 assert_eq(staged, { 'foo.txt', 'b.txt' }, 'ga on a file row stages that file')
 
@@ -362,6 +404,120 @@ vim.wait(50)
 assert_true(not vim.api.nvim_win_is_valid(tree_win), 'second DiffTree closes the tree')
 assert_eq(#vim.api.nvim_tabpage_list_wins(0), 1, 'back to a single window')
 assert_eq(vim.wo[src_win].scrolloff, 4, 'the diff window scrolloff was never touched')
+
+-- ------------------------------------------------------------------
+-- Directory grouping: a second patch whose files spread over several
+-- directories, with `lua/lib/` interrupted by `lua/config.lua` (git's path
+-- sort does that whenever a sibling directory sorts inside the range) and one
+-- file of every status.
+-- ------------------------------------------------------------------
+local buf2 = vim.api.nvim_create_buf(false, true)
+vim.api.nvim_buf_set_lines(buf2, 0, -1, false, {
+  'diff --git a/AGENTS.md b/AGENTS.md', -- 1  root file
+  'index 1111111..2222222 100644', -- 2
+  '--- a/AGENTS.md', -- 3
+  '+++ b/AGENTS.md', -- 4
+  '@@ -1 +1,2 @@', -- 5
+  ' x', -- 6
+  '+y', -- 7
+  'diff --git a/lua/lib/a.lua b/lua/lib/a.lua', -- 8  lua/lib/
+  'index 1111111..2222222 100644', -- 9
+  '--- a/lua/lib/a.lua', -- 10
+  '+++ b/lua/lib/a.lua', -- 11
+  '@@ -1 +1 @@', -- 12
+  '-a', -- 13
+  '+A', -- 14
+  'diff --git a/lua/config.lua b/lua/config.lua', -- 15 lua/ (added)
+  'new file mode 100644', -- 16
+  'index 0000000..1111111', -- 17
+  '--- /dev/null', -- 18
+  '+++ b/lua/config.lua', -- 19
+  '@@ -0,0 +1 @@', -- 20
+  '+cfg', -- 21
+  'diff --git a/lua/lib/a-very-long-module-name.lua b/lua/lib/a-very-long-module-name.lua', -- 22 lua/lib/ again (deleted)
+  'deleted file mode 100644', -- 23
+  'index 1111111..0000000', -- 24
+  '--- a/lua/lib/a-very-long-module-name.lua', -- 25
+  '+++ /dev/null', -- 26
+  '@@ -1 +0,0 @@', -- 27
+  '-gone', -- 28
+  'diff --git a/old/x.txt b/new/x.txt', -- 29 new/ (renamed, no hunks)
+  'similarity index 100%', -- 30
+  'rename from old/x.txt', -- 31
+  'rename to new/x.txt', -- 32
+})
+vim.bo[buf2].filetype = 'git'
+vim.api.nvim_win_set_buf(0, buf2)
+
+local rows2 = Diff.tree_rows(buf2)
+local shape = {}
+for _, r in ipairs(rows2) do
+  shape[#shape + 1] = r.kind == 'dir' and r.dir or (r.kind == 'block' and (r.status .. ' ' .. r.name) or r.text)
+end
+assert_eq(shape, {
+  './',
+  'M AGENTS.md',
+  '@@ -1 +1,2 @@',
+  'lua/lib/',
+  'M a.lua',
+  '@@ -1 +1 @@',
+  'D a-very-long-module-name.lua',
+  '@@ -1 +0,0 @@',
+  'lua/',
+  'A config.lua',
+  '@@ -0,0 +1 @@',
+  'new/',
+  'R x.txt',
+}, 'files are grouped under their directory, in first-appearance order')
+-- The deleted file sits with a.lua, four sections further down the patch: the
+-- grouping is by directory, not by consecutive runs.
+assert_eq(rows2[7].lnum, 22, 'the pulled-up file keeps its own jump target')
+assert_eq(rows2[4].blocks, { 8, 22 }, 'the group header carries both of its files')
+assert_eq(rows2[4].lnum, 8, 'and jumps to the first of them')
+assert_eq(rows2[13].summary, '', 'a rename has no +/- lines to summarise')
+assert_eq(rows2[13].path, 'new/x.txt', 'a rename is filed under its new path')
+
+local src_win2 = vim.api.nvim_get_current_win()
+Diff.open_tree()
+local tree2 = vim.api.nvim_get_current_win()
+local tree_buf2 = vim.api.nvim_win_get_buf(tree2)
+-- The group header at column 0, its files indented behind a status letter and
+-- carrying the basename only, summaries right-aligned at width 29, and a name
+-- too long for the room left over cut with an ellipsis.
+assert_eq(vim.api.nvim_buf_get_lines(tree_buf2, 0, -1, false), {
+  './',
+  ' M AGENTS.md               +1',
+  '   @@ -1 +1,2 @@',
+  'lua/lib/',
+  ' M a.lua                +1 -1',
+  '   @@ -1 +1 @@',
+  ' D a-very-long-module-nam… -1',
+  '   @@ -1 +0,0 @@',
+  'lua/',
+  ' A config.lua              +1',
+  '   @@ -0,0 +1 @@',
+  'new/',
+  ' R x.txt',
+}, 'grouped tree rendering')
+
+-- Fold levels: dir 1, file 2 (a file without hunks is just a line in its
+-- group), hunk 2.
+assert_eq(
+  vim.api.nvim_win_call(tree2, function()
+    local lv = {}
+    for _, l in ipairs({ 1, 2, 3, 4, 5, 9, 12, 13 }) do
+      lv[#lv + 1] = vim.fn.foldlevel(l)
+    end
+    return lv
+  end),
+  { 1, 2, 2, 1, 2, 1, 1, 1 },
+  'dir/file/hunk fold levels'
+)
+-- Toggle off from the diff window (open_tree acts on the current buffer, and
+-- the tree buffer is not a patch).
+vim.api.nvim_set_current_win(src_win2)
+Diff.open_tree()
+assert_true(not vim.api.nvim_win_is_valid(tree2), 'the grouped tree closes again')
 
 print('OK: DiffTree sidebar')
 vim.cmd('qa!')

@@ -9,8 +9,9 @@
 --- The treesitter `diff` grammar (aliased onto `git` in after/plugin/autocmds.lua)
 --- locates each per-file `block`; that drives both indexes:
 ---
---- - `:Diff`   -> DiffTree sidebar on the left (blocks + their hunks), focused;
----               hovering a row previews the section (see docs/diff-tree.md).
+--- - `:Diff`   -> DiffTree sidebar on the left, grouped by parent directory
+---               (dir header -> its files -> their hunks), focused; hovering a
+---               row previews the section (see docs/diff-tree.md).
 --- - `:DiffQf` -> quickfix list below, one entry per block pointing at its
 ---               `diff --git` header line (the pre-tree default).
 ---

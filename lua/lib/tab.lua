@@ -10,11 +10,7 @@ local names = {}
 -- functions receive the tab's buffer id. Terminal labels are shared with the
 -- winbar (after/plugin/winbar.lua) via get_terminal_label.
 ---@type table<string,string|fun(bufnr: number): string>
-local SPECIAL_FILETYPES = {
-  terminal = function(bufnr)
-    return _G.get_terminal_label(bufnr)
-  end,
-}
+local SPECIAL_FILETYPES = {}
 
 ---@type string?
 local pending_name = nil
@@ -256,9 +252,6 @@ M.render = function()
     end
     if name:find('lazygit') then
       prefix = config.icons.git.git
-    end
-    if name:find('claude') then
-      prefix = config.icons.agent
     end
 
     if i > 1 then

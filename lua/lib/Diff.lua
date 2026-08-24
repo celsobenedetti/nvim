@@ -494,14 +494,20 @@ end
 
 -- ---------------------------------------------------------------------------
 -- Diff tree sidebar: an InspectTree-like outline of a `filetype=git` diff
--- buffer on the left, showing only per-file `block`s (top level, rendered
--- `<icon> <path> <summary>`) and their `hunk`s (nested `@@` lines). Focus
--- (CursorMoved) parks the section at the top of the diff window and unfolds
--- it; <CR> jumps there; the diff buffer's own cursor keeps the tree in sync
--- (bidirectional). Blocks fold their hunks with native expr folding.
+-- buffer on the left, in three levels — a directory group header per parent
+-- dir (`lua/lib/`), the files changed in it (` M <icon> Diff.lua    +40 -8`,
+-- basename only, summary right-aligned), and each file's `hunk`s (`@@` lines).
+-- Focus (CursorMoved) parks the section at the top of the diff window and
+-- unfolds it; <CR> jumps there; the diff buffer's own cursor keeps the tree in
+-- sync (bidirectional). Native expr folding matches the levels: a directory
+-- folds away its files, a file its hunks.
 -- ---------------------------------------------------------------------------
 
 local TREE_NS = vim.api.nvim_create_namespace('lib.diff.tree')
+
+---Highlight for a block row's status letter (nvim's built-in diff groups). A
+---rename is a change of name, hence `Changed`.
+local STATUS_HL = { A = 'Added', D = 'Removed', M = 'Changed', R = 'Changed' }
 
 ---lib.diff_filepath handle, required on first use: it requires this module at
 ---its own load time, so requiring it at the top of the file would be a
@@ -532,6 +538,53 @@ local function block_path(block, bufnr)
     return new_file_text
   end
   return command_text or ''
+end
+
+---Change kind of a `block`, as the one-letter flag the tree shows: `A` added,
+---`D` deleted, `R` renamed, `M` modified. Read from the `file_change` line git
+---puts under the `diff --git` command (`new file mode`, `deleted file mode`,
+---`rename from`/`to`), falling back to a `/dev/null` side of the `---`/`+++`
+---pair. `git diff` writes no mode line for a plain content change, so `M` is
+---the default.
+---@param block TSNode
+---@param bufnr number
+---@return string
+local function block_status(block, bufnr)
+  local old_null, new_null = false, false
+  for child in block:iter_children() do
+    local t = child:type()
+    if t == 'file_change' then
+      local first = child:child(0)
+      local kind = first and first:type()
+      if kind == 'new' then
+        return 'A'
+      elseif kind == 'deleted' then
+        return 'D'
+      elseif kind == 'rename' then
+        return 'R'
+      end
+    elseif t == 'old_file' then
+      old_null = new_path(child, bufnr) == '/dev/null'
+    elseif t == 'new_file' then
+      new_null = new_path(child, bufnr) == '/dev/null'
+    end
+  end
+  if new_null then
+    return 'D'
+  elseif old_null then
+    return 'A'
+  end
+  return 'M'
+end
+
+---Directory group key for a path: everything up to the last `/`, slash kept
+---(`./` for repo-root files). Files sharing one are listed under a single
+---group header in the tree.
+---@param path string
+---@return string
+local function dir_of(path)
+  local dir = path:match('^(.*)/[^/]*$')
+  return dir and (dir .. '/') or './'
 end
 
 ---New path of the per-file `block` the cursor sits in, for actions that
@@ -578,13 +631,27 @@ local function hunk_text(hunk, bufnr)
   return '@@'
 end
 
----One row per block/hunk in document order, for the diff tree sidebar.
----Blocks are top-level entries (`path` + `summary`); hunks are nested under
----their block (`text` = the `@@` line, plus their block's `path`, so
----file-scoped actions work from a hunk row). `lnum` is the 1-based jump target
----(block: `diff --git` header; hunk: `@@` header); `range` is the node's
----0-based span (block: whole section, used for containment; hunk: whole hunk,
----used for both containment and hover highlight).
+---Three levels of rows for the diff tree sidebar, in one flat list: a `dir`
+---group header per parent directory, the `block` (file) rows of that
+---directory under it, and each block's `hunk` rows under that.
+---
+---Files are grouped by `dir_of(path)` in first-appearance order, and each
+---group keeps document order. Grouping by key rather than by consecutive runs
+---matters because git's path sort interleaves them: `a/b.txt`, `a/bb/z.txt`,
+---`a/c.txt` would otherwise open `a/` twice.
+---
+---Every row carries:
+--- * `lnum` — the 1-based jump target: a block's `diff --git` header, a hunk's
+---   `@@` header, and for a dir its first file's header (hover, `<CR>`).
+--- * `range` — the node's 0-based span, used for containment
+---   (M.tree_row_containing) and for hover's unfold; a dir borrows its first
+---   file's.
+--- * `path` — the full path, on hunk rows too, so file-scoped actions (`ga`)
+---   work from either row kind.
+---
+---Block rows add the display bits (`name` basename, `dir`, `status`, `icon` +
+---`icon_hl`, `summary`); dir rows add `blocks`, the header line of every file
+---in the group, so one fold command can fold all of them (M.tree_fold).
 ---@param bufnr number
 ---@return table[]
 M.tree_rows = function(bufnr)
@@ -592,21 +659,18 @@ M.tree_rows = function(bufnr)
   local root = tree:root()
   local stats = block_stats(root, bufnr)
 
-  local rows = {}
+  -- Pass 1: one entry per file section, in document order, carrying its own
+  -- hunk rows (emitted right behind it in pass 2).
+  local files = {}
   local function walk(node)
     for child in node:iter_children() do
       if child:type() == 'block' then
         local path = block_path(child, bufnr)
         local s = stats[child:start()]
-        rows[#rows + 1] = {
-          kind = 'block',
-          lnum = child:start() + 1,
-          path = path,
-          summary = summary_text(s and s.adds or 0, s and s.dels or 0),
-          range = { child:range() },
-        }
+        local icon, icon_hl = file_icon(path)
+        local hunks = {}
         for _, hunk in ipairs(collect_nodes(child, 'hunk')) do
-          rows[#rows + 1] = {
+          hunks[#hunks + 1] = {
             kind = 'hunk',
             lnum = hunk:start() + 1,
             text = hunk_text(hunk, bufnr),
@@ -615,47 +679,134 @@ M.tree_rows = function(bufnr)
             range = { hunk:range() },
           }
         end
+        files[#files + 1] = {
+          kind = 'block',
+          lnum = child:start() + 1,
+          path = path,
+          name = path:match('[^/]*$'),
+          dir = dir_of(path),
+          status = block_status(child, bufnr),
+          icon = icon,
+          icon_hl = icon_hl,
+          summary = summary_text(s and s.adds or 0, s and s.dels or 0),
+          range = { child:range() },
+          hunks = hunks,
+        }
       else
         walk(child)
       end
     end
   end
   walk(root)
+
+  -- Pass 2: group header, then that group's files with their hunks.
+  local order, groups = {}, {}
+  for _, f in ipairs(files) do
+    if not groups[f.dir] then
+      groups[f.dir] = {}
+      order[#order + 1] = f.dir
+    end
+    table.insert(groups[f.dir], f)
+  end
+
+  local rows = {}
+  for _, dir in ipairs(order) do
+    local members = groups[dir]
+    local lnums = {}
+    for _, f in ipairs(members) do
+      lnums[#lnums + 1] = f.lnum
+    end
+    rows[#rows + 1] = {
+      kind = 'dir',
+      dir = dir,
+      lnum = members[1].lnum,
+      range = members[1].range,
+      blocks = lnums,
+    }
+    for _, f in ipairs(members) do
+      local hunks = f.hunks
+      -- Dropped once emitted: the rows round-trip through `vim.b` (open_tree),
+      -- no need to carry a second copy of every hunk row in there.
+      f.hunks = nil
+      rows[#rows + 1] = f
+      for _, h in ipairs(hunks) do
+        rows[#rows + 1] = h
+      end
+    end
+  end
   return rows
 end
 
----Foldexpr for the tree window (`foldmethod=expr`): a block is a fold header
----(`>1` starts the fold) when it has hunks; hunks sit inside it (`1`). Blocks
----without hunks (binary/rename) don't fold.
+---Foldexpr for the tree window (`foldmethod=expr`): three levels mirroring the
+---rows. A dir header opens level 1, so `zc` on it hides the whole directory; a
+---file row opens level 2 when it has hunks, so `zc` on it hides just those;
+---hunk rows sit at level 2. A file without hunks (binary/rename) is a plain
+---line inside its group. 'foldlevel' 0/1/2 is therefore dirs / dirs+files /
+---everything.
 M.tree_foldexpr = function()
   local rows = vim.b.diff_tree_rows
   local r = rows and rows[vim.v.lnum]
   if not r then
     return '0'
   end
+  if r.kind == 'dir' then
+    return '>1'
+  end
   if r.kind == 'block' then
     local next = rows[vim.v.lnum + 1]
-    return (next and next.kind == 'hunk') and '>1' or '0'
+    return (next and next.kind == 'hunk') and '>2' or '1'
   end
-  return '1'
+  return '2'
 end
 
----Render a tree row into a display line. Block rows are `<icon> <path>`,
----padded so their `+N -M` summaries align (no padding when the summary is
----empty); hunk rows are two-space-indented `@@` lines under their block.
----@param row table
----@param label_w integer width of the widest block label
+---Sidebar geometry: the split's width, and the text column inside it — the
+---last cell stays blank so a right-aligned summary doesn't touch the edge.
+local TREE_WIDTH = 30
+local TREE_TEXT_WIDTH = TREE_WIDTH - 1
+
+---Truncate to `width` display cells, marking the cut with an ellipsis. Cells,
+---not characters: a path can hold a wide glyph, and the summary column has to
+---land where it was promised.
+---@param s string
+---@param width integer
 ---@return string
-local function render_row(row, label_w)
-  if row.kind == 'block' then
-    local icon = file_icon(row.path)
-    local label = icon ~= '' and (icon .. ' ' .. row.path) or row.path
-    if row.summary == '' then
-      return label
-    end
-    return label .. string.rep(' ', label_w - vim.fn.strwidth(label) + 1) .. row.summary
+local function fit(s, width)
+  if width <= 0 then
+    return ''
   end
-  return '  ' .. row.text
+  if vim.fn.strwidth(s) <= width then
+    return s
+  end
+  local out = s
+  while out ~= '' and vim.fn.strwidth(out) > width - 1 do
+    out = vim.fn.strcharpart(out, 0, vim.fn.strchars(out) - 1)
+  end
+  return out .. '…'
+end
+
+---Render a tree row into a display line:
+--- * dir — the group's path, trailing slash kept, at column 0.
+--- * block — ` <status> <icon> <name>`: the basename only, the directory being
+---   the header above it, with the `+N -M` summary right-aligned at the
+---   sidebar's edge and the label truncated where the two would collide.
+--- * hunk — the `@@` line, indented under its file.
+---@param row table
+---@return string
+local function render_row(row)
+  if row.kind == 'dir' then
+    return row.dir
+  end
+  if row.kind == 'hunk' then
+    return '   ' .. row.text
+  end
+  local icon = row.icon ~= '' and (row.icon .. ' ') or ''
+  local label = ' ' .. row.status .. ' ' .. icon .. row.name
+  if row.summary == '' then
+    return fit(label, TREE_TEXT_WIDTH)
+  end
+  local room = TREE_TEXT_WIDTH - vim.fn.strwidth(row.summary)
+  label = fit(label, room)
+  return label .. string.rep(' ', room - vim.fn.strwidth(label)) .. row.summary
 end
 
 ---Tree row (1-based) whose range contains the given 0-based source row,
@@ -665,9 +816,13 @@ end
 ---@return integer?
 M.tree_row_containing = function(rows, srow)
   for i = #rows, 1, -1 do
-    local start_row, _, end_row = unpack(rows[i].range)
-    if srow >= start_row and srow <= end_row then
-      return i
+    -- Dir headers borrow their first file's range; that file's own row comes
+    -- later in the list, so it is the deeper match this returns.
+    if rows[i].kind ~= 'dir' then
+      local start_row, _, end_row = unpack(rows[i].range)
+      if srow >= start_row and srow <= end_row then
+        return i
+      end
     end
   end
   return nil
@@ -795,6 +950,19 @@ local TREE_FOLD_ACTIONS = {
   zm = { global = true },
 }
 
+---Put the tree's own fold at `lnum` into `closed`, but only when it isn't
+---already: `:foldclose` on a closed fold climbs to the *enclosing* one, and
+---since the tree has a directory level the diff buffer hasn't, a second `zc`
+---on a file row would fold its group away here and nothing there.
+---@param lnum integer tree line
+---@param closed boolean wanted state
+---@param cmd string `foldclose` / `foldopen`, `!` already appended
+local function mirror_fold(lnum, closed, cmd)
+  if (vim.fn.foldclosed(lnum) == -1) == closed then
+    pcall(vim.cmd, string.format('%d%s', lnum, cmd))
+  end
+end
+
 ---Run one of the tree's fold mappings (see TREE_FOLD_ACTIONS) against the diff
 ---buffer, then mirror the result onto the tree's own folds. The folds are the
 ---`diff` grammar's (folds.scm captures `block`/`hunks`/`hunk`;
@@ -802,12 +970,16 @@ local TREE_FOLD_ACTIONS = {
 ---
 ---Line-scoped commands use the range form (`:{lnum}foldclose`), which acts on
 ---a line without moving the diff window's cursor — unlike `normal! zc`. A file
----row folds its whole `diff --git` block, a hunk row its `@@` section; only
----file rows have a fold to mirror in the tree (see M.tree_foldexpr), and
----closing theirs hides their hunk rows here too.
+---row folds its whole `diff --git` block, a hunk row its `@@` section, and a
+---directory header every block in its group. Dir and file rows mirror the new
+---state onto their own fold here (see M.tree_foldexpr), so a closed directory
+---hides its files and a closed file its hunk rows; hunk rows have no tree fold
+---to mirror.
 ---
----Window-wide commands re-run in the tree window as well, so `zM` collapses
----the tree to one row per file and `zR` expands both again.
+---Window-wide commands re-run in the tree window as well: `zM` collapses the
+---tree to one row per directory (the diff itself to one line per file — the
+---tree simply has the extra level), `zr` from there reveals the file rows, and
+---`zR` expands everything again.
 ---
 ---Returns the new closed state for line-scoped commands (`true` = closed) —
 ---the headless test reads it — or nil for window-wide ones and when the row
@@ -838,6 +1010,26 @@ M.tree_fold = function(tree_buf, key)
   end
 
   local tree_lnum = vim.fn.line('.')
+
+  -- A group header owns no fold in the diff buffer, so its command goes to
+  -- every file in the group (`zc` on `lua/lib/` closes all of its sections)
+  -- and its direction comes from the tree's own fold — that is what `za` is
+  -- toggling here.
+  if r.kind == 'dir' then
+    local close = spec.close
+    if spec.toggle then
+      close = vim.fn.foldclosed(tree_lnum) == -1
+    end
+    local cmd = (close and 'foldclose' or 'foldopen') .. (spec.bang and '!' or '')
+    vim.api.nvim_win_call(src_win, function()
+      for _, lnum in ipairs(r.blocks or {}) do
+        pcall(vim.cmd, string.format('%d%s', lnum, cmd))
+      end
+    end)
+    mirror_fold(tree_lnum, close, cmd)
+    return close
+  end
+
   local closed = vim.api.nvim_win_call(src_win, function()
     if vim.fn.foldlevel(r.lnum) == 0 then
       -- Nothing folds there at all (a binary/rename block, or folds turned
@@ -862,9 +1054,9 @@ M.tree_fold = function(tree_buf, key)
     return nil
   end
 
-  -- Mirror onto the tree (only blocks fold here, see M.tree_foldexpr).
+  -- Mirror onto the tree (hunk rows have no fold here, see M.tree_foldexpr).
   if r.kind == 'block' then
-    pcall(vim.cmd, string.format('%d%s%s', tree_lnum, closed and 'foldclose' or 'foldopen', spec.bang and '!' or ''))
+    mirror_fold(tree_lnum, closed, (closed and 'foldclose' or 'foldopen') .. (spec.bang and '!' or ''))
   end
   return closed
 end
@@ -889,7 +1081,9 @@ M.tree_focus = function(tree_buf, tree_win)
     return
   end
 
-  filepath_bar().set_hover(src_buf, r.kind == 'block' and r.lnum - 1 or nil)
+  -- Block rows — and dir headers, which park their first file — light up that
+  -- file's bar; a hunk row drops it back to the normal palette.
+  filepath_bar().set_hover(src_buf, r.kind ~= 'hunk' and r.lnum - 1 or nil)
 
   -- The diff window's cursor has to move to the section: nvim keeps a window's
   -- cursor on screen, so a topline that would scroll it out of view is simply
@@ -931,11 +1125,13 @@ M.tree_focus = function(tree_buf, tree_win)
 end
 
 ---Toggle the diff tree sidebar for the current buffer: a left-side vertical
----split listing each per-file `block` (`<icon> <path> <summary>`) with its
----`hunk`s (`@@` lines) nested underneath. Focus (CursorMoved) parks the
+---split grouping the patch by parent directory — a `dir` header per directory,
+---its files under it (` <status> <icon> <name>` + right-aligned `+N -M`), and
+---each file's `hunk`s (`@@` lines) under that. Focus (CursorMoved) parks the
 ---section at the top of the diff window and unfolds it; <CR> jumps there; the
----diff buffer's own cursor keeps the tree in sync. Blocks fold their hunks
----with native expr folding (`zc`/`zo`). Requires the current buffer to parse
+---diff buffer's own cursor keeps the tree in sync. Native expr folding follows
+---the levels (`zc` on a directory hides its files, on a file its hunks).
+---Requires the current buffer to parse
 ---as `diff` (the git->diff alias in after/plugin/autocmds.lua makes fugitive
 ---patch buffers qualify).
 M.open_tree = function()
@@ -965,21 +1161,12 @@ M.open_tree = function()
 
   local src_win = vim.api.nvim_get_current_win()
 
-  -- Build display lines, padding block labels so summaries align.
-  local label_w = 0
-  for _, r in ipairs(rows) do
-    if r.kind == 'block' then
-      local icon = file_icon(r.path)
-      local label = icon ~= '' and (icon .. ' ' .. r.path) or r.path
-      label_w = math.max(label_w, vim.fn.strwidth(label))
-    end
-  end
   local lines = {}
   for _, r in ipairs(rows) do
-    lines[#lines + 1] = render_row(r, label_w)
+    lines[#lines + 1] = render_row(r)
   end
 
-  vim.cmd('leftabove 30vnew')
+  vim.cmd('leftabove ' .. TREE_WIDTH .. 'vnew')
   local tree_win = vim.api.nvim_get_current_win()
   local tree_buf = vim.api.nvim_get_current_buf()
 
@@ -990,14 +1177,31 @@ M.open_tree = function()
   vim.bo[tree_buf].filetype = 'diff-tree'
   vim.bo[tree_buf].modifiable = true
   vim.api.nvim_buf_set_lines(tree_buf, 0, -1, false, lines)
-  -- Hunk rows dimmed as comments (block rows keep the default look). The tree
-  -- buffer is wiped on close, so these marks need no explicit teardown.
+  -- Row colours: group headers as directories, hunk rows dimmed, and on a file
+  -- row its status letter and mini.icons glyph in their own groups (the label
+  -- and summary keep the default look). The tree buffer is wiped on close, so
+  -- these marks need no explicit teardown.
   for i, r in ipairs(rows) do
-    if r.kind == 'hunk' then
-      vim.api.nvim_buf_set_extmark(tree_buf, TREE_NS, i - 1, 0, {
-        end_row = i,
-        hl_group = 'Comment',
-      })
+    local line = lines[i]
+    local function mark(col, end_col, hl)
+      if hl and col < #line then
+        vim.api.nvim_buf_set_extmark(tree_buf, TREE_NS, i - 1, col, {
+          end_row = i - 1,
+          end_col = math.min(end_col, #line),
+          hl_group = hl,
+        })
+      end
+    end
+    if r.kind == 'dir' then
+      mark(0, #line, 'Directory')
+    elseif r.kind == 'hunk' then
+      mark(0, #line, 'Comment')
+    else
+      -- ` M name`: the letter is line[2] (1-based col 2), the glyph follows it.
+      mark(1, 2, STATUS_HL[r.status])
+      if r.icon ~= '' then
+        mark(3, 3 + #r.icon, r.icon_hl)
+      end
     end
   end
   vim.bo[tree_buf].modifiable = false
