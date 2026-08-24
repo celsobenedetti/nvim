@@ -119,6 +119,23 @@ _G.get_winbar = function()
     return lib.strings.hl('WinBar', vim.b[buf].winbar)
   end
 
+  -- Quickfix windows: render the :Diff list's breadcrumb bar
+  -- (`quickfix: <icon> git > <icon> git <args>`) via lib.Diff's qf-list
+  -- registry, resolved at render time by the current list id. Unlike the
+  -- stamped vim.b override above, nothing needs clearing: a new list has a
+  -- new id, so a stale entry is simply not found. Lists lib.Diff didn't
+  -- create (grep, Gclog without a stamp, …) get the usual empty bar.
+  if vim.bo[buf].buftype == 'quickfix' then
+    local qfid = vim.fn.getqflist({ id = 0 }).id
+    if qfid ~= 0 then
+      local bar = lib.Diff.winbar_text(qfid)
+      if bar then
+        return lib.strings.hl('WinBar', bar)
+      end
+    end
+    return ''
+  end
+
   -- Special filetypes first: their content depends on live buffer state (e.g.
   -- which terminal kind), and filetype may only be set after the winbar was
   -- installed (TermOpen fires after BufWinEnter for a fresh `:term`).

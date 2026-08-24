@@ -182,6 +182,30 @@ M.qf_line = function(info)
   return lines
 end
 
+--- Winbar texts for `:Diff` quickfix lists, keyed by qf list id. Looked up
+--- at render time by after/plugin/winbar.lua's get_winbar() using the
+--- current list id, so the bar is self-cleaning: a new list (:grep, another
+--- :Diff) has a new id and simply doesn't match. Old ids stay valid on the
+--- quickfix stack (each setqflist pushes), so `:colder` back to a previous
+--- :Diff list keeps its bar. Entries are short strings; a session's worth
+--- of :Diff calls costs a few KB.
+local winbars = {}
+
+---Record the winbar text for a quickfix list (called by M.open).
+---@param qfid integer
+---@param text string
+M.record_winbar = function(qfid, text)
+  winbars[qfid] = text
+end
+
+---Winbar text for a quickfix list, or nil when this module didn't create
+---the list (grep, fugitive Gclog, … render their own or nothing).
+---@param qfid integer
+---@return string?
+M.winbar_text = function(qfid)
+  return winbars[qfid]
+end
+
 ---Install a `<CR>` mapping on the current (quickfix) window's buffer that
 ---reuses the window showing the diff buffer instead of letting nvim split a
 ---new one. nvim's native quickfix jump only reuses windows whose buffer is
@@ -234,24 +258,22 @@ M.open = function(args, ...)
     args = { args, ... }
   end
   local n = #args
-  local cmd, title, qf_title
+  local cmd, title, qf_title, git_args
   if n == 0 then
-    cmd = 'tab Git diff'
-    title = 'git diff'
+    git_args = 'diff'
     qf_title = 'Diff (working tree)'
   elseif n == 1 then
     -- A single arg with `..` (two- or three-dot) is a range, not a rev:
     -- `git diff -p dev..HEAD` / `dev...HEAD`. Valid refnames never
     -- contain `..` (git check-ref-format), so the check is unambiguous.
-    local cmd_prefix = args[1]:find('..', 1, true) and 'diff -p ' or 'show '
-    cmd = 'tab Git ' .. cmd_prefix .. args[1]
-    title = 'git ' .. cmd_prefix .. args[1]
+    git_args = (args[1]:find('..', 1, true) and 'diff -p ' or 'show ') .. args[1]
     qf_title = 'Diff ' .. args[1]
   else
-    cmd = 'tab Git diff -p ' .. args[1] .. ' ' .. args[2]
-    title = 'git diff -p ' .. args[1] .. ' ' .. args[2]
+    git_args = 'diff -p ' .. args[1] .. ' ' .. args[2]
     qf_title = 'Diff ' .. args[1] .. '..' .. args[2]
   end
+  cmd = 'tab Git ' .. git_args
+  title = 'git ' .. git_args
 
   lib.tab.set_next_name(config.icons.git.git .. title)
   local ok, err = pcall(vim.cmd, cmd)
@@ -288,6 +310,12 @@ M.open = function(args, ...)
       items = items,
       quickfixtextfunc = 'v:lua.lib.Diff.qf_line',
     })
+    -- winbar for the qf window: `quickfix: <icon> git > <icon> git <args>`
+    -- (rendered by after/plugin/winbar.lua via the list id).
+    M.record_winbar(
+      vim.fn.getqflist({ id = 0 }).id,
+      'quickfix: ' .. config.icons.git.git .. ' git > ' .. config.icons.git.git .. ' git ' .. git_args
+    )
     vim.cmd('botright copen')
     M.install_qf_jump()
     return

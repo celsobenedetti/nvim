@@ -108,6 +108,27 @@ mapping (`install_qf_jump`) keeps working: it reads `line('.')` and runs
 - One qf buffer line = one entry, always — `line('.')` is a safe entry
   index even with a custom renderer.
 
+## Winbar for the qf window
+
+The qf window's winbar shows a breadcrumb for `:Diff` lists —
+`quickfix: <icon> git > <icon> git <args>` (e.g. `git diff -p dev..HEAD`)
+— mirroring the fugitive `:Gclog` winbar stamp in after/plugin/winbar.lua.
+
+`:Diff` creates its list with `setqflist()`, which does **not** fire
+`QuickFixCmdPost`, so the Gclog-style stamping hook never runs for it.
+Instead:
+
+- lib.Diff keeps a registry `qf list id → winbar text`
+  (`M.record_winbar` in `open()`, `M.winbar_text` lookup).
+- `get_winbar()` adds a quickfix-buffer branch: for `buftype == 'quickfix'`
+  it reads the *current* list id (`getqflist({ id = 0 }).id`) and renders
+  the registered bar, else `''`.
+
+Resolving by list id at render time is self-cleaning — no stamp to clear:
+a new list (grep, another `:Diff`) has a new id and simply doesn't match.
+Because each `setqflist` pushes onto the qf stack (old ids stay valid),
+`:colder` back to a previous `:Diff` list keeps its bar.
+
 ## Testing
 
 `tests/integration/test_Diff.lua` asserts the exact padded row strings
