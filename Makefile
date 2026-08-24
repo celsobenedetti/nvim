@@ -2,7 +2,7 @@
 
 test:
 	@fail=0; \
-	for t in $$(find tests -name 'test_*.lua' ! -path 'tests/winbar/*' | sort); do \
+	for t in $$(find tests -name 'test_*.lua' ! -path 'tests/winbar/*' ! -path 'tests/integration/*' | sort); do \
 		echo "== $$t"; \
 		luajit "$$t" || fail=1; \
 	done; \
@@ -11,7 +11,7 @@ test:
 # Real-nvim integration tests (require headless nvim, not luajit mocks).
 test-integration:
 	@fail=0; \
-	for t in $$(find tests -name 'test_*.lua' -path 'tests/winbar/*' | sort); do \
+	for t in $$(find tests -name 'test_*.lua' -path 'tests/winbar/*' -o -name 'test_*.lua' -path 'tests/integration/*' | sort); do \
 		echo "== $$t"; \
 		nvim --headless -u NONE -l "$$t" || fail=1; \
 	done; \

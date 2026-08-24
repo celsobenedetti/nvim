@@ -32,6 +32,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Alias filetype=git to the diff treesitter language. Fugitive hardcodes
+-- `filetype=git` on its patch buffers (:Git log -p / show / diff); with this
+-- alias those buffers parse with the `diff` grammar, so they get
+-- treesitter highlighting AND queries/diff/folds.scm folding (the ts fold
+-- machinery resolves the parser from the filetype) — while &filetype stays
+-- `git`, keeping fugitive's <CR>/gx jumps and after/ftplugin/git.lua alive.
+-- Must run before the FileType git autocmd below ever fires.
+if config.treesitter then
+  vim.treesitter.language.register('diff', 'git')
+end
+
 -- Tresitter Highlight
 if config.treesitter then
   vim.api.nvim_create_autocmd('FileType', {
