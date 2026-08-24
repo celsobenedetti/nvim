@@ -184,9 +184,19 @@ vim.api.nvim_create_autocmd('TabNew', {
       if not vim.api.nvim_tabpage_is_valid(tabid) then
         return
       end
-      local buf = vim.api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tabid))
-      local ft = vim.bo[buf].filetype
-      if not GIT_TAB_FILETYPES[ft] then
+      -- Any window of the new tab, not just its current one: `:Diff` opens the
+      -- patch with the DiffTree sidebar focused (`filetype=diff-tree`) and
+      -- `:DiffQf` with the quickfix list focused, so looking only at the
+      -- current window skipped both — the tab kept the fallback name and the
+      -- queued one (lib.Diff patch_tab) stayed for a later git tab to pick up.
+      local is_git = false
+      for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tabid)) do
+        if GIT_TAB_FILETYPES[vim.bo[vim.api.nvim_win_get_buf(win)].filetype] then
+          is_git = true
+          break
+        end
+      end
+      if not is_git then
         return
       end
       local name = lib.tab.consume_next_name()

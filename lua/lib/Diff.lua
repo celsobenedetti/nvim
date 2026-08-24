@@ -301,7 +301,8 @@ end
 ---@param args string[]
 ---@return integer? bufnr the patch buffer, nil when `:Git` itself failed
 ---@return table? result fugitive's job result (exit_status, job)
----@return string? title `Diff <args>`, for the quickfix list and its winbar
+---@return string? title `Diff <args>`, for the tab name, the quickfix list and
+---its winbar
 local function patch_tab(args)
   local n = #args
   local git_args, title
@@ -319,7 +320,11 @@ local function patch_tab(args)
     title = 'Diff ' .. args[1] .. '..' .. args[2]
   end
 
-  lib.tab.set_next_name(config.icons.git.git .. 'git ' .. git_args)
+  -- The tab shows what was asked for, not the git plumbing that answers it:
+  -- `Diff HEAD~5..HEAD`, the same label as the quickfix list's title and
+  -- winbar. Consumed by the git-tab rename in after/plugin/autocmds.lua, which
+  -- prefers a queued name over deriving one from the `:Git` command line.
+  lib.tab.set_next_name(config.icons.git.git .. title)
   local ok, err = pcall(vim.cmd, 'tab Git ' .. git_args)
   if not ok then
     lib.tab.set_next_name(nil)
