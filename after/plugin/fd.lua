@@ -1,7 +1,15 @@
 -- run fd with the given arguments and send results to the quickfix list
 
 vim.api.nvim_create_user_command('Fd', function(opts)
-  vim.system(vim.list_extend({ 'fd', '--hidden' }, opts.fargs), { text = true }, function(result)
+  local fd = { 'fd', '--hidden' }
+  -- split config into newline-separated lines, then each line into argv words
+  -- ("--exclude .git" must be two args or fd rejects it)
+  for _, line in ipairs(lib.strings.split(config.cmd.fd.ignore, '\n')) do
+    vim.list_extend(fd, lib.strings.split_args(line))
+  end
+  fd = vim.list_extend(fd, opts.fargs)
+
+  vim.system(fd, { text = true }, function(result)
     vim.schedule(function()
       if result.code ~= 0 then
         Snacks.notify.error(result.stderr or ('fd exited with code ' .. result.code), { title = 'Fd' })
