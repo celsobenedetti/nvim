@@ -48,14 +48,6 @@ end, { desc = 'C-c: write and quit' })
 -- lazy
 vim.keymap.set('n', '<leader>la', '<cmd>Lazy<cr>', { desc = 'Lazy' })
 
--- tabs
-vim.keymap.set({ 'n', 't', 'i' }, ']<tab>', function()
-  vim.cmd('tabnext')
-end, { desc = 'tab: next' })
-vim.keymap.set({ 'n', 't', 'i' }, '[<tab>', function()
-  vim.cmd('tabprevious')
-end, { desc = 'tab: previous' })
-
 vim.keymap.set({ 'n', 't', 'i' }, config.keys['<C-tab>'], function()
   vim.cmd('tabnext')
 end, { desc = 'tab: next (ctrl)' })

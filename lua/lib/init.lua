@@ -24,6 +24,7 @@
 ---@field tmux LibTmux
 ---@field visual LibVisual
 ---@field overseer LibOverseer
+---@field diff_filepath LibDiffFilepath
 local M = {}
 
 setmetatable(M, {

@@ -14,8 +14,8 @@ local function nav(kind, dir)
   end
 end
 
-vim.keymap.set('n', ']', nav('hunk', 1), { buffer = 0, desc = 'diff: next hunk' })
-vim.keymap.set('n', '[', nav('hunk', -1), { buffer = 0, desc = 'diff: previous hunk' })
+vim.keymap.set('n', ']]', nav('hunk', 1), { buffer = 0, desc = 'diff: next hunk' })
+vim.keymap.set('n', '[[', nav('hunk', -1), { buffer = 0, desc = 'diff: previous hunk' })
 vim.keymap.set('n', '.', nav('block', 1), { buffer = 0, desc = 'diff: next file' })
 vim.keymap.set('n', ',', nav('block', -1), { buffer = 0, desc = 'diff: previous file' })
 
@@ -33,7 +33,6 @@ end, { buffer = 0, desc = 'diff: toggle file/hunk tree' })
 if not vim.b.diff_filepath_setup then
   vim.b.diff_filepath_setup = true
   local bufnr = vim.api.nvim_get_current_buf()
-  local diff_filepath = require('lib.diff_filepath')
 
   local pending = false
   local function replan()
@@ -44,7 +43,7 @@ if not vim.b.diff_filepath_setup then
     vim.schedule(function()
       pending = false
       if vim.api.nvim_buf_is_valid(bufnr) then
-        diff_filepath.render(bufnr)
+        lib.diff_filepath.render(bufnr)
       end
     end)
   end

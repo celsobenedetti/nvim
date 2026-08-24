@@ -1,3 +1,4 @@
+--- @class LibDiffFilepath
 --- Render each `diff --git` header line in fugitive patch buffers as a
 --- winbar-like filepath bar: filetype icon + path + `+N -M` summary, overlaid
 --- via extmarks. The buffer text is never touched.
