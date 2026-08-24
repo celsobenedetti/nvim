@@ -9,12 +9,12 @@ front of each basename; not shown here):
 
 ```
 lua/lib/
- M Diff.lua         +407 -168
+ M Diff.lua   +407 -168
    @@ -496,6 +496,7 @@
    @@ -604,11 +612,7 @@
- A git.lua                +86
+ A git.lua   +86
 lua/plugins/
- M treesitter.lua       +6 -1
+ M treesitter.lua   +6 -1
 ```
 
 Interaction follows `:InspectTree`: hovering a row scrolls the section to the
@@ -24,7 +24,13 @@ keeps the tree in sync.
 ## Surface
 
 - `:Diff [rev] [rev2]` — the default index for a new diff tab: the patch on
-  the right, this tree on the left and focused (`lib.Diff.open`). `:DiffQf` is
+  the right, this tree on the left and focused (`lib.Diff.open`). The tab is
+  named after what was asked for — `Diff HEAD~5..HEAD`, `Diff (working tree)`
+  — the same label as the quickfix list's title and winbar. `patch_tab` queues
+  it with `lib.tab.set_next_name` and the git-tab autocmd
+  (`after/plugin/autocmds.lua`) applies it; that autocmd looks for a git buffer
+  in **any** window of the new tab, since `:Diff` leaves the sidebar focused
+  (`filetype=diff-tree`) and `:DiffQf` the quickfix list. `:DiffQf` is
   the older quickfix-of-files flavour (`lib.Diff.open_qf`); both share
   `patch_tab()`, which opens the fugitive tab and waits for its job. See
   `after/plugin/Diff.lua`.
@@ -43,8 +49,9 @@ of `'columns'` it had when it was last closed** for that buffer (`tree_width` /
 `record_tree_ratio`) — so toggling it off and on keeps a `<C-w>>` resize, and a
 terminal resized in between keeps the proportion rather than the column count.
 It never opens so wide that the diff window is left under 10 columns. Rows are
-rendered for the actual width, so the `+N -M` column follows the right edge.
-The window carries no number column (`nonumber` + `norelativenumber`).
+rendered for the actual width, which is what decides how much room a long name
+gets before it is truncated. The window carries no number column (`nonumber` +
+`norelativenumber`).
 
 The git→diff treesitter alias (`after/plugin/autocmds.lua`, see
 `docs/ts-git-diff-alias.md`) makes fugitive patch buffers parse with the
@@ -58,15 +65,17 @@ three row kinds:
 - **dir** (column 0): the parent directory with its trailing slash (`lua/lib/`,
   `./` for repo-root files). Emitted once per directory, in first-appearance
   order, with every file of that directory underneath it.
-- **block** (a file, one space in): ` <status> <icon> <name> <summary>` — the
+- **block** (a file, one space in): ` <status> <icon> <name>   <+N -M>` — the
   **basename** only, since the directory is the header above it. `status` is
   `A`/`D`/`R`/`M` (added / deleted / renamed / modified), read from git's
   `new file mode` / `deleted file mode` / `rename from|to` line and falling
   back to the `/dev/null` side of the `---`/`+++` pair. The path itself comes
   from the `+++ b/x` line (falling back to the `diff --git` command's last path
-  token, `/dev/null`-aware for deletions). The `+N -M` summary is
-  **right-aligned** at the sidebar's text width, and the label is truncated
-  with `…` where the two would collide.
+  token, `/dev/null`-aware for deletions). The `+N -M` summary sits **three
+  spaces behind the name** — right-aligning it at the sidebar's edge parked
+  every short name's summary a screen away from it. The name is truncated with
+  `…` only when the two together would overflow, so the summary stays
+  readable.
 - **hunk** (indented under its file): the full `@@ -a,b +c,d @@` line,
   including git's trailing function/class heading — the `location` node's text,
   whose range the row keeps as `location` for the hover highlight.
@@ -197,8 +206,7 @@ drops the hovered block's bar back to its normal palette.
 `tree_rows` (the dir/file/hunk shape, paths, statuses, summaries, `@@` text,
 ranges, a group's `blocks`), `tree_row_containing`, the rendered buffer lines,
 the fold options **and the resulting fold levels**, the default width and
-the missing number column, the width restored on reopen (and its summary
-column), `s` closing the tree, the hovered file's bar (and
+the missing number column, the width restored on reopen, `s` closing the tree, the hovered file's bar (and
 that a dir row previews its first file), hover's `zt` (topline with a non-zero
 `'scrolloff'`, the source cursor, and that a closed section stays closed), the
 hovered hunk's `@@` highlight (its exact span, that only one exists at a time,

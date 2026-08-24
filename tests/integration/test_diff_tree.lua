@@ -151,13 +151,13 @@ assert_eq(
 )
 
 -- No mini.icons under -u NONE, so no glyph column: ` <status> <basename>`,
--- with the summary right-aligned at the sidebar's text width (29).
+-- with the summary three spaces behind the name.
 assert_eq(vim.api.nvim_buf_get_lines(tree_buf, 0, -1, false), {
   './',
-  ' M foo.txt              +2 -2',
+  ' M foo.txt   +2 -2',
   '   @@ -1,2 +1,2 @@',
   '   @@ -5,1 +5,1 @@ function bar()',
-  ' M b.txt                +1 -1',
+  ' M b.txt   +1 -1',
   '   @@ -1 +1 @@',
 }, 'tree renders dir/block/hunk rows')
 
@@ -444,9 +444,10 @@ assert_eq(#vim.api.nvim_tabpage_list_wins(0), 1, 'back to a single window')
 Diff.open_tree()
 local tree_win2 = vim.api.nvim_get_current_win()
 assert_eq(vim.api.nvim_win_get_width(tree_win2), 40, 'reopening restores the sidebar width')
--- The rows were rendered for that width, so the summaries still sit at the
--- right edge: 39 cells, the sidebar minus its blank last one.
-assert_eq(vim.fn.strwidth(vim.api.nvim_buf_get_lines(0, 1, 2, false)[1]), 39, 'the summary column follows the width')
+-- Rows are re-rendered for the new width. A short label reads the same either
+-- way (its summary sits three spaces behind the name); the width only decides
+-- how much room a long name gets before it is truncated.
+assert_eq(vim.api.nvim_buf_get_lines(0, 1, 2, false)[1], ' M foo.txt   +2 -2', 'rows re-rendered')
 
 -- `s` closes the tree, the same toggle the diff buffer binds it to
 -- (after/ftplugin/git.lua, which -u NONE does not source here).
@@ -532,19 +533,19 @@ Diff.open_tree()
 local tree2 = vim.api.nvim_get_current_win()
 local tree_buf2 = vim.api.nvim_win_get_buf(tree2)
 -- The group header at column 0, its files indented behind a status letter and
--- carrying the basename only, summaries right-aligned at width 29, and a name
--- too long for the room left over cut with an ellipsis.
+-- carrying the basename only, each summary three spaces behind its name, and a
+-- name too long for the room left over cut with an ellipsis.
 assert_eq(vim.api.nvim_buf_get_lines(tree_buf2, 0, -1, false), {
   './',
-  ' M AGENTS.md               +1',
+  ' M AGENTS.md   +1',
   '   @@ -1 +1,2 @@',
   'lua/lib/',
-  ' M a.lua                +1 -1',
+  ' M a.lua   +1 -1',
   '   @@ -1 +1 @@',
-  ' D a-very-long-module-nam… -1',
+  ' D a-very-long-module-n…   -1',
   '   @@ -1 +0,0 @@',
   'lua/',
-  ' A config.lua              +1',
+  ' A config.lua   +1',
   '   @@ -0,0 +1 @@',
   'new/',
   ' R x.txt',

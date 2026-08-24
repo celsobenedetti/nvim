@@ -500,8 +500,9 @@ end
 -- ---------------------------------------------------------------------------
 -- Diff tree sidebar: an InspectTree-like outline of a `filetype=git` diff
 -- buffer on the left, in three levels — a directory group header per parent
--- dir (`lua/lib/`), the files changed in it (` M <icon> Diff.lua    +40 -8`,
--- basename only, summary right-aligned), and each file's `hunk`s (`@@` lines).
+-- dir (`lua/lib/`), the files changed in it (` M <icon> Diff.lua   +40 -8`,
+-- basename only, summary three spaces behind it), and each file's `hunk`s
+-- (`@@` lines).
 -- Focus (CursorMoved) parks the section at the top of the diff window (folds
 -- are left as they are); <CR> jumps there; the diff buffer's own cursor keeps
 -- the tree in sync (bidirectional). Native expr folding matches the levels: a
@@ -832,10 +833,10 @@ end
 
 ---Render a tree row into a display line:
 --- * dir — the group's path, trailing slash kept, at column 0.
---- * block — ` <status> <icon> <name>`: the basename only, the directory being
----   the header above it, with the `+N -M` summary right-aligned at the
----   sidebar's edge (`text_width`, so a resized sidebar still lines up) and
----   the label truncated where the two would collide.
+--- * block — ` <status> <icon> <name>   <+N -M>`: the basename only, the
+---   directory being the header above it, and the summary three spaces behind
+---   the name. The name is truncated (against `text_width`, so a resized
+---   sidebar gives it more room) only when the pair would overflow.
 --- * hunk — the `@@` line, indented under its file.
 ---@param row table
 ---@param text_width integer cells available (the sidebar minus its last cell)
@@ -852,9 +853,12 @@ local function render_row(row, text_width)
   if row.summary == '' then
     return fit(label, text_width)
   end
-  local room = text_width - vim.fn.strwidth(row.summary)
-  label = fit(label, room)
-  return label .. string.rep(' ', room - vim.fn.strwidth(label)) .. row.summary
+  -- Three spaces behind the name, not right-aligned at the sidebar's edge: in a
+  -- 30-column sidebar that parked the `+N -M` of every short name a screen away
+  -- from it. The name is truncated only when the pair doesn't fit, so the
+  -- summary stays readable either way.
+  local summary = vim.trim(row.summary)
+  return fit(label, text_width - 3 - vim.fn.strwidth(summary)) .. '   ' .. summary
 end
 
 ---Tree row (1-based) whose range contains the given 0-based source row,
@@ -1179,7 +1183,7 @@ end
 
 ---Toggle the diff tree sidebar for the current buffer: a left-side vertical
 ---split grouping the patch by parent directory — a `dir` header per directory,
----its files under it (` <status> <icon> <name>` + right-aligned `+N -M`), and
+---its files under it (` <status> <icon> <name>   +N -M`), and
 ---each file's `hunk`s (`@@` lines) under that. It opens at the width it had
 ---when it was last closed for this buffer (tree_width). Focus (CursorMoved)
 ---parks the section at the top of the diff window; <CR> jumps there; the
