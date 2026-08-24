@@ -505,6 +505,11 @@ end
 
 local TREE_NS = vim.api.nvim_create_namespace('lib.diff.tree')
 
+---Marks the hovered row's section in the *diff* buffer — currently a hunk
+---row's `@@` header line. Its own namespace, so clearing it can never reach
+---TREE_NS's row colours in the tree buffer.
+local HOVER_NS = vim.api.nvim_create_namespace('lib.diff.tree.hover')
+
 ---Highlight for a block row's status letter (nvim's built-in diff groups). A
 ---rename is a change of name, hence `Changed`.
 local STATUS_HL = { A = 'Added', D = 'Removed', M = 'Changed', R = 'Changed' }
@@ -617,18 +622,22 @@ M.cursor_block_path = function(bufnr)
   return nil
 end
 
----The `@@` header line of a hunk (git appends the enclosing function/class
----heading after the second `@@`, so this reads e.g. `@@ -10,3 +10,4 @@ foo()`).
+---The `@@` header of a hunk: its `location` node's text and 0-based range.
+---Git appends the enclosing function/class heading after the second `@@` and
+---the node covers that too, so the text reads e.g. `@@ -10,3 +10,4 @@ foo()`
+---and the range is the whole header line. Hover paints exactly that node (see
+---M.tree_focus); the range is nil when the hunk has no parseable header.
 ---@param hunk TSNode
 ---@param bufnr number
----@return string
-local function hunk_text(hunk, bufnr)
+---@return string text
+---@return integer[]? range
+local function hunk_location(hunk, bufnr)
   for child in hunk:iter_children() do
     if child:type() == 'location' then
-      return vim.treesitter.get_node_text(child, bufnr)
+      return vim.treesitter.get_node_text(child, bufnr), { child:range() }
     end
   end
-  return '@@'
+  return '@@', nil
 end
 
 ---Three levels of rows for the diff tree sidebar, in one flat list: a `dir`
@@ -670,10 +679,13 @@ M.tree_rows = function(bufnr)
         local icon, icon_hl = file_icon(path)
         local hunks = {}
         for _, hunk in ipairs(collect_nodes(child, 'hunk')) do
+          local text, location = hunk_location(hunk, bufnr)
           hunks[#hunks + 1] = {
             kind = 'hunk',
             lnum = hunk:start() + 1,
-            text = hunk_text(hunk, bufnr),
+            text = text,
+            -- The `@@` header's own span: what hover highlights.
+            location = location,
             -- Its block's path: file actions (`ga`) work from a hunk row too.
             path = path,
             range = { hunk:range() },
@@ -1068,8 +1080,9 @@ end
 ---hover still isn't a jump. A block row also lights up
 ---lib.diff_filepath's overlay bar on its hover palette — the header line's
 ---visible pixels belong to that extmark, whose virt_text chunks no second
----extmark can restyle; hunk rows get no highlight at all, the scroll is the
----feedback. Finally nvim-treesitter-context is refreshed for the diff window
+---extmark can restyle; a hunk row highlights its own `@@` header line (the
+---`location` node) with a HOVER_NS extmark instead.
+---Finally nvim-treesitter-context is refreshed for the diff window
 ---(refresh_context), so a hovered hunk keeps its `diff --git` header pinned
 ---above it. Exposed as M.tree_focus for the headless integration test
 ---(CursorMoved never fires under --headless).
@@ -1083,8 +1096,23 @@ M.tree_focus = function(tree_buf, tree_win)
   end
 
   -- Block rows — and dir headers, which park their first file — light up that
-  -- file's bar; a hunk row drops it back to the normal palette.
+  -- file's bar; a hunk row drops it back to the normal palette and marks its
+  -- own `@@` header line instead (the `location` node), so both row kinds show
+  -- the same hover surface (`DiffFileBarHover` / `DiffHunkHover` share
+  -- Visual's background, see after/plugin/diff-colors.lua). The file bar has
+  -- to carry its own hover palette because no extmark can restyle another
+  -- extmark's virt_text; a hunk header is plain buffer text, so a bg-only
+  -- extmark over it is enough — and keeps the treesitter foreground.
   filepath_bar().set_hover(src_buf, r.kind ~= 'hunk' and r.lnum - 1 or nil)
+  vim.api.nvim_buf_clear_namespace(src_buf, HOVER_NS, 0, -1)
+  if r.kind == 'hunk' and r.location then
+    local lrow, lcol, lerow, lecol = unpack(r.location)
+    vim.api.nvim_buf_set_extmark(src_buf, HOVER_NS, lrow, lcol, {
+      end_row = lerow,
+      end_col = lecol,
+      hl_group = 'DiffHunkHover',
+    })
+  end
 
   -- The diff window's cursor has to move to the section: nvim keeps a window's
   -- cursor on screen, so a topline that would scroll it out of view is simply
@@ -1218,6 +1246,7 @@ M.open_tree = function()
     end
     if vim.api.nvim_buf_is_loaded(src_buf) then
       filepath_bar().set_hover(src_buf, nil)
+      vim.api.nvim_buf_clear_namespace(src_buf, HOVER_NS, 0, -1)
       vim.b[src_buf].diff_tree_win = nil
       vim.b[src_buf].diff_tree_group = nil
     end
@@ -1265,13 +1294,15 @@ M.open_tree = function()
     end,
   })
 
-  -- Leaving the tree drops the hovered block's bar back to its normal palette.
+  -- Leaving the tree drops the hover marks: the block's bar back to its normal
+  -- palette, the hunk header's highlight away.
   vim.api.nvim_create_autocmd('BufLeave', {
     group = group,
     buffer = tree_buf,
     callback = function()
       if vim.api.nvim_buf_is_loaded(src_buf) then
         filepath_bar().set_hover(src_buf, nil)
+        vim.api.nvim_buf_clear_namespace(src_buf, HOVER_NS, 0, -1)
       end
     end,
   })

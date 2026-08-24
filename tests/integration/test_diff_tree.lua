@@ -186,17 +186,43 @@ assert_eq({ tree_marks[3][2], tree_marks[3][3] }, { 2, 0 }, 'first hunk mark on 
 assert_eq(tree_marks[3][4].hl_group, 'Comment', 'hunk rows use Comment')
 assert_eq({ tree_marks[6][2], tree_marks[6][3] }, { 5, 0 }, 'last mark on tree line 6')
 
--- Moving to a hunk row restores the bar's normal palette; hunk rows get no
--- highlight of their own in the diff buffer, the scroll is the feedback
--- (driven via M.tree_focus; CursorMoved never fires under --headless, so the
--- autocmd wiring is covered by the keymap test).
+-- Moving to a hunk row restores the bar's normal palette and highlights that
+-- hunk's `@@` header line instead — the `location` node's exact span, in the
+-- `lib.diff.tree.hover` namespace (driven via M.tree_focus; CursorMoved never
+-- fires under --headless, so the autocmd wiring is covered by the keymap
+-- test).
 vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1
 Diff.tree_focus(tree_buf, tree_win)
 assert_eq(require('lib.diff_filepath').hover(buf), nil, 'hunk hover clears the bar hover')
 bars = vim.api.nvim_buf_get_extmarks(buf, bar_ns, 0, -1, { details = true })
 assert_eq(bars[1][4].hl_group, 'DiffFileBar', 'bar range back to normal palette')
 assert_eq(bars[1][4].virt_text[1][2], 'DiffFileBarPath', 'bar chunks back to normal palette')
-assert_eq(vim.api.nvim_buf_get_extmarks(buf, tree_ns, 0, -1, {}), {}, 'hunk hover paints no source mark')
+assert_eq(vim.api.nvim_buf_get_extmarks(buf, tree_ns, 0, -1, {}), {}, 'and paints nothing in TREE_NS')
+
+local hover_ns = vim.api.nvim_get_namespaces()['lib.diff.tree.hover']
+local function hunk_hl()
+  local marks = vim.api.nvim_buf_get_extmarks(buf, hover_ns, 0, -1, { details = true })
+  if #marks == 0 then
+    return nil
+  end
+  return { marks[1][2], marks[1][3], marks[1][4].end_row, marks[1][4].end_col, marks[1][4].hl_group }
+end
+-- `@@ -1,2 +1,2 @@` on line 5: row 4, columns 0..15.
+assert_eq(hunk_hl(), { 4, 0, 4, 15, 'DiffHunkHover' }, 'hunk hover marks its @@ header')
+
+-- Hunk 2's header carries git's function heading, and the `location` node
+-- covers it, so the highlight runs to the end of the line.
+vim.api.nvim_win_set_cursor(tree_win, { 4, 0 }) -- hunk 2
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(hunk_hl(), { 8, 0, 8, 30, 'DiffHunkHover' }, 'the heading is part of the @@ node')
+
+-- One mark at a time, and none at all on a file or group row.
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- block foo.txt
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(hunk_hl(), nil, 'a file row clears the hunk highlight')
+vim.api.nvim_win_set_cursor(tree_win, { 1, 0 }) -- the ./ group
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(hunk_hl(), nil, 'a group row paints none either')
 
 -- ------------------------------------------------------------------
 -- Hover parks the section at the top of the diff window (`zt`), 'scrolloff'
@@ -240,10 +266,16 @@ assert_eq(require('lib.diff_filepath').hover(buf), 0, "the group hover lights th
 -- <CR> jumps the source cursor to the row's lnum (keymaps do fire headless).
 -- ------------------------------------------------------------------
 vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1
+Diff.tree_focus(tree_buf, tree_win) -- as hovering it would
+assert_true(hunk_hl() ~= nil, 'the hunk header is highlighted while hovered')
 vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'x', false)
 vim.wait(100)
 assert_eq(vim.api.nvim_get_current_win(), src_win, 'jump focuses the source window')
 assert_eq(vim.fn.line('.'), 5, '<CR> on hunk 1 jumps to its @@ line')
+-- Leaving the tree drops the hover marks (BufLeave; it fires headless, unlike
+-- CursorMoved).
+assert_eq(hunk_hl(), nil, 'leaving the tree clears the hunk highlight')
+assert_eq(require('lib.diff_filepath').hover(buf), nil, 'and the bar hover')
 
 -- ------------------------------------------------------------------
 -- `za`: folds the section in the diff buffer, mirrored on the tree's own

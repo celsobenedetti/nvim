@@ -37,6 +37,10 @@
 --                     GitSignsDeleteVirtLnInLine, codediff char_delete,
 --                     MinusEmph (bg + fg)
 --   line-numbers   -> GitSignsVirtLnum, diffIndexLine
+--
+-- Not delta-derived: the DiffTree hover surface (DiffFileBarHover*,
+-- DiffHunkHover) takes Visual's background, so hovering a row in the sidebar
+-- reads like a selection rather than a diff state.
 
 local function apply()
   -- colors.diff keys resolve against vim.o.background at access time.
@@ -75,6 +79,11 @@ local function apply()
   vim.api.nvim_set_hl(0, 'DiffFileBarHover', { bg = hover_bg })
   vim.api.nvim_set_hl(0, 'DiffFileBarHoverPath', { bg = hover_bg, fg = p.header_fg })
   vim.api.nvim_set_hl(0, 'DiffFileBarHoverSummary', { bg = hover_bg, fg = p.header_summary_fg })
+
+  -- Same hover surface for a hovered hunk row: lib.Diff paints the `@@` header
+  -- line (the `location` node) in the diff buffer. Plain buffer text there, so
+  -- bg only — the treesitter foreground of the `@@` line stays as it is.
+  vim.api.nvim_set_hl(0, 'DiffHunkHover', { bg = hover_bg })
 
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })

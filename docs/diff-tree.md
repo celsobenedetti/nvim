@@ -55,7 +55,8 @@ three row kinds:
   **right-aligned** at the sidebar's text width, and the label is truncated
   with `…` where the two would collide.
 - **hunk** (indented under its file): the full `@@ -a,b +c,d @@` line,
-  including git's trailing function/class heading.
+  including git's trailing function/class heading — the `location` node's text,
+  whose range the row keeps as `location` for the hover highlight.
 
 Grouping is by directory **key**, not by consecutive runs: git's path sort
 interleaves them (`a/b.txt`, `a/bb/z.txt`, `a/c.txt`), which would otherwise
@@ -66,7 +67,7 @@ Every row carries `lnum` (1-based jump target) and `range` (0-based node span,
 used for containment); a dir row borrows both from its first file, which is
 what hover and `<CR>` act on there. Hunk rows
 also carry their block's `path`, so file-scoped actions (`ga`) work from any
-row kind but a dir. Dir rows instead carry `blocks`, the header line of every
+row kind but a dir, plus `location`, the span hover highlights. Dir rows instead carry `blocks`, the header line of every
 file in the group, so one fold command can fold all of them.
 
 Colours come from extmarks in the `lib.diff.tree` namespace: the group header
@@ -86,12 +87,20 @@ mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
      lands that many lines below the top edge, keeping the usual margin of
      context. That needs the diff window's cursor to move there too (see the
      gotcha below).
-  2. **highlight, files only** — a block row re-emits lib.diff_filepath's
+  2. **highlight the section** — a block row re-emits lib.diff_filepath's
      overlay bar on its hover palette (`DiffFileBarHover*`); the header line's
      visible pixels belong to that extmark, whose `virt_text` chunks no second
-     extmark can restyle. A dir row previews its first file, so it lights up
-     that file's bar. Hunk rows paint nothing in the diff buffer — the scroll
-     is the feedback.
+     extmark can restyle, so the bar has to carry the palette itself. A dir row
+     previews its first file, so it lights up that file's bar. A hunk row
+     highlights its `@@` header line — the `location` node's exact span (git's
+     trailing function heading included, the node covers it) — with a
+     `DiffHunkHover` extmark in the `lib.diff.tree.hover` namespace. That one
+     is plain buffer text, so the group is background-only and the treesitter
+     foreground of the `@@` line survives underneath. Both hover surfaces take
+     `Visual`'s background (`after/plugin/diff-colors.lua`), so the two row
+     kinds read the same. One mark at a time: every hover clears the namespace
+     first, and leaving the tree (`BufLeave`) or closing it drops both the
+     highlight and the bar hover.
   3. **refresh the sticky context** — nvim-treesitter-context for the *diff*
      window, so hovering a hunk keeps its `diff --git` header (filepath bar
      included, see `docs/diff-filepath-bar.md`) pinned above it even though the
@@ -175,9 +184,10 @@ drops the hovered block's bar back to its normal palette.
 `tree_rows` (the dir/file/hunk shape, paths, statuses, summaries, `@@` text,
 ranges, a group's `blocks`), `tree_row_containing`, the rendered buffer lines,
 the fold options **and the resulting fold levels**, the hovered file's bar (and
-that hunk rows paint nothing, and that a dir row previews its first file),
-hover's `zt` (topline with a non-zero `'scrolloff'`, the source cursor, and
-that a closed section stays closed), the `<CR>` jump, every forwarded fold
+that a dir row previews its first file), hover's `zt` (topline with a non-zero
+`'scrolloff'`, the source cursor, and that a closed section stays closed), the
+hovered hunk's `@@` highlight (its exact span, that only one exists at a time,
+and that leaving the tree clears it), the `<CR>` jump, every forwarded fold
 command
 (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on all three row kinds, `zR`/`zM`/`zr` incl. a
 count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
