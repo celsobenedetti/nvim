@@ -124,17 +124,6 @@ local function git_pickaxe(opts)
   end)
 end
 
--- Dedicated tab: fugitive `Git diff -p <rev1> <rev2>` patch on top, quickfix
--- of changed files below; <CR> on a file scrolls the patch to its first hunk.
-vim.api.nvim_create_user_command('Diff', function(opts)
-  local args = lib.strings.split_args(opts.args)
-  if #args ~= 2 then
-    vim.notify('Usage: :Diff <rev1> <rev2>', vim.log.levels.WARN)
-    return
-  end
-  lib.Diff.open(args[1], args[2])
-end, { nargs = '*', desc = 'fugitive: diff two revisions (tab + quickfix)' })
-
 local keymaps = function()
   -- stylua: ignore start
   vim.keymap.set('n', '<leader>G', ":Git<CR>", { desc = 'git: status (fugitive)' })

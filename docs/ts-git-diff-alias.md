@@ -37,6 +37,20 @@ runs on git buffers.
   ERROR nodes — harmless, just no captures.
 - Requires the `diff` parser (already in `config.treesitter.ensure_installed`).
 
+## Gotchas
+
+- **`i/`/`w/` path prefixes.** Git >= 2.50 emits `diff --git i/a.txt
+  w/a.txt` (index/worktree prefixes) for `git diff` with no revision args,
+  while committed diffs (`git show`, `git diff <rev>…`) still use `a/`/`b/`.
+  Code that parses the `diff --git` line must not assume `a/`/`b/`: the old
+  regex quickfix builder (`^diff %-%-git a/(.+) b/(.+)$`, removed in c8fdd5a)
+  silently matched nothing for working-tree diffs on such machines.
+  lib.Diff's quickfix builder is prefix-agnostic (strips `a/ b/ i/ w/`).
+- The tree-sitter-diff grammar folds both paths of `diff --git a/x b/x` into
+  a single `filename` node; the `+++ b/x` line (`new_file` node) carries the
+  clean new path but is absent for binary/rename sections. lib.Diff prefers
+  `new_file`, falling back to the last whitespace token of the command node.
+
 ## Testing
 
 `make test-integration` includes `tests/integration/test_ts_git_alias.lua`:

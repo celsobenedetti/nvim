@@ -40,6 +40,8 @@ resolves here — with `-u NONE` nvim's rtp still has `~/.config/nvim` first (th
 live config, which may lag this worktree) and its Lua loader wins over
 `package.path`.
 
+- All nvim integration tests must have reasonable timeouts. Preferrable 5-10s,
+  avoid bigger unless necessary.
 - End every headless `-c` chain with `qa!` (or `cquit`): a `:q` that closes one
   of several windows leaves headless nvim idling in its event loop forever —
   only a `:q` on the _last_ window exits. `:cclose` then `:q` also works.
@@ -51,6 +53,6 @@ live config, which may lag this worktree) and its Lua loader wins over
 - `-l` mode never delivers fugitive `:Git` job output; test fugitive buffers
   with `-c "Git ..."` + `-c sleep N` before asserting (output streams async).
   Also add `--cmd "filetype plugin on"` and `--cmd "set rtp+=./after"` — under
-  `-u NONE` nothing sources ftplugins otherwise, and prepending the repo to
-  rtp does not make its `after/` dir discoverable (rtp lists after dirs as
-  explicit trailing entries). See docs/diff-emph.md.
+  `-u NONE` nothing sources ftplugins otherwise, and prepending the repo to rtp
+  does not make its `after/` dir discoverable (rtp lists after dirs as explicit
+  trailing entries). See docs/diff-emph.md.

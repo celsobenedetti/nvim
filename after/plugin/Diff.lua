@@ -6,15 +6,20 @@
 ---
 --- We use vim-fugitive's `:Git` primitive to get diff in regular, navigable, `filetype` buffer.
 --- Single buffer with whole diff.
---- Calculate location of heaer line for each affected file within buffer.
---- - We use treesitter query in the buffer to get the starting location of each `block`
---- Populate quickfix list with treesitter-backed location for each affected file.
+--- The treesitter `diff` grammar (aliased onto `git` in after/plugin/autocmds.lua)
+--- locates each per-file `block`; one quickfix entry per block points at its
+--- `diff --git` header line (see lua/lib/Diff.lua).
 ---
 --- Usages:
 --- `:Diff`                 -> `Git diff` working tree
 --- `:Diff <rev>`           -> `Git show <rev>`
 --- `:Diff <rev1> <rev2>`   -> `Git diff <rev1> <rev2>`
----
----
---- TODO: implement this module
-local M = {}
+
+vim.api.nvim_create_user_command('Diff', function(opts)
+  local args = lib.strings.split_args(opts.args)
+  if #args > 2 then
+    vim.notify('Usage: :Diff [rev] [rev2]', vim.log.levels.WARN)
+    return
+  end
+  lib.Diff.open(args)
+end, { nargs = '*', desc = 'git: diff working tree, show <rev>, or diff <rev1> <rev2> (tab + quickfix)' })
