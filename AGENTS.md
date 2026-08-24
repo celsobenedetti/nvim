@@ -42,6 +42,7 @@ live config, which may lag this worktree) and its Lua loader wins over
 
 - All nvim integration tests must have reasonable timeouts. Preferrable 5-10s,
   avoid bigger unless necessary.
+- NEVER `tmux kill-server`. It will kill active agent harness and harm WIP
 - End every headless `-c` chain with `qa!` (or `cquit`): a `:q` that closes one
   of several windows leaves headless nvim idling in its event loop forever —
   only a `:q` on the _last_ window exits. `:cclose` then `:q` also works.

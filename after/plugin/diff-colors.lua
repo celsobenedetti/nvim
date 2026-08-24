@@ -57,6 +57,14 @@ local function apply()
   vim.api.nvim_set_hl(0, 'DiffFileBarPath', { bg = p.header, fg = p.header_fg })
   vim.api.nvim_set_hl(0, 'DiffFileBarSummary', { bg = p.header, fg = p.header_summary_fg })
 
+  -- The fold surface for patch windows, mapped there with 'winhighlight' in
+  -- after/ftplugin/git.lua. lib.fold_hl gives every closed fold one background
+  -- by copying that group's bg over the whole line; pointing it at the bar's
+  -- header bg means a folded `diff --git` block keeps the bar's color instead
+  -- of flipping to `Folded`, so the bar's overlay chunks — the one layer no
+  -- stamp can outrank — sit on the same background as the rest of the line.
+  vim.api.nvim_set_hl(0, 'DiffFolded', { bg = p.header })
+
   -- DiffTree sidebar hover (lib.Diff focus_row -> lib.diff_filepath
   -- set_hover): hovering a tree file row re-emits that block's bar on
   -- Visual's background — an extmark's hl_group can't restyle another

@@ -11,6 +11,7 @@
 ---@field colors LibColors
 ---@field cwd LibCwd
 ---@field fold LibFold
+---@field fold_hl LibFoldHl
 ---@field fs LibFs
 ---@field fzf LibFzf
 ---@field gx LibGx

@@ -19,6 +19,16 @@ vim.keymap.set('n', '[[', nav('hunk', -1), { buffer = 0, desc = 'diff: previous 
 vim.keymap.set('n', '.', nav('block', 1), { buffer = 0, desc = 'diff: next file' })
 vim.keymap.set('n', ',', nav('block', -1), { buffer = 0, desc = 'diff: previous file' })
 
+-- Folded blocks keep the filepath bar's background instead of flipping to
+-- `Folded`: lib.fold_hl stamps each closed fold with the window's fold surface,
+-- and 'winhighlight' is what picks that surface per window (DiffFolded, see
+-- after/plugin/diff-colors.lua). Kept per buffer-in-window (`vim.wo[0][0]`) and
+-- appended so nothing else already in 'winhighlight' is lost.
+local wh = vim.wo[0][0].winhighlight
+if not wh:find('Folded:', 1, true) then
+  vim.wo[0][0].winhighlight = wh == '' and 'Folded:DiffFolded' or (wh .. ',Folded:DiffFolded')
+end
+
 -- Left-side tree of the file/hunk sections (lib.Diff.open_tree).
 vim.keymap.set('n', 'glt', function()
   lib.Diff.open_tree()
