@@ -26,6 +26,8 @@ local AGENT_ICONS = {
   pi = '󰚩',
 }
 
+local CMD_OUTPUT_ICON = ''
+
 --- Terminal label for a buffer: `   terminal`, plus a segment naming the
 --- kind: `toggle term`, or `<icon> <agent>` for agent terminals (claude,
 --- opencode, pi). Shared with lib.tab so tabs and winbars agree.
@@ -59,6 +61,13 @@ end
 -- buftype). Evaluating per-redraw sidesteps the ordering entirely.
 local SPECIAL_FILETYPES = {
   fugitive = ' git' .. SEP .. ' fugitive',
+  ['cmd-output'] = function(buf)
+    -- Buffers are named `[cmd] <cmd>` by after/plugin/cmd-output.lua.
+    -- nvim_buf_set_name resolves the name against cwd, so the marker is
+    -- embedded in an absolute path rather than leading it.
+    local cmd = vim.api.nvim_buf_get_name(buf):match('.*%[cmd%] (.*)$') or ''
+    return ' ' .. CMD_OUTPUT_ICON .. ' cmd' .. SEP .. cmd:gsub('%%', '%%%%')
+  end,
   snacks_picker_input = '',
   terminal = function(buf)
     return _G.get_terminal_label(buf)
