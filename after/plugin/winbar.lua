@@ -110,6 +110,9 @@ _G.get_winbar = function()
   end
 
   local buf = vim.api.nvim_win_get_buf(winid)
+  if vim.b.winbar then
+    return lib.strings.hl('WinBar', vim.b.winbar)
+  end
 
   -- Special filetypes first: their content depends on live buffer state (e.g.
   -- which terminal kind), and filetype may only be set after the winbar was
