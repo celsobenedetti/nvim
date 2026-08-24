@@ -39,9 +39,9 @@ vim.keymap.set({ 'n', 't' }, '<C-Left>', '<cmd>vertical resize -2<cr>', { desc =
 vim.keymap.set({ 'n', 't' }, '<C-Right>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
 
 -- send open buffers to the quickfix list
-vim.keymap.set('n', ',,', function()
-  lib.buffers.to_quickfix()
-end, { desc = 'Send open buffers to quickfix list' })
+-- vim.keymap.set('n', ',,', function()
+--   lib.buffers.to_quickfix()
+-- end, { desc = 'Send open buffers to quickfix list' })
 
 if not os.getenv('TMUX') then
   -- Move to window using the <ctrl> hjkl keys
