@@ -46,6 +46,17 @@ local function apply()
   -- 1. Core diff groups (vimdiff, :Gitsigns diffthis, diff-mode).
   -- --------------------------------------------------------------------
   vim.api.nvim_set_hl(0, 'diffFile', { link = 'Comment' })
+
+  -- Inline filepath bar replacing each `diff --git` header line
+  -- (lib.diff_filepath, wired in after/ftplugin/git.lua). The range group's
+  -- fg matches its bg so the raw header text is invisible beneath the
+  -- overlay virt_text; the chunk groups carry the visible fg. Header bg
+  -- matches TreesitterContext so the bar blends into nvim-treesitter-context's
+  -- floating window.
+  vim.api.nvim_set_hl(0, 'DiffFileBar', { bg = p.header, fg = p.header })
+  vim.api.nvim_set_hl(0, 'DiffFileBarPath', { bg = p.header, fg = p.header_fg })
+  vim.api.nvim_set_hl(0, 'DiffFileBarSummary', { bg = p.header, fg = p.header_summary_fg })
+
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })
   -- Modified lines read as "new" (delta plus-style) - no yellow.

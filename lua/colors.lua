@@ -9,6 +9,9 @@ local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.t
 --- @field delete_char string
 --- @field delete_char_fg string
 --- @field lnum_fg string
+--- @field header string
+--- @field header_fg string
+--- @field header_summary_fg string
 
 --- @class OmarchyColors
 --- @field color0 string
@@ -70,6 +73,12 @@ local diff_palettes = {
     delete_char = '#A01818', -- minus-emph bg
     delete_char_fg = '#FFC8C8', -- minus-emph fg
     lnum_fg = '#444444', -- delta line-numbers-style
+    -- Inline filepath bar replacing each `diff --git` header line. Tufte dark
+    -- bg2/fg/muted — header bg matches TreesitterContext so the bar blends
+    -- into nvim-treesitter-context's floating window.
+    header = '#1b1b1b',
+    header_fg = '#fffcf0',
+    header_summary_fg = '#6d6d6d',
   },
   light = {
     add = '#D0FFD0', -- delta plus-style
@@ -80,6 +89,10 @@ local diff_palettes = {
     delete_char = '#FFA0A0', -- minus-emph bg
     delete_char_fg = '#5C0000', -- minus-emph fg
     lnum_fg = '#444444', -- delta line-numbers-style
+    -- Tufte light bg2/fg/muted (same TreesitterContext-matching rationale).
+    header = '#f7f3e6',
+    header_fg = '#111111',
+    header_summary_fg = '#93938f',
   },
 }
 

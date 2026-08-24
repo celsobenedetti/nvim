@@ -59,15 +59,17 @@ end
 
 local has_icons, mini_icons = pcall(require, 'mini.icons')
 
----Filetype glyph for a path ('' when mini.icons is unavailable).
+---Filetype glyph and its highlight for a path ('' / nil when mini.icons is
+---unavailable).
 ---@param path string
----@return string
+---@return string glyph
+---@return string? hl
 local function file_icon(path)
   if not has_icons then
-    return ''
+    return '', nil
   end
-  local glyph = mini_icons.get('file', path)
-  return glyph or ''
+  local glyph, hl = mini_icons.get('file', path)
+  return glyph or '', hl
 end
 
 ---Delta-style change summary: `+N -M`, zero sides omitted.
@@ -99,16 +101,13 @@ local function new_path(node, bufnr)
   return text:gsub('^"', ''):gsub('^[abiw]/', ''):gsub('"$', '')
 end
 
----Collect quickfix items from a fugitive patch buffer: one entry per
----treesitter `block`, `lnum` = the block's header line. `text` is a
----tabular row rendered by M.qf_line (`'quickfixtextfunc'`, which replaces
----the native `file|lnum|text` format — including its leading-whitespace
----stripping): right-aligned lnum column, mini.icons glyph + path padded to
----the widest label, and the `+N -M` summary. Binary/rename sections
----without hunks show just the padded path.
+---Parse per-file blocks from a fugitive patch buffer: one entry per
+---treesitter `block`, with its 0-based header row, new path, mini.icons
+---glyph + hl, and the `+N -M` change summary. Shared by the quickfix list
+---(M.parse_items) and the inline filepath bars (lib.diff_filepath).
 ---@param bufnr number
----@return table[] items quickfix items {bufnr, lnum, text}
-M.parse_items = function(bufnr)
+---@return table[] blocks {row, lnum, path, icon, icon_hl, adds, dels, summary}
+M.parse_blocks = function(bufnr)
   local tree = vim.treesitter.get_parser(bufnr):parse()[1]
   local root = tree:root()
 
@@ -128,8 +127,7 @@ M.parse_items = function(bufnr)
     end
   end
 
-  -- Collect rows first so the text can be padded to the widest lnum/label.
-  local rows = {}
+  local blocks = {}
   local block_cap, file_cap, new_cap = CAPTURE_IDS.block, CAPTURE_IDS.file, CAPTURE_IDS.new
   for _, match in BLOCK_QUERY:iter_matches(root, bufnr, 0, -1) do
     local block = match[block_cap] and match[block_cap][1]
@@ -137,14 +135,44 @@ M.parse_items = function(bufnr)
       -- `+++ b/x` when present (cleanest); otherwise the last command filename
       local name_node = (match[new_cap] and match[new_cap][1]) or (match[file_cap] and match[file_cap][1])
       local path = name_node and new_path(name_node, bufnr) or ''
-      local icon = file_icon(path)
+      local icon, icon_hl = file_icon(path)
       local s = stats[block:start()]
-      rows[#rows + 1] = {
+      local adds = s and s.adds or 0
+      local dels = s and s.dels or 0
+      blocks[#blocks + 1] = {
+        row = block:start(),
         lnum = block:range() + 1,
-        label = icon ~= '' and (icon .. ' ' .. path) or path,
-        summary = summary_text(s and s.adds or 0, s and s.dels or 0),
+        path = path,
+        icon = icon,
+        icon_hl = icon_hl,
+        adds = adds,
+        dels = dels,
+        summary = summary_text(adds, dels),
       }
     end
+  end
+
+  return blocks
+end
+
+---Collect quickfix items from a fugitive patch buffer: one entry per
+---treesitter `block`, `lnum` = the block's header line. `text` is a
+---tabular row rendered by M.qf_line (`'quickfixtextfunc'`, which replaces
+---the native `file|lnum|text` format — including its leading-whitespace
+---stripping): right-aligned lnum column, mini.icons glyph + path padded to
+---the widest label, and the `+N -M` summary. Binary/rename sections
+---without hunks show just the padded path.
+---@param bufnr number
+---@return table[] items quickfix items {bufnr, lnum, text}
+M.parse_items = function(bufnr)
+  -- Collect rows first so the text can be padded to the widest lnum/label.
+  local rows = {}
+  for _, b in ipairs(M.parse_blocks(bufnr)) do
+    rows[#rows + 1] = {
+      lnum = b.lnum,
+      label = b.icon ~= '' and (b.icon .. ' ' .. b.path) or b.path,
+      summary = b.summary,
+    }
   end
 
   local max_lnum_w, max_label_w = 0, 0
