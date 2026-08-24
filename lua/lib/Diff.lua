@@ -476,6 +476,36 @@ local function block_path(block, bufnr)
   return command_text or ''
 end
 
+---New path of the per-file `block` the cursor sits in, for actions that
+---operate on "the file I'm looking at" inside a patch buffer (the `ga`
+---staging keymap in after/ftplugin/git.lua). Returns nil when the buffer has
+---no `diff` parse tree, or the cursor is outside every block (e.g. on
+---`:Git log -p` commit headers).
+---@param bufnr? number defaults to the current buffer
+---@return string?
+M.cursor_block_path = function(bufnr)
+  bufnr = (not bufnr or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+  local ok, tree = pcall(function()
+    return vim.treesitter.get_parser(bufnr):parse()[1]
+  end)
+  if not ok or not tree then
+    return nil
+  end
+
+  local row = vim.fn.line('.') - 1 -- 0-based cursor row
+  -- Last block first: a block's end position is the start of the next block's
+  -- first line (end_col 0), so both would match on that row.
+  local blocks = collect_nodes(tree:root(), 'block')
+  for i = #blocks, 1, -1 do
+    local start_row, _, end_row = blocks[i]:range()
+    if row >= start_row and row <= end_row then
+      local path = block_path(blocks[i], bufnr)
+      return path ~= '' and path or nil
+    end
+  end
+  return nil
+end
+
 ---The `@@` header line of a hunk (git appends the enclosing function/class
 ---heading after the second `@@`, so this reads e.g. `@@ -10,3 +10,4 @@ foo()`).
 ---@param hunk TSNode

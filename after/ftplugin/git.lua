@@ -29,6 +29,19 @@ if not wh:find('Folded:', 1, true) then
   vim.wo[0][0].winhighlight = wh == '' and 'Folded:DiffFolded' or (wh .. ',Folded:DiffFolded')
 end
 
+-- `ga` stages the file section (`block`) the cursor sits in, running the same
+-- flow as the global `ga` (after/plugin/git.lua) on that path: `Git add -p`
+-- for unstaged changes, plain `git add` for an untracked file. The patch text
+-- names the file, so no buffer for it has to exist.
+vim.keymap.set('n', 'ga', function()
+  local path = lib.Diff.cursor_block_path(0)
+  if not path then
+    Snacks.notify.warn('no file section under the cursor', { title = 'Git', icon = '', style = 'fancy' })
+    return
+  end
+  lib.git.add(path)
+end, { buffer = 0, desc = 'git: git add -p file under cursor' })
+
 -- Left-side tree of the file/hunk sections (lib.Diff.open_tree).
 vim.keymap.set('n', 'glt', function()
   lib.Diff.open_tree()

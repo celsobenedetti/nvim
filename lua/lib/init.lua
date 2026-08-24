@@ -14,6 +14,7 @@
 ---@field fold_hl LibFoldHl
 ---@field fs LibFs
 ---@field fzf LibFzf
+---@field git LibGit
 ---@field gx LibGx
 ---@field jump LibJump
 ---@field keys LibKeys

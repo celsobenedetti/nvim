@@ -157,28 +157,10 @@ local keymaps = function()
     vim.cmd(cmd)
   end, { desc = 'git: Git commit (or amend if nothing staged)' })
 
+  -- The staging flow lives in lib.git so `ga` inside a `:Diff` patch buffer can
+  -- run it on the file section under the cursor (after/ftplugin/git.lua).
   vim.keymap.set('n', 'ga', function()
-    local file = vim.fn.expand('%')
-    local hunks = require('gitsigns').get_hunks(0)
-
-    -- file is not in git
-    if hunks == nil then
-      if vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'nofile' then
-        Snacks.notify.warn('not a git file', { title = 'Git', icon = '', style = 'fancy' })
-        return
-      end
-
-      vim.system({ 'git', 'add', file })
-      Snacks.notify.info(string.format('Added: `%s`', file), { title = 'Git', icon = '', style = 'fancy' })
-      return
-    end
-
-    if #hunks == 0 then
-      Snacks.notify.warn(string.format('No changes: `%s`', file), { title = 'Git', icon = '', style = 'fancy' })
-      return
-    end
-
-    vim.cmd('vertical Git add -p %')
+    lib.git.add()
   end, { desc = 'git: git add -p current file' })
 
   -- git: compare branch with HEAD in a fugitive diff tab
