@@ -15,12 +15,19 @@ local ns = vim.api.nvim_create_namespace('nvim.diff_filepath')
 --- Build the `[text, hl]` virt_text chunks for one block header. When
 --- `hovered`, use the Hover palette variants (same text, see M.set_hover);
 --- the icon stacks the base range group beneath it for a shared background.
+--- A file flagged viewed in the DiffTree (`<space>`, lib.Diff.tree_toggle_viewed)
+--- leads with the same `` its tree row shows — as a chunk of the bar,
+--- because no later extmark can restyle this one's virt_text.
 ---@param block table from lib.Diff.parse_blocks
+---@param bufnr integer the patch buffer, for the viewed flag
 ---@param hovered boolean
 ---@return table[] chunks
-local function chunks_for(block, hovered)
+local function chunks_for(block, bufnr, hovered)
   local base = hovered and 'DiffFileBarHover' or 'DiffFileBar'
   local chunks = {}
+  if Diff.file_viewed(bufnr, block.path) then
+    chunks[#chunks + 1] = { Diff.viewed_icon .. ' ', base .. 'Viewed' }
+  end
   if block.icon ~= '' then
     local hl = block.icon_hl and { base, block.icon_hl } or base .. 'Path'
     chunks[#chunks + 1] = { block.icon .. ' ', hl }
@@ -70,7 +77,7 @@ M.render = function(bufnr)
         end_row = block.row + 1,
         hl_group = hovered and 'DiffFileBarHover' or 'DiffFileBar',
         hl_eol = true,
-        virt_text = chunks_for(block, hovered),
+        virt_text = chunks_for(block, bufnr, hovered),
         virt_text_pos = 'overlay',
         -- Default priority (4096) already draws above treesitter's 100.
       })

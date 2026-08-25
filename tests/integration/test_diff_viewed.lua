@@ -163,9 +163,9 @@ local groups = {}
 for _, m in ipairs(details) do
   groups[m[4].hl_group] = { m[3], m[4].end_col }
 end
-assert_eq(groups.DiffTreeViewedSign, { 0, #ICON }, 'the glyph is coloured on its own')
+assert_eq(groups.DiffViewedSign, { 0, #ICON }, 'the glyph is coloured on its own')
 assert_eq(
-  groups.DiffTreeViewed,
+  groups.DiffViewed,
   { #ICON, #vim.api.nvim_buf_get_lines(tree_buf, 1, 2, false)[1] },
   'and the label after it is dimmed to the end of the row'
 )
@@ -208,6 +208,53 @@ assert_eq(marked(), { 1, 2, 3, 4 }, 'toggling a fully viewed group clears it')
 assert_eq(src_foldclosed(12), -1, 'and reopens its files')
 
 -- ------------------------------------------------------------------
+-- The same flags in the diff buffer: a sign on every viewed hunk's `@@`
+-- header, and the file's flag as a chunk of lib.diff_filepath's bar.
+-- ------------------------------------------------------------------
+local SRC_NS = vim.api.nvim_get_namespaces()['lib.diff.viewed']
+assert_true(SRC_NS ~= nil, 'the diff-buffer viewed namespace exists')
+
+---{patch line, sign, hl} per viewed-hunk mark in the diff buffer.
+local function src_marks()
+  local out = {}
+  for _, m in ipairs(vim.api.nvim_buf_get_extmarks(buf, SRC_NS, 0, -1, { details = true })) do
+    out[#out + 1] = { m[2] + 1, m[4].sign_text, m[4].sign_hl_group, m[4].hl_group, m[4].end_col }
+  end
+  table.sort(out, function(a, b)
+    return a[1] < b[1]
+  end)
+  return out
+end
+
+-- `lua/a.lua`'s two hunks are viewed (patch lines 5 and 9), `b.txt`'s is not.
+-- The sign comes back padded to the sign column's two cells.
+local SIGN = ICON .. ' '
+assert_eq(src_marks(), {
+  { 5, SIGN, 'DiffViewedSign', 'DiffViewed', #'@@ -1,2 +1,2 @@' },
+  { 9, SIGN, 'DiffViewedSign', 'DiffViewed', #'@@ -5,1 +5,1 @@ function bar()' },
+}, "a sign on each viewed hunk's @@ header, dimmed to the end of that line only")
+
+-- The file rides in its bar instead: the same glyph as the first chunk.
+local bar_ns = vim.api.nvim_get_namespaces()['nvim.diff_filepath']
+local function bar_chunks(row)
+  local m = vim.api.nvim_buf_get_extmarks(buf, bar_ns, { row, 0 }, { row, -1 }, { details = true })[1]
+  return m and m[4].virt_text or nil
+end
+-- Row 0 is also the block the tree cursor hovers, so its bar is in the Hover
+-- palette — the viewed chunk follows it like every other chunk does.
+assert_eq(bar_chunks(0), {
+  { ICON .. ' ', 'DiffFileBarHoverViewed' },
+  { 'lua/a.lua', 'DiffFileBarHoverPath' },
+  { ' +2 -2', 'DiffFileBarHoverSummary' },
+}, "the viewed file's bar leads with the glyph")
+assert_eq(bar_chunks(11), {
+  { 'b.txt', 'DiffFileBarPath' },
+  { ' +1 -1', 'DiffFileBarSummary' },
+}, 'an unviewed file keeps its plain bar')
+assert_eq(Diff.file_viewed(buf, 'lua/a.lua'), true, 'file_viewed reports the flag')
+assert_eq(Diff.file_viewed(buf, 'b.txt'), false, 'and its absence')
+
+-- ------------------------------------------------------------------
 -- The flags live on the diff buffer: closing the sidebar keeps them.
 -- ------------------------------------------------------------------
 assert_eq(vim.b[buf].diff_tree_viewed, {
@@ -225,6 +272,17 @@ Diff.open_tree()
 local reopened = vim.api.nvim_get_current_buf()
 assert_true(reopened ~= tree_buf, 'a fresh tree buffer')
 assert_eq(marked(reopened), { 1, 2, 3, 4 }, 'the marks are repainted when the tree reopens')
+assert_eq(#src_marks(), 2, 'and the diff buffer still carries its hunk signs')
+
+-- Clearing a flag clears both surfaces.
+vim.api.nvim_set_current_win(vim.api.nvim_get_current_win())
+vim.api.nvim_win_set_cursor(0, { 2, 0 })
+feed('<space>')
+assert_eq(src_marks(), {}, 'unviewing the file drops its hunk signs')
+assert_eq(bar_chunks(0), {
+  { 'lua/a.lua', 'DiffFileBarHoverPath' },
+  { ' +2 -2', 'DiffFileBarHoverSummary' },
+}, 'and its bar loses the glyph')
 
 print('OK: DiffTree viewed marks')
 vim.cmd('qa!')

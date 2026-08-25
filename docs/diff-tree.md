@@ -8,12 +8,11 @@ files sharing a parent directory sit together (mini.icons puts a glyph in
 front of each basename; not shown here):
 
 ```
-lua/lib/
- M Diff.lua   +407 -168
-   @@ -496,6 +496,7 @@
-   @@ -604,11 +612,7 @@
+ lua/lib/
+M Diff.lua   +407 -168      <- viewed (`<space>`), so it is folded shut
  A git.lua   +86
-lua/plugins/
+   @@ -0,0 +1,86 @@
+ lua/plugins/
  M treesitter.lua   +6 -1
 ```
 
@@ -98,8 +97,8 @@ paint into (see `<space>` below), so nothing shifts when one appears.
 Colours come from extmarks in the `lib.diff.tree` namespace: the group header
 as `Directory`, the status letter as `Added`/`Removed`/`Changed`, the
 mini.icons glyph in its own group, hunk rows dimmed as `Comment`. Viewed rows
-add a second namespace, `lib.diff.tree.viewed`: `DiffTreeViewedSign` on the
-gutter glyph, `DiffTreeViewed` over the rest of the line, both at priority 4200
+add a second namespace, `lib.diff.tree.viewed`: `DiffViewedSign` on the
+gutter glyph, `DiffViewed` over the rest of the line, both at priority 4200
 so they sit above the row colours (`after/plugin/diff-colors.lua` gives them
 delta's plus-style green and line-numbers grey).
 
@@ -173,7 +172,7 @@ delta's plus-style green and line-numbers grey).
   showing the file, else the tab's current window, else its first normal one —
   a sidebar (`buftype=nofile`), terminal or float is never replaced.
 - **`<space>`** — flags the row as **viewed**, GitHub's review checkbox:
-  `` in its gutter and the label dimmed. Propagation, in
+  `` in its gutter and the label dimmed. Propagation, in
   `lib.Diff.tree_toggle_viewed`:
   - a **file** row carries its hunks with it,
   - marking the last unviewed **hunk** of a file marks the file too (unmarking
@@ -188,9 +187,25 @@ delta's plus-style green and line-numbers grey).
   the diff: its tree row starts no fold, and folding that line would collapse
   its whole directory.
 
+  The **diff buffer shows the same flags**, repainted by `paint_viewed_src` on
+  every toggle and when the tree opens:
+  - a viewed **file** leads its filepath bar with the ``
+    (`DiffFileBarViewed`, the hover palette has its own variant). It has to be a
+    chunk of that bar rather than a mark over it: the bar is one overlay
+    extmark, and no later extmark can restyle another's virt_text — the same
+    constraint hover works around (`lib.diff_filepath.chunks_for`, which asks
+    `lib.Diff.file_viewed`).
+  - a viewed **hunk** gets a `` **sign** on its `@@` header
+    (`sign_hl_group = DiffViewedSign`) and that header line dimmed, in the
+    `lib.diff.viewed` namespace. `'signcolumn'` is `yes` globally, so the column
+    is already reserved and the sign shifts no text; the hunk's body keeps its
+    diff colours, exactly as the tree dims the row and not the section.
+
   The flags live on the **diff** buffer (`vim.b.diff_tree_viewed`, a
   `f:<path>` / `h:<path>:<@@ line>` → `true` map), so closing and reopening the
-  sidebar repaints them and a fresh `:Diff` starts clean. `<space>` is the
+  sidebar repaints them and a fresh `:Diff` starts clean. Closing the sidebar
+  leaves the diff buffer's own marks in place — they belong to the patch, not
+  to the sidebar. `<space>` is the
   leader key everywhere else; buffer-locally in a nomodifiable list of sections
   there is nothing worth having a `<leader>` chord for.
 - **`z` fold commands** — fold the **diff buffer**, mirrored onto the tree.
@@ -268,8 +283,10 @@ name long enough to be truncated.
 `tests/integration/test_diff_viewed.lua` covers the viewed marks: the
 propagation in all three directions (hunk → file, file → hunks, dir → group),
 the glyph and the two highlight spans, that TREE_NS's row colours survive the
-gutter edit, the folds a viewed file closes on both sides, and the flags being
-restored when the sidebar is reopened.
+gutter edit, the folds a viewed file closes on both sides, the diff buffer's
+own marks (a sign per viewed hunk, the glyph chunk in a viewed file's bar and
+its absence from an unviewed one, both cleared again when the flag is), and the
+flags being restored when the sidebar is reopened.
 `lib.git.add` itself is covered against a throwaway repo in
 `tests/integration/test_diff_ga.lua`, and the `gf` flow — `file_location`'s
 line mapping (both hunks of a file, deletions, additions, context, the
@@ -283,7 +300,7 @@ both entry points — in `tests/integration/test_diff_gf.lua`.
   default) the fold's first line is drawn as itself — highlighting included,
   but *not* its extmarks' virt_text. A viewed file collapses, so an overlay
   glyph would vanish exactly when it matters most; `paint_viewed` therefore
-  writes the `` into the row's gutter cell as real text
+  writes the `` into the row's gutter cell as real text
   (`nvim_buf_set_text` on column 0 only, which shifts the row's other extmarks
   along with it instead of dropping them the way replacing the line would).
 

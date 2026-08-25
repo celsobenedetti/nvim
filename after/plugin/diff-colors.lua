@@ -41,7 +41,7 @@
 -- Not delta-derived: the DiffTree hover surface (DiffFileBarHover*,
 -- DiffHunkHover) takes Visual's background, so hovering a row in the sidebar
 -- reads like a selection rather than a diff state. The viewed marks
--- (DiffTreeViewed*) do reuse the palette: line-numbers grey for the row,
+-- (DiffViewed*) do reuse the palette: line-numbers grey for the row,
 -- plus-style green for the  in its gutter.
 
 local function apply()
@@ -63,6 +63,9 @@ local function apply()
   vim.api.nvim_set_hl(0, 'DiffFileBar', { bg = p.header, fg = p.header })
   vim.api.nvim_set_hl(0, 'DiffFileBarPath', { bg = p.header, fg = p.header_fg })
   vim.api.nvim_set_hl(0, 'DiffFileBarSummary', { bg = p.header, fg = p.header_summary_fg })
+  -- The bar's own `` chunk for a file flagged viewed in the DiffTree: the
+  -- sidebar's green check, on the bar's background.
+  vim.api.nvim_set_hl(0, 'DiffFileBarViewed', { bg = p.header, fg = p.add_fg })
 
   -- The fold surface for patch windows, mapped there with 'winhighlight' in
   -- after/ftplugin/git.lua. lib.fold_hl gives every closed fold one background
@@ -82,18 +85,20 @@ local function apply()
   vim.api.nvim_set_hl(0, 'DiffFileBarHover', { bg = hover_bg })
   vim.api.nvim_set_hl(0, 'DiffFileBarHoverPath', { bg = hover_bg, fg = p.header_fg })
   vim.api.nvim_set_hl(0, 'DiffFileBarHoverSummary', { bg = hover_bg, fg = p.header_summary_fg })
+  vim.api.nvim_set_hl(0, 'DiffFileBarHoverViewed', { bg = hover_bg, fg = p.add_fg })
 
   -- Same hover surface for a hovered hunk row: lib.Diff paints the `@@` header
   -- line (the `location` node) in the diff buffer. Plain buffer text there, so
   -- bg only — the treesitter foreground of the `@@` line stays as it is.
   vim.api.nvim_set_hl(0, 'DiffHunkHover', { bg = hover_bg })
 
-  -- DiffTree "viewed" rows (`<space>`, lib.Diff.tree_toggle_viewed): the row's
+  -- "Viewed" marks (`<space>`, lib.Diff.tree_toggle_viewed), shared by the
+  -- sidebar row and the `@@` header + sign the diff buffer shows for it: the
   -- text drops to delta's line-numbers grey — dimmer than the `Comment` hunk
   -- rows already use, so a viewed hunk still reads as done — and the gutter
   -- glyph takes plus-style green, the palette's "this is settled" colour.
-  vim.api.nvim_set_hl(0, 'DiffTreeViewed', { fg = p.lnum_fg })
-  vim.api.nvim_set_hl(0, 'DiffTreeViewedSign', { fg = p.add_fg })
+  vim.api.nvim_set_hl(0, 'DiffViewed', { fg = p.lnum_fg })
+  vim.api.nvim_set_hl(0, 'DiffViewedSign', { fg = p.add_fg })
 
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })

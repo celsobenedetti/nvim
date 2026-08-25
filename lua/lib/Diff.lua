@@ -529,12 +529,21 @@ local HOVER_NS = vim.api.nvim_create_namespace('lib.diff.tree.hover')
 ---own namespace, so repainting them never touches TREE_NS's row colours.
 local VIEWED_NS = vim.api.nvim_create_namespace('lib.diff.tree.viewed')
 
+---The same flags mirrored into the *diff* buffer: a sign on every viewed
+---hunk's `@@` header. The file flags ride in lib.diff_filepath's bar instead
+---(M.file_viewed) — no second extmark can restyle that overlay's virt_text.
+local SRC_VIEWED_NS = vim.api.nvim_create_namespace('lib.diff.viewed')
+
 ---Gutter glyph for a viewed row. It replaces the blank column 0 every row kind
 ---is rendered with (render_row), so the mark costs no width and shifts nothing
 ---— and it is real buffer text rather than an overlay extmark, because a
 ---closed fold ('foldtext' empty) draws the line but drops its virtual text,
 ---which is exactly the state a viewed file collapses into.
 local VIEWED_ICON = ''
+
+---The same glyph, for lib.diff_filepath: a viewed file's mark is a chunk of
+---its bar (M.file_viewed), so the two surfaces have to agree on it.
+M.viewed_icon = VIEWED_ICON
 
 ---Above the 4096 extmarks default, so a viewed row dims the status letter and
 ---icon TREE_NS painted (at the default priority) as well as its label.
@@ -1376,8 +1385,8 @@ end
 
 ---Repaint every viewed mark from scratch (the flags are few and the tree is
 ---short): each row's gutter cell becomes the `` or a blank again, and a viewed
----row is coloured — the glyph in `DiffTreeViewedSign`, the rest of the line
----dimmed in `DiffTreeViewed`, both above TREE_NS's row colours. Called after a
+---row is coloured — the glyph in `DiffViewedSign`, the rest of the line
+---dimmed in `DiffViewed`, both above TREE_NS's row colours. Called after a
 ---toggle and once when the tree opens, which is what restores the marks of a
 ---sidebar that was closed and reopened.
 ---
@@ -1408,12 +1417,12 @@ local function paint_viewed(tree_buf)
       if viewed then
         vim.api.nvim_buf_set_extmark(tree_buf, VIEWED_NS, i - 1, #want, {
           end_col = #line,
-          hl_group = 'DiffTreeViewed',
+          hl_group = 'DiffViewed',
           priority = VIEWED_PRIORITY,
         })
         vim.api.nvim_buf_set_extmark(tree_buf, VIEWED_NS, i - 1, 0, {
           end_col = #want,
-          hl_group = 'DiffTreeViewedSign',
+          hl_group = 'DiffViewedSign',
           priority = VIEWED_PRIORITY,
         })
       end
@@ -1421,6 +1430,53 @@ local function paint_viewed(tree_buf)
   end
   vim.bo[tree_buf].modifiable = false
   vim.bo[tree_buf].modified = false
+end
+
+---Is `path`'s file section flagged viewed in this patch buffer? For
+---lib.diff_filepath, which renders the flag as a chunk of the file's bar: the
+---bar is one overlay extmark, so nothing can be layered over it after the fact
+---and the mark has to be baked into its chunks.
+---@param bufnr integer patch buffer
+---@param path string as the patch spells it (root-relative)
+---@return boolean
+M.file_viewed = function(bufnr, path)
+  return viewed_state(bufnr)['f:' .. path] == true
+end
+
+---Mirror the flags into the diff buffer: a `` in the sign column of every
+---viewed hunk's `@@` header, and that header line dimmed — the same pair of
+---groups the tree row uses, so both surfaces read alike. 'signcolumn' is `yes`
+---globally, so the column is already reserved and the sign shifts nothing.
+---
+---The file flags are not painted here: their header line belongs to
+---lib.diff_filepath's bar, whose virt_text no later extmark can restyle, so the
+---mark is a chunk of that bar instead (M.file_viewed) and this re-renders it.
+---@param src_buf integer patch buffer
+---@param rows table[] its tree rows (M.tree_rows)
+local function paint_viewed_src(src_buf, rows)
+  if not vim.api.nvim_buf_is_loaded(src_buf) then
+    return
+  end
+
+  local state = viewed_state(src_buf)
+  vim.api.nvim_buf_clear_namespace(src_buf, SRC_VIEWED_NS, 0, -1)
+  for _, r in ipairs(rows) do
+    if r.kind == 'hunk' and state[viewed_key(r)] then
+      local line = vim.api.nvim_buf_get_lines(src_buf, r.lnum - 1, r.lnum, false)[1] or ''
+      vim.api.nvim_buf_set_extmark(src_buf, SRC_VIEWED_NS, r.lnum - 1, 0, {
+        sign_text = VIEWED_ICON,
+        sign_hl_group = 'DiffViewedSign',
+        -- Only the `@@` line: the hunk's body keeps its diff colours, exactly
+        -- as the tree dims the row and not the section it stands for.
+        end_col = #line,
+        hl_group = 'DiffViewed',
+        priority = VIEWED_PRIORITY,
+      })
+    end
+  end
+
+  -- The bars carry the file flags, and a toggle may have changed one.
+  filepath_bar().render(src_buf)
 end
 
 ---`<space>` in the tree: mark the row under the cursor viewed, or clear it
@@ -1498,6 +1554,7 @@ M.tree_toggle_viewed = function(tree_buf)
   -- `vim.b` hands back a copy, so the table has to go back in whole.
   vim.b[src_buf].diff_tree_viewed = state
   paint_viewed(tree_buf)
+  paint_viewed_src(src_buf, rows)
 
   local src_win = tree_src_win(tree_buf)
   if src_win then
@@ -1826,6 +1883,7 @@ M.open_tree = function()
   -- Marks from an earlier open of this diff buffer, restored (and the folds
   -- of the files they viewed are still closed from then).
   paint_viewed(tree_buf)
+  paint_viewed_src(src_buf, rows)
 
   -- Show the first row and focus its section.
   vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })
