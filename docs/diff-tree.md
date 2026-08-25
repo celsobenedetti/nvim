@@ -141,6 +141,11 @@ mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
   window that already shows the diff buffer (never splitting a new one; the
   same workaround as `lib.Diff.install_qf_jump` for `buftype=nowrite`).
 - **`q`** / **`s`** — close the tree (`s` is the toggle from the diff side).
+- **`J`** / **`K`** — scroll the diff window down / up without leaving the
+  sidebar: one line per press, `v:count` lines with a count (`5J`), and the
+  sticky context recomputed afterwards, same as on hover. `normal! <C-e>` runs
+  through `nvim_win_call`, so the diff window is briefly current and
+  `'scrolloff'` can drag its cursor along — see the sync gotcha below.
 - **`ga`** — stages the row's file via `lib.git.add` (same flow as
   `ga` in a normal buffer or in the patch buffer — `Git add -p` for unstaged
   changes, plain `git add` when untracked). Focus moves to the diff window
@@ -210,8 +215,10 @@ the missing number column, the width restored on reopen, `s` closing the tree, t
 that a dir row previews its first file), hover's `zt` (topline with a non-zero
 `'scrolloff'`, the source cursor, and that a closed section stays closed), the
 hovered hunk's `@@` highlight (its exact span, that only one exists at a time,
-and that leaving the tree clears it), the `<CR>` jump, every forwarded fold
-command
+and that leaving the tree clears it), `J`/`K` scrolling (with counts, the clamp
+at the first line, and that neither focus nor the tree cursor moves), the
+source->tree sync ignoring moves made from the tree, the `<CR>` jump, every
+forwarded fold command
 (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on all three row kinds, `zR`/`zM`/`zr` incl. a
 count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
 `lib.git`, and the toggle-close. A second fixture covers the grouping itself:
@@ -231,7 +238,14 @@ name long enough to be truncated.
   `CursorMoved`, so the source→tree sync autocmd cannot loop back on this.
 - **`CursorMoved` never fires under `--headless`** (no UI). The hover and
   bidirectional autocmds can't be driven by feeding cursor moves in tests;
-  `tree_focus` / `tree_row_containing` are called directly instead.
+  `tree_focus` / `tree_row_containing` are called directly, and the sync
+  autocmd itself with `nvim_exec_autocmds`.
+- **The source→tree sync must ignore its own side effects.** Hover moves the
+  diff window's cursor and `J`/`K` let `'scrolloff'` push it; if the sync
+  followed those, it would move the tree cursor, hover that row, and `zt` the
+  view back — a scroll that snaps home. It therefore acts only on moves made
+  while the diff window is the current one, with a `scrolling` flag covering
+  the tick `nvim_win_call` makes it current for.
 - **`index` commit hashes must be 4–64 hex chars** for the `diff` grammar to
   keep parsing a block; short fake hashes (`index 111..222`) turn the section
   into an ERROR node and drop its hunks. Tests use `1111111..2222222`.

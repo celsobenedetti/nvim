@@ -504,12 +504,16 @@ end
 -- basename only, summary three spaces behind it), and each file's `hunk`s
 -- (`@@` lines).
 -- Focus (CursorMoved) parks the section at the top of the diff window (folds
--- are left as they are); <CR> jumps there; the diff buffer's own cursor keeps
+-- are left as they are); <CR> jumps there; J/K scroll the diff from here; the diff buffer's own cursor keeps
 -- the tree in sync (bidirectional). Native expr folding matches the levels: a
 -- directory folds away its files, a file its hunks.
 -- ---------------------------------------------------------------------------
 
 local TREE_NS = vim.api.nvim_create_namespace('lib.diff.tree')
+
+---True while a `J`/`K` scroll is driving the diff window, so the source->tree
+---sync autocmd can sit that tick out (see M.tree_scroll).
+local scrolling = false
 
 ---Marks the hovered row's section in the *diff* buffer — currently a hunk
 ---row's `@@` header line. Its own namespace, so clearing it can never reach
@@ -1181,6 +1185,36 @@ M.tree_focus = function(tree_buf, tree_win)
   end
 end
 
+---`J` / `K` in the tree: scroll the diff window down / up without moving focus
+---out of the sidebar. One line per press, `v:count` lines with a count (`5J`),
+---and the sticky context is recomputed afterwards like it is on hover — the
+---plugin only tracks the current window, which this never is.
+---
+---`normal! <C-e>` has to run through nvim_win_call, so the diff window is
+---briefly current and 'scrolloff' can drag its cursor along. That would fire
+---CursorMoved for the patch buffer, sync the tree cursor onto whatever row now
+---holds it, and let that row's hover park its section back on top
+---(M.tree_focus's `zt`) — undoing the scroll. `scrolling` suppresses the sync
+---for the tick the scroll happens in; it is cleared from vim.schedule because
+---CursorMoved fires after this returns, not inside nvim_win_call.
+---@param tree_buf integer
+---@param down boolean
+M.tree_scroll = function(tree_buf, down)
+  local src_win = tree_src_win(tree_buf)
+  if not src_win then
+    return
+  end
+  local keys = vim.v.count1 .. require('lib.keys').termcodes(down and '<C-e>' or '<C-y>')
+  scrolling = true
+  vim.api.nvim_win_call(src_win, function()
+    vim.cmd('normal! ' .. keys)
+  end)
+  refresh_context(src_win)
+  vim.schedule(function()
+    scrolling = false
+  end)
+end
+
 ---Toggle the diff tree sidebar for the current buffer: a left-side vertical
 ---split grouping the patch by parent directory — a `dir` header per directory,
 ---its files under it (` <status> <icon> <name>   +N -M`), and
@@ -1313,6 +1347,14 @@ M.open_tree = function()
   vim.keymap.set('n', 'ga', function()
     M.tree_stage(tree_buf)
   end, { buffer = tree_buf, desc = "Diff tree: git add the row's file" })
+  -- J/K scroll the diff window from here (`J` joins lines and `K` looks up a
+  -- keyword — neither has any use in a nomodifiable list of sections).
+  vim.keymap.set('n', 'J', function()
+    M.tree_scroll(tree_buf, true)
+  end, { buffer = tree_buf, desc = 'Diff tree: scroll the diff down' })
+  vim.keymap.set('n', 'K', function()
+    M.tree_scroll(tree_buf, false)
+  end, { buffer = tree_buf, desc = 'Diff tree: scroll the diff up' })
   for key in pairs(TREE_FOLD_ACTIONS) do
     vim.keymap.set('n', key, function()
       M.tree_fold(tree_buf, key)
@@ -1336,6 +1378,16 @@ M.open_tree = function()
     callback = function()
       if not vim.api.nvim_buf_is_loaded(tree_buf) or not vim.api.nvim_win_is_valid(tree_win) then
         pcall(vim.api.nvim_del_augroup_by_id, group)
+        return
+      end
+      -- Only follow a cursor the *user* moved in the diff window. A J/K scroll
+      -- from the tree moves it too ('scrolloff' pushes it along), and syncing
+      -- the tree onto that row would hover it and scroll right back. Two
+      -- checks, for the two orderings: while nvim_win_call runs the diff window
+      -- is the current one and `scrolling` is what says why; once it returns,
+      -- focus is still in the tree, and a CursorMoved from there isn't ours to
+      -- act on either.
+      if scrolling or vim.api.nvim_get_current_win() == tree_win then
         return
       end
       local idx = M.tree_row_containing(vim.b[tree_buf].diff_tree_rows, vim.fn.line('.') - 1)

@@ -265,6 +265,44 @@ assert_eq(vim.api.nvim_win_get_cursor(src_win)[1], 1, 'and moves the source curs
 assert_eq(require('lib.diff_filepath').hover(buf), 0, "the group hover lights that file's bar")
 
 -- ------------------------------------------------------------------
+-- J / K scroll the diff window from the tree, focus staying put.
+-- ------------------------------------------------------------------
+local function feed(keys)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'x', false)
+  vim.wait(50)
+end
+
+vim.api.nvim_set_current_win(tree_win)
+vim.api.nvim_win_set_cursor(tree_win, { 2, 0 }) -- block 1, source line 1
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(src_topline(), 1, 'starting at the top of the patch')
+feed('J')
+assert_eq(src_topline(), 2, 'J scrolls the diff one line down')
+assert_eq(vim.api.nvim_get_current_win(), tree_win, 'focus stays in the tree')
+assert_eq(vim.api.nvim_win_get_cursor(tree_win)[1], 2, 'and the tree cursor stays on its row')
+feed('3J')
+assert_eq(src_topline(), 5, 'a count scrolls that many lines (3J)')
+feed('K')
+assert_eq(src_topline(), 4, 'K scrolls back up')
+feed('2K')
+assert_eq(src_topline(), 2, 'with a count too (2K)')
+feed('9K')
+assert_eq(src_topline(), 1, 'and stops at the first line')
+
+-- The source->tree sync only follows a cursor the user moved *in the diff
+-- window*: a J/K scroll drags that cursor along ('scrolloff' pushes it), and
+-- syncing the tree onto it would hover that row and scroll right back.
+-- CursorMoved never fires under --headless, so both halves are driven with
+-- nvim_exec_autocmds.
+vim.api.nvim_win_set_cursor(src_win, { 16, 0 }) -- inside hunk 3 = tree row 6
+vim.api.nvim_exec_autocmds('CursorMoved', { buffer = buf })
+assert_eq(vim.api.nvim_win_get_cursor(tree_win)[1], 2, 'a move while the tree is focused is ignored')
+vim.api.nvim_set_current_win(src_win)
+vim.api.nvim_exec_autocmds('CursorMoved', { buffer = buf })
+assert_eq(vim.api.nvim_win_get_cursor(tree_win)[1], 6, 'from the diff window it syncs the tree')
+vim.api.nvim_set_current_win(tree_win)
+
+-- ------------------------------------------------------------------
 -- <CR> jumps the source cursor to the row's lnum (keymaps do fire headless).
 -- ------------------------------------------------------------------
 vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1
@@ -301,11 +339,6 @@ local function tree_foldclosed(lnum)
   return vim.api.nvim_win_call(tree_win, function()
     return vim.fn.foldclosed(lnum)
   end)
-end
-
-local function feed(keys)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'x', false)
-  vim.wait(50)
 end
 
 -- Hover leaves the fold state alone: it scrolls the section to the top and
