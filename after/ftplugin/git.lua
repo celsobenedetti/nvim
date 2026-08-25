@@ -11,6 +11,7 @@
 local function nav(kind, dir)
   return function()
     lib.Diff.goto_node(kind, dir)
+    vim.cmd.norm('zt')
   end
 end
 
@@ -52,6 +53,17 @@ vim.keymap.set('n', 'ga', function()
   end
   lib.git.add(path)
 end, { buffer = 0, desc = 'git: git add -p file under cursor' })
+
+-- `gf` opens the file of the section under the cursor in the **first tab**
+-- (the working tab, marked with the code icon in the tabline), at the line the
+-- patch points at: a hunk body line maps through the `@@` header onto the new
+-- side, anywhere else in a section lands on line 1 (lib.Diff.file_location).
+-- Native `gf` is useless here — `<cfile>` on a `+++ b/x` line reads `b/x` —
+-- and the whole point of `:Diff`'s own tab is not to open code inside it,
+-- which is why `git` is no longer in `config.filetypes.gf_open_in_top_split`.
+vim.keymap.set('n', 'gf', function()
+  lib.Diff.open_cursor_file()
+end, { buffer = 0, desc = 'diff: open the file under the cursor in the first tab' })
 
 -- Left-side tree of the file/hunk sections (lib.Diff.open_tree). `s` is the
 -- quick toggle — buffer-local, so it shadows flash.nvim's jump only inside

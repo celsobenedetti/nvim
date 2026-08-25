@@ -153,6 +153,18 @@ mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
   sidebar. From a hunk row it stages the whole file (rows carry their block's
   path); on a dir row it does nothing — group headers carry no path, and
   staging a whole directory is not what `ga` means anywhere else.
+- **`gf`** — opens the row's file in the **first tab** (the working tab), at
+  the line its section points at: a hunk row lands on the hunk's first new-side
+  line, a file or dir row on line 1 (their `lnum` is a `diff --git` header, and
+  `lib.Diff.file_location` maps anything outside a hunk to the top of the
+  file). The same key does the same thing from the patch buffer itself
+  (`after/ftplugin/git.lua`), where the cursor's own line is what gets mapped —
+  a `+`/context line onto the line it became, a `-` line onto the line that
+  replaced it. Paths in a patch are root-relative, so they are resolved through
+  `lib.git.root`; a file that is not in the work tree (a deletion, an old-vs-old
+  diff) warns instead. `lib.fs.open_in_first_tab` picks the window: one already
+  showing the file, else the tab's current window, else its first normal one —
+  a sidebar (`buftype=nofile`), terminal or float is never replaced.
 - **`z` fold commands** — fold the **diff buffer**, mirrored onto the tree.
   `lib.Diff.tree_fold(tree_buf, key)` drives all of them from one spec table
   (`TREE_FOLD_ACTIONS`):
@@ -226,7 +238,11 @@ files spread over `./`, `lua/`, `lua/lib/` and `new/`, with `lua/lib/`
 interrupted mid-patch, one file of every status, a rename with no hunks, and a
 name long enough to be truncated.
 `lib.git.add` itself is covered against a throwaway repo in
-`tests/integration/test_diff_ga.lua`.
+`tests/integration/test_diff_ga.lua`, and the `gf` flow — `file_location`'s
+line mapping (both hunks of a file, deletions, additions, context, the
+outside-a-hunk fall-back to line 1, a `+0,0` deletion-only hunk),
+`open_in_first_tab`'s window choice (reuse, clamped line, skipped sidebar) and
+both entry points — in `tests/integration/test_diff_gf.lua`.
 
 ## Gotchas
 

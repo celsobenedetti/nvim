@@ -12,9 +12,11 @@ local function notify(level, msg)
 end
 
 ---Work-tree root of the repo containing `dir`, or nil when there is none.
+---Shared with the patch-buffer actions in lib.Diff: the `diff --git` paths a
+---patch yields are root-relative, so they need this to become real paths.
 ---@param dir string
 ---@return string?
-local function toplevel(dir)
+M.root = function(dir)
   local result = vim.system({ 'git', '-C', dir, 'rev-parse', '--show-toplevel' }):wait()
   if result.code ~= 0 then
     return nil
@@ -45,7 +47,7 @@ M.add = function(file)
   end
 
   local absolute = file:sub(1, 1) == '/'
-  local root = toplevel(absolute and vim.fs.dirname(file) or vim.fn.getcwd())
+  local root = M.root(absolute and vim.fs.dirname(file) or vim.fn.getcwd())
   if not root then
     notify('warn', 'not a git repo')
     return

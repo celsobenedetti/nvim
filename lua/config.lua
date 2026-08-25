@@ -180,8 +180,10 @@ local M = {
       'fugitive',
       'git',
     },
+    -- `git` (fugitive patch buffers) is deliberately absent: its `gf` opens
+    -- the file in the first tab instead, at the patch's own line, see
+    -- after/ftplugin/git.lua.
     gf_open_in_top_split = {
-      'git',
       'terminal',
       'cmd-output',
     },

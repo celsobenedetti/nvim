@@ -99,11 +99,72 @@ local function cfile()
   return fallback
 end
 
+---A window in `tab` that a file may be edited in, best first: one that
+---already shows it, else the tab's current window, else its first other
+---window — sidebars, terminals and floats skipped, so `:edit` never replaces
+---one. Falls back to the tab's current window when it has no normal window at
+---all.
+---@param tab integer tabpage id
+---@param path string absolute path
+---@return integer winid
+local function edit_window(tab, path)
+  local wins = vim.api.nvim_tabpage_list_wins(tab)
+  for _, win in ipairs(wins) do
+    if vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win)) == path then
+      return win
+    end
+  end
+
+  local function editable(win)
+    return vim.api.nvim_win_get_config(win).relative == '' and vim.bo[vim.api.nvim_win_get_buf(win)].buftype == ''
+  end
+  local current = vim.api.nvim_tabpage_get_win(tab)
+  if editable(current) then
+    return current
+  end
+  for _, win in ipairs(wins) do
+    if editable(win) then
+      return win
+    end
+  end
+  return current
+end
+
+---Open a file in the first tab -- the working tab, where the code is (the
+---tabline marks it with the code icon); tooling that lives in a tab of its own
+---(`:Diff`, lazygit, terminals) sends files back there rather than opening
+---them inside its own layout.
+---@param path string file to open; resolved to a full path
+---@param lnum? integer 1-based line to land on, centred (`zz`); clamped to the
+---  file's length, so a diff line past its end still opens it
+M.open_in_first_tab = function(path, lnum)
+  path = vim.fn.fnamemodify(path, ':p')
+  local tab = vim.api.nvim_list_tabpages()[1]
+  local win = edit_window(tab, path)
+
+  vim.api.nvim_set_current_tabpage(tab)
+  vim.api.nvim_set_current_win(win)
+  if vim.api.nvim_buf_get_name(0) ~= path then
+    vim.cmd('edit ' .. vim.fn.fnameescape(path))
+  end
+
+  if lnum then
+    local last = vim.api.nvim_buf_line_count(0)
+    vim.api.nvim_win_set_cursor(0, { math.min(math.max(lnum, 1), last), 0 })
+    vim.cmd('normal! zz')
+  end
+end
+
 ---Open the file under the cursor at a specific location.
----@param location? 'top_split'
+---@param location? 'top_split' | 'first_tab'
 M.open_file_in = function(location)
   local file = cfile()
   if file == '' then
+    return
+  end
+
+  if location == 'first_tab' then
+    M.open_in_first_tab(file)
     return
   end
 

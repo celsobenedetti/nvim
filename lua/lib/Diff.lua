@@ -606,15 +606,13 @@ local function dir_of(path)
   return dir and (dir .. '/') or './'
 end
 
----New path of the per-file `block` the cursor sits in, for actions that
----operate on "the file I'm looking at" inside a patch buffer (the `ga`
----staging keymap in after/ftplugin/git.lua). Returns nil when the buffer has
----no `diff` parse tree, or the cursor is outside every block (e.g. on
----`:Git log -p` commit headers).
----@param bufnr? number defaults to the current buffer
----@return string?
-M.cursor_block_path = function(bufnr)
-  bufnr = (not bufnr or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+---The per-file `block` containing a row, or nil when the buffer has no `diff`
+---parse tree or the row is outside every block (e.g. a `:Git log -p` commit
+---header).
+---@param bufnr number
+---@param row number 0-based
+---@return TSNode?
+local function block_at(bufnr, row)
   local ok, tree = pcall(function()
     return vim.treesitter.get_parser(bufnr):parse()[1]
   end)
@@ -622,18 +620,29 @@ M.cursor_block_path = function(bufnr)
     return nil
   end
 
-  local row = vim.fn.line('.') - 1 -- 0-based cursor row
   -- Last block first: a block's end position is the start of the next block's
   -- first line (end_col 0), so both would match on that row.
   local blocks = collect_nodes(tree:root(), 'block')
   for i = #blocks, 1, -1 do
     local start_row, _, end_row = blocks[i]:range()
     if row >= start_row and row <= end_row then
-      local path = block_path(blocks[i], bufnr)
-      return path ~= '' and path or nil
+      return blocks[i]
     end
   end
   return nil
+end
+
+---New path of the per-file `block` the cursor sits in, for actions that
+---operate on "the file I'm looking at" inside a patch buffer (the `ga`
+---staging keymap in after/ftplugin/git.lua). Returns nil when the cursor is in
+---no block (see block_at).
+---@param bufnr? number defaults to the current buffer
+---@return string?
+M.cursor_block_path = function(bufnr)
+  bufnr = (not bufnr or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+  local block = block_at(bufnr, vim.fn.line('.') - 1)
+  local path = block and block_path(block, bufnr) or ''
+  return path ~= '' and path or nil
 end
 
 ---The `@@` header of a hunk: its `location` node's text and 0-based range.
@@ -652,6 +661,93 @@ local function hunk_location(hunk, bufnr)
     end
   end
   return '@@', nil
+end
+
+---Where a patch-buffer line points in the working tree: the new path of the
+---per-file `block` it belongs to, and the line the file itself would be on.
+---
+---Inside a hunk the line comes from its `@@ -a,b +c,d @@` header: `c`, plus
+---the lines between that header and `lnum` which exist on the new side
+---(context and `+`; a `-` line and the `\ No newline` marker do not). A `-`
+---line therefore maps to the line that replaced it, and a hunk that only
+---deletes (`+0,0`) to line 1. Anywhere else in a block
+---(`diff --git`, `index`, the `---`/`+++` pair) the file opens at line 1, and
+---so does a section with no parseable header (binary, rename).
+---@param bufnr number patch buffer (`filetype=git`)
+---@param lnum number 1-based line in it
+---@return string? path root-relative (as the patch spells it), nil outside
+---  every block
+---@return number line 1-based
+M.file_location = function(bufnr, lnum)
+  local row = lnum - 1
+  local block = block_at(bufnr, row)
+  local path = block and block_path(block, bufnr) or ''
+  if path == '' then
+    return nil, 1
+  end
+
+  -- Last match wins, for the same end-position overlap as blocks above.
+  local hunk
+  for _, node in ipairs(collect_nodes(block, 'hunk')) do
+    local start_row, _, end_row = node:range()
+    if row >= start_row and row <= end_row then
+      hunk = node
+    end
+  end
+  if not hunk then
+    return path, 1
+  end
+
+  local start = tonumber((hunk_location(hunk, bufnr):match('%+(%d+)')))
+  if not start then
+    return path, 1
+  end
+
+  local line = start
+  local body = vim.api.nvim_buf_get_lines(bufnr, hunk:start() + 1, math.max(row, hunk:start() + 1), false)
+  for _, text in ipairs(body) do
+    local c = text:sub(1, 1)
+    if c ~= '-' and c ~= '\\' then
+      line = line + 1
+    end
+  end
+  -- A hunk that only deletes has `+0,0`: nothing of it is left in the file, so
+  -- its line 0 becomes the first line instead.
+  return path, math.max(line, 1)
+end
+
+---Open the file a patch-buffer line belongs to in the first tab, at the line
+---the patch points at (M.file_location) — `gf` from the patch buffer
+---(after/ftplugin/git.lua) and from the tree. Patch paths are relative to the
+---repo's work-tree root, not to the cwd, so they are resolved through
+---lib.git.root. A section whose file is not in the working tree (a deletion,
+---or a diff of two old revisions) warns instead.
+---@param bufnr number patch buffer
+---@param lnum number 1-based line in it
+local function open_file(bufnr, lnum)
+  local path, line = M.file_location(bufnr, lnum)
+  if not path then
+    vim.notify('Diff: no file section under the cursor', vim.log.levels.WARN)
+    return
+  end
+
+  local abs = path
+  if not vim.startswith(path, '/') then
+    local root = require('lib.git').root(vim.fn.getcwd())
+    abs = root and (root .. '/' .. path) or path
+  end
+  if vim.fn.filereadable(abs) == 0 then
+    vim.notify('Diff: not in the working tree: ' .. path, vim.log.levels.WARN)
+    return
+  end
+
+  require('lib.fs').open_in_first_tab(abs, line)
+end
+
+---`gf` in a patch buffer: open the file under the cursor in the first tab, at
+---the line the cursor's hunk points at.
+M.open_cursor_file = function()
+  open_file(vim.api.nvim_get_current_buf(), vim.fn.line('.'))
 end
 
 ---Three levels of rows for the diff tree sidebar, in one flat list: a `dir`
@@ -985,6 +1081,20 @@ M.tree_stage = function(tree_buf)
     vim.api.nvim_set_current_win(src_win)
   end
   require('lib.git').add(r.path)
+end
+
+---`gf` in the tree: open the row's file in the first tab, at the line its
+---section points at — a hunk row lands on that hunk's first new line, a file
+---or dir row on line 1 (their `lnum` is a `diff --git` header). Exposed for
+---the headless test.
+---@param tree_buf integer
+M.tree_open_file = function(tree_buf)
+  local r = row_under_cursor(tree_buf)
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not r or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return
+  end
+  open_file(src_buf, r.lnum)
 end
 
 ---Fold commands the tree forwards to the diff buffer, keyed by the mapping
@@ -1341,8 +1451,9 @@ M.open_tree = function()
 
   -- <CR> jumps to the section; q and s close the tree (`s` is the same toggle
   -- as in the diff buffer, see after/ftplugin/git.lua, so one key opens and
-  -- closes it from either side); ga stages the row's file; the z fold commands
-  -- fold the diff buffer (and mirror onto the tree).
+  -- closes it from either side); ga stages the row's file; gf opens it in the
+  -- first tab; the z fold commands fold the diff buffer (and mirror onto the
+  -- tree).
   vim.keymap.set('n', '<CR>', function()
     jump_to_row(tree_buf)
   end, { buffer = tree_buf, desc = 'Diff tree: jump to section' })
@@ -1351,6 +1462,9 @@ M.open_tree = function()
   vim.keymap.set('n', 'ga', function()
     M.tree_stage(tree_buf)
   end, { buffer = tree_buf, desc = "Diff tree: git add the row's file" })
+  vim.keymap.set('n', 'gf', function()
+    M.tree_open_file(tree_buf)
+  end, { buffer = tree_buf, desc = "Diff tree: open the row's file in the first tab" })
   -- J/K scroll the diff window from here (`J` joins lines and `K` looks up a
   -- keyword — neither has any use in a nomodifiable list of sections).
   vim.keymap.set('n', 'J', function()
