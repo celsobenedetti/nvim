@@ -510,7 +510,8 @@ end
 -- Focus (CursorMoved) parks the section at the top of the diff window (folds
 -- are left as they are); <CR> jumps there; J/K scroll the diff from here; the diff buffer's own cursor keeps
 -- the tree in sync (bidirectional). Native expr folding matches the levels: a
--- directory folds away its files, a file its hunks.
+-- directory folds away its files, a file its hunks. `<space>` flags a row as
+-- viewed (GitHub's review checkbox) and collapses a file once it is.
 -- ---------------------------------------------------------------------------
 
 local TREE_NS = vim.api.nvim_create_namespace('lib.diff.tree')
@@ -523,6 +524,21 @@ local scrolling = false
 ---row's `@@` header line. Its own namespace, so clearing it can never reach
 ---TREE_NS's row colours in the tree buffer.
 local HOVER_NS = vim.api.nvim_create_namespace('lib.diff.tree.hover')
+
+---Colours the rows flagged as reviewed (`<space>`, M.tree_toggle_viewed). Its
+---own namespace, so repainting them never touches TREE_NS's row colours.
+local VIEWED_NS = vim.api.nvim_create_namespace('lib.diff.tree.viewed')
+
+---Gutter glyph for a viewed row. It replaces the blank column 0 every row kind
+---is rendered with (render_row), so the mark costs no width and shifts nothing
+---— and it is real buffer text rather than an overlay extmark, because a
+---closed fold ('foldtext' empty) draws the line but drops its virtual text,
+---which is exactly the state a viewed file collapses into.
+local VIEWED_ICON = ''
+
+---Above the 4096 extmarks default, so a viewed row dims the status letter and
+---icon TREE_NS painted (at the default priority) as well as its label.
+local VIEWED_PRIORITY = 4200
 
 ---Highlight for a block row's status letter (nvim's built-in diff groups). A
 ---rename is a change of name, hence `Changed`.
@@ -935,8 +951,9 @@ local function fit(s, width)
   return out .. '…'
 end
 
----Render a tree row into a display line:
---- * dir — the group's path, trailing slash kept, at column 0.
+---Render a tree row into a display line. Column 0 is left blank on every kind:
+---it is the gutter M.tree_toggle_viewed paints its `` into.
+--- * dir — the group's path, trailing slash kept, one space in.
 --- * block — ` <status> <icon> <name>   <+N -M>`: the basename only, the
 ---   directory being the header above it, and the summary three spaces behind
 ---   the name. The name is truncated (against `text_width`, so a resized
@@ -947,7 +964,7 @@ end
 ---@return string
 local function render_row(row, text_width)
   if row.kind == 'dir' then
-    return row.dir
+    return ' ' .. row.dir
   end
   if row.kind == 'hunk' then
     return '   ' .. row.text
@@ -1231,6 +1248,270 @@ M.tree_fold = function(tree_buf, key)
   return closed
 end
 
+-- ---------------------------------------------------------------------------
+-- Viewed rows: a GitHub-review-style "I have looked at this" flag per file and
+-- per hunk, toggled with `<space>` in the tree. The state lives on the *diff*
+-- buffer (`vim.b.diff_tree_viewed`), so closing and reopening the sidebar keeps
+-- every mark and a fresh `:Diff` starts clean.
+-- ---------------------------------------------------------------------------
+
+---Put a file section into `closed` on both sides at once: its `diff --git`
+---block in the diff buffer and its own row in the tree — the pair `zc` / `zo`
+---moves on that row (M.tree_fold), with the same guards. A section that has no
+---fold at all (folds off) is skipped, and one already in the wanted state is
+---left alone: `:foldclose` on a closed fold climbs to the *enclosing* one.
+---`mirror` is false for a file with no hunk rows: it starts no fold in the
+---tree (M.tree_foldexpr), so folding its line would close its whole directory.
+---@param src_win integer
+---@param tree_lnum integer the file's row in the tree
+---@param block_lnum integer its `diff --git` line in the diff buffer
+---@param closed boolean
+---@param mirror boolean whether the tree row owns a fold of its own
+local function fold_block(src_win, tree_lnum, block_lnum, closed, mirror)
+  local cmd = closed and 'foldclose' or 'foldopen'
+  vim.api.nvim_win_call(src_win, function()
+    if vim.fn.foldlevel(block_lnum) ~= 0 and (vim.fn.foldclosed(block_lnum) == -1) == closed then
+      pcall(vim.cmd, string.format('%d%s', block_lnum, cmd))
+    end
+  end)
+  if mirror then
+    mirror_fold(tree_lnum, closed, cmd)
+  end
+end
+
+---Key a row's viewed flag is stored under: a file by its path, a hunk by its
+---path plus the patch line of its `@@` header (unique for as long as the
+---buffer lives, which is exactly how long the flags do). Dir headers have no
+---key — a group is viewed when every file in it is.
+---@param row table
+---@return string?
+local function viewed_key(row)
+  if row.kind == 'block' then
+    return 'f:' .. row.path
+  elseif row.kind == 'hunk' then
+    return 'h:' .. row.path .. ':' .. row.lnum
+  end
+  return nil
+end
+
+---The viewed flags of a diff buffer: a plain `key -> true` map, round-tripped
+---through `vim.b` (so it survives the sidebar being closed and reopened).
+---@param src_buf integer
+---@return table<string, boolean>
+local function viewed_state(src_buf)
+  local state = vim.b[src_buf].diff_tree_viewed
+  return type(state) == 'table' and state or {}
+end
+
+---Indices of the `hunk` rows belonging to the file row at `idx` — they follow
+---it directly (M.tree_rows).
+---@param rows table[]
+---@param idx integer
+---@return integer[]
+local function hunk_indices(rows, idx)
+  local out = {}
+  for i = idx + 1, #rows do
+    if rows[i].kind ~= 'hunk' then
+      break
+    end
+    out[#out + 1] = i
+  end
+  return out
+end
+
+---Indices of the `block` rows in the group a dir header opens (up to the next
+---header).
+---@param rows table[]
+---@param idx integer
+---@return integer[]
+local function group_indices(rows, idx)
+  local out = {}
+  for i = idx + 1, #rows do
+    if rows[i].kind == 'dir' then
+      break
+    end
+    if rows[i].kind == 'block' then
+      out[#out + 1] = i
+    end
+  end
+  return out
+end
+
+---The file row a row belongs to: itself for a `block`, the file above it for a
+---`hunk`.
+---@param rows table[]
+---@param idx integer
+---@return integer?
+local function block_index(rows, idx)
+  for i = idx, 1, -1 do
+    if rows[i].kind == 'block' then
+      return i
+    end
+  end
+  return nil
+end
+
+---Is the row at `idx` viewed? Files and hunks carry their own flag; a dir
+---header is derived — viewed when every file of its group is (and never when
+---it has none).
+---@param rows table[]
+---@param state table<string, boolean>
+---@param idx integer
+---@return boolean
+local function row_viewed(rows, state, idx)
+  if rows[idx].kind ~= 'dir' then
+    return state[viewed_key(rows[idx])] == true
+  end
+  local files = group_indices(rows, idx)
+  if #files == 0 then
+    return false
+  end
+  for _, i in ipairs(files) do
+    if not state[viewed_key(rows[i])] then
+      return false
+    end
+  end
+  return true
+end
+
+---Repaint every viewed mark from scratch (the flags are few and the tree is
+---short): each row's gutter cell becomes the `` or a blank again, and a viewed
+---row is coloured — the glyph in `DiffTreeViewedSign`, the rest of the line
+---dimmed in `DiffTreeViewed`, both above TREE_NS's row colours. Called after a
+---toggle and once when the tree opens, which is what restores the marks of a
+---sidebar that was closed and reopened.
+---
+---Only the gutter cell is rewritten (`nvim_buf_set_text`), never the whole
+---line: replacing lines would take TREE_NS's row colours with them, while a
+---one-cell edit just shifts the marks behind it along with the text.
+---@param tree_buf integer
+local function paint_viewed(tree_buf)
+  local rows = vim.b[tree_buf].diff_tree_rows
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not rows or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return
+  end
+
+  local state = viewed_state(src_buf)
+  vim.api.nvim_buf_clear_namespace(tree_buf, VIEWED_NS, 0, -1)
+  vim.bo[tree_buf].modifiable = true
+  for i = 1, #rows do
+    local line = vim.api.nvim_buf_get_lines(tree_buf, i - 1, i, false)[1]
+    if line then
+      local viewed = row_viewed(rows, state, i)
+      local gutter = vim.startswith(line, VIEWED_ICON) and VIEWED_ICON or line:sub(1, 1)
+      local want = viewed and VIEWED_ICON or ' '
+      if gutter ~= want then
+        vim.api.nvim_buf_set_text(tree_buf, i - 1, 0, i - 1, #gutter, { want })
+        line = vim.api.nvim_buf_get_lines(tree_buf, i - 1, i, false)[1]
+      end
+      if viewed then
+        vim.api.nvim_buf_set_extmark(tree_buf, VIEWED_NS, i - 1, #want, {
+          end_col = #line,
+          hl_group = 'DiffTreeViewed',
+          priority = VIEWED_PRIORITY,
+        })
+        vim.api.nvim_buf_set_extmark(tree_buf, VIEWED_NS, i - 1, 0, {
+          end_col = #want,
+          hl_group = 'DiffTreeViewedSign',
+          priority = VIEWED_PRIORITY,
+        })
+      end
+    end
+  end
+  vim.bo[tree_buf].modifiable = false
+  vim.bo[tree_buf].modified = false
+end
+
+---`<space>` in the tree: mark the row under the cursor viewed, or clear it
+---again. GitHub's review checkbox, with its propagation:
+---
+--- * a **file** row carries its hunks with it,
+--- * marking the last unviewed **hunk** of a file marks the file too (and
+---   unmarking any of them clears it),
+--- * a **dir** header does its whole group at once.
+---
+---A file that just became viewed then folds shut — its row in the tree and its
+---section in the diff buffer, the same pair `zc` closes — and unfolds when the
+---flag is cleared, so what is left open is what is left to review.
+---
+---Returns the new flag of the row (nil when there is no row under the cursor).
+---Exposed for the headless test.
+---@param tree_buf integer
+---@return boolean?
+M.tree_toggle_viewed = function(tree_buf)
+  local rows = vim.b[tree_buf].diff_tree_rows
+  local idx = vim.fn.line('.')
+  local row = rows and rows[idx]
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not row or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return nil
+  end
+
+  local state = viewed_state(src_buf)
+  local viewed = not row_viewed(rows, state, idx)
+
+  -- The file rows this press decides: the group's for a dir header, itself for
+  -- a file row, and for a hunk row the file it belongs to — whose flag follows
+  -- from its hunks rather than from `viewed`.
+  local files = {}
+  if row.kind == 'dir' then
+    files = group_indices(rows, idx)
+  elseif row.kind == 'block' then
+    files = { idx }
+  else
+    local b = block_index(rows, idx)
+    files = b and { b } or {}
+  end
+
+  -- Their state before the press, so only a file that actually changed folds.
+  local was = {}
+  for _, i in ipairs(files) do
+    was[i] = state[viewed_key(rows[i])] == true
+  end
+
+  if row.kind == 'hunk' then
+    state[viewed_key(row)] = viewed or nil
+  else
+    for _, i in ipairs(files) do
+      state[viewed_key(rows[i])] = viewed or nil
+      for _, h in ipairs(hunk_indices(rows, i)) do
+        state[viewed_key(rows[h])] = viewed or nil
+      end
+    end
+  end
+
+  -- A file with hunks follows them: viewed exactly when every one of them is.
+  -- Applied to every touched file, so a `<space>` on a hunk and one on a file
+  -- can never disagree. A file without hunks keeps the flag set above.
+  for _, i in ipairs(files) do
+    local hunks = hunk_indices(rows, i)
+    if #hunks > 0 then
+      local all = true
+      for _, h in ipairs(hunks) do
+        all = all and state[viewed_key(rows[h])] == true
+      end
+      state[viewed_key(rows[i])] = all or nil
+    end
+  end
+
+  -- `vim.b` hands back a copy, so the table has to go back in whole.
+  vim.b[src_buf].diff_tree_viewed = state
+  paint_viewed(tree_buf)
+
+  local src_win = tree_src_win(tree_buf)
+  if src_win then
+    for _, i in ipairs(files) do
+      local now = state[viewed_key(rows[i])] == true
+      if now ~= was[i] then
+        fold_block(src_win, i, rows[i].lnum, now, #hunk_indices(rows, i) > 0)
+      end
+    end
+  end
+
+  return viewed
+end
+
 ---Focus the section under the tree cursor in the diff window: park it at the
 ---top of the window (`zt`, which honours the window's 'scrolloff'). Folds are
 ---left exactly as they are — hovering is a scroll, not an edit of the fold
@@ -1334,7 +1615,8 @@ end
 ---its files under it (` <status> <icon> <name>   +N -M`), and
 ---each file's `hunk`s (`@@` lines) under that. It opens at the width it had
 ---when it was last closed for this buffer (tree_width). Focus (CursorMoved)
----parks the section at the top of the diff window; <CR> jumps there; the
+---parks the section at the top of the diff window; <CR> jumps there; `<space>`
+---flags a row as viewed and folds a file that is; the
 ---diff buffer's own cursor keeps the tree in sync. Native expr folding follows
 ---the levels (`zc` on a directory hides its files, on a file its hunks).
 ---Requires the current buffer to parse
@@ -1452,8 +1734,8 @@ M.open_tree = function()
   -- <CR> jumps to the section; q and s close the tree (`s` is the same toggle
   -- as in the diff buffer, see after/ftplugin/git.lua, so one key opens and
   -- closes it from either side); ga stages the row's file; gf opens it in the
-  -- first tab; the z fold commands fold the diff buffer (and mirror onto the
-  -- tree).
+  -- first tab; <space> flags the row as viewed; the z fold commands fold the
+  -- diff buffer (and mirror onto the tree).
   vim.keymap.set('n', '<CR>', function()
     jump_to_row(tree_buf)
   end, { buffer = tree_buf, desc = 'Diff tree: jump to section' })
@@ -1465,6 +1747,12 @@ M.open_tree = function()
   vim.keymap.set('n', 'gf', function()
     M.tree_open_file(tree_buf)
   end, { buffer = tree_buf, desc = "Diff tree: open the row's file in the first tab" })
+  -- `<space>` is the leader key, but buffer-locally here it is the viewed
+  -- toggle: no `<leader>` mapping is worth having in a nomodifiable list of
+  -- sections, and the review flow wants one key under the thumb.
+  vim.keymap.set('n', '<space>', function()
+    M.tree_toggle_viewed(tree_buf)
+  end, { buffer = tree_buf, desc = 'Diff tree: toggle the row as viewed' })
   -- J/K scroll the diff window from here (`J` joins lines and `K` looks up a
   -- keyword — neither has any use in a nomodifiable list of sections).
   vim.keymap.set('n', 'J', function()
@@ -1534,6 +1822,10 @@ M.open_tree = function()
     buffer = src_buf,
     callback = close_tree,
   })
+
+  -- Marks from an earlier open of this diff buffer, restored (and the folds
+  -- of the files they viewed are still closed from then).
+  paint_viewed(tree_buf)
 
   -- Show the first row and focus its section.
   vim.api.nvim_win_set_cursor(tree_win, { 1, 0 })

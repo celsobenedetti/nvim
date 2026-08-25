@@ -40,7 +40,9 @@
 --
 -- Not delta-derived: the DiffTree hover surface (DiffFileBarHover*,
 -- DiffHunkHover) takes Visual's background, so hovering a row in the sidebar
--- reads like a selection rather than a diff state.
+-- reads like a selection rather than a diff state. The viewed marks
+-- (DiffTreeViewed*) do reuse the palette: line-numbers grey for the row,
+-- plus-style green for the  in its gutter.
 
 local function apply()
   -- colors.diff keys resolve against vim.o.background at access time.
@@ -85,6 +87,13 @@ local function apply()
   -- line (the `location` node) in the diff buffer. Plain buffer text there, so
   -- bg only — the treesitter foreground of the `@@` line stays as it is.
   vim.api.nvim_set_hl(0, 'DiffHunkHover', { bg = hover_bg })
+
+  -- DiffTree "viewed" rows (`<space>`, lib.Diff.tree_toggle_viewed): the row's
+  -- text drops to delta's line-numbers grey — dimmer than the `Comment` hunk
+  -- rows already use, so a viewed hunk still reads as done — and the gutter
+  -- glyph takes plus-style green, the palette's "this is settled" colour.
+  vim.api.nvim_set_hl(0, 'DiffTreeViewed', { fg = p.lnum_fg })
+  vim.api.nvim_set_hl(0, 'DiffTreeViewedSign', { fg = p.add_fg })
 
   vim.api.nvim_set_hl(0, 'DiffAdd', { bg = p.add })
   vim.api.nvim_set_hl(0, 'DiffDelete', { bg = p.delete })

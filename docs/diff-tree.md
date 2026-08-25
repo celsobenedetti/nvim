@@ -62,10 +62,10 @@ The git→diff treesitter alias (`after/plugin/autocmds.lua`, see
 `lib.Diff.tree_rows(bufnr)` walks the parse tree and returns one flat list of
 three row kinds:
 
-- **dir** (column 0): the parent directory with its trailing slash (`lua/lib/`,
-  `./` for repo-root files). Emitted once per directory, in first-appearance
-  order, with every file of that directory underneath it.
-- **block** (a file, one space in): ` <status> <icon> <name>   <+N -M>` — the
+- **dir** (one space in): the parent directory with its trailing slash
+  (`lua/lib/`, `./` for repo-root files). Emitted once per directory, in
+  first-appearance order, with every file of that directory underneath it.
+- **block** (a file, also one space in): ` <status> <icon> <name>   <+N -M>` — the
   **basename** only, since the directory is the header above it. `status` is
   `A`/`D`/`R`/`M` (added / deleted / renamed / modified), read from git's
   `new file mode` / `deleted file mode` / `rename from|to` line and falling
@@ -92,9 +92,16 @@ also carry their block's `path`, so file-scoped actions (`ga`) work from any
 row kind but a dir, plus `location`, the span hover highlights. Dir rows instead carry `blocks`, the header line of every
 file in the group, so one fold command can fold all of them.
 
+**Column 0 is blank on every row kind** — it is the gutter the viewed marks
+paint into (see `<space>` below), so nothing shifts when one appears.
+
 Colours come from extmarks in the `lib.diff.tree` namespace: the group header
 as `Directory`, the status letter as `Added`/`Removed`/`Changed`, the
-mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
+mini.icons glyph in its own group, hunk rows dimmed as `Comment`. Viewed rows
+add a second namespace, `lib.diff.tree.viewed`: `DiffTreeViewedSign` on the
+gutter glyph, `DiffTreeViewed` over the rest of the line, both at priority 4200
+so they sit above the row colours (`after/plugin/diff-colors.lua` gives them
+delta's plus-style green and line-numbers grey).
 
 ## Interaction (mirrors `:InspectTree`)
 
@@ -165,6 +172,27 @@ mini.icons glyph in its own group, hunk rows dimmed as `Comment`.
   diff) warns instead. `lib.fs.open_in_first_tab` picks the window: one already
   showing the file, else the tab's current window, else its first normal one —
   a sidebar (`buftype=nofile`), terminal or float is never replaced.
+- **`<space>`** — flags the row as **viewed**, GitHub's review checkbox:
+  `` in its gutter and the label dimmed. Propagation, in
+  `lib.Diff.tree_toggle_viewed`:
+  - a **file** row carries its hunks with it,
+  - marking the last unviewed **hunk** of a file marks the file too (unmarking
+    any of them clears it again),
+  - a **dir** header does its whole group at once, and is itself shown viewed
+    exactly when every file under it is (it stores no flag of its own).
+
+  A file that just became viewed then **folds shut on both sides** — its row
+  here and its `diff --git` section in the diff buffer, the pair `zc` on that
+  row closes — and unfolds when the flag is cleared, so what is left open is
+  what is left to review. A file with no hunks (binary/rename) folds only in
+  the diff: its tree row starts no fold, and folding that line would collapse
+  its whole directory.
+
+  The flags live on the **diff** buffer (`vim.b.diff_tree_viewed`, a
+  `f:<path>` / `h:<path>:<@@ line>` → `true` map), so closing and reopening the
+  sidebar repaints them and a fresh `:Diff` starts clean. `<space>` is the
+  leader key everywhere else; buffer-locally in a nomodifiable list of sections
+  there is nothing worth having a `<leader>` chord for.
 - **`z` fold commands** — fold the **diff buffer**, mirrored onto the tree.
   `lib.Diff.tree_fold(tree_buf, key)` drives all of them from one spec table
   (`TREE_FOLD_ACTIONS`):
@@ -212,8 +240,8 @@ over those instead of over the section itself.
 ## Lifecycle
 
 `open_tree` records the tree window and an augroup on the source buffer
-(`vim.b.diff_tree_win` / `diff_tree_group`); it changes no window options
-there. The tree closes (and the group is deleted) on: `q`, a second
+(`vim.b.diff_tree_win` / `diff_tree_group`, plus `diff_tree_viewed` once
+anything is marked); it changes no window options there. The tree closes (and the group is deleted) on: `q`, a second
 `:DiffTree`, or `BufHidden`/`BufUnload` of the source buffer. Leaving the tree
 drops the hovered block's bar back to its normal palette.
 
@@ -237,6 +265,11 @@ count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
 files spread over `./`, `lua/`, `lua/lib/` and `new/`, with `lua/lib/`
 interrupted mid-patch, one file of every status, a rename with no hunks, and a
 name long enough to be truncated.
+`tests/integration/test_diff_viewed.lua` covers the viewed marks: the
+propagation in all three directions (hunk → file, file → hunks, dir → group),
+the glyph and the two highlight spans, that TREE_NS's row colours survive the
+gutter edit, the folds a viewed file closes on both sides, and the flags being
+restored when the sidebar is reopened.
 `lib.git.add` itself is covered against a throwaway repo in
 `tests/integration/test_diff_ga.lua`, and the `gf` flow — `file_location`'s
 line mapping (both hunks of a file, deletions, additions, context, the
@@ -245,6 +278,14 @@ outside-a-hunk fall-back to line 1, a `+0,0` deletion-only hunk),
 both entry points — in `tests/integration/test_diff_gf.lua`.
 
 ## Gotchas
+
+- **A closed fold drops virtual text.** With `'foldtext'` empty (this config's
+  default) the fold's first line is drawn as itself — highlighting included,
+  but *not* its extmarks' virt_text. A viewed file collapses, so an overlay
+  glyph would vanish exactly when it matters most; `paint_viewed` therefore
+  writes the `` into the row's gutter cell as real text
+  (`nvim_buf_set_text` on column 0 only, which shifts the row's other extmarks
+  along with it instead of dropping them the way replacing the line would).
 
 - **A window's cursor pins its view.** nvim keeps the cursor on screen, so a
   `winrestview({ topline = … })` that would scroll it out of view is undone —

@@ -153,7 +153,7 @@ assert_eq(
 -- No mini.icons under -u NONE, so no glyph column: ` <status> <basename>`,
 -- with the summary three spaces behind the name.
 assert_eq(vim.api.nvim_buf_get_lines(tree_buf, 0, -1, false), {
-  './',
+  ' ./',
   ' M foo.txt   +2 -2',
   '   @@ -1,2 +1,2 @@',
   '   @@ -5,1 +5,1 @@ function bar()',
@@ -565,22 +565,23 @@ local src_win2 = vim.api.nvim_get_current_win()
 Diff.open_tree()
 local tree2 = vim.api.nvim_get_current_win()
 local tree_buf2 = vim.api.nvim_win_get_buf(tree2)
--- The group header at column 0, its files indented behind a status letter and
+-- The group header one space in (column 0 is the viewed gutter), its files
+-- indented behind a status letter and
 -- carrying the basename only, each summary three spaces behind its name, and a
 -- name too long for the room left over cut with an ellipsis.
 assert_eq(vim.api.nvim_buf_get_lines(tree_buf2, 0, -1, false), {
-  './',
+  ' ./',
   ' M AGENTS.md   +1',
   '   @@ -1 +1,2 @@',
-  'lua/lib/',
+  ' lua/lib/',
   ' M a.lua   +1 -1',
   '   @@ -1 +1 @@',
   ' D a-very-long-module-n…   -1',
   '   @@ -1 +0,0 @@',
-  'lua/',
+  ' lua/',
   ' A config.lua   +1',
   '   @@ -0,0 +1 @@',
-  'new/',
+  ' new/',
   ' R x.txt',
 }, 'grouped tree rendering')
 
