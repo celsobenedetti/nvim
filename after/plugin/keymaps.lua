@@ -156,6 +156,9 @@ vim.keymap.set('n', config.keys['<C-S-g>'], function()
   local cwd = lib.cwd.cwd()
   local cmd = { 'rg' }
   vim.list_extend(cmd, config.cmd.rg.ignore)
+  for _, pat in ipairs(config.cmd.rg.exclude_lines) do
+    vim.list_extend(cmd, { '-v', pat })
+  end
   vim.list_extend(cmd, { cwd })
 
   lib.fzf.grep({ cmd = cmd, cwd = cwd })

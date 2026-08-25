@@ -141,7 +141,12 @@ local M = {
         '!*drupal*',
         '-g',
         '!*quartz*',
-        '-v',
+      },
+      -- org-mode archive-path property lines pollute results; dropped via
+      -- rg -v in the fzf keymap and via quickfix filtering in :Grep (a bare
+      -- positional pattern there would clash with :grep's appended -e pattern,
+      -- which turns all other positionals into paths).
+      exclude_lines = {
         'ARCHIVE_OLPATH',
       },
     },

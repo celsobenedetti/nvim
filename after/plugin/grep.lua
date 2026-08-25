@@ -1,6 +1,13 @@
 -- use rg for native grep
 -- and custom Grep command to grep and qflist
-vim.opt.grepprg = 'rg --vimgrep --smart-case --hidden --ignore'
+-- Base flags first, config.cmd.rg.ignore appended last so its args win any
+-- conflicts (its --no-ignore cancels gitignore respect, its -g !globs exclude).
+-- Same arg set as the <C-S-g> fzf grep in after/plugin/keymaps.lua.
+--
+-- `-e $*`: :grep appends pattern+files here; -e keeps patterns starting with
+-- `-` from being parsed as flags.
+local prg = vim.list_extend({ 'rg', '--vimgrep', '--smart-case', '--hidden' }, config.cmd.rg.ignore)
+vim.opt.grepprg = table.concat(prg, ' ') .. ' -e $*'
 vim.opt.grepformat = '%f:%l:%c:%m'
 
 local function do_grep(pattern, target)
@@ -14,6 +21,33 @@ local function do_grep(pattern, target)
   vim.cmd(cmd)
   vim.cmd.copen()
 end
+
+-- Drop noise lines (config.cmd.rg.exclude_lines) from grep results — the
+-- equivalent of the `-v <pat>` args the fzf keymap passes rg. Runs on
+-- QuickFixCmdPost so it applies to plain :grep too.
+vim.api.nvim_create_autocmd('QuickFixCmdPost', {
+  group = vim.api.nvim_create_augroup('grep:filter-excluded-lines', { clear = true }),
+  callback = function(ev)
+    if ev.match ~= 'grep' or #config.cmd.rg.exclude_lines == 0 then
+      return
+    end
+    local items = vim.fn.getqflist()
+    local kept = {}
+    for _, item in ipairs(items) do
+      local excluded = false
+      for _, pat in ipairs(config.cmd.rg.exclude_lines) do
+        if item.text and item.text:find(pat, 1, true) then
+          excluded = true
+          break
+        end
+      end
+      if not excluded then
+        kept[#kept + 1] = item
+      end
+    end
+    vim.fn.setqflist(kept, 'r')
+  end,
+})
 
 vim.api.nvim_create_user_command('Grep', function(opts)
   -- Split args into tokens on whitespace, honoring "..." and '...' quoting and
