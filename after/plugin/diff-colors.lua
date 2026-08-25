@@ -50,6 +50,7 @@ local function apply()
   -- 1. Core diff groups (vimdiff, :Gitsigns diffthis, diff-mode).
   -- --------------------------------------------------------------------
   vim.api.nvim_set_hl(0, 'diffFile', { link = 'Comment' })
+  vim.api.nvim_set_hl(0, 'diffSubname', { link = 'Comment' })
 
   -- Inline filepath bar replacing each `diff --git` header line
   -- (lib.diff_filepath, wired in after/ftplugin/git.lua). The range group's
