@@ -310,10 +310,14 @@ local function patch_tab(args)
     git_args = 'diff'
     title = 'Diff (working tree)'
   elseif n == 1 then
-    -- A single arg with `..` (two- or three-dot) is a range, not a rev:
-    -- `git diff -p dev..HEAD` / `dev...HEAD`. Valid refnames never
-    -- contain `..` (git check-ref-format), so the check is unambiguous.
-    git_args = (args[1]:find('..', 1, true) and 'diff -p ' or 'show ') .. args[1]
+    if args[1] == '--cached' then
+      git_args = 'diff --cached'
+    else
+      -- A single arg with `..` (two- or three-dot) is a range, not a rev:
+      -- `git diff -p dev..HEAD` / `dev...HEAD`. Valid refnames never
+      -- contain `..` (git check-ref-format), so the check is unambiguous.
+      git_args = (args[1]:find('..', 1, true) and 'diff -p ' or 'show ') .. args[1]
+    end
     title = 'Diff ' .. args[1]
   else
     git_args = 'diff -p ' .. args[1] .. ' ' .. args[2]
