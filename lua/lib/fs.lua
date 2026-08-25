@@ -74,10 +74,35 @@ M.is_current_buffer_a_file = function()
   return vim.fn.expand('%'):match('/')
 end
 
+---Filename under the cursor, tolerant of spaces in the path
+---(e.g. `example/1 file.txt`). Plain `expand('<cfile>')` stops at whitespace,
+---so instead grow candidate substrings around the cursor, longest first, and
+---return the first that exists on disk; fall back to '<cfile>' otherwise.
+---@return string
+local function cfile()
+  local fallback = vim.fn.expand('<cfile>')
+  if fallback == '' then
+    return ''
+  end
+
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2] + 1 ---@type integer
+  for len = #line, 1, -1 do
+    for start = math.max(1, col - len + 1), math.min(col, #line - len + 1) do
+      local candidate = vim.trim(line:sub(start, start + len - 1))
+      -- length check rejects candidates that were trimmed at either end
+      if #candidate == len and vim.fn.filereadable(candidate) == 1 then
+        return candidate
+      end
+    end
+  end
+  return fallback
+end
+
 ---Open the file under the cursor at a specific location.
 ---@param location? 'top_split'
 M.open_file_in = function(location)
-  local file = vim.fn.expand('<cfile>')
+  local file = cfile()
   if file == '' then
     return
   end

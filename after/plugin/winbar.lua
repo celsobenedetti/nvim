@@ -20,8 +20,6 @@ local SEP = ((config.icons or {}).separator or {}).right or '  '
 -- git glyph shared by the qf breadcrumb bars (Gclog stamp and :Diff bar)
 local GIT_ICON = ((config.icons or {}).git or {}).git or ''
 
-local CMD_OUTPUT_ICON = ' '
-
 --- Terminal label for a buffer: `   terminal`, plus a segment naming the
 --- kind: `toggle term`, or `<icon> <agent>` for agent terminals (claude,
 --- opencode, pi). Shared with lib.tab so tabs and winbars agree.
@@ -60,7 +58,7 @@ local SPECIAL_FILETYPES = {
     -- nvim_buf_set_name resolves the name against cwd, so the marker is
     -- embedded in an absolute path rather than leading it.
     local cmd = vim.api.nvim_buf_get_name(buf):match('.*%[cmd%] (.*)$') or ''
-    return ' ' .. CMD_OUTPUT_ICON .. cmd:gsub('%%', '%%%%')
+    return ' ' .. config.icons.cmd .. cmd:gsub('%%', '%%%%')
   end,
   snacks_picker_input = '',
   terminal = function(buf)
