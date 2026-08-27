@@ -28,11 +28,6 @@ local abbreviations = {
   diff = 'Diff',
 }
 
-if vim.env.ORG_INBOX then
-  abbreviations['in'] = string.format(':e %s', vim.env.ORG_INBOX)
-  abbreviations['inbox'] = string.format(':e %s', vim.env.ORG_INBOX)
-end
-
 for left, right in pairs(abbreviations) do
   vim.cmd.cnoreabbrev(('%s %s'):format(left, right))
 end
