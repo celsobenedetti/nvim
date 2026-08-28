@@ -15,6 +15,7 @@ local function should_write()
   return vim.bo.buftype ~= 'nofile'
     and vim.bo.buftype ~= 'nowrite'
     and vim.bo.buftype ~= 'terminal'
+    and vim.bo.buftype ~= 'help'
     and vim.fn.expand('%:p') ~= ''
 end
 
