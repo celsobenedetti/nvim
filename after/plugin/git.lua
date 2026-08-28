@@ -31,8 +31,8 @@ local function fzf_git_show_file(selected)
     return
   end
   line = require('fzf-lua').utils.strip_ansi_coloring(line)
-  local commit = (line:match('%S+') or ''):gsub('^%^', '')
   if commit == '' then
+    local commit = (line:match('%S+') or ''):gsub('^%^', '')
     return
   end
   vim.cmd(string.format('tab Git show %s -- %%', commit))
@@ -127,7 +127,7 @@ end
 local keymaps = function()
   -- stylua: ignore start
   vim.keymap.set('n', '<leader>G', ":Git<CR>", { desc = 'git: status (fugitive)' })
-  vim.keymap.set('n', 'gs', function() require("fzf-lua").git_status(lib.fzf.e()) end, { desc = 'git: status (fzf)' })
+  vim.keymap.set('n', 'gs', function() require("fzf-lua").git_status() end, { desc = 'git: status (fzf)' })
   vim.keymap.set('n', '<leader>gs', ":Git diff<CR>", { desc = 'git: diff' })
   vim.keymap.set('n', '<leader>gl', git_fzf_picker('git_commits', fzf_git_show), { desc = 'pickaxe: find_git_log' })
   vim.keymap.set('n', '<leader>gf', git_fzf_picker('git_bcommits', fzf_git_show_file, { follow = true }), { desc = 'pickaxe: find_git_log_file' })

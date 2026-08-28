@@ -250,44 +250,43 @@ M.web = {
 }
 
 local treesitter = {
-  --- filetypes to highlight with treesitter
-  highlight = {
-    'css',
-    'gitcommit',
-    'go',
-    'javascript',
-    'json',
-    'jsx',
+  ensure_installed = {
+    'bash',
+    'c',
+    'diff',
+    'html',
+    'jsdoc',
     'lua',
-    'markdown',
+    'luadoc',
+    'luap',
+    'markdown_inline',
+    'printf',
     'python',
+    'query',
+    'regex',
     'sql',
-    'tsx',
-    'typescript',
-    'vue',
-    'yaml',
+    'toml',
+    'vim',
+    'vimdoc',
+    'xml',
   },
 }
-
-treesitter.ensure_installed = vim.list_extend(vim.deepcopy(treesitter.highlight), {
-  'bash',
-  'c',
-  'diff',
-  'html',
-  'jsdoc',
+treesitter.highlight = vim.list_extend(vim.deepcopy(treesitter.ensure_installed), {
+  'css',
+  'gitcommit',
+  'go',
+  'javascript',
+  'json',
+  'jsx',
   'lua',
-  'luadoc',
-  'luap',
-  'markdown_inline',
-  'printf',
+  'markdown',
+  'make',
   'python',
-  'query',
-  'regex',
   'sql',
-  'toml',
-  'vim',
-  'vimdoc',
-  'xml',
+  'tsx',
+  'typescript',
+  'vue',
+  'yaml',
 })
 M.treesitter = treesitter
 
