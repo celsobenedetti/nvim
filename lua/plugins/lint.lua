@@ -27,7 +27,7 @@ return {
         lua = { 'luac' },
         sh = { 'shellcheck' },
         make = { 'checkmake' },
-        go = { 'golangcilint' },
+        -- go = { 'golangcilint' },
         -- python = { 'ruff' },
         -- typescript = { 'oxlint' },
         -- javascript = { 'oxlint' },
