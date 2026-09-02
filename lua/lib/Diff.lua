@@ -1564,6 +1564,8 @@ M.tree_toggle_viewed = function(tree_buf)
         fold_block(src_win, i, rows[i].lnum, now, #hunk_indices(rows, i) > 0)
       end
     end
+
+    fold_block(src_win, idx, row.lnum, viewed, false)
   end
 
   return viewed
