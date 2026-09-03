@@ -347,6 +347,13 @@ local function patch_tab(args)
   if result.job ~= nil then
     vim.fn['fugitive#Wait'](result, 5000)
   end
+
+  -- A no-arg `:Diff` is `git diff` against the index (the *unstaged* working
+  -- tree): every hunk it shows can move into the index, so the tree's
+  -- `<space>` stages the row under the cursor instead of toggling the
+  -- reviewed mark (M.tree_stage_row). Any other form (a rev, a range,
+  -- `--cached`) is not stageable and keeps the toggle.
+  vim.b[bufnr].diff_stageable = (n == 0) or nil
   return bufnr, result, title
 end
 
@@ -1571,6 +1578,185 @@ M.tree_toggle_viewed = function(tree_buf)
   return viewed
 end
 
+-- ---------------------------------------------------------------------------
+-- Staging from the tree: in a no-arg `:Diff` (the *unstaged* working tree,
+-- `diff_stageable`), `<space>` git-adds the row's region instead of toggling
+-- the reviewed mark. The region is the hunk under the cursor for a `hunk`
+-- row — its whole `@@` section (git coalesces nearby changes into one section
+-- whether they look like one or not) —, the whole per-file block for a
+-- `block` row, and every block in the group for a `dir` header. The patch is
+-- fed to `git apply --cached`, the non-interactive equivalent of `git add -p`;
+-- `ga` on the same rows still goes through lib.git.add (interactive).
+-- ---------------------------------------------------------------------------
+
+---The patch text for the tree row under the cursor, as `git apply --cached`
+---wants it: the `diff --git`/`index`/mode/`---`/`+++` header lines through the
+---first hunk, then exactly the row's own `@@` section (a hunk row), or the
+---whole section (a block row), or every block of the group (a dir header).
+---The hunk counts in the `@@` line match its body only when the section is
+---taken whole, so a hunk patch is never a sub-slice of an `@@` block — git
+---coalesces nearby changes into one section and that whole section is the
+---smallest stageable region.
+---@param tree_buf integer
+---@return string? patch nil when there is no row under the cursor
+local function row_patch(tree_buf)
+  local rows = vim.b[tree_buf].diff_tree_rows
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  local idx = vim.fn.line('.')
+  local row = rows and rows[idx]
+  if not row or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return nil
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(src_buf, 0, -1, false)
+
+  -- The whole text of the block row at `bi`: its `diff --git` header through
+  -- the end of its last hunk. A treesitter `range` is 0-based with an
+  -- exclusive end row: the first 1-based line is `range[1] + 1`, and the end
+  -- row `range[3]` (0-based exclusive) is the 1-based line the block's last
+  -- line sits on.
+  local function block_text(bi)
+    local b = rows[bi]
+    return table.concat(lines, '\n', b.range[1] + 1, b.range[3])
+  end
+
+  -- `git apply` rejects a patch that does not end in a newline ("corrupt
+  -- patch"); every branch returns one.
+  local function terminated(s)
+    return s .. '\n'
+  end
+
+  if row.kind == 'dir' then
+    local parts = {}
+    for _, bi in ipairs(group_indices(rows, idx)) do
+      parts[#parts + 1] = block_text(bi)
+    end
+    return #parts > 0 and terminated(table.concat(parts, '\n')) or nil
+  elseif row.kind == 'block' then
+    return terminated(block_text(idx))
+  end
+
+  local b = block_index(rows, idx)
+  if not b then
+    return nil
+  end
+  -- Headers through the `+++` line (everything before the block's first
+  -- hunk), then exactly the row's own hunk. `rows[b + 1]` is the block's
+  -- first hunk row (we are on one of its hunks; tree_rows drops the block's
+  -- own `hunks` list once the hunk rows are emitted, so the flat list is the
+  -- source of truth). Same exclusive-end arithmetic as block_text.
+  local block = rows[b]
+  local head_end = rows[b + 1].lnum - 1
+  if head_end < block.range[1] + 1 then
+    return nil
+  end
+  local head = table.concat(lines, '\n', block.range[1] + 1, head_end)
+  local body = table.concat(lines, '\n', row.lnum, row.range[3])
+  return terminated(head .. '\n' .. body)
+end
+
+---Refill a no-arg `:Diff`'s source buffer with a fresh `git diff` and rebuild
+---its sidebar in place, so what was just staged leaves the view. Run with
+---vim.system rather than through fugitive, which can only re-run `Git diff`
+---into a *new* buffer in the same window and would strand the tree on the old
+---one. The tree window keeps its width (record_tree_ratio / tree_width) and
+---the cursor stays on the same row index (clamped), so space-staging walks the
+---remaining hunks of a file naturally.
+---@param tree_buf integer
+---@param root string work-tree root (`git -C root apply`)
+local function refill_working_tree(tree_buf, root)
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
+    return
+  end
+  local result = vim.system({ 'git', 'diff' }, { cwd = root }):wait()
+  if result.code ~= 0 then
+    vim.notify('Diff: git diff failed: ' .. tostring(result.stderr), vim.log.levels.WARN)
+    return
+  end
+  -- git's stdout ends each line with `\n`; nvim_buf_set_lines wants lines
+  -- without. An empty diff (everything staged) collapses to no lines, which
+  -- parse to zero blocks.
+  local lines = vim.split(result.stdout or '', '\n', { plain = true })
+  if lines[#lines] == '' then
+    lines[#lines] = nil
+  end
+  local modifiable = vim.bo[src_buf].modifiable
+  vim.bo[src_buf].modifiable = true
+  vim.api.nvim_buf_set_lines(src_buf, 0, -1, false, lines)
+  vim.bo[src_buf].modifiable = modifiable
+
+  -- The tree window must still exist (it does — nothing closed it yet), and
+  -- the rebuild needs its source window: grab both before the close wipes the
+  -- tree buffer's bookkeeping.
+  local src_win = vim.b[tree_buf].diff_tree_src_win
+  if not src_win or not vim.api.nvim_win_is_valid(src_win) then
+    return
+  end
+  local idx = vim.fn.line('.')
+  vim.api.nvim_set_current_win(src_win)
+  M.open_tree() -- close the stale sidebar
+  M.open_tree() -- reopen it on the fresh text
+  local tree_win = vim.api.nvim_get_current_win()
+  local rows = vim.b[vim.api.nvim_win_get_buf(tree_win)].diff_tree_rows
+  if rows and #rows > 0 then
+    vim.api.nvim_win_set_cursor(tree_win, { math.min(idx, #rows), 0 })
+  end
+end
+
+---`<space>` in the tree of a no-arg `:Diff` (the unstaged working tree):
+---stage the region under the cursor — the hunk's `@@` section for a hunk
+---row, the whole file for a file row, every file of the group for a dir
+---header — by feeding that patch to `git apply --cached` (the non-interactive
+---equivalent of `git add -p`). Success refills the diff
+---(refill_working_tree), so the staged region leaves the tree and the next
+---one lands under the cursor. Exposed for the headless test.
+---@param tree_buf integer
+---@return boolean? ok true when staged
+M.tree_stage_row = function(tree_buf)
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  if not src_buf or not vim.b[src_buf].diff_stageable then
+    return nil
+  end
+  local patch = row_patch(tree_buf)
+  if not patch then
+    return nil
+  end
+
+  -- Patch paths are root-relative (git's `i/` / `w/` prefixes are gone from
+  -- the tree rows): run apply from the work-tree root, resolved through
+  -- lib.git.root like every other path the module turns into a real one.
+  local root = require('lib.git').root(vim.fn.getcwd())
+  if not root then
+    vim.notify('Diff: not in a git repo', vim.log.levels.WARN)
+    return nil
+  end
+
+  local row = row_under_cursor(tree_buf)
+  local result = vim.system({ 'git', 'apply', '--cached', '-' }, { cwd = root, stdin = patch }):wait()
+  if result.code ~= 0 then
+    local err = vim.trim(result.stderr or '')
+    vim.notify('Diff: git apply failed' .. (err ~= '' and (': ' .. err) or ''), vim.log.levels.WARN)
+    return nil
+  end
+
+  -- Dir rows carry no path (see M.tree_rows); the others name their file.
+  local what
+  if row then
+    if row.kind == 'dir' then
+      what = #group_indices(vim.b[tree_buf].diff_tree_rows, vim.fn.line('.')) .. ' files'
+    elseif row.kind == 'hunk' then
+      what = 'hunk in `' .. row.path .. '`'
+    else
+      what = '`' .. row.path .. '`'
+    end
+  end
+  vim.notify('Diff: staged ' .. (what or 'region'), vim.log.levels.INFO)
+
+  refill_working_tree(tree_buf, root)
+  return true
+end
+
 ---Focus the section under the tree cursor in the diff window: park it at the
 ---top of the window (`zt`, which honours the window's 'scrolloff'). Folds are
 ---left exactly as they are — hovering is a scroll, not an edit of the fold
@@ -1806,13 +1992,22 @@ M.open_tree = function()
   vim.keymap.set('n', 'gf', function()
     M.tree_open_file(tree_buf)
   end, { buffer = tree_buf, desc = "Diff tree: open the row's file in the first tab" })
-  -- `<space>` is the leader key, but buffer-locally here it is the viewed
-  -- toggle: no `<leader>` mapping is worth having in a nomodifiable list of
-  -- sections, and the review flow wants one key under the thumb.
+  -- `<space>` is the leader key, but buffer-locally here it is the row action:
+  -- in a no-arg `:Diff` (the *unstaged* working tree, `diff_stageable`) it
+  -- git-adds the row's region (M.tree_stage_row); everywhere else it is the
+  -- viewed toggle. No `<leader>` mapping is worth having in a nomodifiable
+  -- list of sections, and the staging/review flow wants one key under the
+  -- thumb. Note the viewed toggle advances with `j`; staging instead refills
+  -- the diff, which re-renders the tree with the next region at the cursor.
   vim.keymap.set('n', '<space>', function()
-    M.tree_toggle_viewed(tree_buf)
-    vim.cmd.norm('j')
-  end, { buffer = tree_buf, desc = 'Diff tree: toggle the row as viewed' })
+    local src = vim.b[tree_buf].diff_tree_src
+    if src and vim.b[src].diff_stageable then
+      M.tree_stage_row(tree_buf)
+    else
+      M.tree_toggle_viewed(tree_buf)
+      vim.cmd.norm('j')
+    end
+  end, { buffer = tree_buf, desc = 'Diff tree: stage the row (unstaged diff) or toggle viewed' })
   -- J/K scroll the diff window from here (`J` joins lines and `K` looks up a
   -- keyword — neither has any use in a nomodifiable list of sections).
   vim.keymap.set('n', 'J', function()
