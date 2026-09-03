@@ -1811,6 +1811,7 @@ M.open_tree = function()
   -- sections, and the review flow wants one key under the thumb.
   vim.keymap.set('n', '<space>', function()
     M.tree_toggle_viewed(tree_buf)
+    vim.cmd.norm('j')
   end, { buffer = tree_buf, desc = 'Diff tree: toggle the row as viewed' })
   -- J/K scroll the diff window from here (`J` joins lines and `K` looks up a
   -- keyword — neither has any use in a nomodifiable list of sections).

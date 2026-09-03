@@ -141,6 +141,10 @@ local M = {
         '!*drupal*',
         '-g',
         '!*quartz*',
+        '-g',
+        '!*node_modules*',
+        '-g',
+        '!*.cursor*',
       },
       -- org-mode archive-path property lines pollute results; dropped via
       -- rg -v in the fzf keymap and via quickfix filtering in :Grep (a bare

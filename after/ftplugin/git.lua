@@ -1,3 +1,4 @@
+vim.wo.number = false
 --- Fugitive patch buffers (`filetype=git`): `:Git diff` / show / log -p.
 --- Navigation via the `diff` treesitter grammar (aliased onto `git` in
 --- after/plugin/autocmds.lua):
