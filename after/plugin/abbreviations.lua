@@ -20,12 +20,10 @@ local abbreviations = {
   Tabnew = 'tabnew',
   Set = 'set',
   git = 'Git',
-  commit = 'tab Git commit',
   Tab = 'tab',
   cfilter = 'Cfilter',
   grep = 'Grep',
   fd = 'Fd',
-  diff = 'Diff',
 }
 
 for left, right in pairs(abbreviations) do
