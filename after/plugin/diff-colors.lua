@@ -39,8 +39,10 @@
 --   line-numbers   -> GitSignsVirtLnum, diffIndexLine
 --
 -- Not delta-derived: the DiffTree hover surface (DiffFileBarHover*,
--- DiffHunkHover) takes Visual's background, so hovering a row in the sidebar
--- reads like a selection rather than a diff state. The viewed marks
+-- DiffHunkHover) and its reverse (DiffTreeActive — the sidebar row the diff
+-- cursor is in) take Visual's background, so hovering a row in the sidebar or
+-- reading the diff both read like a selection rather than a diff state. The
+-- viewed marks
 -- (DiffViewed*) do reuse the palette: line-numbers grey for the row,
 -- plus-style green for the  in its gutter.
 
@@ -91,6 +93,15 @@ local function apply()
   -- line (the `location` node) in the diff buffer. Plain buffer text there, so
   -- bg only — the treesitter foreground of the `@@` line stays as it is.
   vim.api.nvim_set_hl(0, 'DiffHunkHover', { bg = hover_bg })
+
+  -- The reverse hover: while the *diff* window is focused, lib.Diff washes the
+  -- DiffTree row the diff cursor is in (the tree's own cursorline can't show
+  -- it — it only draws in the focused window). Same Visual background as the
+  -- hover surfaces, so both directions read the same: the row you are on is a
+  -- selection. Applied bg-only under the row colours (status letter, icon,
+  -- Comment dim), exactly as the hover surfaces leave the row's foregrounds
+  -- alone.
+  vim.api.nvim_set_hl(0, 'DiffTreeActive', { bg = hover_bg })
 
   -- "Viewed" marks (`<space>`, lib.Diff.tree_toggle_viewed), shared by the
   -- sidebar row and the `@@` header + sign the diff buffer shows for it: the

@@ -516,7 +516,8 @@ end
 -- (`@@` lines).
 -- Focus (CursorMoved) parks the section at the top of the diff window (folds
 -- are left as they are); <CR> jumps there; J/K scroll the diff from here; the diff buffer's own cursor keeps
--- the tree in sync (bidirectional). Native expr folding matches the levels: a
+-- the tree in sync (bidirectional, painting the matching row while the diff
+-- window is focused). Native expr folding matches the levels: a
 -- directory folds away its files, a file its hunks. `<space>` flags a row as
 -- viewed (GitHub's review checkbox) and collapses a file once it is.
 -- ---------------------------------------------------------------------------
@@ -540,6 +541,21 @@ local VIEWED_NS = vim.api.nvim_create_namespace('lib.diff.tree.viewed')
 ---hunk's `@@` header. The file flags ride in lib.diff_filepath's bar instead
 ---(M.file_viewed) — no second extmark can restyle that overlay's virt_text.
 local SRC_VIEWED_NS = vim.api.nvim_create_namespace('lib.diff.viewed')
+
+---Marks the DiffTree row the *diff buffer's* cursor is in, painted while the
+---diff window is focused — the reverse of HOVER_NS (which paints the diff
+---buffer's section while the tree is focused). Cursorline only draws in the
+---focused window, so reading the diff would otherwise leave the sidebar's
+---rows visually static even though the tree cursor tracks along. Its own
+---namespace, so repainting it never touches TREE_NS's row colours or
+---VIEWED_NS's viewed dims.
+local ACTIVE_NS = vim.api.nvim_create_namespace('lib.diff.tree.active')
+
+---Sits below the row-colour marks' default (4096) but above nothing else in
+---the tree buffer: it only ever paints a background, and a file row's status
+---letter keeps its diff-colour chip on top of the wash, exactly as it does
+---under the tree's own cursorline while the tree is focused.
+local ACTIVE_PRIORITY = 2000
 
 ---Gutter glyph for a viewed row. It replaces the blank column 0 every row kind
 ---is rendered with (render_row), so the mark costs no width and shifts nothing
@@ -1082,6 +1098,67 @@ local function tree_src_win(tree_buf)
     end
   end
   return nil, src_buf
+end
+
+---Repaint the DiffTree's active-row mark: the tree row the *diff buffer's*
+---cursor is in, so the sidebar shows which section you are on even while the
+---diff window (not the tree) is focused — the mirror of hover, which marks the
+---diff buffer's section while the tree is focused (HOVER_NS). Painted only
+---while the user is actually in the diff window; with the tree focused its own
+---cursorline marks the row, so the extmark would only double it up. Cleared
+---too when the diff cursor leaves every tree row (e.g. a `:Git log -p` commit
+---header).
+---@param tree_buf integer
+---@param tree_win integer
+local function paint_active(tree_buf, tree_win)
+  -- Validity first: vim.b on a wiped buffer throws, and the tree can be closed
+  -- from either side (BufHidden/BufUnload -> close_tree) while these autocmds
+  -- are still registered for the src buffer.
+  if not vim.api.nvim_buf_is_valid(tree_buf) then
+    return
+  end
+  local src_buf = vim.b[tree_buf].diff_tree_src
+  local rows = vim.b[tree_buf].diff_tree_rows
+  if not src_buf or not rows then
+    return
+  end
+  -- Focused tree: its cursorline marks the current row, and hover lights the
+  -- diff side — drop the mark so the two surfaces never double up.
+  if vim.api.nvim_get_current_win() == tree_win then
+    vim.api.nvim_buf_clear_namespace(tree_buf, ACTIVE_NS, 0, -1)
+    return
+  end
+  -- Only mirror while the diff window itself is focused: painting from a
+  -- third window (none exists in this tab, but stay safe) would point at a
+  -- cursor the tree does not track.
+  if vim.api.nvim_get_current_buf() ~= src_buf then
+    vim.api.nvim_buf_clear_namespace(tree_buf, ACTIVE_NS, 0, -1)
+    return
+  end
+
+  local idx = M.tree_row_containing(rows, vim.fn.line('.') - 1)
+  -- Already painting that row (cursor moved within the section): leave it.
+  local marks = vim.api.nvim_buf_get_extmarks(tree_buf, ACTIVE_NS, 0, -1, {})
+  if idx and #marks == 1 and marks[1][2] == idx - 1 then
+    return
+  end
+  vim.api.nvim_buf_clear_namespace(tree_buf, ACTIVE_NS, 0, -1)
+  if not idx then
+    return
+  end
+  local line = vim.api.nvim_buf_get_lines(tree_buf, idx - 1, idx, false)[1]
+  if not line then
+    return
+  end
+  -- Wash the row's text like the diff-side hover washes a `@@` header: bg-only
+  -- (the row's own foregrounds — status letter, icon, Comment — stay), at a
+  -- priority below the row-colour marks so a file row's status chip keeps its
+  -- colour on top, as it does under the tree's own cursorline.
+  vim.api.nvim_buf_set_extmark(tree_buf, ACTIVE_NS, idx - 1, 0, {
+    end_col = #line,
+    hl_group = 'DiffTreeActive',
+    priority = ACTIVE_PRIORITY,
+  })
 end
 
 ---Move the diff buffer's cursor to the tree row under the cursor, reusing a
@@ -2032,7 +2109,9 @@ M.open_tree = function()
   })
 
   -- Bidirectional: source cursor moves -> move tree cursor to the containing
-  -- section (deepest first: hunk over block).
+  -- section (deepest first: hunk over block), and paint that row in the tree
+  -- (ACTIVE_NS) so the sidebar shows where the diff cursor is while the diff
+  -- window has focus.
   vim.api.nvim_create_autocmd('CursorMoved', {
     group = group,
     buffer = src_buf,
@@ -2055,6 +2134,25 @@ M.open_tree = function()
       if idx then
         vim.api.nvim_win_set_cursor(tree_win, { idx, 0 })
       end
+      paint_active(tree_buf, tree_win)
+    end,
+  })
+
+  -- Coming back to the diff window repaints the active row (hover, while the
+  -- tree was focused, parked the source cursor somewhere without firing
+  -- CursorMoved). Entering the tree clears it: its own cursorline takes over.
+  vim.api.nvim_create_autocmd('WinEnter', {
+    group = group,
+    buffer = src_buf,
+    callback = function()
+      paint_active(tree_buf, tree_win)
+    end,
+  })
+  vim.api.nvim_create_autocmd('WinEnter', {
+    group = group,
+    buffer = tree_buf,
+    callback = function()
+      paint_active(tree_buf, tree_win)
     end,
   })
 

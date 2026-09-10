@@ -303,6 +303,58 @@ assert_eq(vim.api.nvim_win_get_cursor(tree_win)[1], 6, 'from the diff window it 
 vim.api.nvim_set_current_win(tree_win)
 
 -- ------------------------------------------------------------------
+-- The reverse of hover: while the *diff* window is focused and the cursor sits
+-- inside a section, the tree row that contains it is painted (ACTIVE_NS), so
+-- the sidebar shows where you are even though its own cursorline can't (it
+-- only draws in the focused window). Cleared again when the tree is focused —
+-- its cursorline (and hover) take over.
+-- ------------------------------------------------------------------
+local active_ns = vim.api.nvim_get_namespaces()['lib.diff.tree.active']
+local function active_hl()
+  local marks = vim.api.nvim_buf_get_extmarks(tree_buf, active_ns, 0, -1, { details = true })
+  if #marks == 0 then
+    return nil
+  end
+  return { marks[1][2] + 1, marks[1][4].end_col, marks[1][4].hl_group }
+end
+
+-- Assert the mark is a single extmark spanning the row's text (col 0 ..
+-- end of line), on `row` (1-based tree line), in the DiffTreeActive group.
+local function assert_active(row, src_line)
+  local mark = active_hl()
+  local line = vim.api.nvim_buf_get_lines(tree_buf, row - 1, row, false)[1]
+  assert_eq(mark, { row, #line, 'DiffTreeActive' }, 'diff cursor at src line ' .. src_line .. ' -> tree row ' .. row)
+end
+
+-- Inside hunk 3 (src line 16) while the diff is focused -> tree row 6.
+vim.api.nvim_set_current_win(src_win)
+vim.api.nvim_win_set_cursor(src_win, { 16, 0 })
+vim.api.nvim_exec_autocmds('CursorMoved', { buffer = buf })
+assert_active(6, 16)
+-- Moving within the same section keeps one mark (no churn), moving to another
+-- section moves it: hunk 1 (src line 6) -> row 3.
+vim.api.nvim_win_set_cursor(src_win, { 6, 0 })
+vim.api.nvim_exec_autocmds('CursorMoved', { buffer = buf })
+assert_active(3, 6)
+-- A block header line (the diff --git of file 2, src line 12) -> the file row.
+vim.api.nvim_win_set_cursor(src_win, { 12, 0 })
+vim.api.nvim_exec_autocmds('CursorMoved', { buffer = buf })
+assert_active(5, 12)
+-- Focusing the tree drops the mark: its own cursorline (and hover marks in
+-- the diff) show where you are. WinEnter fires headless on window switch.
+vim.api.nvim_set_current_win(tree_win)
+assert_eq(active_hl(), nil, 'entering the tree clears the active-row mark')
+-- Hovering around in the tree never repaints it (the tree is focused).
+vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1
+Diff.tree_focus(tree_buf, tree_win)
+assert_eq(active_hl(), nil, 'hovering in the tree leaves the mark cleared')
+-- Back to the diff window repaints for the parked source cursor (hover parked
+-- it at hunk 1's @@ line, src line 5).
+vim.api.nvim_set_current_win(src_win)
+assert_active(3, vim.fn.line('.'))
+vim.api.nvim_set_current_win(tree_win)
+
+-- ------------------------------------------------------------------
 -- <CR> jumps the source cursor to the row's lnum (keymaps do fire headless).
 -- ------------------------------------------------------------------
 vim.api.nvim_win_set_cursor(tree_win, { 3, 0 }) -- hunk 1

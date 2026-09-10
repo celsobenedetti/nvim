@@ -239,7 +239,15 @@ delta's plus-style green and line-numbers grey).
     once; a repeated `zo`/`zc` in the same direction is a silent no-op (that is
     an `E490` from `:foldopen`/`:foldclose`).
 - **Bidirectional** — `CursorMoved` in the diff buffer moves the tree cursor
-  to the deepest row (hunk over block) containing the source cursor.
+  to the deepest row (hunk over block) containing the source cursor, and paints
+  that row in the sidebar while the diff window is focused (the `DiffTreeActive`
+  wash, in the `lib.diff.tree.active` namespace). It is the reverse of the
+  hover marks: hover lights the *diff* section while the *tree* is focused;
+  this lights the *tree* row while the *diff* is — and for the same reason
+  (cursorline only draws in the focused window, so the sidebar's own cursor is
+  invisible while you read the patch). One mark at a time, cleared when the
+  tree regains focus (its cursorline and hover take over) and when the diff
+  cursor leaves every row (e.g. a `:Git log -p` commit header).
 - **Fold (the tree's own)** — `foldmethod=expr` +
   `lib.Diff.tree_foldexpr()`, three levels mirroring the rows: a dir header
   opens level 1, a file row opens level 2 when it has hunks, and hunk rows sit
@@ -258,7 +266,9 @@ over those instead of over the section itself.
 (`vim.b.diff_tree_win` / `diff_tree_group`, plus `diff_tree_viewed` once
 anything is marked); it changes no window options there. The tree closes (and the group is deleted) on: `q`, a second
 `:DiffTree`, or `BufHidden`/`BufUnload` of the source buffer. Leaving the tree
-drops the hovered block's bar back to its normal palette.
+drops the hovered block's bar back to its normal palette; entering it drops the
+diff-cursor row wash (`DiffTreeActive`), whose own cursorline and hover take
+over.
 
 ## Testing
 
@@ -272,7 +282,10 @@ that a dir row previews its first file), hover's `zt` (topline with a non-zero
 hovered hunk's `@@` highlight (its exact span, that only one exists at a time,
 and that leaving the tree clears it), `J`/`K` scrolling (with counts, the clamp
 at the first line, and that neither focus nor the tree cursor moves), the
-source->tree sync ignoring moves made from the tree, the `<CR>` jump, every
+source->tree sync ignoring moves made from the tree, the diff-cursor row
+wash (that it tracks the cursor from the diff window, moves between hunks and
+file rows, clears when the tree is focused and repaints when the diff is, and
+is left cleared while hovering in the tree), the `<CR>` jump, every
 forwarded fold command
 (`za`/`zA`/`zc`/`zC`/`zo`/`zO` on all three row kinds, `zR`/`zM`/`zr` incl. a
 count, plus the tree mirror and the no-op repeats), the `ga` hand-off to
