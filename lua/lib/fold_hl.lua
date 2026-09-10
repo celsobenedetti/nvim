@@ -20,8 +20,15 @@
 --- line. It overrides every layer below it across the full window width and
 --- sets no foreground, so treesitter and plugin text colors survive. Ephemeral
 --- marks are ignored on fold lines, so these have to be real extmarks.
---- Overlay virt_text (heading icons, the bar's own chunks) still shows through
---- — that is only fixable where the chunk is built, by leaving its bg unset.
+---
+--- Layer 1 is render-markdown's decoration chunks (list markers, heading
+--- icons), drawn after every line background. Those can only be fixed where
+--- the chunk is built: the chunk's `hl_mode` must be `combine` (not the
+--- virt_text default `replace`, which drops an unset background to the buffer
+--- default) and it must not carry its own background. lib.render_markdown_fold
+--- handles exactly that for render-markdown; other plugins' overlay chunks
+--- (the fugitive bar) would need the same treatment there if they ever show
+--- a background sliver on folds.
 local M = {}
 
 --- Just under the 65535 ceiling, so a decoration that really must win still
