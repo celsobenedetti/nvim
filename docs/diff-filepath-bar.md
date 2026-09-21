@@ -31,8 +31,10 @@ the block's 0-based header row:
   (`end_row = row + 1`, `hl_eol = true`) — the raw `diff --git …` text is
   painted in its own background color, i.e. invisible.
 - `virt_text` with `virt_text_pos = 'overlay'` draws the bar chunks on top:
-  `{icon, mini.icons hl}`, `{path, DiffFileBarPath}`,
-  `{summary, DiffFileBarSummary}`.
+  `{icon, mini.icons hl}`, `{path, DiffFileBarPath}`, and the `+N -M` change
+  counts split into their add/remove chips: `{'+N', DiffFileBarAdd}`,
+  `{'-M', DiffFileBarDel}` — each side wearing the default diff wash, the
+  same green/red the DiffTree's file rows paint them with.
 - Default extmark priority (4096) draws above treesitter's 100, so the
   fg=bg mask wins over syntax/treesitter fg on the raw line.
 
@@ -76,7 +78,12 @@ ColorScheme / background change), colors from `colors.diff` in
 
 - `DiffFileBar` — `bg = header`, `fg = header` (the invisible mask)
 - `DiffFileBarPath` — `bg = header`, `fg = header_fg`
-- `DiffFileBarSummary` — `bg = header`, `fg = header_summary_fg`
+- `DiffFileBarAdd` / `DiffFileBarDel` — the change-count chips: `bg = add` /
+  `bg = delete` (the same delta washes as `DiffAdd` / `DiffDelete`). The fg is
+  explicit because virt_text chunks inherit the (invisible) header text's fg
+  where unset: `add_fg` for the additions (mirrors `diffAdded`), `header_fg`
+  for the deletions (delta's removed lines keep the default foreground).
+  They keep their washes on the hover palette too.
 
 `header` matches tufte's `bg2` (= `TreesitterContext` bg) so the bar blends
 into treesitter-context's floating window.

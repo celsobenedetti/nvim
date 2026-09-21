@@ -76,7 +76,8 @@ assert_eq(marks, {
       right_gravity = true,
       virt_text = {
         { 'foo.txt', 'DiffFileBarPath' },
-        { ' +1 -1', 'DiffFileBarSummary' },
+        { ' +1', 'DiffFileBarAdd' },
+        { ' -1', 'DiffFileBarDel' },
       },
       virt_text_hide = false,
       virt_text_pos = 'overlay',

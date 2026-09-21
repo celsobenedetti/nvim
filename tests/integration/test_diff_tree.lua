@@ -171,22 +171,46 @@ assert_eq(bars[1][2], 0, 'first bar sits on the diff --git line (0-based)')
 assert_eq(bars[1][4].hl_group, 'DiffFileBarHover', 'hovered bar range group')
 assert_eq(bars[1][4].virt_text, {
   { 'foo.txt', 'DiffFileBarHoverPath' },
-  { ' +2 -2', 'DiffFileBarHoverSummary' },
-}, 'hovered bar chunks use the Hover palette')
+  -- The change counts are chips that keep their diff washes on hover.
+  { ' +2', 'DiffFileBarAdd' },
+  { ' -2', 'DiffFileBarDel' },
+}, 'hovered bar: path on the Hover palette, summary chips on the diff washes')
 assert_eq(require('lib.diff_filepath').hover(buf), 0, 'hover state records block 1 row')
 
 -- Row colours: the group header as a Directory, each status letter in a diff
 -- group, hunk rows dimmed as Comment (no icon marks without mini.icons).
 local tree_ns = vim.api.nvim_get_namespaces()['lib.diff.tree']
 local tree_marks = vim.api.nvim_buf_get_extmarks(tree_buf, tree_ns, 0, -1, { details = true })
-assert_eq(#tree_marks, 6, 'one dir mark, two status letters, three hunk rows')
+assert_eq(#tree_marks, 10, 'dir mark, status letters, summary chips, three hunk rows')
 assert_eq({ tree_marks[1][2], tree_marks[1][3] }, { 0, 0 }, 'the dir mark spans its whole line')
 assert_eq(tree_marks[1][4].hl_group, 'Directory', 'group headers use Directory')
 assert_eq({ tree_marks[2][2], tree_marks[2][3] }, { 1, 1 }, "block 1's status letter, column 2")
 assert_eq({ tree_marks[2][4].end_col, tree_marks[2][4].hl_group }, { 2, 'Changed' }, 'M is a Changed letter')
-assert_eq({ tree_marks[3][2], tree_marks[3][3] }, { 2, 0 }, 'first hunk mark on tree line 3')
-assert_eq(tree_marks[3][4].hl_group, 'Comment', 'hunk rows use Comment')
-assert_eq({ tree_marks[6][2], tree_marks[6][3] }, { 5, 0 }, 'last mark on tree line 6')
+-- The ` +N -M` counts (three spaces behind the name) get the default diff
+-- washes: `+2` added, `-1` removed, each chip spanning its own characters.
+assert_eq(
+  { tree_marks[3][2], tree_marks[3][3], tree_marks[3][4].end_col, tree_marks[3][4].hl_group },
+  { 1, 13, 15, 'DiffAdd' },
+  "block 1's +2 chip wears DiffAdd"
+)
+assert_eq(
+  { tree_marks[4][2], tree_marks[4][3], tree_marks[4][4].end_col, tree_marks[4][4].hl_group },
+  { 1, 16, 18, 'DiffDelete' },
+  "block 1's -2 chip wears DiffDelete"
+)
+assert_eq({ tree_marks[5][2], tree_marks[5][3] }, { 2, 0 }, 'first hunk mark on tree line 3')
+assert_eq(tree_marks[5][4].hl_group, 'Comment', 'hunk rows use Comment')
+assert_eq(
+  { tree_marks[8][2], tree_marks[8][3], tree_marks[8][4].end_col, tree_marks[8][4].hl_group },
+  { 4, 11, 13, 'DiffAdd' },
+  "block 2's +1 chip"
+)
+assert_eq(
+  { tree_marks[9][2], tree_marks[9][3], tree_marks[9][4].end_col, tree_marks[9][4].hl_group },
+  { 4, 14, 16, 'DiffDelete' },
+  "block 2's -1 chip"
+)
+assert_eq({ tree_marks[10][2], tree_marks[10][3] }, { 5, 0 }, 'last mark on tree line 6')
 
 -- Moving to a hunk row restores the bar's normal palette and highlights that
 -- hunk's `@@` header line instead — the `location` node's exact span, in the

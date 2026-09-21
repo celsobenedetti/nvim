@@ -2014,6 +2014,27 @@ M.open_tree = function()
       if r.icon ~= '' then
         mark(3, 3 + #r.icon, r.icon_hl)
       end
+      -- The ` +N -M` change counts (three spaces behind the name) get the
+      -- default diff washes: `+N` green, `-M` red, so the counts read like
+      -- the lines they count — the same chips the status letter already wears.
+      local summary = vim.trim(r.summary)
+      if summary ~= '' then
+        -- render_row appends the summary whole (only the label is truncated),
+        -- so it is always the line's last `#summary` cells.
+        local s0 = #line - #summary
+        -- Two independent matches (Lua patterns have no non-capturing groups,
+        -- and `(...)?` after a capture misbehaves): `+N`, then a trailing `-M`.
+        local adds = summary:match('^%+(%d+)')
+        local dels = summary:match('%-%d+$')
+        if adds then
+          mark(s0, s0 + 1 + #adds, 'DiffAdd')
+          if dels then
+            mark(s0 + 2 + #adds, s0 + #summary, 'DiffDelete')
+          end
+        else
+          mark(s0, s0 + #summary, 'DiffDelete') -- deletion-only (`-M`)
+        end
+      end
     end
   end
   vim.bo[tree_buf].modifiable = false

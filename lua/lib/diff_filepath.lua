@@ -33,9 +33,24 @@ local function chunks_for(block, bufnr, hovered)
     chunks[#chunks + 1] = { block.icon .. ' ', hl }
   end
   chunks[#chunks + 1] = { block.path, base .. 'Path' }
+  -- The ` +N -M` change counts, split into their add/remove sides so each
+  -- wears the default diff wash (DiffFileBarAdd / DiffFileBarDel). The chips
+  -- keep their colours on the hover palette too: hovering swaps the path/text
+  -- palette, the counts stay what they mean. summary_text() already leads with
+  -- a space (` +5 -2`), reproduced by the chunks verbatim.
   if block.summary ~= '' then
-    -- summary_text() already leads with a space (` +5 -2`).
-    chunks[#chunks + 1] = { block.summary, base .. 'Summary' }
+    -- Two independent matches (Lua patterns have no non-capturing groups, and
+    -- `(...)?` after a capture misbehaves): `+N`, then a trailing `-M`.
+    local adds = block.summary:match('^%s*%+(%d+)')
+    local dels = block.summary:match('%-%d+$')
+    if adds then
+      chunks[#chunks + 1] = { ' +' .. adds, 'DiffFileBarAdd' }
+      if dels then
+        chunks[#chunks + 1] = { ' ' .. dels, 'DiffFileBarDel' }
+      end
+    else
+      chunks[#chunks + 1] = { block.summary, 'DiffFileBarDel' } -- ` -M` only
+    end
   end
   return chunks
 end

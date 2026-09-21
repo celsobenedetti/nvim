@@ -43,7 +43,7 @@ M.grep = function(opts)
   fzf.grep({
     raw_cmd = table.concat(parts, ' '),
     cwd = opts.cwd,
-    profile = 'ivy',
+    -- profile = 'ivy',
     actions = {
       -- alt-q: send ALL filtered results to the quickfix list (not just the
       -- highlighted/selected entries). `prefix = 'select-all'` marks every

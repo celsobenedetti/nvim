@@ -64,7 +64,15 @@ local function apply()
   -- floating window.
   vim.api.nvim_set_hl(0, 'DiffFileBar', { bg = p.header, fg = p.header })
   vim.api.nvim_set_hl(0, 'DiffFileBarPath', { bg = p.header, fg = p.header_fg })
-  vim.api.nvim_set_hl(0, 'DiffFileBarSummary', { bg = p.header, fg = p.header_summary_fg })
+  -- The bar's ` +N -M` change counts, split into `+N`/`-M` chunks by
+  -- lib.diff_filepath: each side wears the default diff add/remove wash — the
+  -- same delta palette as DiffAdd/DiffDelete. The fg is explicit because a
+  -- virt_text chunk inherits its anchor cell's fg where unset, and the anchor
+  -- here is the (invisible) header text; add_fg mirrors the added lines in
+  -- the diff buffer (diffAdded), the delete digits take the header's own text
+  -- colour (delta's removed lines keep the default foreground over the wash).
+  vim.api.nvim_set_hl(0, 'DiffFileBarAdd', { bg = p.add, fg = p.add_fg })
+  vim.api.nvim_set_hl(0, 'DiffFileBarDel', { bg = p.delete, fg = p.header_fg })
   -- The bar's own `` chunk for a file flagged viewed in the DiffTree: the
   -- sidebar's green check, on the bar's background.
   vim.api.nvim_set_hl(0, 'DiffFileBarViewed', { bg = p.header, fg = p.add_fg })
@@ -86,7 +94,9 @@ local function apply()
   local hover_bg = vim.api.nvim_get_hl(0, { name = 'Visual' }).bg or p.header_fg
   vim.api.nvim_set_hl(0, 'DiffFileBarHover', { bg = hover_bg })
   vim.api.nvim_set_hl(0, 'DiffFileBarHoverPath', { bg = hover_bg, fg = p.header_fg })
-  vim.api.nvim_set_hl(0, 'DiffFileBarHoverSummary', { bg = hover_bg, fg = p.header_summary_fg })
+  -- The summary chips (DiffFileBarAdd / DiffFileBarDel above) deliberately
+  -- keep their diff washes on hover: the path/text swap palettes, the counts
+  -- stay what they mean.
   vim.api.nvim_set_hl(0, 'DiffFileBarHoverViewed', { bg = hover_bg, fg = p.add_fg })
 
   -- Same hover surface for a hovered hunk row: lib.Diff paints the `@@` header

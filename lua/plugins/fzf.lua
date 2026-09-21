@@ -20,7 +20,7 @@ return {
     ---@type fzf-lua.Config|{}
     ---@diagnostic disable: missing-fields
     local opts = {
-      'ivy',
+      'telescope',
       winopts = {
         -- draw a border around the picker (the `ivy` profile is borderless by default)
         border = 'rounded',

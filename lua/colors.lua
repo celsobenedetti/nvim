@@ -11,7 +11,6 @@ local colors_path = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.t
 --- @field lnum_fg string
 --- @field header string
 --- @field header_fg string
---- @field header_summary_fg string
 
 --- @class OmarchyColors
 --- @field color0 string
@@ -78,7 +77,6 @@ local diff_palettes = {
     -- into nvim-treesitter-context's floating window.
     header = '#1b1b1b',
     header_fg = '#fffcf0',
-    header_summary_fg = '#6d6d6d',
   },
   light = {
     add = '#D0FFD0', -- delta plus-style
@@ -92,7 +90,6 @@ local diff_palettes = {
     -- Tufte light bg2/fg/muted (same TreesitterContext-matching rationale).
     header = '#f7f3e6',
     header_fg = '#111111',
-    header_summary_fg = '#93938f',
   },
 }
 

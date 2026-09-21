@@ -245,12 +245,14 @@ end
 assert_eq(bar_chunks(0), {
   { ICON .. ' ', 'DiffFileBarHoverViewed' },
   { 'lua/a.lua', 'DiffFileBarHoverPath' },
-  { ' +2 -2', 'DiffFileBarHoverSummary' },
-}, "the viewed file's bar leads with the glyph")
+  { ' +2', 'DiffFileBarAdd' },
+  { ' -2', 'DiffFileBarDel' },
+}, "the viewed file's bar leads with the glyph, the counts on their chips")
 assert_eq(bar_chunks(11), {
   { 'b.txt', 'DiffFileBarPath' },
-  { ' +1 -1', 'DiffFileBarSummary' },
-}, 'an unviewed file keeps its plain bar')
+  { ' +1', 'DiffFileBarAdd' },
+  { ' -1', 'DiffFileBarDel' },
+}, 'an unviewed file keeps its plain bar and its chips')
 assert_eq(Diff.file_viewed(buf, 'lua/a.lua'), true, 'file_viewed reports the flag')
 assert_eq(Diff.file_viewed(buf, 'b.txt'), false, 'and its absence')
 
@@ -281,7 +283,8 @@ feed('<space>')
 assert_eq(src_marks(), {}, 'unviewing the file drops its hunk signs')
 assert_eq(bar_chunks(0), {
   { 'lua/a.lua', 'DiffFileBarHoverPath' },
-  { ' +2 -2', 'DiffFileBarHoverSummary' },
+  { ' +2', 'DiffFileBarAdd' },
+  { ' -2', 'DiffFileBarDel' },
 }, 'and its bar loses the glyph')
 
 print('OK: DiffTree viewed marks')

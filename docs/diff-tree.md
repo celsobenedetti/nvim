@@ -96,7 +96,10 @@ paint into (see `<space>` below), so nothing shifts when one appears.
 
 Colours come from extmarks in the `lib.diff.tree` namespace: the group header
 as `Directory`, the status letter as `Added`/`Removed`/`Changed`, the
-mini.icons glyph in its own group, hunk rows dimmed as `Comment`. Viewed rows
+mini.icons glyph in its own group, the `+N -M` change counts split into their
+add/remove sides as the default `DiffAdd`/`DiffDelete` washes (so the counts
+read like the lines they count), and hunk rows dimmed as `Comment`. Viewed
+rows
 add a second namespace, `lib.diff.tree.viewed`: `DiffViewedSign` on the
 gutter glyph, `DiffViewed` over the rest of the line, both at priority 4200
 so they sit above the row colours (`after/plugin/diff-colors.lua` gives them
