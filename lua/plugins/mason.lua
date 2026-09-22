@@ -31,8 +31,6 @@ return {
           'shellcheck',
           'shfmt',
           'stylua',
-          -- 'typescript-language-server', -- NOTE: use tsc instead
-          -- 'tsgo',
           'taplo',
           'tinymist',
           'typstyle',

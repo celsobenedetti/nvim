@@ -1,6 +1,13 @@
 -- Integration test (real nvim, headless): the pi-terminal follow feature in
--- after/plugin/terminal.lua tails output in unfocused windows showing the pi
--- buffer, while plain unregistered terminals are left alone.
+-- after/plugin/terminal.lua tails output in unfocused windows of any terminal
+-- running a pi instance, while terminals not running pi are left alone.
+-- (lib.term.startinsert's matching pi exemption is unit-tested instead:
+-- `:startinsert` only takes effect on return to the main loop, so mode() never
+-- reflects it under `nvim -l`.)
+--
+-- pi is stood in for by a copy of bash named `pi`: what makes a terminal a pi
+-- terminal is the job command / process name (lib.term.is_pi), and a shell copy
+-- gives us a pi-named process we can drive output from.
 --
 -- Run via `make test-integration` (nvim --headless -u NONE -l).
 
@@ -25,6 +32,13 @@ _G.lib = {
 vim.cmd('luafile ' .. cwd .. '/after/plugin/agents.lua')
 vim.cmd('luafile ' .. cwd .. '/after/plugin/terminal.lua')
 
+local fake_pi_dir = vim.fn.tempname()
+vim.fn.mkdir(fake_pi_dir, 'p')
+local fake_pi = fake_pi_dir .. '/pi'
+vim.fn.writefile(vim.fn.readblob(vim.fn.exepath('bash')), fake_pi, 'b')
+vim.fn.setfperm(fake_pi, 'rwxr-xr-x')
+vim.env.PATH = fake_pi_dir .. ':' .. vim.env.PATH
+
 local function wait_for(cond, msg)
   assert(vim.wait(5000, cond, 50), msg)
 end
@@ -41,61 +55,86 @@ local function find_follower(buf)
   end
 end
 
--- Two splits showing the pi terminal; stay focused in the second one so the
--- first window is unfocused when output arrives.
-vim.cmd.term('bash')
+--- Split the window showing `buf` so `buf` ends up in an unfocused window that
+--- WinLeave recorded as following.
+---
+--- The cursor is parked two lines above the end, in normal mode: that is what a
+--- TUI's input box looks like to WinLeave (inside FOLLOW_TOLERANCE, so it counts
+--- as tailing) while being *off* the last line, so nvim's own follow does not
+--- engage — leaving the assertions to test this plugin's pinning and nothing
+--- else. Parking exactly on the last line would tail natively, pi or not.
+---@return integer follower window id, integer parked cursor line
+local function leave_while_tailing(buf)
+  wait_for(function()
+    return vim.api.nvim_buf_line_count(buf) > 5
+  end, 'terminal never produced shell output')
+  vim.cmd('stopinsert')
+  local parked = vim.api.nvim_buf_line_count(buf) - 2
+  vim.api.nvim_win_set_cursor(0, { parked, 0 })
+  vim.cmd.vsplit()
+  local follower = find_follower(buf)
+  assert(follower and vim.api.nvim_win_get_buf(follower) == buf, 'no unfocused window for the terminal')
+  return follower, parked
+end
+
+--- Emit 30 marker lines in the terminal and wait for the buffer to grow.
+local function emit_lines(buf, tag)
+  local before = vim.api.nvim_buf_line_count(buf)
+  vim.fn.chansend(vim.bo[buf].channel, ('for i in $(seq 1 30); do echo %s-$i; done\n'):format(tag))
+  wait_for(function()
+    return vim.api.nvim_buf_line_count(buf) > before + 5
+  end, 'terminal never emitted marker lines')
+end
+
+-- A `:term pi` nobody registered with state.agents: followed all the same.
+vim.cmd.term('pi --norc -i')
 local pi_buf = vim.api.nvim_get_current_buf()
--- Replicate agents.lua open() ordering: register after :term returns.
-state.agents.set_agent_bufnr('pi', pi_buf)
+assert(lib.term.is_pi(pi_buf), 'is_pi did not recognise the pi terminal')
+assert(not lib.term.is_pi_agent(pi_buf), 'unregistered pi terminal counted as the pi agent')
 
-wait_for(function()
-  return vim.api.nvim_buf_line_count(pi_buf) > 3
-end, 'pi terminal never produced shell output')
--- Simulate a user keeping up with output: park the cursor on the last line
--- before leaving, otherwise WinLeave rightly records the window as not following.
-vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(pi_buf), 0 })
-vim.cmd.vsplit()
-local follower_win = find_follower(pi_buf)
-assert(follower_win and vim.api.nvim_win_get_buf(follower_win) == pi_buf, 'no unfocused pi window')
-
-vim.fn.chansend(vim.bo[pi_buf].channel, 'for i in $(seq 1 30); do echo pi-line-$i; done\n')
-wait_for(function()
-  return vim.api.nvim_buf_line_count(pi_buf) > 35
-end, 'pi terminal never emitted marker lines')
+local pi_follower = leave_while_tailing(pi_buf)
+emit_lines(pi_buf, 'pi-line')
 wait_for(
   function()
-    return vim.api.nvim_win_get_cursor(follower_win)[1] == vim.api.nvim_buf_line_count(pi_buf)
+    return vim.api.nvim_win_get_cursor(pi_follower)[1] == vim.api.nvim_buf_line_count(pi_buf)
   end,
   ('unfocused pi window cursor (%d) not pinned to last line (%d)'):format(
-    vim.api.nvim_win_get_cursor(follower_win)[1],
+    vim.api.nvim_win_get_cursor(pi_follower)[1],
     vim.api.nvim_buf_line_count(pi_buf)
   )
 )
-print('PASS: pi window tailed output')
+print('PASS: unregistered pi window tailed output')
 
--- Control: a plain terminal nobody registered must not be tailed.
+-- Control: a terminal not running pi must not be tailed.
 vim.cmd.enew()
-vim.cmd.term('bash')
+vim.cmd.term('bash --norc -i')
 local plain_buf = vim.api.nvim_get_current_buf()
-
-wait_for(function()
-  return vim.api.nvim_buf_line_count(plain_buf) > 3
-end, 'plain terminal never produced shell output')
--- Leave the cursor mid-buffer: parked exactly on the last line, nvim's built-in
--- terminal tailing would engage for any terminal, registered or not.
-vim.cmd.vsplit()
-local plain_follower_win = find_follower(plain_buf)
-assert(plain_follower_win and vim.api.nvim_win_get_buf(plain_follower_win) == plain_buf, 'no unfocused plain window')
-
-local plain_start = vim.api.nvim_win_get_cursor(plain_follower_win)[1]
-vim.fn.chansend(vim.bo[plain_buf].channel, 'for i in $(seq 1 30); do echo plain-line-$i; done\n')
-wait_for(function()
-  return vim.api.nvim_buf_line_count(plain_buf) > 35
-end, 'plain terminal never emitted marker lines')
+local plain_follower, plain_parked = leave_while_tailing(plain_buf)
+emit_lines(plain_buf, 'plain-line')
 assert(
-  vim.api.nvim_win_get_cursor(plain_follower_win)[1] <= plain_start,
-  'unfocused plain window unexpectedly tailed output'
+  vim.api.nvim_win_get_cursor(plain_follower)[1] <= plain_parked,
+  'unfocused window of a terminal without pi unexpectedly tailed output'
 )
-print('PASS: plain window did not tail output')
+print('PASS: non-pi window did not tail output')
 
+-- pi started inside a shell terminal long after TermOpen: also followed. The
+-- shell above is already left-while-tailing, so `exec pi` turns it into a pi
+-- terminal without any further window switch.
+vim.fn.chansend(vim.bo[plain_buf].channel, 'exec pi --norc -i\n')
+wait_for(function()
+  return lib.term.is_pi(plain_buf)
+end, 'pi started inside the shell terminal was never detected')
+emit_lines(plain_buf, 'late-pi-line')
+wait_for(
+  function()
+    return vim.api.nvim_win_get_cursor(plain_follower)[1] == vim.api.nvim_buf_line_count(plain_buf)
+  end,
+  ('window of a late-started pi cursor (%d) not pinned to last line (%d)'):format(
+    vim.api.nvim_win_get_cursor(plain_follower)[1],
+    vim.api.nvim_buf_line_count(plain_buf)
+  )
+)
+print('PASS: pi started after TermOpen tailed output')
+
+vim.fn.delete(fake_pi_dir, 'rf')
 vim.cmd('qa!')

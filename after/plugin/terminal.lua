@@ -98,6 +98,9 @@ vim.api.nvim_create_autocmd('TermClose', {
 --- lines above the end (input box), so the built-in tailing never engages after
 --- leaving the window. Remember whether the window was following when the user
 --- left; on new output, pin its cursor back to the end.
+---
+--- Applies to every terminal buffer running a pi instance (the <leader>pi agent
+--- terminal and a hand-started pi alike), decided by lib.term.is_pi.
 local following_windows = {} -- winid -> boolean
 
 -- Coalesce per-buffer scroll work: on_lines fires per changed_lines call, which
@@ -112,6 +115,13 @@ local function follow_terminal_output(buf)
   pending_follow[buf] = true
   vim.schedule(function()
     pending_follow[buf] = nil
+    -- Pin only terminals actually running pi: every terminal left while tailing
+    -- is attached (pi may be started in a shell terminal later), and the pi that
+    -- justified the attach may since have exited. is_pi caches its /proc walk,
+    -- so this is a table lookup on all but the first call per 500ms.
+    if not lib.term.is_pi(buf) then
+      return
+    end
     local line_count = vim.api.nvim_buf_line_count(buf)
     local current_win = vim.api.nvim_get_current_win()
     for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -128,38 +138,39 @@ local function follow_terminal_output(buf)
   end)
 end
 
+--- Watch `buf` for output, once. on_lines fires on terminal output even for
+--- non-current buffers (refresh_screen -> changed_lines with do_buf_event);
+--- BufModifiedSet never fires for terminal buffers and WinScrolled fires only
+--- after a scroll, too late to drive one.
+local function attach_follow(buf)
+  if vim.b[buf].term_follow_attached then
+    return
+  end
+  vim.b[buf].term_follow_attached = true
+  vim.api.nvim_buf_attach(buf, false, {
+    on_lines = function()
+      follow_terminal_output(buf)
+    end,
+  })
+end
+
 vim.api.nvim_create_autocmd('WinLeave', {
-  desc = 'term: remember whether the pi terminal window was tailing output',
+  desc = 'term: remember whether a terminal window was tailing output',
   group = augroup,
   callback = function()
     local win = vim.api.nvim_get_current_win()
     local buf = vim.api.nvim_win_get_buf(win)
-    if not lib.term.is_pi(buf) then
+    if not lib.term.is_term(buf) then
       return
     end
     local cursor = vim.api.nvim_win_get_cursor(win)
     following_windows[win] = lib.term.was_following(cursor[1], vim.api.nvim_buf_line_count(buf), vim.fn.mode())
-  end,
-})
-
-vim.api.nvim_create_autocmd('TermOpen', {
-  desc = 'term: tail new pi output in unfocused windows showing this terminal',
-  group = augroup,
-  callback = function()
-    local buf = vim.api.nvim_get_current_buf()
-    -- agents.lua registers the buffer as the pi agent only after :term returns,
-    -- while TermOpen fires inside it; decide on the next event-loop turn.
-    vim.schedule(function()
-      if not lib.term.is_pi(buf) or vim.b[buf].term_follow_attached then
-        return
-      end
-      vim.b[buf].term_follow_attached = true
-      vim.api.nvim_buf_attach(buf, false, {
-        on_lines = function()
-          follow_terminal_output(buf)
-        end,
-      })
-    end)
+    -- Attach lazily, here rather than at TermOpen: a terminal only needs
+    -- watching once it is left while tailing, and by then pi (which may have
+    -- been started long after TermOpen) can be detected.
+    if following_windows[win] then
+      attach_follow(buf)
+    end
   end,
 })
 
