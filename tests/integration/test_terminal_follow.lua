@@ -1,13 +1,13 @@
 -- Integration test (real nvim, headless): the pi-terminal follow feature in
--- after/plugin/terminal.lua tails output in unfocused windows of any terminal
--- running a pi instance, while terminals not running pi are left alone.
--- (lib.term.startinsert's matching pi exemption is unit-tested instead:
--- `:startinsert` only takes effect on return to the main loop, so mode() never
--- reflects it under `nvim -l`.)
+-- after/plugin/pi.lua tails output in unfocused windows of any terminal running
+-- a pi instance, while terminals not running pi are left alone.
+-- (The insert-mode exemption pi.lua registers is unit-tested in
+-- tests/plugin/test_pi.lua instead: `:startinsert` only takes effect on return
+-- to the main loop, so mode() never reflects it under `nvim -l`.)
 --
 -- pi is stood in for by a copy of bash named `pi`: what makes a terminal a pi
--- terminal is the job command / process name (lib.term.is_pi), and a shell copy
--- gives us a pi-named process we can drive output from.
+-- terminal is the job command / process name (state.pi.is_running), and a shell
+-- copy gives us a pi-named process we can drive output from.
 --
 -- Run via `make test-integration` (nvim --headless -u NONE -l).
 
@@ -31,6 +31,7 @@ _G.lib = {
 -- Load the real plugin wiring under test (defines the autocmds).
 vim.cmd('luafile ' .. cwd .. '/after/plugin/agents.lua')
 vim.cmd('luafile ' .. cwd .. '/after/plugin/terminal.lua')
+vim.cmd('luafile ' .. cwd .. '/after/plugin/pi.lua')
 
 local fake_pi_dir = vim.fn.tempname()
 vim.fn.mkdir(fake_pi_dir, 'p')
@@ -89,7 +90,7 @@ end
 -- A `:term pi` nobody registered with state.agents: followed all the same.
 vim.cmd.term('pi --norc -i')
 local pi_buf = vim.api.nvim_get_current_buf()
-assert(lib.term.is_pi(pi_buf), 'is_pi did not recognise the pi terminal')
+assert(state.pi.is_running(pi_buf), 'state.pi.is_running did not recognise the pi terminal')
 assert(not lib.term.is_pi_agent(pi_buf), 'unregistered pi terminal counted as the pi agent')
 
 local pi_follower = leave_while_tailing(pi_buf)
@@ -122,7 +123,7 @@ print('PASS: non-pi window did not tail output')
 -- terminal without any further window switch.
 vim.fn.chansend(vim.bo[plain_buf].channel, 'exec pi --norc -i\n')
 wait_for(function()
-  return lib.term.is_pi(plain_buf)
+  return state.pi.is_running(plain_buf)
 end, 'pi started inside the shell terminal was never detected')
 emit_lines(plain_buf, 'late-pi-line')
 wait_for(

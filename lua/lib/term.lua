@@ -52,23 +52,28 @@ end
 --- while tailing the stream.
 local FOLLOW_TOLERANCE = 5
 
---- How deep into the terminal job's process tree to look for a pi process.
---- `:term pi` makes pi the job process itself (depth 0, verified: the job pid's
---- comm is `pi`); `pi` typed into a shell terminal sits one level below the
---- shell; a wrapper (`mise exec`, `npx`) adds one more.
-local PI_SEARCH_DEPTH = 2
+--- Pid of the terminal buffer's job, nil when it has no live channel.
+---@param buffer integer
+---@return integer?
+local function job_pid(buffer)
+  local ok, pid = pcall(vim.fn.jobpid, vim.bo[buffer].channel)
+  return ok and pid or nil
+end
 
---- How long a pi-detection result is reused for a buffer (ms). Detection walks
---- /proc, and `is_pi` is called from the winbar's `%!` expression, which is
---- re-evaluated on every redraw — so the answer is cached rather than rescanned
---- per redraw. The TTL bounds how long the answer can lag pi starting/exiting.
-local PI_CACHE_MS = 500
-local pi_cache = {} -- bufnr -> { at = ms, value = boolean }
+--- Command the terminal's job was started with, nil for a non-terminal buffer.
+--- Terminal buffers are named `term://{cwd}//{pid}:{cmd}`, so this answers from
+--- TermOpen onwards — before the job process has exec'd the command, which the
+--- process tree cannot (see job_runs_process).
+---@param buffer integer
+---@return string?
+local function job_command(buffer)
+  return vim.api.nvim_buf_get_name(buffer):match('//%d+:(.*)$')
+end
 
 --- Name of process `pid`, nil when it is gone (or /proc is unavailable).
 --- Reads /proc directly instead of using `nvim_get_proc`: on everything but
---- Windows that API shells out to `ps` (api/vim.c), far too slow for a caller
---- on the redraw path.
+--- Windows that API shells out to `ps` (api/vim.c), far too slow for callers on
+--- a redraw path.
 ---@param pid integer
 ---@return string?
 local function proc_name(pid)
@@ -79,14 +84,15 @@ local function proc_name(pid)
   return lines[1]
 end
 
---- Does `pid` — or one of its descendants, up to `depth` levels down — run pi?
+--- Is `pid`, or one of its descendants up to `depth` levels down, named `name`?
 --- `nvim_get_proc_children` reads /proc/<pid>/task/<pid>/children on Linux, so
 --- the walk is a handful of small file reads.
 ---@param pid integer
+---@param name string
 ---@param depth integer levels of descendants still to search
 ---@return boolean
-local function proc_tree_runs_pi(pid, depth)
-  if proc_name(pid) == 'pi' then
+local function proc_tree_has(pid, name, depth)
+  if proc_name(pid) == name then
     return true
   end
   if depth <= 0 then
@@ -97,51 +103,40 @@ local function proc_tree_runs_pi(pid, depth)
     return false
   end
   for _, child in ipairs(children) do
-    if proc_tree_runs_pi(child, depth - 1) then
+    if proc_tree_has(child, name, depth - 1) then
       return true
     end
   end
   return false
 end
 
---- Was the terminal's job started as pi? Terminal buffers are named
---- `term://{cwd}//{pid}:{cmd}`, so this answers for a `:term pi` from TermOpen
---- onwards — where the process tree cannot: the job process is still the shell
---- that is about to exec pi (verified: comm is `bash` at TermOpen, `pi` ~50ms
---- later), which would let the TermOpen startinsert slip through.
+--- Does the terminal buffer's job run a process called `name` — either as the
+--- job process itself, or as a descendant up to `depth` levels down? Catches a
+--- program started by hand in a shell terminal, where the job process is the
+--- shell and the program one of its children.
+---
+--- Note this lags a `:term <name>` by a few ms: the job process is the shell
+--- about to exec the command, so at TermOpen the tree still says `bash`
+--- (measured: `pi` only ~50ms later). Pair it with `job_command` when the
+--- answer is needed at TermOpen time.
 ---@param buffer integer
+---@param name string process name as /proc/<pid>/comm reports it (no path)
+---@param depth integer? levels of descendants to search, default 1
 ---@return boolean
-local function job_command_is_pi(buffer)
-  local cmd = vim.api.nvim_buf_get_name(buffer):match('//%d+:(.*)$')
-  local exe = cmd and cmd:match('^%s*(%S+)')
-  return exe ~= nil and vim.fs.basename(exe) == 'pi'
-end
-
---- Is a pi instance running in this terminal buffer? True for the `<leader>pi`
---- agent terminal, and equally for a pi started by hand in any other terminal
---- buffer (`:term pi`, or typed into a shell terminal).
----@param buffer integer?
----@return boolean
-local function is_pi(buffer)
-  if not buffer then
-    buffer = vim.api.nvim_get_current_buf()
-  end
+local function job_runs_process(buffer, name, depth)
   if not is_term(buffer) then
     return false
   end
-  if job_command_is_pi(buffer) then
-    return true
-  end
-  local now = vim.uv.now()
-  local cached = pi_cache[buffer]
-  if cached and now - cached.at < PI_CACHE_MS then
-    return cached.value
-  end
-  local ok, pid = pcall(vim.fn.jobpid, vim.bo[buffer].channel)
-  local value = ok and proc_tree_runs_pi(pid, PI_SEARCH_DEPTH) or false
-  pi_cache[buffer] = { at = now, value = value }
-  return value
+  local pid = job_pid(buffer)
+  return pid ~= nil and proc_tree_has(pid, name, depth or 1)
 end
+
+--- Terminals that should be left in normal mode on entry, as predicates over
+--- the entered buffer. Plugin files append their own rather than `startinsert`
+--- knowing about them (after/plugin/pi.lua: a pi TUI drives its own input box,
+--- so nvim's insert mode only fights it).
+---@type (fun(buffer: integer): boolean)[]
+local startinsert_exemptions = {}
 
 ---@class LibTerm
 local M = {
@@ -161,12 +156,16 @@ local M = {
     return is_agent_named(buffer, 'opencode')
   end,
   --- The sticky pi terminal owned by after/plugin/agents.lua — not merely a
-  --- terminal that happens to run pi (that is `is_pi`).
+  --- terminal that happens to run pi (that is `state.pi.is_running`, from
+  --- after/plugin/pi.lua).
   is_pi_agent = function(buffer)
     return is_agent_named(buffer, 'pi')
   end,
-  is_pi = is_pi,
   is_agent = is_agent,
+
+  job_pid = job_pid,
+  job_command = job_command,
+  job_runs_process = job_runs_process,
 
   -- Returns true if buffer is terminal, and has no running command
   -- https://github.com/neovim/neovim/issues/31313
@@ -204,6 +203,8 @@ local M = {
     return cursor_line >= line_count - FOLLOW_TOLERANCE
   end,
 
+  startinsert_exemptions = startinsert_exemptions,
+
   startinsert = function()
     if not state.insert_when_entering_terminal then
       return
@@ -213,9 +214,11 @@ local M = {
     if is_floating then
       return
     end
-    -- pi drives its own input box; nvim's insert mode fights it
-    if is_pi() then
-      return
+    local buffer = vim.api.nvim_get_current_buf()
+    for _, exempt in ipairs(startinsert_exemptions) do
+      if exempt(buffer) then
+        return
+      end
     end
     vim.cmd('startinsert')
   end,

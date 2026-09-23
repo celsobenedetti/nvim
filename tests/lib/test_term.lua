@@ -1,4 +1,7 @@
---- Tests for lib.term.was_following terminal tailing decision.
+--- Tests for the lib.term primitives: the tailing decision (was_following),
+--- agent terminal identity, terminal job/process inspection, and the
+--- startinsert-on-terminal-enter decision. pi's use of them is covered by
+--- tests/plugin/test_pi.lua.
 --- Run with: luajit tests/lib/test_term.lua
 
 package.path = './lua/?.lua;' .. package.path
@@ -46,7 +49,6 @@ local buf_pids = {}
 local buf_names = {}
 local proc_names = {}
 local proc_children = {}
-local clock = 0
 local cmds = {}
 
 local vim_mock = {
@@ -84,16 +86,6 @@ local vim_mock = {
       return { name }
     end,
   },
-  uv = {
-    now = function()
-      return clock
-    end,
-  },
-  fs = {
-    basename = function(path)
-      return path:match('[^/]*$')
-    end,
-  },
   cmd = function(cmd)
     cmds[#cmds + 1] = cmd
   end,
@@ -109,8 +101,6 @@ local function setup(with_agents)
   proc_names = {}
   proc_children = {}
   cmds = {}
-  -- past any cached pi detection from an earlier case (PI_CACHE_MS = 500)
-  clock = clock + 10000
   rawset(_G, 'vim', vim_mock)
   rawset(_G, 'state', with_agents and {
     agents = {
@@ -169,44 +159,43 @@ assert_eq(lib_term.is_claude(42), false, 'cleared agent bufnr not detected')
 assert_eq(lib_term.is_agent(42), false, 'cleared agent bufnr not an agent')
 
 -- ============================================================
-describe('is_pi: any terminal running a pi process')
+describe('terminal job primitives')
 
--- `:term pi` — pi is the job process itself
+-- job_pid: from the buffer's channel, nil when there is no live channel
 setup(true)
-current_buf = 7
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+assert_eq(lib_term.job_pid(7), 100, 'job_pid returns the channel job pid')
+buf_pids[7] = nil
+assert_eq(lib_term.job_pid(7), nil, 'job_pid is nil without a live channel')
+
+-- job_command: the command part of `term://{cwd}//{pid}:{cmd}`
+setup(true)
+buf_types[7] = 'terminal'
+buf_names[7] = 'term://~/projects/nvim//100:pi --resume'
+assert_eq(lib_term.job_command(7), 'pi --resume', 'job_command reads the command from the buffer name')
+buf_names[7] = 'term://~/projects/nvim//100:/usr/bin/bash'
+assert_eq(lib_term.job_command(7), '/usr/bin/bash', 'job_command keeps an absolute command path')
+buf_names[8] = '/home/me/notes.md'
+assert_eq(lib_term.job_command(8), nil, 'job_command is nil for a non-terminal buffer name')
+
+-- job_runs_process: the job process itself
+setup(true)
 buf_types[7] = 'terminal'
 buf_pids[7] = 100
 proc_names[100] = 'pi'
-assert_eq(lib_term.is_pi(), true, 'is_pi() detects pi as the job process')
-assert_eq(lib_term.is_pi(7), true, 'is_pi(bufnr) detects pi as the job process')
+assert_eq(lib_term.job_runs_process(7, 'pi'), true, 'job process matched by name')
+assert_eq(lib_term.job_runs_process(7, 'claude'), false, 'job process not matched by another name')
 
--- The job command names pi, but it has not exec'd yet (the state at TermOpen:
--- the job process is still the shell about to become pi).
-setup(true)
-buf_types[7] = 'terminal'
-buf_names[7] = 'term://~/projects/nvim//100:pi'
-buf_pids[7] = 100
-proc_names[100] = 'bash'
-assert_eq(lib_term.is_pi(7), true, 'job command `pi` counts before the exec lands')
-buf_names[7] = 'term://~/projects/nvim//100:/home/me/.local/bin/pi --resume'
-assert_eq(lib_term.is_pi(7), true, 'job command detected via an absolute path with args')
-buf_names[7] = 'term://~/projects/nvim//100:pip install pi'
-assert_eq(lib_term.is_pi(7), false, 'a command merely starting with pi is not pi')
-buf_names[7] = 'term://~/projects/nvim//100:/usr/bin/bash'
-assert_eq(lib_term.is_pi(7), false, 'shell job command is not pi')
-
--- pi started by hand inside a shell terminal: one level below the job process,
--- and not registered with state.agents at all
+-- job_runs_process: descendants, within the requested depth
 setup(true)
 buf_types[7] = 'terminal'
 buf_pids[7] = 100
 proc_names[100] = 'bash'
 proc_names[200] = 'pi'
 proc_children[100] = { 200 }
-assert_eq(lib_term.is_pi(7), true, 'pi as a child of the shell is detected')
-assert_eq(lib_term.is_pi_agent(7), false, 'a hand-started pi is not the pi agent')
+assert_eq(lib_term.job_runs_process(7, 'pi'), true, 'child of the job process matched at default depth')
 
--- wrapper between the shell and pi (mise exec, npx): two levels down
 setup(true)
 buf_types[7] = 'terminal'
 buf_pids[7] = 100
@@ -215,58 +204,29 @@ proc_names[200] = 'mise'
 proc_names[300] = 'pi'
 proc_children[100] = { 200 }
 proc_children[200] = { 300 }
-assert_eq(lib_term.is_pi(7), true, 'pi below a wrapper process is detected')
+assert_eq(lib_term.job_runs_process(7, 'pi'), false, 'grandchild is beyond the default depth')
+assert_eq(lib_term.job_runs_process(7, 'pi', 2), true, 'grandchild matched at depth 2')
+assert_eq(lib_term.job_runs_process(7, 'pi', 1), false, 'grandchild not matched at depth 1')
 
--- deeper than PI_SEARCH_DEPTH: not detected
-setup(true)
-buf_types[7] = 'terminal'
-buf_pids[7] = 100
-proc_names[100] = 'bash'
-proc_names[200] = 'bash'
-proc_names[300] = 'mise'
-proc_names[400] = 'pi'
-proc_children[100] = { 200 }
-proc_children[200] = { 300 }
-proc_children[300] = { 400 }
-assert_eq(lib_term.is_pi(7), false, 'pi beyond the search depth is not detected')
-
--- a terminal running something else, and a non-terminal buffer
+-- job_runs_process: nothing to inspect
 setup(true)
 buf_types[7] = 'terminal'
 buf_types[8] = ''
-buf_pids[7] = 100
 buf_pids[8] = 101
-proc_names[100] = 'bash'
 proc_names[101] = 'pi'
-proc_children[100] = { 201 }
-proc_names[201] = 'rg'
-assert_eq(lib_term.is_pi(7), false, 'shell terminal without pi is not pi')
-assert_eq(lib_term.is_pi(8), false, 'non-terminal buffer is never pi')
-
--- dead process / closed channel: no error, just false
+assert_eq(lib_term.job_runs_process(7, 'pi'), false, 'terminal without a live channel runs nothing')
+assert_eq(lib_term.job_runs_process(8, 'pi'), false, 'non-terminal buffer runs nothing')
 setup(true)
 buf_types[7] = 'terminal'
-assert_eq(lib_term.is_pi(7), false, 'terminal with no live channel is not pi')
-buf_pids[7] = 100
-assert_eq(lib_term.is_pi(7), false, 'job pid that no longer exists is not pi')
-
--- result is cached per buffer, and the cache expires
-setup(true)
-buf_types[7] = 'terminal'
-buf_pids[7] = 100
-proc_names[100] = 'pi'
-assert_eq(lib_term.is_pi(7), true, 'pi detected before it exits')
-proc_names[100] = nil
-assert_eq(lib_term.is_pi(7), true, 'cached within the TTL even though pi exited')
-clock = clock + 500
-assert_eq(lib_term.is_pi(7), false, 'rescanned after the TTL: pi is gone')
+buf_pids[7] = 100 -- pid with no /proc entry: the process is already gone
+assert_eq(lib_term.job_runs_process(7, 'pi'), false, 'job pid that no longer exists runs nothing')
 
 -- ============================================================
-describe('startinsert: skipped for pi terminals')
+describe('startinsert')
 
 --- Run lib.term.startinsert against the mocked state, returning whether it
 --- asked for insert mode.
----@param opts { insert: boolean, floating: boolean }
+---@param opts { insert: boolean, floating: boolean?, exempt: (fun(buffer: integer): boolean)? }
 local function startinsert(opts)
   state.insert_when_entering_terminal = opts.insert
   vim_mock.api.nvim_get_current_win = function()
@@ -275,38 +235,46 @@ local function startinsert(opts)
   vim_mock.api.nvim_win_get_config = function()
     return { relative = opts.floating and 'editor' or '' }
   end
+  local exemptions = lib_term.startinsert_exemptions
+  for i = #exemptions, 1, -1 do
+    exemptions[i] = nil
+  end
+  if opts.exempt then
+    table.insert(exemptions, opts.exempt)
+  end
   cmds = {}
   lib_term.startinsert()
   return cmds[1] == 'startinsert'
 end
 
--- a terminal running pi is left in normal mode: pi drives its own input box
 setup(true)
 current_buf = 7
 buf_types[7] = 'terminal'
-buf_pids[7] = 100
-proc_names[100] = 'pi'
-assert_eq(startinsert({ insert = true, floating = false }), false, 'no startinsert in a pi terminal')
-
--- ...including a pi that has not exec'd yet (the TermOpen instant)
-setup(true)
-current_buf = 7
-buf_types[7] = 'terminal'
-buf_names[7] = 'term://~/projects/nvim//100:pi'
-buf_pids[7] = 100
-proc_names[100] = 'bash'
-assert_eq(startinsert({ insert = true, floating = false }), false, 'no startinsert in a starting pi terminal')
-
--- any other terminal still gets insert mode
-setup(true)
-current_buf = 7
-buf_types[7] = 'terminal'
-buf_names[7] = 'term://~/projects/nvim//100:/usr/bin/bash'
-buf_pids[7] = 100
-proc_names[100] = 'bash'
-assert_eq(startinsert({ insert = true, floating = false }), true, 'startinsert in a shell terminal')
-assert_eq(startinsert({ insert = false, floating = false }), false, 'opt-out respected')
+assert_eq(startinsert({ insert = true }), true, 'startinsert on entering a terminal')
+assert_eq(startinsert({ insert = false }), false, 'opt-out respected')
 assert_eq(startinsert({ insert = true, floating = true }), false, 'floating terminal windows opt out')
+
+-- exemptions registered by plugin files (after/plugin/pi.lua) win
+assert_eq(
+  startinsert({
+    insert = true,
+    exempt = function(buffer)
+      return buffer == 7
+    end,
+  }),
+  false,
+  'an exemption matching the entered buffer suppresses insert mode'
+)
+assert_eq(
+  startinsert({
+    insert = true,
+    exempt = function(buffer)
+      return buffer == 42
+    end,
+  }),
+  true,
+  'an exemption for another buffer does not suppress insert mode'
+)
 
 io.write(string.format('\n\n%d/%d tests passed\n', tests_passed, tests_run))
 os.exit(tests_passed == tests_run and 0 or 1)

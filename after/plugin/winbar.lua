@@ -35,7 +35,8 @@ _G.get_terminal_label = function(bufnr)
 
   local agent = (lib.term.is_claude(bufnr) and 'claude')
     or (lib.term.is_opencode(bufnr) and 'opencode')
-    or (lib.term.is_pi(bufnr) and 'pi')
+    -- any terminal running pi, not only the agent buffer (after/plugin/pi.lua)
+    or (state.pi and state.pi.is_running(bufnr) and 'pi')
   if agent then
     return text .. SEP .. config.icons.agent .. ' ' .. agent
   end

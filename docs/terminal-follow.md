@@ -52,7 +52,8 @@ freeze only happens because TUI cursors aren't at the end.
 
 ## Fix
 
-`after/plugin/terminal.lua`:
+`after/plugin/pi.lua` (everything pi-specific lives there; the terminal and
+process primitives it uses are in `lua/lib/term.lua`):
 
 - On `WinLeave` from a terminal window, remember whether it was tailing:
   `lib.term.was_following(cursor_line, line_count, mode)`, and attach the
@@ -63,7 +64,8 @@ freeze only happens because TUI cursors aren't at the end.
     `WinLeave` time; the mode transition happens after window switching.)
   - otherwise: following iff `cursor_line >= line_count - 5` (tolerance for
     TUI-parked cursors, e.g. pi's observed 3-line offset).
-- On every line change, if the buffer is running pi (`lib.term.is_pi`), then
+- On every line change, if the buffer is running pi (`state.pi.is_running`),
+  then
   for each **unfocused** window showing that buffer with the following flag,
   `nvim_win_set_cursor(win, { line_count, 0 })` — which scrolls the viewport
   and re-engages the built-in follow for subsequent refreshes.
@@ -75,20 +77,22 @@ Reading-history case is preserved: scroll up in the terminal (normal mode) and
 leave → `was_following` is false → no yank (verified: viewport stayed at the
 top while pi kept writing).
 
-## Which terminals count as pi (`lib.term.is_pi`)
+## Which terminals count as pi (`state.pi.is_running`)
 
+Published by `after/plugin/pi.lua` for the winbar labels and the follow handler.
 Not just the sticky `<leader>pi` agent buffer registered by
 `after/plugin/agents.lua` (that narrower question is `lib.term.is_pi_agent`):
 any terminal buffer running a pi instance is followed, and exempted from the
 `startinsert`-on-terminal-enter autocmd. Two checks, in order:
 
-1. **Job command**, from the terminal buffer name
+1. **Job command** (`lib.term.job_command`), from the terminal buffer name
    (`term://{cwd}//{pid}:{cmd}`): the first word's basename is `pi`. Available
    from `TermOpen` onwards, and the only check that is — see the race below.
-2. **Process tree**: the job pid's `/proc/<pid>/comm` is `pi`, or one of its
-   descendants' is, up to `PI_SEARCH_DEPTH = 2`. This catches `pi` typed into
-   an existing shell terminal (verified: job pid `bash`, child `pi`), with a
-   level spare for a wrapper such as `mise exec`.
+2. **Process tree** (`lib.term.job_runs_process`): the job pid's
+   `/proc/<pid>/comm` is `pi`, or one of its descendants' is, up to
+   `SEARCH_DEPTH = 2`. This catches `pi` typed into an existing shell terminal
+   (verified: job pid `bash`, child `pi`), with a level spare for a wrapper
+   such as `mise exec`.
 
 ### The TermOpen race (why check 1 exists)
 
@@ -96,8 +100,10 @@ any terminal buffer running a pi instance is followed, and exempted from the
 `TermOpen` fires: measured `comm` = `bash` at `TermOpen` *and* on the following
 `vim.schedule` tick, `pi` ~50ms later. `TermOpen` schedules
 `lib.term.startinsert`, so a process-tree-only check would let insert mode fire
-in the pi terminal — exactly what the exemption exists to prevent. The buffer
-name carries the command synchronously, so check 1 settles it.
+in the pi terminal — exactly what the exemption exists to prevent (pi.lua
+appends `is_running` to `lib.term.startinsert_exemptions`, which is how a
+plugin file opts its terminals out of insert-on-enter). The buffer name carries
+the command synchronously, so check 1 settles it.
 
 ### Cost
 
@@ -107,12 +113,12 @@ everything but Windows it shells out to `ps` (`nvim_get_proc` in api/vim.c
 calls `vim._os_proc_info`), so process names are read from `/proc/<pid>/comm`
 directly.
 
-Even so, `is_pi` sits on hot paths — the winbar's `%!` expression (via
-`get_terminal_label`) re-evaluates per redraw, and `follow_terminal_output`
-runs per output batch. So results are cached per buffer for
-`PI_CACHE_MS = 500`; the TTL doubles as how long the answer may lag pi starting
-or exiting inside a shell terminal. The job-command check short-circuits before
-the cache, so the `<leader>pi` terminal never walks /proc at all.
+Even so, `is_running` sits on hot paths — the winbar's `%!` expression (via
+`get_terminal_label`) re-evaluates per redraw, and `follow_output` runs per
+output batch. So results are cached per buffer for `CACHE_MS = 500`; the TTL
+doubles as how long the answer may lag pi starting or exiting inside a shell
+terminal. The job-command check short-circuits before the cache, so the
+`<leader>pi` terminal never walks /proc at all.
 
 ## Performance (measured with the real config, tmux UI)
 
