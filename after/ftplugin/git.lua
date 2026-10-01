@@ -78,6 +78,16 @@ vim.keymap.set('n', 's', function()
   lib.Diff.open_tree()
 end, { buffer = 0, desc = 'diff: toggle file/hunk tree' })
 
+-- `<space>` is the tree's row action (lib.Diff tree_stage_row /
+-- tree_toggle_viewed), bound here too so it works on the section under the
+-- cursor without hopping to the sidebar: in a no-arg `:Diff` (the *unstaged*
+-- working tree) it git-adds that hunk/file, everywhere else it toggles the
+-- viewed mark. Buffer-local, so it shadows `<leader>` only inside patch
+-- buffers -- the same trade the tree makes, for the same review flow.
+vim.keymap.set('n', '<space>', function()
+  lib.Diff.src_row_action(0)
+end, { buffer = 0, desc = 'diff: stage the section under the cursor (unstaged diff) or toggle viewed' })
+
 -- Inline filepath bars for `diff --git` header lines (lib.diff_filepath).
 -- Fugitive creates the buffer and sets filetype=git BEFORE its job streams
 -- the diff into it, so a once-only render at FileType time would be a no-op:

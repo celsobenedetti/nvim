@@ -211,6 +211,19 @@ delta's plus-style green and line-numbers grey).
   to the sidebar. `<space>` is the
   leader key everywhere else; buffer-locally in a nomodifiable list of sections
   there is nothing worth having a `<leader>` chord for.
+
+  The same key does the same thing from the patch buffer itself
+  (`after/ftplugin/git.lua` -> `lib.Diff.src_row_action`): it resolves the
+  deepest row containing the diff cursor (`M.tree_row_containing`, a hunk over
+  its file) and runs this exact action on it — staging in a no-arg `:Diff`
+  (`vim.b.diff_stageable`), the viewed toggle otherwise — so reviewing never
+  needs a hop to the sidebar. Two differences, both forced:
+  - the **sidebar has to be open** (it owns the rows and the marks); with it
+    closed the key warns instead, and `s` opens it;
+  - the **cursor stays put**. The tree's `<space>` advances a row; advancing
+    the diff cursor would scroll away from what was just marked. Staging
+    refreshes the diff either way, and focus comes back to the diff window
+    (`refill_working_tree` ends in the tree only when the press came from it).
 - **`z` fold commands** — fold the **diff buffer**, mirrored onto the tree.
   `lib.Diff.tree_fold(tree_buf, key)` drives all of them from one spec table
   (`TREE_FOLD_ACTIONS`):

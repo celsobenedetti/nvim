@@ -1577,11 +1577,17 @@ end
 ---
 ---Returns the new flag of the row (nil when there is no row under the cursor).
 ---Exposed for the headless test.
+---
+---Must run with the tree window current: the fold mirroring (fold_block ->
+---mirror_fold) folds the tree by `:foldclose` in the current window. The diff
+---buffer's own `<space>` (M.src_row_action) wraps the call in nvim_win_call
+---for exactly that.
 ---@param tree_buf integer
+---@param idx? integer tree row (1-based), default the one under the cursor
 ---@return boolean?
-M.tree_toggle_viewed = function(tree_buf)
+M.tree_toggle_viewed = function(tree_buf, idx)
   local rows = vim.b[tree_buf].diff_tree_rows
-  local idx = vim.fn.line('.')
+  idx = idx or vim.fn.line('.')
   local row = rows and rows[idx]
   local src_buf = vim.b[tree_buf].diff_tree_src
   if not row or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
@@ -1675,11 +1681,12 @@ end
 ---coalesces nearby changes into one section and that whole section is the
 ---smallest stageable region.
 ---@param tree_buf integer
+---@param idx? integer tree row (1-based), default the one under the cursor
 ---@return string? patch nil when there is no row under the cursor
-local function row_patch(tree_buf)
+local function row_patch(tree_buf, idx)
   local rows = vim.b[tree_buf].diff_tree_rows
   local src_buf = vim.b[tree_buf].diff_tree_src
-  local idx = vim.fn.line('.')
+  idx = idx or vim.fn.line('.')
   local row = rows and rows[idx]
   if not row or not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
     return nil
@@ -1739,10 +1746,14 @@ end
 ---one. The tree window keeps its width (record_tree_ratio / tree_width) and
 ---the cursor stays on the same row index (clamped), so space-staging walks the
 ---remaining hunks of a file naturally.
+---Focus ends where it started: in the tree when the press came from there,
+---back in the diff window when it came from the diff buffer's own `<space>`.
 ---@param tree_buf integer
 ---@param root string work-tree root (`git -C root apply`)
-local function refill_working_tree(tree_buf, root)
+---@param idx integer tree row to put the cursor back on (clamped)
+local function refill_working_tree(tree_buf, root, idx)
   local src_buf = vim.b[tree_buf].diff_tree_src
+  local from_tree = vim.api.nvim_get_current_buf() == tree_buf
   if not src_buf or not vim.api.nvim_buf_is_loaded(src_buf) then
     return
   end
@@ -1770,7 +1781,6 @@ local function refill_working_tree(tree_buf, root)
   if not src_win or not vim.api.nvim_win_is_valid(src_win) then
     return
   end
-  local idx = vim.fn.line('.')
   vim.api.nvim_set_current_win(src_win)
   M.open_tree() -- close the stale sidebar
   M.open_tree() -- reopen it on the fresh text
@@ -1778,6 +1788,9 @@ local function refill_working_tree(tree_buf, root)
   local rows = vim.b[vim.api.nvim_win_get_buf(tree_win)].diff_tree_rows
   if rows and #rows > 0 then
     vim.api.nvim_win_set_cursor(tree_win, { math.min(idx, #rows), 0 })
+  end
+  if not from_tree then
+    vim.api.nvim_set_current_win(src_win)
   end
 end
 
@@ -1789,13 +1802,15 @@ end
 ---(refill_working_tree), so the staged region leaves the tree and the next
 ---one lands under the cursor. Exposed for the headless test.
 ---@param tree_buf integer
+---@param idx? integer tree row (1-based), default the one under the cursor
 ---@return boolean? ok true when staged
-M.tree_stage_row = function(tree_buf)
+M.tree_stage_row = function(tree_buf, idx)
   local src_buf = vim.b[tree_buf].diff_tree_src
   if not src_buf or not vim.b[src_buf].diff_stageable then
     return nil
   end
-  local patch = row_patch(tree_buf)
+  idx = idx or vim.fn.line('.')
+  local patch = row_patch(tree_buf, idx)
   if not patch then
     return nil
   end
@@ -1809,7 +1824,8 @@ M.tree_stage_row = function(tree_buf)
     return nil
   end
 
-  local row = row_under_cursor(tree_buf)
+  local rows = vim.b[tree_buf].diff_tree_rows
+  local row = rows and rows[idx]
   local result = vim.system({ 'git', 'apply', '--cached', '-' }, { cwd = root, stdin = patch }):wait()
   if result.code ~= 0 then
     local err = vim.trim(result.stderr or '')
@@ -1821,7 +1837,7 @@ M.tree_stage_row = function(tree_buf)
   local what
   if row then
     if row.kind == 'dir' then
-      what = #group_indices(vim.b[tree_buf].diff_tree_rows, vim.fn.line('.')) .. ' files'
+      what = #group_indices(rows, idx) .. ' files'
     elseif row.kind == 'hunk' then
       what = 'hunk in `' .. row.path .. '`'
     else
@@ -1830,8 +1846,45 @@ M.tree_stage_row = function(tree_buf)
   end
   vim.notify('Diff: staged ' .. (what or 'region'), vim.log.levels.INFO)
 
-  refill_working_tree(tree_buf, root)
+  refill_working_tree(tree_buf, root, idx)
   return true
+end
+
+---`<space>` in the **diff buffer**: the same row action the tree binds, on the
+---section the diff cursor sits in (the deepest one — a hunk over its file).
+---Stages it in a no-arg `:Diff` (`diff_stageable`), toggles its viewed mark
+---otherwise, so the review flow works from either window without hopping to
+---the sidebar. The tree holds the rows and the marks, so it has to be open;
+---`s` toggles it from here.
+---
+---Unlike the tree's `<space>` this leaves the cursor where it is: in the tree
+---the press advances a row, here advancing would scroll the diff away from
+---what was just marked.
+---@param src_buf integer diff buffer (0 resolves to the current one)
+---@return boolean? the new viewed flag, or true when staged
+M.src_row_action = function(src_buf)
+  src_buf = src_buf == 0 and vim.api.nvim_get_current_buf() or src_buf
+  local tree_win = vim.b[src_buf].diff_tree_win
+  if not tree_win or not vim.api.nvim_win_is_valid(tree_win) then
+    vim.notify('Diff: no file/hunk tree open (`s` opens it)', vim.log.levels.WARN)
+    return nil
+  end
+  local tree_buf = vim.api.nvim_win_get_buf(tree_win)
+  local rows = vim.b[tree_buf].diff_tree_rows
+  local idx = rows and M.tree_row_containing(rows, vim.fn.line('.') - 1)
+  if not idx then
+    return nil
+  end
+  -- Staging switches windows (refill_working_tree rebuilds the sidebar), which
+  -- nvim_win_call forbids; it needs no window context anyway. The viewed
+  -- toggle does: its fold mirroring runs `:foldclose` in the current window,
+  -- which has to be the tree's.
+  if vim.b[src_buf].diff_stageable then
+    return M.tree_stage_row(tree_buf, idx)
+  end
+  return vim.api.nvim_win_call(tree_win, function()
+    return M.tree_toggle_viewed(tree_buf, idx)
+  end)
 end
 
 ---Focus the section under the tree cursor in the diff window: park it at the
