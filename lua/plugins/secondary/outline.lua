@@ -12,7 +12,7 @@ return {
     'stevearc/aerial.nvim',
     opts = {
       layout = {
-        default_direction = 'prefer_right',
+        default_direction = 'prefer_left',
       },
     },
     keys = {

@@ -55,7 +55,7 @@ end
 state.pi = { is_running = is_running }
 
 -- pi renders its own input box; nvim's insert mode on terminal enter fights it.
-table.insert(lib.term.startinsert_exemptions, is_running)
+-- table.insert(lib.term.startinsert_exemptions, is_running)
 
 --- @module 'terminal follow: tail pi output in unfocused windows'
 --- Neovim only keeps an unfocused terminal window scrolled to the newest output

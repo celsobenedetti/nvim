@@ -79,11 +79,9 @@ vim.api.nvim_buf_set_keymap(
   { desc = 'org: cancel clock' }
 )
 
-if not state.capture then
-  vim.keymap.set('n', 'R', function()
-    lib.org_fzf.refile_heading()
-  end, { desc = 'org: refile headline', buf = 0 })
-end
+vim.keymap.set('n', 'R', function()
+  lib.org_fzf.refile_heading()
+end, { desc = 'org: refile headline', buf = 0 })
 
 vim.api.nvim_create_autocmd('ModeChanged', {
   desc = 'org: toggle indent on visual mode',

@@ -27,18 +27,6 @@ vim.api.nvim_create_autocmd('FileType', {
 
 vim.cmd('Org capture c')
 
-vim.keymap.set('n', 'R', function()
-  local orgmode = require('orgmode')
-  if orgmode.capture then
-    orgmode.capture:refile_to_destination():next(function()
-      lib.buffers.wqa()
-    end)
-  end
-end)
-
-vim.opt.number = false
-vim.opt.laststatus = 0
-
 vim.api.nvim_set_hl(0, 'Title', { link = 'Special' })
 
 vim.opt.shortmess:append({
