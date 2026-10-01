@@ -25,6 +25,7 @@ local M = {
   statusline_show_time = false,
   overseer_task_count = nil,
   git_diff_revision = nil,
+  autoinsert_on_term = true,
 }
 
 return M

@@ -206,7 +206,7 @@ local M = {
   startinsert_exemptions = startinsert_exemptions,
 
   startinsert = function()
-    if not state.insert_when_entering_terminal then
+    if not state.insert_when_entering_terminal or not state.autoinsert_on_term then
       return
     end
     local win = vim.api.nvim_get_current_win()

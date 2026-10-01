@@ -39,6 +39,11 @@ M.colorcolumn = function()
   vim.wo.colorcolumn = vim.wo.colorcolumn == '' and tostring(config.colorcolumn) or ''
 end
 
+M.autoinsert_on_term = function()
+  state.autoinsert_on_term = not state.autoinsert_on_term
+  notify(string.format('autoinsert on term: %q', state.autoinsert_on_term))
+end
+
 -- toggles
 -- stylua: ignore start
 vim.keymap.set('n', '<leader>tc', M.completion, { desc = 'toggle: completion' })
@@ -49,6 +54,7 @@ vim.keymap.set('n', '<leader>ut', M.statusline_show_time, { desc = 'toggle: show
 
 vim.keymap.set('n', '<leader>tf', M.statusline_show_filepath, { desc = 'toggle: show filepath in statusline' })
 vim.keymap.set('n', '<leader>tC', M.colorcolumn, { desc = 'toggle: colorcolumn' })
+vim.keymap.set('n', '<leader>ta', M.autoinsert_on_term, { desc = 'toggle: autoinsert on term' })
 
 
 if Snacks then

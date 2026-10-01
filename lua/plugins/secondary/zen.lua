@@ -11,7 +11,7 @@ return {
               enter = true,
               fixbuf = false,
               minimal = true,
-              width = math.floor(vim.go.columns * 0.7),
+              width = math.floor(vim.go.columns * 0.5),
               height = 0,
               backdrop = { transparent = false, blend = 99 },
               keys = { q = false },
@@ -21,6 +21,10 @@ return {
                 winhighlight = 'NormalFloat:Normal',
                 number = false,
                 relativenumber = false,
+                -- snacks' `minimal` style sets a window-local 'fillchars' that
+                -- replaces the global one wholesale, so the fold items fall
+                -- back to nvim's defaults (notably `fold:·`). Restore ours.
+                fillchars = 'eob: ,lastline:…,fold: ,foldopen:▾,foldclose:▸,foldinner: ,foldsep: ',
               },
               w = {
                 snacks_main = true,
