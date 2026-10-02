@@ -24,6 +24,8 @@ local abbreviations = {
   cfilter = 'Cfilter',
   grep = 'Grep',
   fd = 'Fd',
+  Cd = 'cd',
+  Lcd = 'lcd',
 }
 
 for left, right in pairs(abbreviations) do

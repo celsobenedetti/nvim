@@ -104,10 +104,10 @@ local function follow_output(buf)
   end)
 end
 
---- Re-apply a held resize anchor, if there is one. Defined in the resize-anchor
---- section below but needed by the output watcher here, which both consumers
---- share.
----@type fun(buffer: integer)
+--- Re-apply a held resize anchor, reporting whether there was one. Defined in
+--- the resize-anchor section below but needed by the output watcher here, which
+--- both consumers share.
+---@type fun(buffer: integer): boolean
 local hold_anchor
 
 --- Watch `buf` for output, once. on_lines fires on terminal output even for
@@ -121,8 +121,13 @@ local function attach_output(buf)
   vim.b[buf].pi_follow_attached = true
   vim.api.nvim_buf_attach(buf, false, {
     on_lines = function()
-      hold_anchor(buf)
-      follow_output(buf)
+      -- A resize hold owns the viewport for as long as it lasts: it is the more
+      -- specific intent, and pinning to the last line would overwrite the
+      -- anchor a few lines above it. Tailing resumes on the next output after
+      -- the hold is released.
+      if not hold_anchor(buf) then
+        follow_output(buf)
+      end
     end,
   })
 end
@@ -161,12 +166,19 @@ vim.api.nvim_create_autocmd('WinLeave', {
 --- Poll interval for noticing that the reprint has stopped. This times only the
 --- *release* of a hold: the anchored position is re-applied from the output
 --- watcher, so no interval here gates when the viewport is right.
-local SETTLE_MS = 100
+local SETTLE_MS = 120
 
---- Stop holding this long after the resize. pi may never redraw (a resize that
---- leaves its character grid unchanged) or never go quiet (a reply streaming
---- in), and a hold outliving the redraw it was taken for would fight the user's
---- own scrolling.
+--- How long pi has to answer the resize before the hold is abandoned without
+--- touching anything. pi answers a SIGWINCH in tens of milliseconds; output
+--- that only turns up later is a reply streaming in, not the redraw, and
+--- moving the viewport on the strength of it would disturb a cursor that
+--- nothing had disturbed. Reached whenever a resize leaves pi's character grid
+--- unchanged, so it redraws nothing.
+local REDRAW_GRACE_MS = 500
+
+--- Stop holding this long after the resize even if the reprint never goes
+--- quiet, as when a reply is streaming in: a hold outliving the redraw it was
+--- taken for would fight the user's own scrolling.
 local SETTLE_DEADLINE_MS = 2000
 
 --- buf -> hold, while one is in force. `from_end` is the distance the window's
@@ -203,7 +215,8 @@ end
 
 --- Re-apply the hold on a batch of terminal output, so the anchored position is
 --- restored in the same event-loop iteration that disturbed it and no frame is
---- ever drawn with the cursor where nvim's clamp left it.
+--- ever drawn with the cursor where nvim's clamp left it. Reports whether a
+--- hold is in force, which is what gives it precedence over tailing.
 ---
 --- Scheduled, not run inline from `on_lines`: `refresh_terminal` (terminal.c)
 --- runs `refresh_scrollback` and `refresh_screen` — which is where the buffer
@@ -212,16 +225,21 @@ end
 --- clamp and still before `update_screen` draws anything. Scheduling also
 --- coalesces: `on_lines` fires once per scrollback line, and one re-apply per
 --- event-loop batch is enough.
+---@param buf integer
+---@return boolean held
 function hold_anchor(buf)
   local hold = held[buf]
-  if not hold or hold.pending then
-    return
+  if not hold then
+    return false
   end
-  hold.changed, hold.pending = true, true
-  vim.schedule(function()
-    hold.pending = false
-    apply_anchor(buf)
-  end)
+  if not hold.pending then
+    hold.changed, hold.pending = true, true
+    vim.schedule(function()
+      hold.pending = false
+      apply_anchor(buf)
+    end)
+  end
+  return true
 end
 
 --- Release the hold once pi has redrawn and the reprint has stopped growing the
@@ -229,7 +247,8 @@ end
 ---@param buf integer
 ---@param count integer buffer line count when the hold was taken
 local function release_when_settled(buf, count)
-  local deadline = vim.uv.now() + SETTLE_DEADLINE_MS
+  local started = vim.uv.now()
+  local deadline = started + SETTLE_DEADLINE_MS
   local last_count = count
   local function poll()
     local hold = held[buf]
@@ -237,31 +256,45 @@ local function release_when_settled(buf, count)
       held[buf] = nil
       return
     end
+    -- pi has not answered. `changed` is the only usable signal: a resize that
+    -- does not rewrap reprints to exactly the same line count, so the count
+    -- cannot tell "finished" from "never started".
+    if not hold.changed then
+      if vim.uv.now() - started >= REDRAW_GRACE_MS then
+        held[buf] = nil -- nothing was disturbed, so there is nothing to repair
+        return
+      end
+      return vim.defer_fn(poll, SETTLE_MS)
+    end
     local line_count = vim.api.nvim_buf_line_count(buf)
-    -- Settled: pi has written something since the resize, and the reprint has
-    -- stopped growing the buffer. `changed` says what a line count cannot — a
-    -- resize that does not rewrap reprints to exactly the same count.
-    if not (hold.changed and line_count == last_count) and vim.uv.now() < deadline then
+    if line_count ~= last_count and vim.uv.now() < deadline then
       last_count = line_count
       return vim.defer_fn(poll, SETTLE_MS)
     end
+    -- The last word, so the released position cannot be a stale one: a re-apply
+    -- scheduled by the final batch of output would no-op if this cleared `held`
+    -- before it ran.
+    apply_anchor(buf)
     held[buf] = nil
   end
   vim.defer_fn(poll, SETTLE_MS)
 end
 
---- Record where every window showing `buf` sits, if `buf` is a pi terminal not
---- already holding — a resize mid-hold (dragging a split) must keep the
---- original anchor, not re-read the already-clamped cursors.
+--- Record where the resized windows showing `buf` sit, if `buf` is a pi
+--- terminal not already holding — a resize mid-hold (dragging a split) must
+--- keep the original anchor, not re-read the already-clamped cursors.
 ---@param buf integer
-local function anchor_windows(buf)
+---@param resized table<integer, true>? window ids that changed size, nil for all
+local function anchor_windows(buf, resized)
   if held[buf] or not is_running(buf) then
     return
   end
   local count = vim.api.nvim_buf_line_count(buf)
   local anchors = {}
   for _, win in ipairs(vim.fn.win_findbuf(buf)) do
-    anchors[win] = count - vim.api.nvim_win_get_cursor(win)[1]
+    if not resized or resized[win] then
+      anchors[win] = count - vim.api.nvim_win_get_cursor(win)[1]
+    end
   end
   if next(anchors) == nil then
     return
@@ -276,13 +309,28 @@ end
 vim.api.nvim_create_autocmd({ 'VimResized', 'WinResized' }, {
   desc = "pi: hold terminal windows in place across pi's resize redraw",
   group = augroup,
-  callback = function()
+  callback = function(ev)
+    -- Only windows that actually changed size. `WinResized` fires for any
+    -- layout change in the tab page — opening a split elsewhere, closing one —
+    -- and anchoring a pi window that kept its size would take a hold pi has no
+    -- reason to answer, then drag that window to the recorded offset on
+    -- whatever output turned up next. `v:event.windows` names the ones that
+    -- moved; `VimResized` means all of them.
+    local wins, resized = vim.api.nvim_list_wins(), nil
+    if ev.event == 'WinResized' then
+      wins, resized = vim.v.event.windows or {}, {}
+      for _, win in ipairs(wins) do
+        resized[win] = true
+      end
+    end
     -- Synchronous, so this runs before nvim returns to the event loop and can
     -- read pi's reaction: the cursors sampled here are still the pre-redraw
     -- ones. `held` makes the repeat visit harmless when both events fire for
     -- one resize, and when a buffer is shown in several windows.
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-      anchor_windows(vim.api.nvim_win_get_buf(win))
+    for _, win in ipairs(wins) do
+      if vim.api.nvim_win_is_valid(win) then
+        anchor_windows(vim.api.nvim_win_get_buf(win), resized)
+      end
     end
   end,
 })

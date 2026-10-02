@@ -56,7 +56,13 @@ vim.fn.writefile({
   -- screen, home, clear scrollback — then the whole transcript again.
   [[trap 'printf "\033[2J\033[H\033[3J"; paint' WINCH]],
   'paint',
-  'while :; do sleep 0.1; done',
+  -- A stand-in for a reply streaming in -- output that is not a resize redraw
+  -- -- on demand. Polled rather than signalled: a trap cannot run while the
+  -- WINCH handler above is still painting.
+  ('while :; do if [ -f %s/stream ]; then rm -f %s/stream; for i in $(seq 1 60); do echo "stream $i"; done; fi; sleep 0.1; done'):format(
+    fake_pi_dir,
+    fake_pi_dir
+  ),
 }, fake_pi)
 vim.fn.setfperm(fake_pi, 'rwxr-xr-x')
 vim.env.PATH = fake_pi_dir .. ':' .. vim.env.PATH
@@ -185,6 +191,50 @@ local body = coroutine.create(function()
   io.stdout:write(
     ('PASS: no frame drawn at the top (%d and %d frames judged)\n'):format(#frames[pi_win], #frames[pi_win2])
   )
+
+  -- A window that did not change size must not be anchored. `WinResized` fires
+  -- for any layout change in the tab page, and a pi window that kept its size
+  -- gives pi nothing to redraw -- so the hold would sit unanswered, then drag
+  -- that window to the recorded offset on whatever output turned up next.
+  --
+  -- A float is the only resize that is genuinely isolated: nvim redistributes
+  -- space between siblings, so resizing any normal window resizes the pi ones
+  -- too (`nvim_win_set_height` in a column layout reports every window in
+  -- `v:event.windows`). Resizing a float reports only the float.
+  pause(600) -- let the hold above lapse; a resize mid-hold is deliberately ignored
+  local settled_count = vim.api.nvim_buf_line_count(buf)
+  vim.api.nvim_win_set_cursor(pi_win, { settled_count - 40, 0 })
+  local untouched = vim.api.nvim_win_get_cursor(pi_win)[1]
+  local pi_size = { vim.api.nvim_win_get_width(pi_win), vim.api.nvim_win_get_height(pi_win) }
+
+  local float = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), false, {
+    relative = 'editor',
+    row = 1,
+    col = 1,
+    width = 20,
+    height = 5,
+  })
+  pause(200)
+  vim.api.nvim_win_set_config(float, { relative = 'editor', row = 1, col = 1, width = 40, height = 10 })
+
+  -- ...and make pi write *something* straight after, inside the window a hold
+  -- would have been live for. With no output there is nothing for a stray hold
+  -- to drag the cursor to, and the assertion below would pass either way.
+  vim.fn.writefile({ '' }, fake_pi_dir .. '/stream')
+  wait_for(function()
+    return vim.api.nvim_buf_line_count(buf) > settled_count
+  end, 'fake pi never emitted the streaming output')
+  pause(1200)
+
+  assert(
+    vim.api.nvim_win_get_width(pi_win) == pi_size[1] and vim.api.nvim_win_get_height(pi_win) == pi_size[2],
+    'the pi window changed size, so this does not test an unrelated resize'
+  )
+  assert(
+    vim.api.nvim_win_get_cursor(pi_win)[1] == untouched,
+    ('an unrelated resize moved the pi cursor from %d to %d'):format(untouched, vim.api.nvim_win_get_cursor(pi_win)[1])
+  )
+  io.stdout:write('PASS: a resize that spared the pi window left its cursor alone\n')
 end)
 
 function step()

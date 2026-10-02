@@ -81,6 +81,11 @@ In `after/plugin/pi.lua`, on `VimResized` and `WinResized`:
 3. **Release** once pi has redrawn and the reprint has stopped growing the
    buffer, or at a deadline.
 
+Step 1 only looks at windows that **actually changed size**. `WinResized` fires
+for any layout change in the tab page, and `v:event.windows` names the ones
+that moved; `VimResized` means all of them. This matters more than it sounds —
+see [Anchoring only what moved](#anchoring-only-what-moved).
+
 Exact for the common case of sitting at pi's input box. Approximate when the
 new width rewraps the transcript into a different number of lines — there is no
 better answer available, because the content the position referred to no longer
@@ -128,26 +133,65 @@ refresh path calls `appended_lines_buf`/`deleted_lines_buf` per row — and one
 re-apply per event-loop batch is all that is needed. This is the same trick the
 follow handler in the same file uses, for the same reason.
 
-### The two constants
+### The constants
 
-Both only govern _release_. Neither gates when the viewport becomes correct,
-which is what made them worth loosening: under the old restore-once design
-`SETTLE_MS` was the flicker duration.
+`SETTLE_MS` and `SETTLE_DEADLINE_MS` only govern _release_. Neither gates when
+the viewport becomes correct, which is what made them worth loosening: under
+the old restore-once design `SETTLE_MS` was the flicker duration.
 
 - `SETTLE_MS = 100` — poll interval for noticing the reprint has stopped. Too
   low wastes wakeups during a resize; too high only delays the handover back to
   normal scrolling and the follow handler. Nothing visible either way.
-- `SETTLE_DEADLINE_MS = 2000` — the longest a hold may last. It exists because
-  two cases never settle: a resize that leaves pi's character grid unchanged
-  (so it never redraws at all) and a reply streaming in (so the buffer never
-  goes quiet). A hold that outlived its redraw would fight the user's own
-  scrolling, so holding forever is not an option; 2s is far longer than pi's
-  observed reaction, and nothing is at stake in the cases that reach it.
+- `REDRAW_GRACE_MS = 500` — how long pi has to answer before the hold is
+  abandoned **without touching anything**. pi answers a `SIGWINCH` in tens of
+  milliseconds, so output that only turns up later is a reply streaming in, not
+  the redraw. Reached whenever a resize leaves pi's character grid unchanged,
+  so it redraws nothing: the cursor was never disturbed, and there is nothing
+  to repair.
+- `SETTLE_DEADLINE_MS = 2000` — the longest a hold may last once pi _has_
+  answered, for a reprint that never goes quiet (a reply streaming in over the
+  top of it). A hold outliving its redraw would fight the user's own scrolling.
 
 Settled means pi has written _something_ since the resize and the line count
 then held steady across two polls. The "something" matters on its own: a resize
-that does not rewrap reprints to exactly the same line count, so the count alone
-cannot distinguish "finished" from "not started".
+that does not rewrap reprints to exactly the same line count, so the count
+alone cannot distinguish "finished" from "never started".
+
+### Anchoring only what moved
+
+Two bugs came out of anchoring every pi window on every `WinResized`, and they
+compound:
+
+1. The hold is taken against a window pi has no reason to redraw, so nothing
+   ever answers it.
+2. While it sits there, the _next_ output — a reply streaming in, nothing to do
+   with the resize — is taken as the redraw, and the window is dragged to the
+   recorded offset. The cursor moves when nothing resized it.
+
+This is sharper under the held design than the restore-once one, because the
+anchor is re-applied on _every_ batch rather than once: a stale hold drags the
+viewport continuously for as long as it lasts. That is what "lands on not the
+exact line" looks like from the outside.
+
+`v:event.windows` fixes it at the source. Note that nvim redistributes space
+between siblings, so there is almost no such thing as a resize that spares a
+neighbour: `nvim_win_set_height` on one window of a three-column layout reports
+_all three_ in `v:event.windows` and takes every height from 22 to 5. The one
+genuinely isolated case is a floating window, which reports only itself.
+
+### Precedence over tailing
+
+The follow handler and the hold now run from the same `on_lines`, and
+`follow_output` schedules second — so without an explicit rule it would pin a
+tailing window to the last line and overwrite an anchor parked a few lines
+above it, which is exactly where pi keeps its cursor. The hold wins while it
+lasts: it is the more specific intent, and tailing resumes on the next output
+after release.
+
+In practice they rarely disagree. A window the follow handler has been pinning
+is already _at_ the last line, so its `from_end` is 0 and both want the same
+thing; they only diverge for a window left while tailing that has had no output
+since.
 
 ### Windows left alone
 
@@ -159,26 +203,25 @@ anchor rather than re-reading the already-clamped cursors.
 
 ## Interaction with terminal follow
 
-Both consumers now share one `nvim_buf_attach`. They do not conflict: a window
-the follow handler tracks is one that was tailing, so its anchor is at or
-within a few lines of the end, and both want it at the bottom. A window that
-was not tailing before the resize is not made to tail by the hold.
-
-See [terminal-follow.md](terminal-follow.md).
+Both consumers share one `nvim_buf_attach`; precedence is described above. See
+[terminal-follow.md](terminal-follow.md).
 
 ## Verification
 
 `tests/integration/test_pi_resize.lua`, driven by a script named `pi` that
-reproduces just the SIGWINCH behaviour. It asserts two things:
+reproduces just the SIGWINCH behaviour, plus a file-polled trigger standing in
+for a reply streaming in. (Polled, not signalled: a bash trap cannot run while
+the WINCH handler is still painting.) Three assertions, each checked against a
+deliberately broken build to confirm it bites:
 
-- both windows end up their recorded distance from the end of the transcript;
-- no frame was ever _drawn_ at the top of the buffer, from the `on_win`
-  toprows, ignoring frames taken while the wipe had the buffer collapsed to the
-  window height (where the top is the only thing nvim can draw).
+| assertion                                                  | broken build that fails it  | failure                                                   |
+| ---------------------------------------------------------- | --------------------------- | --------------------------------------------------------- |
+| both windows end their recorded distance from the end      | no mitigation               | `cursors not restored: focused 391 lines from end`        |
+| no frame was _drawn_ at the top, from the `on_win` toprows | restore once, when quiet    | `7 of 10 frames were drawn at the top of the buffer`      |
+| a resize sparing the pi windows leaves their cursors alone | no `v:event.windows` filter | `an unrelated resize moved the pi cursor from 361 to 421` |
 
-The frame assertion is the one that pins the current design. Checked against a
-rebuilt restore-once implementation, which passes the position assertion and
-fails the frame one: `7 of 10 frames were drawn at the top of the buffer`.
+The frame assertion ignores frames taken while the wipe had the buffer
+collapsed to the window height, where the top is the only thing nvim can draw.
 
 Two things force the test's shape:
 
@@ -190,15 +233,29 @@ Two things force the test's shape:
 - Under that loop the test body has to yield control back, so it runs as a
   coroutine whose `pause(ms)` resumes from `vim.defer_fn`.
 
-Also confirmed against real pi 0.99.1 (`:term pi`, `/help` for a transcript
-long enough to have scrollback, cursor parked 5 lines from the end, then
-`:vertical resize` to half width, which grew the buffer 65 -> 146 lines):
+### Against real pi
+
+pi 0.99.1, `:term pi` with `/help` for a transcript long enough to have
+scrollback, then halving the window width. Three states a pi window can be in,
+each measured by where the cursor ended relative to the end of the buffer:
+
+| scenario                                   | want | restore-once | held anchor |
+| ------------------------------------------ | ---- | ------------ | ----------- |
+| focused, normal mode                       | 5    | 5            | 5           |
+| unfocused, never tailing                   | 5    | 5            | 5           |
+| unfocused, tailing (follow's steady state) | 0    | 0            | 0           |
+
+and the flicker, over the same resize:
 
 | implementation             | resulting `from_end` | frames drawn at the top |
 | -------------------------- | -------------------- | ----------------------- |
 | no mitigation              | 145 (top of buffer)  | 3/3                     |
 | restore once, when quiet   | 5                    | 1/4                     |
 | hold on every output batch | 5                    | 0/3                     |
+
+Both tables need the layout to settle before the measured resize: opening the
+scratch split halves the pi window, which is itself a resize, and a second one
+taken while that hold is still in force is deliberately ignored.
 
 Unrelated to this change, `vim.o.columns = 200` in headless nvim 0.12.5 aborts
 with "double free or corruption"; the test leaves `columns` alone.
