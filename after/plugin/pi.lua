@@ -1,9 +1,10 @@
 --- @module 'pi' terminal integration for the pi coding agent
 --- Everything that is specific to pi terminals lives here: recognising them
 --- (any terminal running pi, not just the sticky `<leader>pi` buffer registered
---- by after/plugin/agents.lua), tailing their output in unfocused windows, and
---- keeping them out of insert mode. The reusable terminal/process primitives it
---- builds on are in lua/lib/term.lua.
+--- by after/plugin/agents.lua), tailing their output in unfocused windows,
+--- holding their viewport in place across a resize, and keeping them out of
+--- insert mode. The reusable terminal/process primitives it builds on are in
+--- lua/lib/term.lua.
 
 --- How deep into the terminal job's process tree to look for pi. `:term pi`
 --- makes pi the job process itself; `pi` typed into a shell terminal sits one
@@ -103,17 +104,24 @@ local function follow_output(buf)
   end)
 end
 
+--- Re-apply a held resize anchor, if there is one. Defined in the resize-anchor
+--- section below but needed by the output watcher here, which both consumers
+--- share.
+---@type fun(buffer: integer)
+local hold_anchor
+
 --- Watch `buf` for output, once. on_lines fires on terminal output even for
 --- non-current buffers (refresh_screen -> changed_lines with do_buf_event);
 --- BufModifiedSet never fires for terminal buffers and WinScrolled fires only
 --- after a scroll, too late to drive one.
-local function attach_follow(buf)
+local function attach_output(buf)
   if vim.b[buf].pi_follow_attached then
     return
   end
   vim.b[buf].pi_follow_attached = true
   vim.api.nvim_buf_attach(buf, false, {
     on_lines = function()
+      hold_anchor(buf)
       follow_output(buf)
     end,
   })
@@ -134,7 +142,147 @@ vim.api.nvim_create_autocmd('WinLeave', {
     -- watching once it is left while tailing, and by then pi (which may have
     -- been started long after TermOpen) can be detected.
     if following_windows[win] then
-      attach_follow(buf)
+      attach_output(buf)
+    end
+  end,
+})
+
+--- @module 'resize anchor: hold the viewport across pi's resize redraw'
+--- pi redraws by clearing the screen *and the scrollback* — `\x1b[2J\x1b[H\x1b[3J`,
+--- `fullRender(true)` in its tui-main-screen.ts — whenever the terminal's width
+--- or height changes, then reprinting its whole transcript. Neovim's
+--- `term_sb_clear` (terminal.c) frees the scrollback lines, so the buffer
+--- collapses to the window height and `adjust_topline_cursor` clamps every
+--- window's cursor into what survives; the reprint then regrows the buffer
+--- *below* a cursor now stranded near the top. Snapshot how far each window sat
+--- from the end before pi can react, and hold it there until the reprint
+--- settles. See docs/pi-resize.md.
+
+--- Poll interval for noticing that the reprint has stopped. This times only the
+--- *release* of a hold: the anchored position is re-applied from the output
+--- watcher, so no interval here gates when the viewport is right.
+local SETTLE_MS = 100
+
+--- Stop holding this long after the resize. pi may never redraw (a resize that
+--- leaves its character grid unchanged) or never go quiet (a reply streaming
+--- in), and a hold outliving the redraw it was taken for would fight the user's
+--- own scrolling.
+local SETTLE_DEADLINE_MS = 2000
+
+--- buf -> hold, while one is in force. `from_end` is the distance the window's
+--- cursor sat above the last buffer line when the resize arrived.
+---@type table<integer, { anchors: table<integer, integer>, changed: boolean, pending: boolean }>
+local held = {}
+
+--- Put every anchored window of `buf` back its recorded distance from the end
+--- of the buffer. Exact for the common case of sitting at pi's input box;
+--- approximate when the new width rewraps the transcript into a different
+--- number of lines, which is the best available — the content the old position
+--- pointed at no longer exists in the same shape.
+---@param buf integer
+local function apply_anchor(buf)
+  local hold = held[buf]
+  if not hold or not vim.api.nvim_buf_is_valid(buf) then
+    return
+  end
+  local line_count = vim.api.nvim_buf_line_count(buf)
+  local current_win = vim.api.nvim_get_current_win()
+  local in_terminal_mode = vim.fn.mode() == 't'
+  for win, from_end in pairs(hold.anchors) do
+    if
+      vim.api.nvim_win_is_valid(win)
+      and vim.api.nvim_win_get_buf(win) == buf
+      -- nvim already pins the focused terminal-mode window to pi's own cursor
+      -- (terminal_check_cursor); placing it anywhere else only fights that.
+      and not (win == current_win and in_terminal_mode)
+    then
+      vim.api.nvim_win_set_cursor(win, { math.max(1, line_count - from_end), 0 })
+    end
+  end
+end
+
+--- Re-apply the hold on a batch of terminal output, so the anchored position is
+--- restored in the same event-loop iteration that disturbed it and no frame is
+--- ever drawn with the cursor where nvim's clamp left it.
+---
+--- Scheduled, not run inline from `on_lines`: `refresh_terminal` (terminal.c)
+--- runs `refresh_scrollback` and `refresh_screen` — which is where the buffer
+--- update callbacks fire — and only *then* `adjust_topline_cursor`, so an
+--- inline write would be clamped in its turn. A scheduled one lands after the
+--- clamp and still before `update_screen` draws anything. Scheduling also
+--- coalesces: `on_lines` fires once per scrollback line, and one re-apply per
+--- event-loop batch is enough.
+function hold_anchor(buf)
+  local hold = held[buf]
+  if not hold or hold.pending then
+    return
+  end
+  hold.changed, hold.pending = true, true
+  vim.schedule(function()
+    hold.pending = false
+    apply_anchor(buf)
+  end)
+end
+
+--- Release the hold once pi has redrawn and the reprint has stopped growing the
+--- buffer, or at the deadline.
+---@param buf integer
+---@param count integer buffer line count when the hold was taken
+local function release_when_settled(buf, count)
+  local deadline = vim.uv.now() + SETTLE_DEADLINE_MS
+  local last_count = count
+  local function poll()
+    local hold = held[buf]
+    if not hold or not vim.api.nvim_buf_is_valid(buf) then
+      held[buf] = nil
+      return
+    end
+    local line_count = vim.api.nvim_buf_line_count(buf)
+    -- Settled: pi has written something since the resize, and the reprint has
+    -- stopped growing the buffer. `changed` says what a line count cannot — a
+    -- resize that does not rewrap reprints to exactly the same count.
+    if not (hold.changed and line_count == last_count) and vim.uv.now() < deadline then
+      last_count = line_count
+      return vim.defer_fn(poll, SETTLE_MS)
+    end
+    held[buf] = nil
+  end
+  vim.defer_fn(poll, SETTLE_MS)
+end
+
+--- Record where every window showing `buf` sits, if `buf` is a pi terminal not
+--- already holding — a resize mid-hold (dragging a split) must keep the
+--- original anchor, not re-read the already-clamped cursors.
+---@param buf integer
+local function anchor_windows(buf)
+  if held[buf] or not is_running(buf) then
+    return
+  end
+  local count = vim.api.nvim_buf_line_count(buf)
+  local anchors = {}
+  for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+    anchors[win] = count - vim.api.nvim_win_get_cursor(win)[1]
+  end
+  if next(anchors) == nil then
+    return
+  end
+  held[buf] = { anchors = anchors, changed = false, pending = false }
+  -- The resize autocmd runs before pi has even been signalled, so attaching
+  -- here is still in time to catch the first line of its redraw.
+  attach_output(buf)
+  release_when_settled(buf, count)
+end
+
+vim.api.nvim_create_autocmd({ 'VimResized', 'WinResized' }, {
+  desc = "pi: hold terminal windows in place across pi's resize redraw",
+  group = augroup,
+  callback = function()
+    -- Synchronous, so this runs before nvim returns to the event loop and can
+    -- read pi's reaction: the cursors sampled here are still the pre-redraw
+    -- ones. `held` makes the repeat visit harmless when both events fire for
+    -- one resize, and when a buffer is shown in several windows.
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      anchor_windows(vim.api.nvim_win_get_buf(win))
     end
   end,
 })

@@ -77,6 +77,12 @@ Reading-history case is preserved: scroll up in the terminal (normal mode) and
 leave → `was_following` is false → no yank (verified: viewport stayed at the
 top while pi kept writing).
 
+## See also
+
+[pi-resize.md](pi-resize.md) — the other way a pi terminal loses its place:
+pi clears the scrollback on every resize, which drops the buffer lines the
+cursor was sitting on. Same file, separate mechanism.
+
 ## Which terminals count as pi (`state.pi.is_running`)
 
 Published by `after/plugin/pi.lua` for the winbar labels and the follow handler.

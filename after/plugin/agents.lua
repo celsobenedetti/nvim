@@ -35,7 +35,7 @@ local function setup_agent(key, agent)
     local buf = M.get_agent_bufnr(agent)
 
     if not M.is_active(agent) then
-      vim.cmd.term(agent)
+      vim.cmd.term('caveman ' .. agent)
       M.set_agent_bufnr(agent, vim.api.nvim_get_current_buf())
       return
     end
