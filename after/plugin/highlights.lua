@@ -21,8 +21,11 @@ local hyperlink = { underline = true, fg = lib.colors.get_color('@markup.link.la
 vim.api.nvim_set_hl(0, '@markup.link.label.markdown_inline', hyperlink)
 vim.api.nvim_set_hl(0, '@org.hyperlink.desc.org', hyperlink)
 
-vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+if not vim.g.neovide then
+  vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+end
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+
 vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'Pmenu', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'Terminal', { bg = 'none' })
