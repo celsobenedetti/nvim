@@ -64,8 +64,24 @@ return {
         end,
         desc = 'gitsigns: stage hunk',
       },
-      { '[g', ':Gitsigns prev_hunk<CR>', desc = 'Prev git diff hunk' },
-      { ']g', ':Gitsigns next_hunk<CR>', desc = 'Next git diff hunk' },
+      {
+        '[g',
+        function()
+          -- target = 'all': unstaged *and* staged hunks (default is
+          -- 'unstaged' only, which skips anything already `git add`ed).
+          -- Lua fn instead of `:Gitsigns prev_hunk<CR>` so v:count1 survives
+          -- (`3[g`) and to avoid the deprecated prev_hunk alias.
+          package.loaded.gitsigns.nav_hunk('prev', { target = 'all' })
+        end,
+        desc = 'Prev git diff hunk (staged + unstaged)',
+      },
+      {
+        ']g',
+        function()
+          package.loaded.gitsigns.nav_hunk('next', { target = 'all' })
+        end,
+        desc = 'Next git diff hunk (staged + unstaged)',
+      },
 
       {
         'gid',
