@@ -24,7 +24,17 @@ return {
       winopts = {
         -- draw a border around the picker (the `ivy` profile is borderless by default)
         border = 'rounded',
-        preview = { border = 'rounded' },
+        -- taller than the `telescope` profile's 0.9, so the preview gets more
+        -- rows without shrinking the results list
+        height = 0.95,
+        preview = {
+          border = 'rounded',
+          -- stack preview above results (telescope's `vertical` strategy) instead
+          -- of the profile's `flex`, which flips to a side-by-side split past
+          -- `flip_columns = 120`
+          layout = 'vertical',
+          vertical = 'up:70%',
+        },
       },
       keymap = {
         fzf = {
