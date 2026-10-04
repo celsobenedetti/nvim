@@ -16,6 +16,7 @@
 ---@field fzf LibFzf
 ---@field git LibGit
 ---@field gx LibGx
+---@field hunk LibHunk
 ---@field jump LibJump
 ---@field keys LibKeys
 ---@field notes LibNotes

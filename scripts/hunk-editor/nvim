@@ -1,0 +1,27 @@
+#!/bin/sh
+# $EDITOR for the `hunk` diff viewer started by after/plugin/hunk.lua.
+#
+# The file must be named `nvim`: hunk only appends `+{line}` for vi-style
+# editor programs (it matches basename($EDITOR) against vim/nvim/vi, see
+# packages/hunk/src/ui/lib/openInEditor.ts), so it runs us as
+# `nvim +{line} {absolute path}`. Rather than nest an editor inside hunk's
+# terminal, hand that location to the Neovim that spawned hunk ($NVIM), which
+# opens it in its first tabpage.
+#
+# Reached by absolute path from $EDITOR only -- keep this directory off $PATH
+# or the `nvim` calls below would recurse into the shim.
+
+line=1
+case $1 in
+  +[0-9]*)
+    line=${1#+}
+    shift
+    ;;
+esac
+
+# Outside Neovim (plain terminal) there is no server to talk to: just edit.
+[ -n "$NVIM" ] || exec nvim "+$line" "$@"
+
+# '' is the Vimscript string escape for a literal single quote.
+path=$(printf '%s' "$1" | sed "s/'/''/g")
+exec nvim --server "$NVIM" --remote-expr "v:lua.require'lib.hunk'.open('$path', $line)"
