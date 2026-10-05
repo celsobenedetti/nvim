@@ -41,7 +41,7 @@ vim.keymap.set({ 'n', 't' }, '<C-Right>', '<cmd>vertical resize +2<cr>', { desc 
 if not os.getenv('TMUX') then
   -- Move to window using the <ctrl> hjkl keys
   vim.keymap.set({ 'n', 'i', 't' }, '<C-h>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
-  vim.keymap.set({ 'n', 'i', 't' }, '<C-j>', '<C-w>j', { desc = 'Go to Lower Window', remap = true })
+  vim.keymap.set({ 'n', 'i' }, '<C-j>', '<C-w>j', { desc = 'Go to Lower Window', remap = true })
   vim.keymap.set({ 'n', 'i', 't' }, '<C-k>', '<C-w>k', { desc = 'Go to Upper Window', remap = true })
   vim.keymap.set({ 'n', 't' }, '<C-l>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
 end
