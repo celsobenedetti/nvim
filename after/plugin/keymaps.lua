@@ -185,3 +185,9 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
   desc = 'Set gf keymap: open file in top split',
 })
+
+if vim.g.neovide then
+  vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<C-S-v>', function()
+    vim.api.nvim_paste(vim.fn.getreg('+'), true, -1)
+  end, { silent = true, desc = 'neovide: paste with ctrl+shift+v to match term ergonomics' })
+end
