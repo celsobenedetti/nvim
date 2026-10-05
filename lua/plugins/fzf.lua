@@ -56,7 +56,7 @@ return {
     {
       '<c-p>',
       function()
-        require('fzf-lua').files(e({
+        require('fzf-lua').files({
           -- also list directories alongside files
           cmd = lib.fzf.fd_files_dirs_cmd(),
           actions = (function()
@@ -81,7 +81,7 @@ return {
               ['ctrl-v'] = dir_or('file_vsplit', 'vsplit'),
             }
           end)(),
-        }))
+        })
       end,
     },
 
