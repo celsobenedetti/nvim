@@ -66,6 +66,32 @@ local function patch_render_markdown_hl_fold()
   end
 end
 
+--- "Reading mode": keep markup hidden on the cursor line too.
+---
+--- Two layers re-show markup under the cursor and `anti_conceal` drives both:
+--- the plugin skips its own decorations (bullets, heading icons) on the cursor
+--- line, and while anti conceal is on its `win_options` preset pins
+--- `concealcursor` to `''` (`lib/presets.lua`), which is what reveals the
+--- `**` / backtick markers there. Disabling anti conceal flips `concealcursor`
+--- to `'nvic'`, so nothing unfolds under the cursor.
+---
+--- The plugin exposes no public toggle for the flag, so rebuild the config:
+--- `setup()` merges it into the user opts and drops the per-buffer config
+--- cache, `enable()` re-renders every attached buffer with the new window
+--- options. The `marks.add` patch below survives, it wraps the module once.
+local base_opts = {}
+local reading_mode = false
+
+local function toggle_reading_mode()
+  reading_mode = not reading_mode
+  local render_markdown = require('render-markdown')
+  render_markdown.setup(vim.tbl_deep_extend('force', base_opts, {
+    anti_conceal = { enabled = not reading_mode },
+  }))
+  render_markdown.enable()
+  vim.notify('markdown reading mode: ' .. (reading_mode and 'on' or 'off'))
+end
+
 return {
   -- lazy.nvim
   {
@@ -87,19 +113,27 @@ return {
     ft = { 'markdown' },
     keys = {
       { '<leader>md', ':RenderMarkdown toggle<CR>' },
+      { '<leader>mr', toggle_reading_mode, desc = 'markdown: toggle reading mode' },
     },
     config = function(_, opts)
+      base_opts = opts
       require('render-markdown').setup(opts)
       -- Decoration chunks (list markers, heading icons) must inherit the
       -- background they sit on, incl. the `Folded` surface of closed folds;
       patch_render_markdown_hl_fold()
 
-      vim.api.nvim_set_hl(0, 'RenderMarkdownH1Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
-      vim.api.nvim_set_hl(0, 'RenderMarkdownH2Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
-      vim.api.nvim_set_hl(0, 'RenderMarkdownH3Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
-      vim.api.nvim_set_hl(0, 'RenderMarkdownH4Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
-      vim.api.nvim_set_hl(0, 'RenderMarkdownH5Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
-      vim.api.nvim_set_hl(0, 'RenderMarkdownH6Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
+      -- remove background from following highlights
+      for _, hl in ipairs({
+        'RenderMarkdownH1Bg',
+        'RenderMarkdownH2Bg',
+        'RenderMarkdownH3Bg',
+        'RenderMarkdownH4Bg',
+        'RenderMarkdownH5Bg',
+        'RenderMarkdownH6Bg',
+        'RenderMarkdownCodeInline',
+      }) do
+        vim.api.nvim_set_hl(0, hl, { bg = 'none', fg = lib.colors.get_color(hl, 'fg') })
+      end
     end,
   },
 }
