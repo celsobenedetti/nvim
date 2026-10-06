@@ -76,7 +76,7 @@ return {
     end,
   },
   {
-    enabled = false,
+    enabled = true,
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
@@ -93,6 +93,13 @@ return {
       -- Decoration chunks (list markers, heading icons) must inherit the
       -- background they sit on, incl. the `Folded` surface of closed folds;
       patch_render_markdown_hl_fold()
+
+      vim.api.nvim_set_hl(0, 'RenderMarkdownH1Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
+      vim.api.nvim_set_hl(0, 'RenderMarkdownH2Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
+      vim.api.nvim_set_hl(0, 'RenderMarkdownH3Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
+      vim.api.nvim_set_hl(0, 'RenderMarkdownH4Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
+      vim.api.nvim_set_hl(0, 'RenderMarkdownH5Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
+      vim.api.nvim_set_hl(0, 'RenderMarkdownH6Bg', { bg = 'none', fg = lib.colors.get_color('SatelliteBar', 'fg') })
     end,
   },
 }
