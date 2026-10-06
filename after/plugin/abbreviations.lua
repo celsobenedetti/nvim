@@ -17,6 +17,7 @@ local abbreviations = {
   Bd = 'bd',
   E = 'e',
   Tabclose = 'tabclose',
+  Tabmove = 'tabmove',
   Tabnew = 'tabnew',
   Set = 'set',
   git = 'Git',
