@@ -91,8 +91,28 @@ vim.api.nvim_create_autocmd('TermClose', {
   group = augroup,
 })
 
+--- How deep under a terminal's job process to look for an agent. The sticky
+--- agent terminals run `caveman <agent>`, whose job process is caveman's node
+--- wrapper with the agent as its child; one level further also catches an
+--- agent (or a `caveman <agent>`) launched by hand inside a shell terminal.
+local AGENT_SEARCH_DEPTH = 2
+
+--- Abort the quit nvim is in the middle of. ExitPre cannot refuse an exit by
+--- returning, but nvim bails out of `:q`/`:qa` when the autocommand left the
+--- window the quit started from invalid (before_quit_autocmds, ex_docmd.c), so
+--- hand that window's buffer and screen space to a split and close it.
+local function abort_quit()
+  local quitting = vim.api.nvim_get_current_win()
+  -- A window that refuses to split (too small, 'winfix*') leaves the quit
+  -- unopposed; better that than closing the last window and exiting anyway.
+  if not pcall(vim.cmd.split) then
+    return
+  end
+  pcall(vim.api.nvim_win_close, quitting, true)
+end
+
 vim.api.nvim_create_autocmd('ExitPre', {
-  desc = 'term: cleanup idle terminal when exiting neovim',
+  desc = 'term: confirm the exit while an agent runs, then cleanup idle terminals',
   callback = function()
     local term_bufs = {}
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -102,6 +122,28 @@ vim.api.nvim_create_autocmd('ExitPre', {
     end
     if #term_bufs == 0 then
       return
+    end
+
+    -- An agent session is long-lived and costs real work to lose, so ask before
+    -- tearing anything down. This also fires for `:qa!`: ExitPre cannot see the
+    -- bang, and one prompt on every exit path beats a silently killed agent.
+    local running = {}
+    for _, buf in ipairs(term_bufs) do
+      local agent = lib.term.running_agent(buf, config.agents, AGENT_SEARCH_DEPTH)
+      if agent and not vim.tbl_contains(running, agent) then
+        table.insert(running, agent)
+      end
+    end
+    -- Only an interactive session gets asked: with no UI attached confirm()
+    -- blocks on stdin, so a headless nvim driving an agent terminal would hang
+    -- on the way out instead of exiting.
+    if #running > 0 and #vim.api.nvim_list_uis() > 0 then
+      local msg = string.format('%s still running. Exit nvim?', table.concat(running, ', '))
+      -- Esc/interrupt answers 0; treat anything but an explicit Yes as No.
+      if vim.fn.confirm(msg, '&Yes\n&No', 2, 'Question') ~= 1 then
+        abort_quit()
+        return
+      end
     end
 
     local busy_terms = {}

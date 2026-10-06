@@ -45,6 +45,16 @@ local M = {
     },
   },
 
+  --- Agent CLIs, each with the keymap that opens its sticky terminal. `cmd` is
+  --- both the command after/plugin/agents.lua runs and the process name the
+  --- exit guard in after/plugin/terminal.lua looks for in the process tree.
+  ---@type { key: string, cmd: Agents }[]
+  agents = {
+    { key = '<leader>cl', cmd = 'claude' },
+    { key = '<leader>op', cmd = 'opencode' },
+    { key = '<leader>pi', cmd = 'pi' },
+  },
+
   obsidian = {
     inbox = os.getenv('OBSIDIAN_INBOX') or '',
   },

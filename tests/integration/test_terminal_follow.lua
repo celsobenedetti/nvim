@@ -17,7 +17,14 @@ vim.opt.rtp:prepend(cwd)
 
 -- Globals the plugin files expect from the live config.
 _G.state = {}
-_G.config = { keys = { ['<C-/>'] = '<C-\\>' } }
+_G.config = {
+  keys = { ['<C-/>'] = '<C-\\>' },
+  agents = {
+    { key = '<leader>cl', cmd = 'claude' },
+    { key = '<leader>op', cmd = 'opencode' },
+    { key = '<leader>pi', cmd = 'pi' },
+  },
+}
 _G.lib = {
   term = require('lib.term'),
   buffers = {

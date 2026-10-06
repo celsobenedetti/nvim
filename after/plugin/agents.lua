@@ -3,12 +3,6 @@
 --- | 'opencode'
 --- | 'pi'
 
-local agents = {
-  { key = '<leader>cl', cmd = 'claude' },
-  { key = '<leader>op', cmd = 'opencode' },
-  { key = '<leader>pi', cmd = 'pi' },
-}
-
 ---@class AgentsState
 ---@field bufnr table<Agents, number>
 local M = {
@@ -63,6 +57,6 @@ local function setup_agent(key, agent)
   vim.keymap.set('n', key, string.format(':%s<CR>', command), { desc = agent .. ': open/focus terminal' })
 end
 
-for _, agent in ipairs(agents) do
+for _, agent in ipairs(config.agents) do
   setup_agent(agent.key, agent.cmd)
 end

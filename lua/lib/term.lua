@@ -131,6 +131,22 @@ local function job_runs_process(buffer, name, depth)
   return pid ~= nil and proc_tree_has(pid, name, depth or 1)
 end
 
+--- Which agent CLI the terminal buffer is running, nil for none. Unlike
+--- `is_agent` this asks the process tree, so it also sees an agent the user
+--- started by hand in a plain shell terminal.
+---@param buffer integer
+---@param agents { cmd: Agents }[] candidates, config.agents shaped
+---@param depth integer? levels of descendants to search, default 1
+---@return Agents?
+local function running_agent(buffer, agents, depth)
+  for _, agent in ipairs(agents) do
+    if job_runs_process(buffer, agent.cmd, depth) then
+      return agent.cmd
+    end
+  end
+  return nil
+end
+
 --- Terminals that should be left in normal mode on entry, as predicates over
 --- the entered buffer. Plugin files append their own rather than `startinsert`
 --- knowing about them (after/plugin/pi.lua: a pi TUI drives its own input box,
@@ -166,6 +182,7 @@ local M = {
   job_pid = job_pid,
   job_command = job_command,
   job_runs_process = job_runs_process,
+  running_agent = running_agent,
 
   -- Returns true if buffer is terminal, and has no running command
   -- https://github.com/neovim/neovim/issues/31313

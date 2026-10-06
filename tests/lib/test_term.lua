@@ -227,6 +227,65 @@ buf_types[7] = 'terminal'
 buf_pids[7] = 100 -- pid with no /proc entry: the process is already gone
 assert_eq(lib_term.job_runs_process(7, 'pi'), false, 'job pid that no longer exists runs nothing')
 
+-- ================================================================
+describe('running_agent')
+
+-- config.agents shaped, and the depth the exit guard in after/plugin/terminal.lua uses
+local AGENTS = {
+  { key = '<leader>cl', cmd = 'claude' },
+  { key = '<leader>op', cmd = 'opencode' },
+  { key = '<leader>pi', cmd = 'pi' },
+}
+local DEPTH = 2
+
+-- the sticky agent terminals: `caveman <agent>` execs caveman's node wrapper as
+-- the job process and spawns the agent as its child
+setup(true)
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'node'
+proc_names[200] = 'pi'
+proc_children[100] = { 200 }
+assert_eq(lib_term.running_agent(7, AGENTS, DEPTH), 'pi', 'agent under the caveman wrapper found')
+
+-- an agent typed into a plain shell terminal, one level deeper
+setup(true)
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'bash'
+proc_names[200] = 'node'
+proc_names[300] = 'opencode'
+proc_children[100] = { 200 }
+proc_children[200] = { 300 }
+assert_eq(lib_term.running_agent(7, AGENTS, DEPTH), 'opencode', 'agent two levels down found')
+
+-- the job process itself is the agent (`:term claude`)
+setup(true)
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'claude'
+assert_eq(lib_term.running_agent(7, AGENTS, DEPTH), 'claude', 'agent as the job process found')
+
+-- a busy terminal running something else is not an agent
+setup(true)
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'bash'
+proc_names[200] = 'rg'
+proc_children[100] = { 200 }
+assert_eq(lib_term.running_agent(7, AGENTS, DEPTH), nil, 'non-agent process is not an agent')
+
+-- an idle shell, and a non-terminal buffer
+setup(true)
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'bash'
+buf_types[8] = ''
+buf_pids[8] = 101
+proc_names[101] = 'pi'
+assert_eq(lib_term.running_agent(7, AGENTS, DEPTH), nil, 'idle shell runs no agent')
+assert_eq(lib_term.running_agent(8, AGENTS, DEPTH), nil, 'non-terminal buffer runs no agent')
+
 -- ============================================================
 describe('startinsert')
 
