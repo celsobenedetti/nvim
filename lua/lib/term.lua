@@ -205,22 +205,35 @@ local M = {
 
   startinsert_exemptions = startinsert_exemptions,
 
+  --- Enter insert mode, but only once it is clear insert mode lands in a
+  --- terminal. Opening a window from a terminal window (`:tabnew`, the split
+  --- fugitive's `:Git log` opens) fires `WinEnter` while the terminal is still
+  --- the current buffer, so the `term://*` autocmd pattern matches even though
+  --- the new window is about to show something else. `startinsert` itself only
+  --- takes effect once nvim returns to the main loop, by which point that other
+  --- buffer is current -- so defer the decision to the same point, and re-read
+  --- the window and buffer insert mode would actually apply to.
   startinsert = function()
     if not state.insert_when_entering_terminal or not state.autoinsert_on_term then
       return
     end
-    local win = vim.api.nvim_get_current_win()
-    local is_floating = vim.api.nvim_win_get_config(win).relative ~= ''
-    if is_floating then
-      return
-    end
-    local buffer = vim.api.nvim_get_current_buf()
-    for _, exempt in ipairs(startinsert_exemptions) do
-      if exempt(buffer) then
+    vim.schedule(function()
+      local win = vim.api.nvim_get_current_win()
+      local is_floating = vim.api.nvim_win_get_config(win).relative ~= ''
+      if is_floating then
         return
       end
-    end
-    vim.cmd('startinsert')
+      local buffer = vim.api.nvim_get_current_buf()
+      if not is_term(buffer) then
+        return
+      end
+      for _, exempt in ipairs(startinsert_exemptions) do
+        if exempt(buffer) then
+          return
+        end
+      end
+      vim.cmd('startinsert')
+    end)
   end,
 }
 

@@ -73,7 +73,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
     vim.opt_local.number = false
     vim.opt_local.scrolloff = 0
     vim.bo.filetype = 'terminal'
-    vim.schedule(lib.term.startinsert)
+    lib.term.startinsert()
   end,
 })
 

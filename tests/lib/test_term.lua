@@ -89,6 +89,11 @@ local vim_mock = {
   cmd = function(cmd)
     cmds[#cmds + 1] = cmd
   end,
+  -- lib.term.startinsert defers its decision; run it inline so the assertions
+  -- below still see the outcome synchronously.
+  schedule = function(fn)
+    fn()
+  end,
 }
 
 ---@param with_agents boolean whether state.agents is populated
@@ -103,13 +108,14 @@ local function setup(with_agents)
   cmds = {}
   rawset(_G, 'vim', vim_mock)
   rawset(_G, 'state', with_agents and {
+    autoinsert_on_term = true,
     agents = {
       get_agent_bufnr = function(agent)
         return agent_bufs[agent] or 0
       end,
       bufnr = agent_bufs,
     },
-  } or {})
+  } or { autoinsert_on_term = true })
 end
 
 -- without state.agents nothing is an agent terminal
@@ -265,6 +271,14 @@ assert_eq(
   false,
   'an exemption matching the entered buffer suppresses insert mode'
 )
+
+-- Opening a window from a terminal window (`:tabnew`, the split fugitive's
+-- `:Git log` opens) fires `WinEnter` while the terminal is still current, so the
+-- `term://*` pattern matches even though the new window shows a normal buffer.
+-- The decision is deferred and re-read, so the non-terminal buffer wins.
+buf_types[7] = ''
+assert_eq(startinsert({ insert = true }), false, 'no insert mode when the buffer is not a terminal')
+buf_types[7] = 'terminal'
 assert_eq(
   startinsert({
     insert = true,

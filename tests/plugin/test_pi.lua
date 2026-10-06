@@ -94,10 +94,15 @@ local vim_mock = {
   cmd = function(cmd)
     cmds[#cmds + 1] = cmd
   end,
+  -- lib.term.startinsert defers its decision; run it inline so the assertions
+  -- below still see the outcome synchronously.
+  schedule = function(fn)
+    fn()
+  end,
 }
 
 rawset(_G, 'vim', vim_mock)
-rawset(_G, 'state', { insert_when_entering_terminal = true })
+rawset(_G, 'state', { insert_when_entering_terminal = true, autoinsert_on_term = true })
 rawset(_G, 'lib', { term = require('lib.term') })
 
 -- Load the plugin file under test the way nvim sources it: for its side effects
@@ -212,14 +217,17 @@ assert_eq(is_running(7), false, 'rescanned after the TTL: pi is gone')
 
 describe('startinsert exemption')
 
--- lib.term.startinsert consults the exemption pi.lua registered at load.
+-- pi.lua no longer registers is_running as a startinsert exemption (the
+-- table.insert is commented out), so pi terminals take insert mode on enter
+-- like any other terminal. lib.term.startinsert's exemption plumbing itself is
+-- covered by tests/lib/test_term.lua.
 setup()
 current_buf = 7
 buf_types[7] = 'terminal'
 buf_pids[7] = 100
 proc_names[100] = 'pi'
 lib.term.startinsert()
-assert_eq(cmds[1], nil, 'no startinsert in a terminal running pi')
+assert_eq(cmds[1], 'startinsert', 'startinsert in a terminal running pi (exemption disabled)')
 
 setup()
 current_buf = 7
@@ -228,7 +236,7 @@ buf_names[7] = 'term://~/projects/nvim//100:pi'
 buf_pids[7] = 100
 proc_names[100] = 'bash'
 lib.term.startinsert()
-assert_eq(cmds[1], nil, 'no startinsert in a pi terminal that is still starting')
+assert_eq(cmds[1], 'startinsert', 'startinsert in a pi terminal that is still starting (exemption disabled)')
 
 setup()
 current_buf = 7
