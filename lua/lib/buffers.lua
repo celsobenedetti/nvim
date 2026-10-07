@@ -67,6 +67,17 @@ M.wqa = function()
     vim.notify(table.concat(errors, '\n'), vim.log.levels.ERROR, { title = 'wqa' })
     return
   end
+  -- Untitled buffers have nothing to write, so discard them instead of letting
+  -- the quit ask about their changes one by one ('confirm' is on).
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if
+      vim.api.nvim_buf_is_valid(buf)
+      and vim.api.nvim_buf_get_name(buf) == ''
+      and vim.api.nvim_get_option_value('buftype', { buf = buf }) == ''
+    then
+      pcall(vim.api.nvim_buf_delete, buf, { force = true })
+    end
+  end
   vim.cmd('qa!')
 end
 

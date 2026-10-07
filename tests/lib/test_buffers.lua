@@ -40,6 +40,7 @@ end
 local bufs = {}
 local buf_state = {}
 local writes = {}
+local deletes = {}
 local cmd_calls = {}
 local notify_calls = {}
 local qf_calls = {}
@@ -84,6 +85,10 @@ local vim_mock = {
     end,
     nvim_buf_is_loaded = function(id)
       return buf_state[id] and buf_state[id].loaded or false
+    end,
+    nvim_buf_delete = function(id, opts)
+      deletes[#deletes + 1] = { buf = id, opts = opts }
+      buf_state[id].valid = false
     end,
     nvim_buf_get_name = function(id)
       return buf_state[id] and buf_state[id].name or ''
@@ -147,6 +152,7 @@ local function reset()
   bufs = {}
   buf_state = {}
   writes = {}
+  deletes = {}
   cmd_calls = {}
   notify_calls = {}
   qf_calls = {}
@@ -209,6 +215,25 @@ assert_eq(count(1, writes), 1, 'writes buffer 1')
 assert_eq(count(2, writes), 1, 'writes buffer 2')
 assert_eq(last_cmd(), 'qa!', 'quits after all writes')
 assert_eq(#notify_calls, 0, 'no error notification')
+
+-- ============================================================
+describe('lib.buffers.wqa: deletes untitled buffers instead of prompting')
+
+reset()
+add_buf(1, { name = '/tmp/a.txt', modified = true })
+add_buf(2, { name = '', modified = true })
+add_buf(3, { name = '', buftype = 'terminal' })
+buffers.wqa()
+assert_eq(#deletes, 1, 'only the untitled file buffer is deleted')
+assert_eq(deletes[1].buf, 2, 'deletes the untitled buffer')
+assert_eq(deletes[1].opts.force, true, 'forces the delete so changes are discarded')
+assert_eq(last_cmd(), 'qa!', 'still quits')
+
+reset()
+add_buf(1, { name = '/tmp/a.txt', modified = true, write_error = 'Vim(write):E212: boom' })
+add_buf(2, { name = '', modified = true })
+buffers.wqa()
+assert_eq(#deletes, 0, 'keeps untitled buffers when the quit is aborted')
 
 -- ============================================================
 describe('lib.buffers.wqa: skips buffers that cannot be written')
