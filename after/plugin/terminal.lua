@@ -72,6 +72,15 @@ vim.api.nvim_create_autocmd('TermOpen', {
   callback = function()
     vim.opt_local.number = false
     vim.opt_local.scrolloff = 0
+    -- 'nowrap' + a non-zero 'sidescrolloff' horizontally scrolls the window to
+    -- keep context around the cursor. Terminal-mode zeroes 'sidescrolloff'
+    -- itself (the cursor is pinned to the terminal's own), but restores it on
+    -- the way out: leaving the window parks the cursor at the end of the last
+    -- line, nvim scrolls right to give it context, and a full-width TUI is
+    -- drawn shifted left with blank columns at the right edge until the next
+    -- resize. The terminal grid is exactly window-wide, so there is nothing
+    -- off-screen to scroll to in the first place.
+    vim.opt_local.sidescrolloff = 0
     vim.bo.filetype = 'terminal'
     lib.term.startinsert()
   end,
