@@ -7,10 +7,6 @@ end
 -- why this can't be a real fzf-lua `profile` string).
 local e = lib.fzf.e
 
-local function notes()
-  fzf_lua().files(e({ cwd = config.dirs.notes }))
-end
-
 return {
   'ibhagwan/fzf-lua',
   dependencies = { 'nvim-mini/mini.icons' },
@@ -134,6 +130,6 @@ return {
     { '<leader>uC', function() fzf_lua().colorschemes() end, desc = 'fzf: Colorschemes', },
     { '<leader>sS', function() fzf_lua().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },
     { 'z=', function() fzf_lua().spell_suggest() end, desc = 'fzf: spelling', },
-    { '<leader>sn', notes, desc = 'snacks: search all notes', },
+    { '<leader>sn', function() lib.notes.focus_or_create_notes_tab(function() fzf_lua().files({ cwd = config.dirs.notes }) end) end, desc = 'fzf: search all notes (notes tab)', },
   },
 }
