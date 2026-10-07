@@ -15,7 +15,7 @@ TermOpen                            (buftype='terminal', ft set here)
 ```
 
 - `buftype='terminal'` is set by `terminal_open()` in `src/nvim/terminal.c`
-  *before* it applies `TermOpen` autocmds.
+  _before_ it applies `TermOpen` autocmds.
 - The config's own `ft='terminal'` is set in the `TermOpen` handler in
   `after/plugin/terminal.lua` (`vim.bo.filetype = 'terminal'`).
 
@@ -33,11 +33,11 @@ branch matched.
 
 Trace of `edit a.lua` / `vsplit` / `edit b.lua` / `split`:
 
-| action | events |
-|---|---|
-| `:edit <file>` in the current window | `BufWinEnter` only |
-| `:vsplit` / `:split` (new window) | `WinEnter` (new window gets focus; no `BufWinEnter` if it shows an already-displayed buffer) |
-| `:edit <file>` inside the new split | `BufWinEnter` only |
+| action                               | events                                                                                       |
+| ------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `:edit <file>` in the current window | `BufWinEnter` only                                                                           |
+| `:vsplit` / `:split` (new window)    | `WinEnter` (new window gets focus; no `BufWinEnter` if it shows an already-displayed buffer) |
+| `:edit <file>` inside the new split  | `BufWinEnter` only                                                                           |
 
 So **WinEnter does fire on splits**, and `BufWinEnter` covers buffer switches
 in the same window. The `{ 'BufWinEnter', 'WinEnter' }` pair is sufficient —
@@ -47,13 +47,13 @@ the bug was the render path, not the event set.
 
 1. **Special-filetype resolution moved into `get_winbar()`**, i.e. into the
    `%!` expression that Neovim re-evaluates on every statusline/winbar
-   redraw. The bar now always reflects the buffer's *current* state, immune
+   redraw. The bar now always reflects the buffer's _current_ state, immune
    to autocmd ordering — a fresh terminal renders `  terminal` as soon as
    `TermOpen` sets the filetype and the command completes (the new window's
    first full draw, `UPD_NOT_VALID`, re-evaluates the bar).
 2. **Special-case functions receive the rendered window's buffer**
    (`special(buf)` resolved via `g:statusline_winid`), not the focused
-   buffer — correct when an *unfocused* window renders its own bar.
+   buffer — correct when an _unfocused_ window renders its own bar.
 3. **Autocmd now only installs the `%!` expression**, and only when the
    window's current winbar is empty or already ours. This preserves
    plugin-owned bars: oil sets its own winbar

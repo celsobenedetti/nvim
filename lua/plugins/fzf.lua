@@ -3,10 +3,6 @@ local function fzf_lua()
   return require('fzf-lua')
 end
 
--- `:e` pseudo-profile winopts, shared with other modules (see lib/fzf.lua for
--- why this can't be a real fzf-lua `profile` string).
-local e = lib.fzf.e
-
 return {
   'ibhagwan/fzf-lua',
   dependencies = { 'nvim-mini/mini.icons' },
@@ -125,7 +121,7 @@ return {
     { '<leader>sm', function() fzf_lua().marks() end, desc = 'fzf: Marks', },
     { '<leader>sq', function() fzf_lua().quickfix() end, desc = 'fzf: Quickfix List', },
     { '<leader>su', function() fzf_lua().undotree() end, desc = 'fzf: Undotree', },
-    { '<leader>dot', function () fzf_lua().files(e({ cwd = '~/.dotfiles' })) end , desc = 'snacks: search dotfiles', },
+    { '<leader>dot', function () fzf_lua().files({ cwd = '~/.dotfiles' }) end , desc = 'snacks: search dotfiles', },
     -- ui
     { '<leader>uC', function() fzf_lua().colorschemes() end, desc = 'fzf: Colorschemes', },
     { '<leader>sS', function() fzf_lua().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },

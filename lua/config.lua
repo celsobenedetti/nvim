@@ -310,6 +310,7 @@ local keys = {
   ['<C-S-N>'] = '<S-Down>',
   ['<C-tab>'] = '<C-tab>',
   ['<C-S-tab>'] = '<C-S-tab>',
+  ['<C-S-E>'] = '<C-S-E>',
 }
 
 if os.getenv('TMUX') then
