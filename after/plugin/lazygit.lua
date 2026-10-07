@@ -18,14 +18,9 @@ end
 --- Open lazygit in its own tabpage. If a lazygit tab already exists,
 --- jump to it instead of opening a duplicate.
 local function lazygit_tab()
-  local tabid = lib.tab.find('lazygit')
-  if tabid then
-    vim.api.nvim_set_current_tabpage(tabid)
+  if not lib.tab.create_or_focus('lazygit') then
     return
   end
-
-  vim.cmd('tabnew')
-  lib.tab.rename('lazygit')
 
   local term = Snacks.lazygit({
     cwd = lib.cwd.root(),

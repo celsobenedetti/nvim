@@ -193,18 +193,35 @@ M.get_name = function(tabid)
   return fallback_name(id)
 end
 
----Find the first tab whose name matches a plain string.
----@param pattern string literal substring to match
----@return number? tabid, or nil when not found
-M.find = function(pattern)
+---Find the tab with this exact name. Whole-name rather than substring
+---matching: callers name a tab after the command filling it (`hunk`, `hunk
+-----cached`, ...), and a substring match would hand the plain `hunk` tab to
+---every variant of it.
+---@param name string tab name, as `M.get_name` reports it
+---@return number? tabid, or nil when no tab carries that name
+M.find = function(name)
   ensure_loaded()
   for _, tpid in ipairs(vim.api.nvim_list_tabpages()) do
-    local name = M.get_name(tpid)
-    if name and name:find(pattern, 1, true) then
+    if M.get_name(tpid) == name then
       return tpid
     end
   end
   return nil
+end
+
+---Focus the tab named `name`, opening and naming one when there is none.
+---@param name string tab name, matched with `M.find`
+---@return boolean created false when an existing tab was focused; true when a
+---new, empty tab is now current and the caller still has to fill it
+M.create_or_focus = function(name)
+  local tabid = M.find(name)
+  if tabid then
+    vim.api.nvim_set_current_tabpage(tabid)
+    return false
+  end
+  vim.cmd.tabnew()
+  M.set(name, 0)
+  return true
 end
 
 ---Derive a git tab name from a command string, e.g. `tab Git show

@@ -47,6 +47,23 @@ local tab_wins = {}
 -- floating windows: win id -> relative kind ('win'/'cursor'/...); every other
 -- window counts as a normal (non-floating) one
 local win_rel = {}
+
+-- `:tabnew` opens a tab after the current one and makes it current. The mock
+-- mirrors that so create_or_focus names the tab it just opened, not the one it
+-- was called from.
+local next_tab_id = 100
+local function open_tab()
+  next_tab_id = next_tab_id + 1
+  local pos = #tabpages.ids
+  for i, t in ipairs(tabpages.ids) do
+    if t == tabpages.current then
+      pos = i
+    end
+  end
+  table.insert(tabpages.ids, pos + 1, next_tab_id)
+  tabpages.current = next_tab_id
+  return next_tab_id
+end
 local vim_config = {
   icons = {
     term = '<term>',
@@ -100,6 +117,9 @@ local vim_mock = {
       return buf_names[buf] or ''
     end,
     nvim_create_autocmd = function() end,
+    nvim_set_current_tabpage = function(id)
+      tabpages.current = id
+    end,
   },
   fn = {
     fnamemodify = function(name, mod)
@@ -128,7 +148,9 @@ local vim_mock = {
     end
     return keys
   end,
-  cmd = function() end,
+  cmd = setmetatable({ tabnew = open_tab }, {
+    __call = function() end,
+  }),
   trim = function(s)
     return s:gsub('^%s+', ''):gsub('%s+$', '')
   end,
@@ -273,9 +295,34 @@ describe('lib.tab: find')
 -- tab numbers: id 0 -> tab 1, id 3 -> tab 2, id 5 -> tab 3
 reset({ 0, 3, 5 }, vim_mock.json.encode({ ['1'] = 'git status', ['2'] = 'notes', ['3'] = 'git log' }))
 tab = reload_tab()
-assert_eq(tab.find('notes'), 3, 'finds tab by plain substring')
-assert_eq(tab.find('git status'), 0, 'returns first matching tab')
+assert_eq(tab.find('notes'), 3, 'finds tab by name')
+assert_eq(tab.find('git status'), 0, 'returns the tab carrying the name')
 assert_eq(tab.find('nothing'), nil, 'nil when no match')
+assert_eq(tab.find('git'), nil, 'whole-name match: a prefix of a name is not a match')
+assert_eq(tab.find('git lo'), nil, 'whole-name match: a substring of a name is not a match')
+
+-- ============================================================
+describe('lib.tab: create_or_focus')
+
+-- non-zero ids: `M.set`/`M.get_name` read 0 as "the current tab", which real
+-- nvim never hands out as a tabpage handle
+reset({ 1, 3, 5 }, vim_mock.json.encode({ ['1'] = 'git status', ['2'] = 'notes', ['3'] = 'git log' }))
+tab = reload_tab()
+assert_eq(tab.create_or_focus('notes'), false, 'existing tab: reports no tab was created')
+assert_eq(tabpages.current, 3, 'existing tab: focuses it')
+assert_eq(#tabpages.ids, 3, 'existing tab: opens nothing')
+
+local created = tab.create_or_focus('hunk --cached')
+assert_eq(created, true, 'missing tab: reports the caller still has to fill it')
+assert_eq(#tabpages.ids, 4, 'missing tab: opens one')
+assert_eq(tab.get_name(tabpages.current), 'hunk --cached', 'missing tab: names the new tab')
+assert_eq(tab.find('hunk --cached'), tabpages.current, 'missing tab: findable afterwards')
+assert_eq(tab.create_or_focus('hunk --cached'), false, 'second call focuses the tab it opened')
+assert_eq(#tabpages.ids, 4, 'second call opens nothing')
+
+-- `hunk` must not be handed the `hunk --cached` tab: each invocation gets its own
+assert_eq(tab.create_or_focus('hunk'), true, 'a name that is a prefix of another opens its own tab')
+assert_eq(#tabpages.ids, 5, 'prefix name opened a separate tab')
 
 -- ============================================================
 describe('lib.tab: set_next_name / consume_next_name')
