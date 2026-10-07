@@ -28,4 +28,8 @@ local M = {
   autoinsert_on_term = true,
 }
 
+if vim.g.neovide then
+  M.statusline_show_time = true
+end
+
 return M

@@ -374,10 +374,10 @@ function _G.MyStatusLine()
     macro,
     location,
     filetype_and_lsps,
-    time,
     branch,
     modules._git_diff_revision(),
     modules._overseer_tasks(),
+    time,
   }, 'right')
   local SPACE_BETWEEN = '%=' --- :h statusline
 
