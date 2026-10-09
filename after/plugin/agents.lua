@@ -24,17 +24,9 @@ state.agents = M
 local function setup_agent(key, agent)
   M.set_agent_bufnr(agent, 0)
 
-  -- sticky agent terminal: focus existing buffer, or start a new one
-  local function open()
-    local buf = M.get_agent_bufnr(agent)
-
-    if not M.is_active(agent) then
-      vim.cmd.term('caveman ' .. agent)
-      M.set_agent_bufnr(agent, vim.api.nvim_get_current_buf())
-      return
-    end
-
-    lib.buffers.focus(buf)
+  local function new_agent()
+    vim.cmd.term('caveman ' .. agent)
+    M.set_agent_bufnr(agent, vim.api.nvim_get_current_buf())
   end
 
   vim.api.nvim_create_autocmd('TermClose', {
@@ -53,7 +45,7 @@ local function setup_agent(key, agent)
   })
 
   local command = agent:gsub('^%l', string.upper)
-  vim.api.nvim_create_user_command(command, open, { desc = 'Open or focus the ' .. agent .. ' terminal' })
+  vim.api.nvim_create_user_command(command, new_agent, { desc = 'Open or focus the ' .. agent .. ' terminal' })
   vim.keymap.set('n', key, string.format(':%s<CR>', command), { desc = agent .. ': open/focus terminal' })
 end
 
