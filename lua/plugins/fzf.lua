@@ -127,5 +127,6 @@ return {
     { '<leader>sS', function() fzf_lua().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },
     { 'z=', function() fzf_lua().spell_suggest() end, desc = 'fzf: spelling', },
     { '<leader>sn', function() lib.notes.focus_or_create_notes_tab(function() fzf_lua().files({ cwd = config.dirs.notes }) end) end, desc = 'fzf: search all notes (notes tab)', },
+    { '<leader>of', function() lib.notes.focus_or_create_notes_tab(function() fzf_lua().files({ cwd = config.dirs.org }) end) end, desc = 'fzf: search org files (notes tab)', },
   },
 }

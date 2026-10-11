@@ -25,7 +25,7 @@ local function setup_agent(key, agent)
   M.set_agent_bufnr(agent, 0)
 
   local function new_agent()
-    vim.cmd.term('caveman ' .. agent)
+    vim.cmd.term(agent)
     M.set_agent_bufnr(agent, vim.api.nvim_get_current_buf())
   end
 
