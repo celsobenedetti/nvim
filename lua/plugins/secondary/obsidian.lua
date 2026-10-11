@@ -192,7 +192,8 @@ return {
   end,
   config = function()
     local vault = config.dirs.garden
-    local inbox_subdir = config.obsidian.inbox
+    -- notes_subdir is joined onto the workspace root, so it must be relative.
+    local inbox_subdir = vim.fs.relpath(vault, config.obsidian.inbox) or config.obsidian.inbox
 
     local Path = require('obsidian.path')
 
