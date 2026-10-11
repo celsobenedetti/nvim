@@ -11,14 +11,19 @@ vim.opt.grepprg = table.concat(prg, ' ') .. ' -e $*'
 vim.opt.grepformat = '%f:%l:%c:%m'
 
 local function do_grep(pattern, target)
-  local cmd = 'silent grep ' .. vim.fn.fnameescape(pattern)
+  -- :grep splices its args into 'grepprg' and hands the result to the shell
+  -- verbatim, so each arg needs shellescape -- not fnameescape, whose `\<` and
+  -- `\%` are cmdline escapes the shell would pass through to rg.
+  local args = { vim.fn.shellescape(pattern) }
   if target then
     -- expand cmdline-special chars (% = current file, # = alternate, ~, <cword>, ...)
     -- so `:Grep query %` greps the current file. Only the target is expanded:
     -- expanding the pattern would mangle regex escapes (expandcmd('\b') -> <BS>).
-    cmd = cmd .. ' ' .. vim.fn.fnameescape(vim.fn.expandcmd(target))
+    args[2] = vim.fn.shellescape(vim.fn.expandcmd(target))
   end
-  vim.cmd(cmd)
+  -- magic.file/bar off: skip the cmdline layer entirely, so a pattern holding
+  -- `%`, `#`, `<cword>` or `|` reaches rg literally instead of being expanded.
+  vim.cmd({ cmd = 'grep', args = args, mods = { silent = true }, magic = { file = false, bar = false } })
   vim.cmd.copen()
 end
 

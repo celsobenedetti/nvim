@@ -1,6 +1,6 @@
 # Neovim configuration
 
-This codebase is a Neovim configuration symlinked to `~/.config/nvim`. It uses
+codebase is a Neovim configuration symlinked to `~/.config/nvim`. It uses
 [lazy.nvim](~/.local/share/nvim/lazy/lazy.nvim/README.md) to configure external
 plugins.
 

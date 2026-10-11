@@ -30,7 +30,7 @@ end
 local function setup_folding()
   vim.schedule(function()
     vim.wo.foldmethod = 'expr'
-    vim.wo.foldlevel = 1
+    vim.wo.foldlevel = 2
     vim.wo.foldenable = true
 
     function _G.__md_foldexpr()
