@@ -247,6 +247,7 @@ local M = {
     inbox = os.getenv('ORG_INBOX') or '',
     work = os.getenv('ORG_WORK') or '',
     references = os.getenv('ORG_REFERENCES') or '',
+    todo_keywords = require('org_todo_keywords'),
   },
   env = {
     WORK_JIRA = os.getenv('WORK_JIRA') or '',
