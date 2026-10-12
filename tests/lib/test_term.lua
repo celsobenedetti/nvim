@@ -349,5 +349,24 @@ assert_eq(
   'an exemption for another buffer does not suppress insert mode'
 )
 
+-- the toggle terminal enters insert mode whatever the opt-outs say
+state.toggle_term_bufnr = 7
+assert_eq(startinsert({ insert = false }), true, 'toggle terminal ignores the opt-out')
+assert_eq(
+  startinsert({ insert = false, floating = true }),
+  false,
+  'a floating window still opts out'
+)
+assert_eq(
+  startinsert({
+    insert = false,
+    exempt = function(buffer)
+      return buffer == 7
+    end,
+  }),
+  false,
+  'an exemption still wins over the toggle terminal'
+)
+
 io.write(string.format('\n\n%d/%d tests passed\n', tests_passed, tests_run))
 os.exit(tests_passed == tests_run and 0 or 1)

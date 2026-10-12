@@ -231,9 +231,6 @@ local M = {
   --- buffer is current -- so defer the decision to the same point, and re-read
   --- the window and buffer insert mode would actually apply to.
   startinsert = function()
-    if not state.insert_when_entering_terminal or not state.autoinsert_on_term then
-      return
-    end
     vim.schedule(function()
       local win = vim.api.nvim_get_current_win()
       local is_floating = vim.api.nvim_win_get_config(win).relative ~= ''
@@ -243,6 +240,13 @@ local M = {
       local buffer = vim.api.nvim_get_current_buf()
       if not is_term(buffer) then
         return
+      end
+      -- The toggle terminal is opened by a keystroke meant for typing into it,
+      -- so it ignores the opt-outs other terminals honour.
+      if buffer ~= state.toggle_term_bufnr then
+        if not state.insert_when_entering_terminal or not state.autoinsert_on_term then
+          return
+        end
       end
       for _, exempt in ipairs(startinsert_exemptions) do
         if exempt(buffer) then

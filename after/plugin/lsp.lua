@@ -4,7 +4,7 @@ end
 
 vim.lsp.enable({
   'bashls',
-  'denols',
+  -- 'denols',
   -- 'copilot',
   -- 'eslint',
   'gopls',
