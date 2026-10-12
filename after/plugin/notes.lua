@@ -7,7 +7,6 @@ vim.keymap.set('n', config.keys['<C-S-N>'], function()
         '--line-number',
         '-g',
         '!.archives',
-        -- '!' .. config.env.notes.ASSETS_DIR .. '/*',
         '-v',
         string.format('"%s"', config.env.GREP_IGNORE), -- quotes are indeed needed here for complex regex
         config.dirs.notes,

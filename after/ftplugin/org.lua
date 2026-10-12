@@ -1,44 +1,12 @@
--- Follow Obsidian-style [[wikilinks]] from org files into the markdown vaults.
--- obsidian.nvim only auto-attaches to markdown/quarto buffers and resolves links
--- against the *active* workspace; org files sit outside both vaults, so we pick
--- the vault ourselves and pass it to the resolver. Link parsing is plain-text,
--- not markdown-specific, so it works in an org buffer.
-
--- work.org links into the work vault, every other org file into the garden.
-local function obsidian_vault()
-  if config.org.work ~= '' and vim.fn.expand('%:p') == config.org.work then
-    return config.dirs.work_notes
-  end
-  return config.dirs.garden
-end
-
---- Absolute path of the note the [[wikilink]] under the cursor points at.
----@param fname string|nil fallback for includeexpr when there is no wikilink
----@return string|nil
-function _G.org_wikilink_path(fname)
-  local vault = obsidian_vault()
-  local ok, api = pcall(require, 'obsidian.api')
-  if vault == '' or not ok or not Obsidian then
-    return fname
-  end
-  -- cursor_link() only matches when the cursor sits on a [[wikilink]]/[md](link).
-  local _, _, _, ref = api.cursor_link()
-  if not ref or ref.kind ~= 'wiki' or ref.target == '' then
-    return fname
-  end
-  local found, notes = pcall(require('obsidian.search').resolve_note, ref.target, { dir = vault })
-  if not found or not notes[1] then
-    return fname
-  end
-  return tostring(notes[1].path)
-end
-
--- Let gf resolve [[wikilinks]] through the same vault, and attach the in-process
+-- Let gf resolve [[wikilinks]] (see lib.obsidian) and attach the in-process
 -- obsidian-ls LSP so blink can offer [[ completion. The LSP completion path is
 -- line-text based, not markdown-specific.
 if config.dirs.notes ~= '' and vim.fn.expand('%:p'):find(config.dirs.notes, 1, true) == 1 then
   vim.b.obsidian_buffer = true
-  vim.bo.includeexpr = 'v:lua.org_wikilink_path(v:fname)'
+  -- 'includeexpr' is how gf (and [f, [i, ...) turn the text under the cursor
+  -- into a filename: without it gf would look for a file literally named
+  -- "[[some note]]", with it the link resolves to the note inside the vault.
+  vim.bo.includeexpr = 'v:lua.lib.obsidian.wikilink_path(v:fname)'
   pcall(function()
     require('obsidian.lsp').start(vim.api.nvim_get_current_buf())
   end)
@@ -46,7 +14,7 @@ end
 
 -- gd: follow a [[wikilink]] to its markdown note, else orgmode go-to-definition.
 vim.keymap.set('n', 'gd', function()
-  local path = _G.org_wikilink_path()
+  local path = lib.obsidian.wikilink_path()
   if path then
     vim.cmd.edit(path)
     return
@@ -69,16 +37,12 @@ vim.api.nvim_buf_set_keymap(
   { desc = 'org: change todo state' }
 )
 
-_G.org_n = _G.org_n
-  or function()
-    if vim.v.hlsearch == 1 then
-      vim.cmd('normal! n')
-      return
-    end
-    require('orgmode').action('org_mappings.add_note')
-  end
-
-vim.api.nvim_buf_set_keymap(0, 'n', '<leader>n', ':lua _G.org_n()<CR>', { desc = 'org: add note' })
+vim.keymap.set(
+  'n',
+  '<leader>n',
+  lib.org.add_note_or_search_next,
+  { buffer = true, desc = 'org: add note (next search match while hlsearch)' }
+)
 vim.api.nvim_buf_set_keymap(
   0,
   'n',

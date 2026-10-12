@@ -80,24 +80,8 @@ local function setup_markdown_hl()
   vim.api.nvim_win_set_hl_ns(0, ns)
 end
 
--- follow wiki links with enter (only in notes dir)
-local notes = config.env and config.env.notes
-if notes then
-  local filepath = vim.fn.expand('%:p')
-  if filepath:find(config.dirs.notes, 1, true) == 1 then
-    vim.keymap.set('n', '<CR>', function()
-      local line = vim.api.nvim_get_current_line()
-      local col = vim.api.nvim_win_get_cursor(0)[2]
-      if line:sub(1, col + 1):find('[[', 1, true) and line:sub(col + 2):find(']]', 1, true) then
-        pcall(function()
-          require('obsidian').open()
-        end)
-        return
-      end
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'n', false)
-    end, { buffer = true, desc = 'follow link' })
-  end
-end
+-- <CR> follows [[wikilinks]] here through obsidian.nvim's own buffer-local
+-- "Obsidian Smart Action" map, set on BufEnter for every note inside a vault.
 
 local function change_heading_level(delta)
   local lnum = vim.api.nvim_win_get_cursor(0)[1]

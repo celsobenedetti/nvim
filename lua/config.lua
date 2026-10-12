@@ -251,7 +251,6 @@ local M = {
   env = {
     WORK_JIRA = os.getenv('WORK_JIRA') or '',
     GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',
-    org = {},
   },
 }
 
