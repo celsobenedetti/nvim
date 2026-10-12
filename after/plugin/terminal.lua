@@ -71,7 +71,7 @@ vim.api.nvim_create_autocmd('TermOpen', {
   group = augroup,
   callback = function()
     vim.opt_local.number = false
-    vim.opt_local.scrolloff = 0
+    -- vim.opt_local.scrolloff = 0
     -- 'nowrap' + a non-zero 'sidescrolloff' horizontally scrolls the window to
     -- keep context around the cursor. Terminal-mode zeroes 'sidescrolloff'
     -- itself (the cursor is pinned to the terminal's own), but restores it on
