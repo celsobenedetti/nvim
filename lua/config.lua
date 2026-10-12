@@ -242,7 +242,6 @@ local M = {
       },
     },
   },
-
   org = {
     inbox = os.getenv('ORG_INBOX') or '',
     work = os.getenv('ORG_WORK') or '',
