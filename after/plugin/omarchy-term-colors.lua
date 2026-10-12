@@ -11,6 +11,36 @@
 -- (ignored) reply works cleanly.
 local OMARCHY_COLORS_PATH = vim.fn.expand('~/.local/state/omarchy/current/theme/colors.toml')
 
+-- hunk derives its diff add/remove colors from the ANSI red/green it reads
+-- here (core/theme/detection.ts), not from literal addedBg/removedBg fields,
+-- so the only way to make its diff washes match lua/diff-colors.lua is to
+-- feed it diff-colors.lua's own red/green instead of the theme's actual ANSI
+-- red/green (tufte's in particular is near-neutral -- 'vermillion is the
+-- only saturated color' -- so hunk has nothing to derive a visible green
+-- diff wash from otherwise). Values are diff-colors.lua's add_char/delete_char
+-- (its 'emphasis' tier, the most saturated green/red it defines).
+--
+-- Its own emphasis-tier colors (add_char/delete_char) are themselves a pale
+-- wash meant to sit directly on a near-white background, so feeding them
+-- here just gets diluted a second time by hunk's blend -- on a light, pale
+-- background that reads as barely-there. A properly saturated red/green
+-- survives that dilution and still reads as a real diff color; the muddier
+-- dark-mode add_char/delete_char don't need that push since blending
+-- towards a dark background doesn't wash them out the same way.
+local DIFF_ANSI_OVERRIDE = {
+  dark = { red = '#a01818', green = '#008000' },
+  light = { red = '#e00000', green = '#009d00' },
+}
+
+-- ANSI 'bright black' (index 8) is what hunk's 'terminal' theme maps code
+-- comments to. Omarchy's own `muted` is meant as a pale, near-background UI
+-- tint on light themes (ghostty's own convention -- see ghostty.conf.tpl),
+-- not a readable dim-text color, so comments inherit that paleness. A dark
+-- theme's `muted` is already a legible mid-gray and needs no help.
+-- diff-colors.lua's line-numbers-style (#444444, 'both' modes) is exactly
+-- the dim-but-readable gray this needs.
+local LIGHT_MODE_MUTED_OVERRIDE = '#444444'
+
 local PALETTE_KEYS = {
   [0] = 'background',
   [1] = 'red',
@@ -65,7 +95,12 @@ vim.api.nvim_create_autocmd('TermRequest', {
     if idx then
       local ok, colors = pcall(read_omarchy_colors)
       local key = ok and PALETTE_KEYS[tonumber(idx)]
-      local osc = key and colors[key] and hex_to_osc(colors[key])
+      local override = ok and DIFF_ANSI_OVERRIDE[colors.mode] and DIFF_ANSI_OVERRIDE[colors.mode][key]
+      if not override and ok and key == 'muted' and colors.mode == 'light' then
+        override = LIGHT_MODE_MUTED_OVERRIDE
+      end
+      local hex = override or (key and colors[key])
+      local osc = hex and hex_to_osc(hex)
       if osc then
         respond(ev.buf, '4;' .. idx, osc)
       end
