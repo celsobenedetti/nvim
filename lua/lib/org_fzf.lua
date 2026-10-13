@@ -234,16 +234,25 @@ end
 --- Run the static-item picker.
 ---@param o { items: table[], entries: string[], prompt: string, title: string, on_confirm: fun(item: table), multi?: boolean, actions?: table<string, function> }
 local function pick(o)
+  -- Actions run from fzf's terminal-mode callback, before the window closes and
+  -- normal mode is restored. Defer so `normal!`/`edit`/`copen` don't hit E21 or
+  -- "Can't re-enter normal mode from terminal mode".
   local actions = {
     ['default'] = function(selected)
       local item = line_to_item(o.items, selected and selected[1])
       if item then
-        o.on_confirm(item)
+        vim.schedule(function()
+          o.on_confirm(item)
+        end)
       end
     end,
   }
   for key, fn in pairs(o.actions or {}) do
-    actions[key] = fn
+    actions[key] = function(selected)
+      vim.schedule(function()
+        fn(selected)
+      end)
+    end
   end
 
   fzf().fzf_exec(o.entries, {
@@ -368,21 +377,19 @@ function M.refile_heading(opts)
     prompt = 'Refile to> ',
     title = 'Refile: ' .. source.title,
     on_confirm = function(item)
-      vim.schedule(function()
-        local destination = resolve_destination(item)
-        if not destination then
-          vim.notify('Could not resolve refile destination', vim.log.levels.ERROR)
-          return
-        end
-        local ok, result = pcall(function()
-          return OrgApi().refile({ source = source, destination = destination }):wait()
-        end)
-        if ok and result then
-          vim.notify('Refiled: ' .. source.title, vim.log.levels.INFO)
-        else
-          vim.notify('Refile failed' .. (ok and '' or (': ' .. tostring(result))), vim.log.levels.WARN)
-        end
+      local destination = resolve_destination(item)
+      if not destination then
+        vim.notify('Could not resolve refile destination', vim.log.levels.ERROR)
+        return
+      end
+      local ok, result = pcall(function()
+        return OrgApi().refile({ source = source, destination = destination }):wait()
       end)
+      if ok and result then
+        vim.notify('Refiled: ' .. source.title, vim.log.levels.INFO)
+      else
+        vim.notify('Refile failed' .. (ok and '' or (': ' .. tostring(result))), vim.log.levels.WARN)
+      end
     end,
   })
 end
