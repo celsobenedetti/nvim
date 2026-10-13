@@ -73,6 +73,17 @@ pattern sees the old (empty) name. That is why the `TermOpen` autocmd exists
 at all. `BufWinEnter` only matches when an already-named terminal buffer is
 re-displayed in a window (`:b <termbuf>`).
 
+## Fresh terminals and per-buffer exemptions
+
+`startinsert({ fresh = true })`, used by the `TermOpen` handler, skips the
+per-buffer exemptions. A freshly created terminal's window cursor sits at the
+**top** of the screen grid: nvim paints `term->rows` lines before the job has
+emitted anything, and built-in follow only engages a focused normal-mode
+window whose cursor is already at the end, which on a fresh buffer it is not.
+Measured in a real UI: `:term seq 30` ends with 31 buffer lines and the cursor
+still on line 1. So an exemption that checks the cursor (pi's at-bottom rule)
+would refuse insert mode on a terminal the user just opened to type into.
+
 ## Reproducing
 
 Insert mode is entered asynchronously, and headless nvim never fires it, so

@@ -82,7 +82,9 @@ vim.api.nvim_create_autocmd('TermOpen', {
     -- off-screen to scroll to in the first place.
     vim.opt_local.sidescrolloff = 0
     vim.bo.filetype = 'terminal'
-    lib.term.startinsert()
+    -- fresh: a just-created terminal is meant to be typed into, whatever a
+    -- per-buffer exemption makes of its window cursor (which starts at the top)
+    lib.term.startinsert({ fresh = true })
   end,
 })
 

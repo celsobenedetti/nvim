@@ -308,7 +308,7 @@ local function startinsert(opts)
     table.insert(exemptions, opts.exempt)
   end
   cmds = {}
-  lib_term.startinsert()
+  lib_term.startinsert(opts.fresh and { fresh = true } or nil)
   return cmds[1] == 'startinsert'
 end
 
@@ -366,6 +366,26 @@ assert_eq(
   }),
   false,
   'an exemption still wins over the toggle terminal'
+)
+
+-- fresh (TermOpen): a terminal just created is meant to be typed into, even
+-- though its window cursor starts at the top of the screen grid
+state.toggle_term_bufnr = -1
+assert_eq(
+  startinsert({
+    insert = true,
+    fresh = true,
+    exempt = function(buffer)
+      return buffer == 7
+    end,
+  }),
+  true,
+  'a fresh terminal skips the per-buffer exemptions'
+)
+assert_eq(
+  startinsert({ insert = false, fresh = true }),
+  false,
+  'a fresh terminal still respects the opt-out'
 )
 
 io.write(string.format('\n\n%d/%d tests passed\n', tests_passed, tests_run))

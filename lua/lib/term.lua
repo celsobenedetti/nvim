@@ -250,7 +250,14 @@ local M = {
   --- takes effect once nvim returns to the main loop, by which point that other
   --- buffer is current -- so defer the decision to the same point, and re-read
   --- the window and buffer insert mode would actually apply to.
-  startinsert = function()
+  ---
+  --- `opts.fresh` skips the per-buffer exemptions: a terminal just created by
+  --- `TermOpen` is meant to be typed into, but its window cursor starts at the
+  --- top of the freshly painted screen grid rather than at the output, so an
+  --- exemption that checks the cursor (pi's at-bottom rule) would refuse it.
+  ---@param opts { fresh: boolean }?
+  startinsert = function(opts)
+    local fresh = opts ~= nil and opts.fresh == true
     vim.schedule(function()
       local win = vim.api.nvim_get_current_win()
       local is_floating = vim.api.nvim_win_get_config(win).relative ~= ''
@@ -268,9 +275,11 @@ local M = {
           return
         end
       end
-      for _, exempt in ipairs(startinsert_exemptions) do
-        if exempt(buffer) then
-          return
+      if not fresh then
+        for _, exempt in ipairs(startinsert_exemptions) do
+          if exempt(buffer) then
+            return
+          end
         end
       end
       vim.cmd('startinsert')

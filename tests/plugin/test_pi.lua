@@ -320,6 +320,18 @@ cursor_line = 50
 lib.term.startinsert()
 assert_eq(cmds[1], 'startinsert', 'non-pi terminal scrolled up: insert (rule is pi-only)')
 
+-- TermOpen's fresh call skips the at-bottom rule: a just-created pi terminal
+-- has its window cursor at the top of the screen grid, not at the output
+setup()
+current_buf = 7
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'pi'
+line_count = 100
+cursor_line = 1
+lib.term.startinsert({ fresh = true })
+assert_eq(cmds[1], 'startinsert', 'fresh pi terminal (TermOpen): insert despite cursor at top')
+
 describe('resolve_session: published registry')
 
 setup()
