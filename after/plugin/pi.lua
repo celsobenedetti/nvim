@@ -2,9 +2,9 @@
 --- Everything that is specific to pi terminals lives here: recognising them
 --- (any terminal running pi, not just the sticky `<leader>pi` buffer registered
 --- by after/plugin/agents.lua), tailing their output in unfocused windows,
---- holding their viewport in place across a resize, and keeping them out of
---- insert mode. The reusable terminal/process primitives it builds on are in
---- lua/lib/term.lua.
+--- holding their viewport in place across a resize, and entering them in insert
+--- mode only while their output is tailed. The reusable terminal/process
+--- primitives it builds on are in lua/lib/term.lua.
 
 --- How deep into the terminal job's process tree to look for pi. `:term pi`
 --- makes pi the job process itself; `pi` typed into a shell terminal sits one
@@ -248,8 +248,29 @@ vim.keymap.set('n', '<leader>pc', function()
   clone_session(vim.api.nvim_get_current_buf())
 end, { desc = 'pi: clone session into a new vertical split' })
 
--- pi renders its own input box; nvim's insert mode on terminal enter fights it.
--- table.insert(lib.term.startinsert_exemptions, is_running)
+--- Is the current window's cursor at the end of `buffer`'s output? The same
+--- tolerance the follow flag uses (was_following): pi parks its cursor at its
+--- input box a few lines above the end, so an exact last-line test would refuse
+--- insert mode on the common "switch away from an idle pi, switch back" path.
+---@param buffer integer
+---@return boolean
+local function at_bottom(buffer)
+  local win = vim.api.nvim_get_current_win()
+  return lib.term.was_following(
+    vim.api.nvim_win_get_cursor(win)[1],
+    vim.api.nvim_buf_line_count(buffer),
+    vim.fn.mode()
+  )
+end
+
+-- pi renders its own input box; nvim's insert mode on terminal enter fights it
+-- when the window was scrolled up to read history: entering terminal mode pins
+-- the cursor to pi's own and scrolls to the end (terminal_check_cursor), losing
+-- the reading position. Enter a pi terminal in insert mode only while its output
+-- is tailed -- cursor near the end -- and stay in normal mode otherwise.
+table.insert(lib.term.startinsert_exemptions, function(buffer)
+  return is_running(buffer) and not at_bottom(buffer)
+end)
 
 --- @module 'terminal follow: tail pi output in unfocused windows'
 --- Neovim only keeps an unfocused terminal window scrolled to the newest output

@@ -31,6 +31,11 @@ local buf_pids = {}
 local proc_names = {}
 local proc_children = {}
 local clock = 0
+-- cursor state the startinsert decision reads: window cursor line, buffer line
+-- count, and mode()
+local cursor_line = 1
+local line_count = 1
+local mode = 'n'
 local cmds = {}
 local autocmds = {}
 local user_commands = {}
@@ -44,6 +49,12 @@ local vim_mock = {
     end,
     nvim_get_current_win = function()
       return 1000
+    end,
+    nvim_win_get_cursor = function()
+      return { cursor_line, 0 }
+    end,
+    nvim_buf_line_count = function()
+      return line_count
     end,
     nvim_win_get_config = function()
       return { relative = '' }
@@ -76,6 +87,9 @@ local vim_mock = {
         error('E900: Invalid channel id')
       end
       return pid
+    end,
+    mode = function()
+      return mode
     end,
     system = function(cmd)
       if cmd:match('CLK_TCK') then
@@ -151,6 +165,9 @@ local function setup()
   proc_children = {}
   cmds = {}
   registry = {}
+  cursor_line = 1
+  line_count = 1
+  mode = 'n'
   -- past any cached detection from an earlier case (CACHE_MS = 500)
   clock = clock + 10000
 end
@@ -248,19 +265,40 @@ assert_eq(is_running(7), true, 'cached within the TTL even though pi exited')
 clock = clock + 500
 assert_eq(is_running(7), false, 'rescanned after the TTL: pi is gone')
 
-describe('startinsert exemption')
+describe('startinsert: a pi terminal inserts only while tailing its output')
 
--- pi.lua no longer registers is_running as a startinsert exemption (the
--- table.insert is commented out), so pi terminals take insert mode on enter
--- like any other terminal. lib.term.startinsert's exemption plumbing itself is
--- covered by tests/lib/test_term.lua.
+-- pi.lua registers a conditional exemption: a pi terminal takes insert mode
+-- only when the entered window's cursor is near the end of the buffer, so that
+-- re-entering while scrolled up to read leaves the reading position alone.
+-- lib.term.startinsert's exemption plumbing itself is covered by
+-- tests/lib/test_term.lua.
 setup()
 current_buf = 7
 buf_types[7] = 'terminal'
 buf_pids[7] = 100
 proc_names[100] = 'pi'
 lib.term.startinsert()
-assert_eq(cmds[1], 'startinsert', 'startinsert in a terminal running pi (exemption disabled)')
+assert_eq(cmds[1], 'startinsert', 'pi terminal, cursor at the bottom: insert')
+
+setup()
+current_buf = 7
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'pi'
+line_count = 100
+cursor_line = 97
+lib.term.startinsert()
+assert_eq(cmds[1], 'startinsert', 'pi terminal, cursor parked near the end: insert')
+
+setup()
+current_buf = 7
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+proc_names[100] = 'pi'
+line_count = 100
+cursor_line = 50
+lib.term.startinsert()
+assert_eq(cmds[1], nil, 'pi terminal, scrolled up to read: no insert')
 
 setup()
 current_buf = 7
@@ -269,7 +307,7 @@ buf_names[7] = 'term://~/projects/nvim//100:pi'
 buf_pids[7] = 100
 proc_names[100] = 'bash'
 lib.term.startinsert()
-assert_eq(cmds[1], 'startinsert', 'startinsert in a pi terminal that is still starting (exemption disabled)')
+assert_eq(cmds[1], 'startinsert', 'pi terminal still starting, cursor at the bottom: insert')
 
 setup()
 current_buf = 7
@@ -277,8 +315,10 @@ buf_types[7] = 'terminal'
 buf_names[7] = 'term://~/projects/nvim//100:/usr/bin/bash'
 buf_pids[7] = 100
 proc_names[100] = 'bash'
+line_count = 100
+cursor_line = 50
 lib.term.startinsert()
-assert_eq(cmds[1], 'startinsert', 'startinsert in a terminal not running pi')
+assert_eq(cmds[1], 'startinsert', 'non-pi terminal scrolled up: insert (rule is pi-only)')
 
 describe('resolve_session: published registry')
 

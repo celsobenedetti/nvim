@@ -88,8 +88,10 @@ cursor was sitting on. Same file, separate mechanism.
 Published by `after/plugin/pi.lua` for the winbar labels and the follow handler.
 Not just the sticky `<leader>pi` agent buffer registered by
 `after/plugin/agents.lua` (that narrower question is `lib.term.is_pi_agent`):
-any terminal buffer running a pi instance is followed, and exempted from the
-`startinsert`-on-terminal-enter autocmd. Two checks, in order:
+any terminal buffer running a pi instance is followed, and enters insert mode on
+terminal enter only while its output is tailed — cursor near the end of the
+buffer, reusing the follow tolerance — so that re-entering while scrolled up to
+read leaves the reading position alone. Two checks, in order:
 
 1. **Job command** (`lib.term.job_command`), from the terminal buffer name
    (`term://{cwd}//{pid}:{cmd}`): the first word's basename is `pi`. Available
@@ -105,11 +107,10 @@ any terminal buffer running a pi instance is followed, and exempted from the
 `:term pi` runs `&shell -c pi`, and the shell has not exec'd pi yet when
 `TermOpen` fires: measured `comm` = `bash` at `TermOpen` *and* on the following
 `vim.schedule` tick, `pi` ~50ms later. `TermOpen` schedules
-`lib.term.startinsert`, so a process-tree-only check would let insert mode fire
-in the pi terminal — exactly what the exemption exists to prevent (pi.lua
-appends `is_running` to `lib.term.startinsert_exemptions`, which is how a
-plugin file opts its terminals out of insert-on-enter). The buffer name carries
-the command synchronously, so check 1 settles it.
+`lib.term.startinsert`, so a process-tree-only check would report no pi for the
+first ~50ms — long enough to skip the follow handler's first output batch and to
+label the winbar wrong. The buffer name carries the command synchronously, so
+check 1 settles it.
 
 ### Cost
 
