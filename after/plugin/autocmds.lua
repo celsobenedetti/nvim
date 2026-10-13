@@ -184,6 +184,16 @@ vim.api.nvim_create_autocmd('TabNew', {
       if not vim.api.nvim_tabpage_is_valid(tabid) then
         return
       end
+
+      -- Keep the notes tab last: a new tab is appended after it.
+      local notes_tab = lib.tab.find(config.tabs.notes)
+      local cur = vim.api.nvim_get_current_tabpage()
+      if notes_tab and notes_tab ~= cur then
+        vim.api.nvim_set_current_tabpage(notes_tab)
+        vim.cmd.tabmove('$')
+        vim.api.nvim_set_current_tabpage(cur)
+      end
+
       -- Any window of the new tab, not just its current one: `:Diff` opens the
       -- patch with the DiffTree sidebar focused (`filetype=diff-tree`) and
       -- `:DiffQf` with the quickfix list focused, so looking only at the
