@@ -30,6 +30,14 @@ local function toggle_terminal()
 end
 vim.keymap.set({ 'n', 't' }, config.keys['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
 
+--- Forget the toggle terminal. Called when the user takes its window out of
+--- the docked bottom slot; the next toggle opens a fresh terminal instead of
+--- reusing the moved one.
+local function detach_toggle()
+  state.toggle_term_bufnr = -1
+  Snacks.notify.info('Detached', { title = 'Toggle term', icon = '', style = 'fancy' })
+end
+
 --- @module 'terminal autocmds'
 -- stylua: ignore start
 local augroup = vim.api.nvim_create_augroup('custom-term', {})
@@ -49,6 +57,32 @@ vim.api.nvim_create_autocmd('WinEnter',
     callback = lib.term.startinsert,
   })
 -- stylua: ignore end
+
+-- Forget the toggle terminal when its window is explicitly moved out of the
+-- docked bottom slot. WinResized fires after the redraw for every window whose
+-- size changed, which a window move always does; a plain resize keeps the
+-- window docked and is ignored.
+vim.api.nvim_create_autocmd('WinResized', {
+  desc = 'toggle term: detach when its window is moved',
+  group = augroup,
+  callback = function()
+    if state.toggle_term_bufnr >= 0 and not lib.term.toggle_term_docked() then
+      detach_toggle()
+    end
+  end,
+})
+
+-- Moving the toggle terminal's window to a new tab (<C-w>T) leaves it the only
+-- window there, so the docked check cannot see it; TabNew catches it.
+vim.api.nvim_create_autocmd('TabNew', {
+  desc = 'toggle term: detach when its window is moved to a new tab',
+  group = augroup,
+  callback = function()
+    if lib.term.is_toggle_term() then
+      detach_toggle()
+    end
+  end,
+})
 
 vim.api.nvim_create_autocmd('TermOpen', {
   desc = 'term: TermOpen init function',

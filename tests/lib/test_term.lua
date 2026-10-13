@@ -50,6 +50,9 @@ local buf_names = {}
 local proc_names = {}
 local proc_children = {}
 local cmds = {}
+-- toggle_term_docked: the window its buffer is in, and the tab layout
+local toggle_win = -1
+local win_layout = {}
 
 local vim_mock = {
   api = {
@@ -84,6 +87,12 @@ local vim_mock = {
         error("E484: Can't open file " .. path)
       end
       return { name }
+    end,
+    bufwinid = function()
+      return toggle_win
+    end,
+    winlayout = function()
+      return win_layout
     end,
   },
   cmd = function(cmd)
@@ -387,6 +396,37 @@ assert_eq(
   false,
   'a fresh terminal still respects the opt-out'
 )
+
+-- ============================================================
+describe('toggle_term_docked')
+
+---@param layout table
+---@param win integer
+local function docked(layout, win)
+  win_layout = layout
+  toggle_win = win
+  return lib_term.toggle_term_docked()
+end
+
+assert_eq(
+  docked({ 'col', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 1001),
+  true,
+  'toggle as the last leaf of a column is docked'
+)
+assert_eq(
+  docked({ 'col', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 1000),
+  false,
+  'toggle above another window is not docked'
+)
+assert_eq(docked({ 'row', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 1001), false, 'a row split is not docked')
+assert_eq(
+  docked({ 'col', { { 'leaf', 1000 }, { 'row', { { 'leaf', 1001 }, { 'leaf', 1002 } } } } }, 1002),
+  false,
+  'a nested row at the bottom is not docked'
+)
+assert_eq(docked({ 'leaf', 1001 }, 1001), true, 'a lone window is docked')
+toggle_win = -1
+assert_eq(lib_term.toggle_term_docked(), true, 'a hidden toggle counts as docked')
 
 io.write(string.format('\n\n%d/%d tests passed\n', tests_passed, tests_run))
 os.exit(tests_passed == tests_run and 0 or 1)

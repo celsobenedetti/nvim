@@ -184,6 +184,28 @@ local M = {
     return is_term(buffer) and buffer == state.toggle_term_bufnr
   end,
 
+  --- Whether the toggle terminal's window still sits in the slot the toggle
+  --- gave it: the bottom-most window of a horizontal split, spanning the full
+  --- width. A window move (`<C-w>H/J/K/L`, `<C-w>x`) leaves that slot; a plain
+  --- resize keeps it. A hidden buffer, or one in another tab (the `<C-w>T` case
+  --- `TabNew` handles), counts as docked.
+  ---@return boolean
+  toggle_term_docked = function()
+    local win = vim.fn.bufwinid(state.toggle_term_bufnr)
+    if win < 0 then
+      return true
+    end
+    local layout = vim.fn.winlayout()
+    if layout[1] == 'leaf' then
+      return layout[2] == win
+    end
+    if layout[1] ~= 'col' then
+      return false
+    end
+    local last = layout[2][#layout[2]]
+    return last[1] == 'leaf' and last[2] == win
+  end,
+
   is_claude = function(buffer)
     return is_agent_named(buffer, 'claude')
   end,
