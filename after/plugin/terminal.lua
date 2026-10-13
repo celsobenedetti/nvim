@@ -1,22 +1,6 @@
 state.insert_when_entering_terminal = true
 
---- @module 'sticky terminal'
---- upsert terminal in current window (resume if available, create new otherwise)
-local function sticky_terminal()
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if
-      lib.term.is_term(buf)
-      and not lib.term.is_toggle_term(buf)
-      and not lib.term.is_agent(buf)
-      and lib.term.terminal_is_available(buf)
-    then
-      vim.api.nvim_set_current_buf(buf)
-      return
-    end
-  end
-  vim.cmd.term()
-end
-vim.keymap.set('n', '<leader>te', sticky_terminal, { desc = 'terminal: sticky terminal' })
+vim.keymap.set('n', '<leader>te', ':term<cr>', { desc = 'terminal: new term' })
 
 --- @module 'toggle terminal'
 --- references:
