@@ -171,7 +171,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('TabNew', {
-  desc = 'term: detach toggle term; name git tabs',
+  desc = 'code to run on tabnew',
   pattern = '*',
   callback = function()
     if lib.term.is_toggle_term() then

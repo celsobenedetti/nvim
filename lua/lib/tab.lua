@@ -264,9 +264,6 @@ M.render = function()
   for i, tpid in ipairs(vim.api.nvim_list_tabpages()) do
     local name = M.get_name(tpid)
     local prefix = ''
-    if i == 1 then
-      prefix = config.icons.code
-    end
     if name:find('lazygit') then
       prefix = config.icons.git.git
     end
