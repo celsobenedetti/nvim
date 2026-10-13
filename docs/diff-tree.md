@@ -162,18 +162,24 @@ delta's plus-style green and line-numbers grey).
   sidebar. From a hunk row it stages the whole file (rows carry their block's
   path); on a dir row it does nothing — group headers carry no path, and
   staging a whole directory is not what `ga` means anywhere else.
-- **`gf`** — opens the row's file in the **first tab** (the working tab), at
-  the line its section points at: a hunk row lands on the hunk's first new-side
-  line, a file or dir row on line 1 (their `lnum` is a `diff --git` header, and
-  `lib.Diff.file_location` maps anything outside a hunk to the top of the
-  file). The same key does the same thing from the patch buffer itself
-  (`after/ftplugin/git.lua`), where the cursor's own line is what gets mapped —
-  a `+`/context line onto the line it became, a `-` line onto the line that
-  replaced it. Paths in a patch are root-relative, so they are resolved through
-  `lib.git.root`; a file that is not in the work tree (a deletion, an old-vs-old
-  diff) warns instead. `lib.fs.open_in_first_tab` picks the window: one already
-  showing the file, else the tab's current window, else its first normal one —
-  a sidebar (`buftype=nofile`), terminal or float is never replaced.
+- **`gf`** — opens the row's file at the line its section points at: a hunk
+  row lands on the hunk's first new-side line, a file or dir row on line 1
+  (their `lnum` is a `diff --git` header, and `lib.Diff.file_location` maps
+  anything outside a hunk to the top of the file). The same key does the same
+  thing from the patch buffer itself (`after/ftplugin/git.lua`), where the
+  cursor's own line is what gets mapped — a `+`/context line onto the line it
+  became, a `-` line onto the line that replaced it. Paths in a patch are
+  root-relative, so they are resolved through `lib.git.root`; a file that is
+  not in the work tree (a deletion, an old-vs-old diff) warns instead.
+
+  Where it opens depends on the tab. When the patch is a **split beside code**
+  (`:Git show` / `:Git diff`, which fugitive opens as a split of the current
+  tab), `lib.fs.open_in_current_tab` edits that sibling window, so the diff
+  stays on screen. `:Diff`'s own tab has no code window — its only siblings are
+  the DiffTree sidebar (`buftype=nofile`) and the patch buffer itself — so it
+  falls back to `lib.fs.open_in_first_tab`, the working tab. Either picks a
+  window already showing the file, else the first normal one; a sidebar,
+  terminal or float is never replaced.
 - **`<space>`** — flags the row as **viewed**, GitHub's review checkbox:
   `` in its gutter and the label dimmed. Propagation, in
   `lib.Diff.tree_toggle_viewed`:
@@ -320,8 +326,9 @@ flags being restored when the sidebar is reopened.
 `tests/integration/test_diff_ga.lua`, and the `gf` flow — `file_location`'s
 line mapping (both hunks of a file, deletions, additions, context, the
 outside-a-hunk fall-back to line 1, a `+0,0` deletion-only hunk),
-`open_in_first_tab`'s window choice (reuse, clamped line, skipped sidebar) and
-both entry points — in `tests/integration/test_diff_gf.lua`.
+`open_in_first_tab`'s window choice (reuse, clamped line, skipped sidebar),
+`open_in_current_tab`'s sibling-window pick, and both entry points — in
+`tests/integration/test_diff_gf.lua`.
 
 ## Gotchas
 

@@ -3,7 +3,7 @@
 -- lib.Diff.goto_node() walks the `diff` treesitter tree (`block` = per-file
 -- `diff --git` section, `hunk` = per-hunk `@@` section) and jumps the cursor
 -- to the count-th matching node before/after the cursor. The keymaps live in
--- after/ftplugin/git.lua (`[`/`]` hunks, `,`/`.` blocks); this test loads them
+-- after/ftplugin/git.lua (`[[`/`]]` hunks, `,`/`.` blocks); this test loads them
 -- by sourcing ftplugins (`filetype plugin on` + the repo's after/ on rtp) and
 -- feeds real keys, in addition to calling goto_node directly.
 --
@@ -142,22 +142,66 @@ local function feed(keys)
 end
 
 set_cursor(2)
-feed(']')
-assert_eq(cursor(), 5, 'keymap ] -> next hunk')
-feed(']')
-assert_eq(cursor(), 9, 'keymap ] again -> next hunk')
-feed('[')
-assert_eq(cursor(), 5, 'keymap [ -> previous hunk')
+feed(']]')
+assert_eq(cursor(), 5, 'keymap ]] -> next hunk')
+feed(']]')
+assert_eq(cursor(), 9, 'keymap ]] again -> next hunk')
+feed('[[')
+assert_eq(cursor(), 5, 'keymap [[ -> previous hunk')
 
 set_cursor(1)
-feed('2]')
-assert_eq(cursor(), 9, 'keymap 2] -> second next hunk')
+feed('2]]')
+assert_eq(cursor(), 9, 'keymap 2]] -> second next hunk')
 
 set_cursor(3)
 feed('.')
 assert_eq(cursor(), 12, 'keymap . -> next file')
 feed(',')
 assert_eq(cursor(), 1, 'keymap , -> previous file')
+
+-- ------------------------------------------------------------------
+-- A `:Git show <rev>` buffer: a commit header before the patch is the only
+-- difference from a `:Git diff` buffer, and it does not change the filetype
+-- or the ftplugin — `[`/`]` are the same keys.
+-- ------------------------------------------------------------------
+local show = vim.api.nvim_create_buf(false, true)
+vim.api.nvim_buf_set_lines(show, 0, -1, false, {
+  'commit 1234567890abcdef', -- 1
+  'Author: A <a@b>', -- 2
+  'Date:   now', -- 3
+  '', -- 4
+  '    subject', -- 5
+  '', -- 6
+  'diff --git a/a.txt b/a.txt', -- 7
+  'index 1111111..2222222 100644', -- 8
+  '--- a/a.txt', -- 9
+  '+++ b/a.txt', -- 10
+  '@@ -1,2 +1,2 @@', -- 11
+  '-old line', -- 12
+  '+new line', -- 13
+  ' context', -- 14
+  '@@ -5,1 +5,1 @@', -- 15
+  '-x', -- 16
+  '+y', -- 17
+})
+vim.api.nvim_win_set_buf(0, show)
+vim.bo[show].filetype = 'git'
+for _ = 1, 100 do
+  if pcall(function()
+    return vim.treesitter.get_parser(show):parse()[1]
+  end) then
+    break
+  end
+  vim.wait(50)
+end
+
+set_cursor(7)
+feed(']]')
+assert_eq(cursor(), 11, 'keymap ]] -> first hunk of a :Git show buffer')
+feed(']]')
+assert_eq(cursor(), 15, 'keymap ]] -> next hunk of a :Git show buffer')
+feed('[[')
+assert_eq(cursor(), 11, 'keymap [[ -> previous hunk of a :Git show buffer')
 
 print('OK: diff navigation keymaps')
 vim.cmd('qa!')

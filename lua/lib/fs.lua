@@ -102,11 +102,10 @@ end
 ---A window in `tab` that a file may be edited in, best first: one that
 ---already shows it, else the tab's current window, else its first other
 ---window — sidebars, terminals and floats skipped, so `:edit` never replaces
----one. Falls back to the tab's current window when it has no normal window at
----all.
+---one. Returns nil when the tab has no normal window at all.
 ---@param tab integer tabpage id
 ---@param path string absolute path
----@return integer winid
+---@return integer? winid
 local function edit_window(tab, path)
   local wins = vim.api.nvim_tabpage_list_wins(tab)
   for _, win in ipairs(wins) do
@@ -127,7 +126,24 @@ local function edit_window(tab, path)
       return win
     end
   end
-  return current
+  return nil
+end
+
+---Edit `path` in `win`, landing on `lnum` when given (centred, clamped to the
+---file's length so a diff line past its end still opens it).
+---@param win integer
+---@param path string absolute path
+---@param lnum integer?
+local function edit_at(win, path, lnum)
+  vim.api.nvim_set_current_win(win)
+  if vim.api.nvim_buf_get_name(0) ~= path then
+    vim.cmd('edit ' .. vim.fn.fnameescape(path))
+  end
+  if lnum then
+    local last = vim.api.nvim_buf_line_count(0)
+    vim.api.nvim_win_set_cursor(0, { math.min(math.max(lnum, 1), last), 0 })
+    vim.cmd('normal! zz')
+  end
 end
 
 ---Open a file in the first tab -- the working tab, where the code is (the
@@ -140,19 +156,28 @@ end
 M.open_in_first_tab = function(path, lnum)
   path = vim.fn.fnamemodify(path, ':p')
   local tab = vim.api.nvim_list_tabpages()[1]
-  local win = edit_window(tab, path)
-
+  local win = edit_window(tab, path) or vim.api.nvim_tabpage_get_win(tab)
   vim.api.nvim_set_current_tabpage(tab)
-  vim.api.nvim_set_current_win(win)
-  if vim.api.nvim_buf_get_name(0) ~= path then
-    vim.cmd('edit ' .. vim.fn.fnameescape(path))
-  end
+  edit_at(win, path, lnum)
+end
 
-  if lnum then
-    local last = vim.api.nvim_buf_line_count(0)
-    vim.api.nvim_win_set_cursor(0, { math.min(math.max(lnum, 1), last), 0 })
-    vim.cmd('normal! zz')
+---Open a file beside the current one, when the current tab has a normal window
+---other than the one the cursor is in — fugitive's `:Git show` / `:Git diff`
+---open as a split next to the code, so `gf` edits that window rather than
+---jumping to another tab. Returns false when the tab has no such window (a
+---dedicated `:Diff` tab's only siblings are the DiffTree sidebar and the patch
+---buffer itself), so the caller can fall back to the first tab.
+---@param path string file to open; resolved to a full path
+---@param lnum? integer 1-based line to land on, centred (`zz`)
+---@return boolean opened
+M.open_in_current_tab = function(path, lnum)
+  path = vim.fn.fnamemodify(path, ':p')
+  local win = edit_window(vim.api.nvim_get_current_tabpage(), path)
+  if not win or win == vim.api.nvim_get_current_win() then
+    return false
   end
+  edit_at(win, path, lnum)
+  return true
 end
 
 ---Open the file under the cursor at a specific location.

@@ -764,12 +764,17 @@ M.file_location = function(bufnr, lnum)
   return path, math.max(line, 1)
 end
 
----Open the file a patch-buffer line belongs to in the first tab, at the line
----the patch points at (M.file_location) — `gf` from the patch buffer
+---Open the file a patch-buffer line belongs to, at the line the patch points
+---at (M.file_location) — `gf` from the patch buffer
 ---(after/ftplugin/git.lua) and from the tree. Patch paths are relative to the
 ---repo's work-tree root, not to the cwd, so they are resolved through
 ---lib.git.root. A section whose file is not in the working tree (a deletion,
 ---or a diff of two old revisions) warns instead.
+---
+---Where it opens: beside the patch when the patch is a split in the current
+---tab (`:Git show` / `:Git diff`), else in the first tab -- the working tab
+---(`:Diff`'s dedicated tab, whose only siblings are the sidebar and the patch
+---buffer, has no window to open into).
 ---@param bufnr number patch buffer
 ---@param lnum number 1-based line in it
 local function open_file(bufnr, lnum)
@@ -789,11 +794,14 @@ local function open_file(bufnr, lnum)
     return
   end
 
-  require('lib.fs').open_in_first_tab(abs, line)
+  local fs = require('lib.fs')
+  if not fs.open_in_current_tab(abs, line) then
+    fs.open_in_first_tab(abs, line)
+  end
 end
 
----`gf` in a patch buffer: open the file under the cursor in the first tab, at
----the line the cursor's hunk points at.
+---`gf` in a patch buffer: open the file under the cursor, at the line the
+---cursor's hunk points at (see open_file for where it lands).
 M.open_cursor_file = function()
   open_file(vim.api.nvim_get_current_buf(), vim.fn.line('.'))
 end
@@ -1193,10 +1201,9 @@ M.tree_stage = function(tree_buf)
   require('lib.git').add(r.path)
 end
 
----`gf` in the tree: open the row's file in the first tab, at the line its
----section points at — a hunk row lands on that hunk's first new line, a file
----or dir row on line 1 (their `lnum` is a `diff --git` header). Exposed for
----the headless test.
+---`gf` in the tree: open the row's file at the line its section points at — a
+---hunk row lands on that hunk's first new line, a file or dir row on line 1
+---(their `lnum` is a `diff --git` header). Exposed for the headless test.
 ---@param tree_buf integer
 M.tree_open_file = function(tree_buf)
   local r = row_under_cursor(tree_buf)
@@ -2129,8 +2136,8 @@ M.open_tree = function()
 
   -- <CR> jumps to the section; q and s close the tree (`s` is the same toggle
   -- as in the diff buffer, see after/ftplugin/git.lua, so one key opens and
-  -- closes it from either side); ga stages the row's file; gf opens it in the
-  -- first tab; <space> flags the row as viewed; the z fold commands fold the
+  -- closes it from either side); ga stages the row's file; gf opens it (see
+  -- open_file); <space> flags the row as viewed; the z fold commands fold the
   -- diff buffer (and mirror onto the tree).
   vim.keymap.set('n', '<CR>', function()
     jump_to_row(tree_buf)
@@ -2142,7 +2149,7 @@ M.open_tree = function()
   end, { buffer = tree_buf, desc = "Diff tree: git add the row's file" })
   vim.keymap.set('n', 'gf', function()
     M.tree_open_file(tree_buf)
-  end, { buffer = tree_buf, desc = "Diff tree: open the row's file in the first tab" })
+  end, { buffer = tree_buf, desc = "Diff tree: open the row's file" })
   -- `<space>` is the leader key, but buffer-locally here it is the row action:
   -- in a no-arg `:Diff` (the *unstaged* working tree, `diff_stageable`) it
   -- git-adds the row's region (M.tree_stage_row); everywhere else it is the

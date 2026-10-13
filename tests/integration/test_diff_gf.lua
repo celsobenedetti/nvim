@@ -1,8 +1,8 @@
 -- Integration test (real nvim, headless): the `gf` flow of a patch buffer and
 -- of the DiffTree sidebar — lib.Diff.file_location (which working-tree line a
--- patch line points at), lib.fs.open_in_first_tab (where it is opened), and
--- the two entry points that join them (lib.Diff.open_cursor_file /
--- lib.Diff.tree_open_file).
+-- patch line points at), lib.fs.open_in_first_tab / open_in_current_tab (where
+-- it is opened), and the two entry points that join them
+-- (lib.Diff.open_cursor_file / lib.Diff.tree_open_file).
 --
 -- Run via `make test-integration` (nvim --headless -u NONE -l).
 
@@ -240,8 +240,30 @@ Diff.tree_open_file(tree_buf)
 assert_eq(vim.api.nvim_buf_get_name(0), repo .. '/dir/b.txt', "the file row's file")
 assert_eq(vim.api.nvim_win_get_cursor(0)[1], 1, 'a file row opens at line 1')
 
+-- ------------------------------------------------------------------
+-- `gf` when the patch is a split in a normal tab (`:Git show` / `:Git diff`):
+-- the file opens beside it, in this tab, instead of in the first tab.
+-- ------------------------------------------------------------------
+vim.cmd('tabnew')
+local split_tab = vim.api.nvim_get_current_tabpage()
+vim.api.nvim_win_set_buf(0, buf) -- the patch window (current)
+vim.cmd('belowright split ' .. repo .. '/dir/b.txt') -- its editable sibling
+local code_win = vim.api.nvim_get_current_win()
+-- Back to the patch window: that is where `gf` is pressed.
+for _, w in ipairs(vim.api.nvim_tabpage_list_wins(split_tab)) do
+  if vim.api.nvim_win_get_buf(w) == buf then
+    vim.api.nvim_set_current_win(w)
+  end
+end
+vim.api.nvim_win_set_cursor(0, { 10, 0 }) -- a.txt hunk, -> file line 14
+Diff.open_cursor_file()
+assert_eq(vim.api.nvim_get_current_tabpage(), split_tab, 'gf stays in the split tab')
+assert_eq(vim.api.nvim_get_current_win(), code_win, "gf uses the tab's other window")
+assert_eq(vim.api.nvim_buf_get_name(0), repo .. '/a.txt', 'and opens the patch file there')
+assert_eq(vim.fn.getline('.'), 'line 14', 'at the mapped line')
+
 vim.cmd.cd(cwd)
 vim.fn.delete(repo, 'rf')
 
-print('OK: diff gf (open the file under the cursor in the first tab)')
+print('OK: diff gf (open the file under the cursor beside the patch, or in the first tab)')
 vim.cmd('qa!')
