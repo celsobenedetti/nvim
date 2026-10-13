@@ -84,30 +84,32 @@ local function proc_name(pid)
   return lines[1]
 end
 
---- Is `pid`, or one of its descendants up to `depth` levels down, named `name`?
---- `nvim_get_proc_children` reads /proc/<pid>/task/<pid>/children on Linux, so
---- the walk is a handful of small file reads.
+--- Pid of `pid`, or of a descendant up to `depth` levels down, named `name`;
+--- nil if none matches. `nvim_get_proc_children` reads
+--- /proc/<pid>/task/<pid>/children on Linux, so the walk is a handful of
+--- small file reads.
 ---@param pid integer
 ---@param name string
 ---@param depth integer levels of descendants still to search
----@return boolean
-local function proc_tree_has(pid, name, depth)
+---@return integer?
+local function proc_tree_find(pid, name, depth)
   if proc_name(pid) == name then
-    return true
+    return pid
   end
   if depth <= 0 then
-    return false
+    return nil
   end
   local ok, children = pcall(vim.api.nvim_get_proc_children, pid)
   if not ok then
-    return false
+    return nil
   end
   for _, child in ipairs(children) do
-    if proc_tree_has(child, name, depth - 1) then
-      return true
+    local found = proc_tree_find(child, name, depth - 1)
+    if found then
+      return found
     end
   end
-  return false
+  return nil
 end
 
 --- Does the terminal buffer's job run a process called `name` — either as the
@@ -128,7 +130,24 @@ local function job_runs_process(buffer, name, depth)
     return false
   end
   local pid = job_pid(buffer)
-  return pid ~= nil and proc_tree_has(pid, name, depth or 1)
+  return pid ~= nil and proc_tree_find(pid, name, depth or 1) ~= nil
+end
+
+--- Pid of the process named `name` running inside the terminal buffer's job
+--- -- either the job process itself, or a descendant up to `depth` levels
+--- down -- nil if none matches. The pid `job_runs_process` only reports the
+--- existence of; callers that need to inspect the process itself (its start
+--- time, its open files) want this instead.
+---@param buffer integer
+---@param name string process name as /proc/<pid>/comm reports it (no path)
+---@param depth integer? levels of descendants to search, default 1
+---@return integer?
+local function find_process(buffer, name, depth)
+  if not is_term(buffer) then
+    return nil
+  end
+  local pid = job_pid(buffer)
+  return pid ~= nil and proc_tree_find(pid, name, depth or 1) or nil
 end
 
 --- Which agent CLI the terminal buffer is running, nil for none. Unlike
@@ -182,6 +201,7 @@ local M = {
   job_pid = job_pid,
   job_command = job_command,
   job_runs_process = job_runs_process,
+  find_process = find_process,
   running_agent = running_agent,
 
   -- Returns true if buffer is terminal, and has no running command

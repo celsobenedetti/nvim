@@ -59,9 +59,41 @@ state.pi = { is_running = is_running }
 --- session'
 --- Mirrors what pi's own `/clone` command does (copy the active branch into a
 --- new session), but from outside: `pi --fork` makes the same copy before pi
---- starts, and the session to fork is the most recently modified file in this
---- terminal's project session directory -- the same heuristic `pi --continue`
---- itself uses to find "the" session for a cwd.
+--- starts. The session file to fork is preferred from the registry the pi
+--- `session-pid` extension publishes (`<agent-dir>/instances/<pid>.json`, see
+--- published_session below), which is exact. Without that extension pi's session
+--- files are otherwise unaddressable from its pid (no lockfile, no open fd once
+--- idle, no env var on the process itself, only on its own tool-call children),
+--- so fall back to matching the session file's creation timestamp against the
+--- pi process's own start time: a fresh `pi` creates its session file
+--- (SessionManager.create, written synchronously before the TUI renders) within
+--- a second of exec, and the filename records that instant to the millisecond.
+--- Picking the session whose name is closest to the pid's start time -- rather
+--- than the directory's most recently modified file -- also disambiguates two
+--- pi terminals open on the same project.
+
+--- Clock ticks per second (man 7 time, `sysconf(_SC_CLK_TCK)`), needed to read
+--- /proc/<pid>/stat's starttime field. Virtually always 100 on Linux, but read
+--- rather than assumed.
+local CLK_TCK = tonumber(vim.fn.system('getconf CLK_TCK')) or 100
+
+--- Boot time (seconds since epoch), the base that a process starttime (also
+--- from boot) is measured against. Fixed for the uptime of the machine, so
+--- read once rather than per lookup.
+local BOOT_EPOCH = tonumber(vim.fn.system('grep -o "^btime [0-9]*" /proc/stat'):match('(%d+)'))
+
+--- `os.time` reads a date table as local time with no way to ask for UTC, so
+--- converting the UTC timestamp pi's session filenames carry needs this
+--- correction: the gap between what `os.time` would say for the current
+--- instant read as local and read as UTC. Recomputed as needed would also
+--- work (DST can move it mid-session) but the gap is in whole hours and a
+--- stale value only matters for the hour of a DST transition itself.
+local LOCAL_MINUS_UTC = os.time() - os.time(os.date('!*t'))
+
+--- Seconds a pi process may take from exec to writing its session file --
+--- settings and extension discovery before `createSessionManager` runs in
+--- main.ts -- before a session file is no longer considered this pid's own.
+local SESSION_CREATE_SLACK_SECS = 10
 
 --- Default session directory pi computes for `cwd`, replicating
 --- getDefaultSessionDirPath in @earendil-works/pi-coding-agent's
@@ -84,30 +116,136 @@ local function term_cwd(buffer)
   return cwd and vim.fs.normalize(cwd)
 end
 
---- Most recently modified session file for `cwd`, nil when there is none.
----@param cwd string
----@return string?
-local function latest_session(cwd)
-  local files = vim.fn.glob(session_dir(cwd) .. '/*.jsonl', false, true)
-  table.sort(files, function(a, b)
-    return vim.fn.getftime(a) > vim.fn.getftime(b)
-  end)
-  return files[1]
+--- When `pid` was exec'd, as seconds since epoch; nil if `/proc/<pid>` is
+--- already gone.
+---@param pid integer
+---@return number?
+local function proc_start_epoch(pid)
+  local ok, lines = pcall(vim.fn.readfile, '/proc/' .. pid .. '/stat')
+  if not ok or not lines[1] then
+    return nil
+  end
+  -- comm (field 2) is parenthesised and may itself contain spaces or parens,
+  -- so the fields before it are unsafe to split on space; only what follows
+  -- its closing paren is. starttime is field 22 overall, so field 20 counting
+  -- from state (field 3) as 1.
+  local after = lines[1]:match('%)%s*(.*)')
+  local starttime_ticks = after and tonumber(vim.split(after, ' ')[20])
+  if not starttime_ticks then
+    return nil
+  end
+  return BOOT_EPOCH + starttime_ticks / CLK_TCK
 end
 
-vim.keymap.set('n', '<leader>pc', function()
-  local buf = vim.api.nvim_get_current_buf()
+--- Instant a pi session filename
+--- (`2026-10-12T02-27-14-918Z_<uuid>.jsonl`) records, as seconds since epoch;
+--- nil if `path` isn't named like one.
+---@param path string
+---@return number?
+local function filename_epoch(path)
+  local y, mo, d, h, mi, s, ms = vim.fs.basename(path):match('^(%d+)-(%d+)-(%d+)T(%d+)-(%d+)-(%d+)-(%d+)Z_')
+  if not y then
+    return nil
+  end
+  local utc = {
+    year = tonumber(y),
+    month = tonumber(mo),
+    day = tonumber(d),
+    hour = tonumber(h),
+    min = tonumber(mi),
+    sec = tonumber(s),
+  }
+  return os.time(utc) + LOCAL_MINUS_UTC + tonumber(ms) / 1000
+end
+
+--- Session file for `cwd` whose creation instant lies closest after `pid`'s
+--- start time, within `SESSION_CREATE_SLACK_SECS`; nil when none correlates (a
+--- `--continue`d or `--resume`d session doesn't create a new file at startup,
+--- so there is nothing here to tell it apart from any other session in `cwd`)
+--- or `pid` could not be read. A guess here would silently fork the wrong
+--- conversation, so the caller is left to fail loudly instead.
+---@param cwd string
+---@param pid integer?
+---@return string?
+local function session_for_pid(cwd, pid)
+  local start_epoch = pid and proc_start_epoch(pid)
+  if not start_epoch then
+    return nil
+  end
+  local best, best_diff
+  for _, file in ipairs(vim.fn.glob(session_dir(cwd) .. '/*.jsonl', false, true)) do
+    local epoch = filename_epoch(file)
+    if epoch and epoch >= start_epoch - 2 and epoch - start_epoch <= SESSION_CREATE_SLACK_SECS then
+      local diff = math.abs(epoch - start_epoch)
+      if not best_diff or diff < best_diff then
+        best, best_diff = file, diff
+      end
+    end
+  end
+  return best
+end
+
+--- Session file the pi `session-pid` extension published for `pid`, nil when
+--- the extension is not loaded, the file is missing, or it belongs to another
+--- process (a recycled pid). The registry path is fixed by the extension.
+---@param pid integer
+---@return string?
+local function published_session(pid)
+  local agent_dir = vim.env.PI_CODING_AGENT_DIR or vim.fs.normalize('~/.pi/agent')
+  local ok, lines = pcall(vim.fn.readfile, vim.fs.joinpath(agent_dir, 'instances', pid .. '.json'))
+  if not ok or not lines[1] then
+    return nil
+  end
+  local decoded, data = pcall(vim.json.decode, table.concat(lines, '\n'))
+  if not decoded or type(data) ~= 'table' or data.pid ~= pid or type(data.sessionFile) ~= 'string' then
+    return nil
+  end
+  return data.sessionFile
+end
+
+--- Resolve the session of the pi running in `buf`: the published registry when
+--- the extension is present, else the filename/start-time correlation above.
+--- nil when neither can name it (a `--continue`d session with the extension
+--- absent creates no new file, so there is nothing to correlate).
+---@param buf integer
+---@return string?
+local function resolve_session(buf)
+  local pid = lib.term.find_process(buf, 'pi', SEARCH_DEPTH)
+  if not pid then
+    return nil
+  end
+  local published = published_session(pid)
+  if published then
+    return published
+  end
+  local cwd = term_cwd(buf)
+  return cwd and session_for_pid(cwd, pid) or nil
+end
+
+state.pi.resolve_session = resolve_session
+
+--- Clone the session of the pi terminal in `buf` into a new vertical split.
+---@param buf integer
+local function clone_session(buf)
   if not is_running(buf) then
     return
   end
-  local cwd = term_cwd(buf)
-  local session = cwd and latest_session(cwd)
+  local session = resolve_session(buf)
   if not session then
-    Snacks.notify.warn('No session file found to clone', { title = 'pi' })
+    Snacks.notify.warn("Could not resolve this terminal's pi session; not cloning", { title = 'pi clone' })
     return
   end
+  Snacks.notify.info('Cloning session ' .. vim.fs.basename(session), { title = 'pi clone' })
   vim.cmd('vsplit')
   vim.cmd.term('pi --fork ' .. vim.fn.shellescape(session))
+end
+
+vim.api.nvim_create_user_command('PiFork', function()
+  clone_session(vim.api.nvim_get_current_buf())
+end, { desc = 'pi: clone this terminal session into a new vertical split' })
+
+vim.keymap.set('n', '<leader>pc', function()
+  clone_session(vim.api.nvim_get_current_buf())
 end, { desc = 'pi: clone session into a new vertical split' })
 
 -- pi renders its own input box; nvim's insert mode on terminal enter fights it.

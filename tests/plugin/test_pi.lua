@@ -33,6 +33,9 @@ local proc_children = {}
 local clock = 0
 local cmds = {}
 local autocmds = {}
+local user_commands = {}
+-- registry path -> decoded JSON, standing in for the pi session-pid extension
+local registry = {}
 
 local vim_mock = {
   api = {
@@ -57,6 +60,9 @@ local vim_mock = {
     nvim_create_autocmd = function(event, opts)
       autocmds[event] = opts
     end,
+    nvim_create_user_command = function(name)
+      user_commands[name] = true
+    end,
   },
   bo = setmetatable({}, {
     __index = function(_, buf)
@@ -71,8 +77,19 @@ local vim_mock = {
       end
       return pid
     end,
-    -- stands in for reading /proc/<pid>/comm, which throws when pid is gone
+    system = function(cmd)
+      if cmd:match('CLK_TCK') then
+        return '100\n'
+      end
+      return 'btime 1000000\n'
+    end,
+    -- stands in for reading /proc/<pid>/comm, which throws when pid is gone.
+    -- A registry path yields itself as the single line, so json.decode below
+    -- can look the decoded value back up by that string.
     readfile = function(path)
+      if registry[path] then
+        return { path }
+      end
       local pid = tonumber(path:match('/proc/(%d+)/comm'))
       local name = proc_names[pid]
       if not name then
@@ -85,6 +102,21 @@ local vim_mock = {
     basename = function(path)
       return path:match('[^/]*$')
     end,
+    normalize = function(path)
+      return (path:gsub('^~', '/home/me'))
+    end,
+    joinpath = function(...)
+      return table.concat({ ... }, '/')
+    end,
+  },
+  env = {},
+  json = {
+    decode = function(s)
+      return registry[s]
+    end,
+  },
+  keymap = {
+    set = function() end,
   },
   uv = {
     now = function()
@@ -118,6 +150,7 @@ local function setup()
   proc_names = {}
   proc_children = {}
   cmds = {}
+  registry = {}
   -- past any cached detection from an earlier case (CACHE_MS = 500)
   clock = clock + 10000
 end
@@ -247,9 +280,46 @@ proc_names[100] = 'bash'
 lib.term.startinsert()
 assert_eq(cmds[1], 'startinsert', 'startinsert in a terminal not running pi')
 
+describe('resolve_session: published registry')
+
+setup()
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+buf_names[7] = 'term://~/projects/nvim//100:pi'
+proc_names[100] = 'pi'
+registry['/home/me/.pi/agent/instances/100.json'] = { pid = 100, sessionFile = '/home/me/.pi/agent/sessions/--x--/s.jsonl' }
+assert_eq(
+  state.pi.resolve_session(7),
+  '/home/me/.pi/agent/sessions/--x--/s.jsonl',
+  'the published registry names the session'
+)
+
+-- A recycled pid: the registry file exists but belongs to a dead instance.
+-- Falls through to the timestamp correlation, which finds nothing here.
+setup()
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+buf_names[7] = 'term://~/projects/nvim//100:pi'
+proc_names[100] = 'pi'
+registry['/home/me/.pi/agent/instances/100.json'] = { pid = 999, sessionFile = '/wrong' }
+assert_eq(state.pi.resolve_session(7), nil, 'a registry file naming another pid is ignored')
+
+describe('resolve_session: no registry')
+
+setup()
+buf_types[7] = 'terminal'
+buf_pids[7] = 100
+buf_names[7] = 'term://~/projects/nvim//100:pi'
+proc_names[100] = 'pi'
+assert_eq(state.pi.resolve_session(7), nil, 'nil without a registry and without a correlating file')
+
+setup()
+assert_eq(state.pi.resolve_session(7), nil, 'nil when no pi process is found')
+
 describe('autocmds')
 
 assert_eq(type(autocmds.WinLeave), 'table', 'a WinLeave handler is registered for the follow flag')
+assert_eq(user_commands.PiFork, true, 'the :PiFork user command is registered')
 
 io.write(string.format('\n\n%d/%d tests passed\n', tests_passed, tests_run))
 os.exit(tests_passed == tests_run and 0 or 1)
