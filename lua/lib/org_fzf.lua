@@ -194,6 +194,20 @@ local function line_to_item(items, line)
   return idx and items[idx] or nil
 end
 
+--- Open a headline record, optionally in a new vertical split.
+---@param item table
+---@param vsplit? boolean
+local function jump_to(item, vsplit)
+  vim.cmd("normal! m'") -- push to the jumplist first
+  local same = vim.fn.fnamemodify(item.filename, ':p') == vim.fn.expand('%:p')
+  local cmd = vsplit and 'vsplit' or 'edit'
+  if not same or vsplit then
+    vim.cmd(cmd .. (same and '' or ' ' .. vim.fn.fnameescape(item.filename)))
+  end
+  vim.api.nvim_win_set_cursor(0, { item.line_number, 0 })
+  vim.cmd('normal! zvzz')
+end
+
 --- Send the selected (or all, via ctrl-a) entries to the quickfix list.
 ---@param items table[]
 ---@param selected string[]
@@ -275,15 +289,14 @@ function M.search_headings(opts)
       ['alt-q'] = function(selected) -- send selection to the quickfix list
         send_to_qf(items, selected)
       end,
+      ['ctrl-v'] = function(selected) -- open selection in a vertical split
+        local item = line_to_item(items, selected and selected[1])
+        if item then
+          jump_to(item, true)
+        end
+      end,
     },
-    on_confirm = function(item)
-      vim.cmd("normal! m'") -- push to the jumplist first
-      if vim.fn.fnamemodify(item.filename, ':p') ~= vim.fn.expand('%:p') then
-        vim.cmd('edit ' .. vim.fn.fnameescape(item.filename))
-      end
-      vim.api.nvim_win_set_cursor(0, { item.line_number, 0 })
-      vim.cmd('normal! zvzz')
-    end,
+    on_confirm = jump_to,
   })
 end
 
