@@ -55,6 +55,61 @@ end
 -- Read by after/plugin/winbar.lua (terminal labels) and the autocmds below.
 state.pi = { is_running = is_running }
 
+--- @module 'clone session: open a sibling pi terminal cloned from this one's
+--- session'
+--- Mirrors what pi's own `/clone` command does (copy the active branch into a
+--- new session), but from outside: `pi --fork` makes the same copy before pi
+--- starts, and the session to fork is the most recently modified file in this
+--- terminal's project session directory -- the same heuristic `pi --continue`
+--- itself uses to find "the" session for a cwd.
+
+--- Default session directory pi computes for `cwd`, replicating
+--- getDefaultSessionDirPath in @earendil-works/pi-coding-agent's
+--- session-manager.ts: `/a/b` -> `~/.pi/agent/sessions/--a-b--`.
+---@param cwd string
+---@return string
+local function session_dir(cwd)
+  local safe = cwd:gsub('^[/\\]', ''):gsub('[/\\:]', '-')
+  return vim.fs.normalize('~/.pi/agent/sessions/--' .. safe .. '--')
+end
+
+--- Working directory a terminal buffer's job was started in, nil for a
+--- non-terminal buffer. Terminal buffers are named `term://{cwd}//{pid}:{cmd}`,
+--- with `{cwd}` abbreviated under the home directory (`~/notes`), which
+--- `vim.fs.normalize` expands back out to match pi's own resolved paths.
+---@param buffer integer
+---@return string?
+local function term_cwd(buffer)
+  local cwd = vim.api.nvim_buf_get_name(buffer):match('^term://(.-)//')
+  return cwd and vim.fs.normalize(cwd)
+end
+
+--- Most recently modified session file for `cwd`, nil when there is none.
+---@param cwd string
+---@return string?
+local function latest_session(cwd)
+  local files = vim.fn.glob(session_dir(cwd) .. '/*.jsonl', false, true)
+  table.sort(files, function(a, b)
+    return vim.fn.getftime(a) > vim.fn.getftime(b)
+  end)
+  return files[1]
+end
+
+vim.keymap.set('n', '<leader>pc', function()
+  local buf = vim.api.nvim_get_current_buf()
+  if not is_running(buf) then
+    return
+  end
+  local cwd = term_cwd(buf)
+  local session = cwd and latest_session(cwd)
+  if not session then
+    Snacks.notify.warn('No session file found to clone', { title = 'pi' })
+    return
+  end
+  vim.cmd('vsplit')
+  vim.cmd.term('pi --fork ' .. vim.fn.shellescape(session))
+end, { desc = 'pi: clone session into a new vertical split' })
+
 -- pi renders its own input box; nvim's insert mode on terminal enter fights it.
 -- table.insert(lib.term.startinsert_exemptions, is_running)
 
