@@ -44,6 +44,16 @@ assert_eq(obsidian.vault('/notes/garden/notes/x.md'), '/notes/garden', 'garden n
 current_file = '/notes/org/work.org'
 assert_eq(obsidian.vault(), '/notes/work', 'defaults to the current buffer')
 
+-- The agenda buffer has no file of its own, so the vault comes from the org
+-- file backing the headline under the cursor, not from the current buffer.
+current_file = '/tmp/orgagenda'
+assert_eq(obsidian.vault('/notes/org/work.org'), '/notes/work', 'a source path overrides the current buffer')
+assert_eq(obsidian.vault('/notes/org/personal.org'), '/notes/garden', 'a non-work source path uses the garden')
+assert_eq(obsidian.vault(), '/notes/garden', 'no source path falls back to the current buffer')
+
+assert_eq(obsidian.note_path('some note', ''), nil, 'an unconfigured vault resolves nothing')
+
+current_file = '/notes/org/work.org'
 config.org.work = ''
 assert_eq(obsidian.vault(), '/notes/garden', 'unset ORG_WORK falls back to the garden')
 
