@@ -9,7 +9,16 @@ M.focus_or_create_notes_tab = function(fn)
   end
 
   if fn then
-    vim.schedule(fn)
+    vim.schedule(function()
+      -- nvim started with `-p` (neovide's default) reselects the first tab
+      -- after plugins load, undoing the focus above; re-assert it before
+      -- filling the tab.
+      local notes = lib.tab.find(config.tabs.notes)
+      if notes then
+        vim.api.nvim_set_current_tabpage(notes)
+      end
+      fn()
+    end)
   end
 end
 
