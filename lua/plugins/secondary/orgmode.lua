@@ -93,20 +93,6 @@ local agenda_files = {
   config.dirs.org .. '/**/*',
 }
 
-local function set_highlights()
-  if colors.done then
-    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = colors.done })
-  else
-    vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
-  end
-
-  if colors.todo then
-    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = colors.todo })
-  else
-    vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
-  end
-end
-
 local function goto_current_task()
   lib.notes.focus_or_create_notes_tab(function()
     local org = require('orgmode')

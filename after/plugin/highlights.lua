@@ -86,6 +86,9 @@ vim.api.nvim_set_hl(
   { bg = 'none', fg = lib.colors.get_color('@markup.link.label.markdown_inline', 'fg'), italic = true }
 )
 
+vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = colors.fg })
+vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = colors.diff.add_char_fg })
+
 if colors.folded then
   vim.api.nvim_set_hl(0, 'Folded', { bg = colors.folded })
 end

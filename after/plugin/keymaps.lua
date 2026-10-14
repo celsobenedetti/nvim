@@ -153,7 +153,7 @@ end, { silent = true, desc = 'Disable ZZ' })
 -- Insert mode: Ctrl+B to go back one character (shell-like behavior)
 vim.keymap.set('i', '<C-b>', '<Left>', { desc = 'Move back one char (shell-like)' })
 
-vim.keymap.set('n', config.keys['<C-S-g>'], function()
+vim.keymap.set('n', '<leader>rg', function()
   local cwd = lib.cwd.cwd()
   local cmd = { 'rg' }
   vim.list_extend(cmd, config.cmd.rg.ignore)
@@ -165,7 +165,7 @@ vim.keymap.set('n', config.keys['<C-S-g>'], function()
   lib.fzf.grep({ cmd = cmd, cwd = cwd })
 end, { desc = 'rg current dir' })
 
-vim.keymap.set('n', '<leader>rg', function()
+vim.keymap.set('n', config.keys['<C-S-g>'], function()
   require('fzf-lua').live_grep()
 end)
 

@@ -28,6 +28,7 @@ local abbreviations = {
   Cd = 'cd',
   Lcd = 'lcd',
   hunk = 'Hunk',
+  Restart = 'restart',
 }
 
 for left, right in pairs(abbreviations) do
