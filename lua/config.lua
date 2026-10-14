@@ -156,6 +156,7 @@ local M = {
         '-g',
         '!*.cursor*',
       },
+      --
       -- org-mode archive-path property lines pollute results; dropped via
       -- rg -v in the fzf keymap and via quickfix filtering in :Grep (a bare
       -- positional pattern there would clash with :grep's appended -e pattern,
@@ -242,12 +243,14 @@ local M = {
       },
     },
   },
+
   org = {
     inbox = os.getenv('ORG_INBOX') or '',
     work = os.getenv('ORG_WORK') or '',
     references = os.getenv('ORG_REFERENCES') or '',
     todo_keywords = require('org_todo_keywords'),
   },
+
   env = {
     WORK_JIRA = os.getenv('WORK_JIRA') or '',
     GREP_IGNORE = os.getenv('GREP_NOTES_IGNORE') or '',

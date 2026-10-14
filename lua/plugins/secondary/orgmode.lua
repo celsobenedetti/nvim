@@ -6,7 +6,7 @@ local agenda_views = {
       -- Actions: everything in the curriculum with an active TODO state.
       {
         type = 'tags_todo',
-        match = 'curriculum',
+        match = 'c',
         org_agenda_sorting_strategy = { 'todo-state-down', 'priority-down' },
         org_agenda_overriding_header = 'Curriculum — Actions',
       },
@@ -279,7 +279,6 @@ return {
         vim.schedule(set_highlights)
       end
       vim.schedule(function()
-        vim.api.nvim_set_hl(0, '@org.agenda.scheduled', { fg = 'lightgray' })
         vim.api.nvim_set_hl(0, '@org.headline.level1.org', { link = 'Special' })
         vim.api.nvim_set_hl(0, '@org.drawer.org', { link = 'Comment' })
       end)

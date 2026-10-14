@@ -37,3 +37,5 @@ end, { desc = 'Toggle auto zz mode (centers cursor on every move)' })
 vim.api.nvim_create_user_command('AutoZT', function()
   toggle('zt')
 end, { desc = 'Toggle auto zt mode (pins cursor line to window top on every move)' })
+
+vim.keymap.set('n', '<leader>az', ':AutoZT<CR>', { desc = 'Toggle auto zt mode' })

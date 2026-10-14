@@ -33,7 +33,8 @@
 local M = {}
 
 setmetatable(M, {
-  -- `__index` fires on a miss, so each submodule is `require` at most once.
+  -- `__index` fires on a miss, so each submodule is lazyly `require`d
+  -- at most once, when first invoked
   __index = function(t, key)
     local mod = require('lib.' .. key)
     rawset(t, key, mod)
