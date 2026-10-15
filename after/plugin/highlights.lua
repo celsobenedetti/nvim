@@ -80,6 +80,8 @@ vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'DiagnosticSignOk', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', { bg = 'none', fg = 'none' })
 
+vim.api.nvim_set_hl(0, '@string.special.url', { bg = 'none', fg = colors.accent })
+
 vim.api.nvim_set_hl(
   0,
   '@markup.link.label.markdown_inline',

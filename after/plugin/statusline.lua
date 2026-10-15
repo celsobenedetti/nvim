@@ -362,7 +362,6 @@ function _G.MyStatusLine()
   if branch_sync_status ~= '' then
     branch = branch .. ' ' .. branch_sync_status
   end
-  branch = branch .. ' '
 
   local filetype_and_lsps = ''
   if #lsp > 0 and (#file_status > 0 or #filetype > 0) then
@@ -379,6 +378,7 @@ function _G.MyStatusLine()
     modules._overseer_tasks(),
     time,
   }, 'right')
+  right = right .. ' '
   local SPACE_BETWEEN = '%=' --- :h statusline
 
   return string.format(' %s%s%s', left, SPACE_BETWEEN, right)

@@ -198,3 +198,30 @@ vim.api.nvim_buf_create_user_command(
 vim.opt.wrap = true -- disable wrap
 vim.schedule(setup_folding)
 vim.schedule(setup_markdown_hl)
+
+--- "Reading mode": keep markup hidden on the cursor line too.
+---
+--- Two layers re-show markup under the cursor and `anti_conceal` drives both:
+--- the plugin skips its own decorations (bullets, heading icons) on the cursor
+--- line, and while anti conceal is on its `win_options` preset pins
+--- `concealcursor` to `''` (`lib/presets.lua`), which is what reveals the
+--- `**` / backtick markers there. Disabling anti conceal flips `concealcursor`
+--- to `'nvic'`, so nothing unfolds under the cursor.
+---
+--- The plugin exposes no public toggle for the flag, so rebuild the config:
+--- `setup()` merges it into the user opts and drops the per-buffer config
+--- cache, `enable()` re-renders every attached buffer with the new window
+--- options. The `marks.add` patch below survives, it wraps the module once.
+local base_opts = {}
+local reading_mode = false
+local function toggle_reading_mode()
+  reading_mode = not reading_mode
+  local render_markdown = require('render-markdown')
+  render_markdown.setup(vim.tbl_deep_extend('force', base_opts, {
+    anti_conceal = { enabled = not reading_mode },
+  }))
+  render_markdown.enable()
+  vim.notify('markdown reading mode: ' .. (reading_mode and 'on' or 'off'))
+end
+
+vim.keymap.set('n', '<leader>rm', toggle_reading_mode, { desc = 'markdown: toggle reading mode' })
