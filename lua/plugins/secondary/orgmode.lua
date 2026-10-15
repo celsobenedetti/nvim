@@ -171,6 +171,7 @@ return {
         org_priority_default = 'C',
         org_priority_lowest = 'C',
         org_log_into_drawer = 'LOGBOOK',
+        org_hide_emphasis_markers = true,
         org_ellipsis = ' ',
         org_startup_indented = true,
         org_adapt_indentation = false, -- left flush
