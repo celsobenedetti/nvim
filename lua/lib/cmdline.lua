@@ -96,6 +96,42 @@ local function launch_picker(line, parsed, root)
   end)
 end
 
+-- ============================================================
+-- `<C-v>`/`<C-s>` on the cmdline: on `:e[dit][!] file`, open that file in a
+-- vertical/horizontal split instead of the current window.
+
+local EDIT_CMDS = { e = true, ed = true, edi = true, edit = true }
+
+---Turn an `:e[dit][!] file` cmdline into a `:vsplit`/`:split` of the same
+---file, keeping the bang and args; nil when the typed command isn't
+---`e`/`edit`.
+---@param line string cmdline content, without the leading `:`
+---@param kind 'split'|'vsplit'
+---@return string|nil
+M.to_split_cmd = function(line, kind)
+  local cmd, bang, args = line:match('^(%a+)(!?)%s+(.+)$')
+  if cmd == nil or not EDIT_CMDS[cmd] then
+    return nil
+  end
+  return kind .. bang .. ' ' .. args
+end
+
+---`<C-v>`/`<C-s>` handler for the cmdline (wired in after/plugin/cmdline.lua).
+---@param kind 'split'|'vsplit'
+M.open_split = function(kind)
+  local key = vim.api.nvim_replace_termcodes(kind == 'vsplit' and '<C-v>' or '<C-s>', true, false, true)
+  local cmd = vim.fn.getcmdtype() == ':' and M.to_split_cmd(vim.fn.getcmdline(), kind) or nil
+  if cmd == nil then
+    -- not an `:e` line (or not even the `:` cmdline): keep the key's
+    -- native behavior, fed with 'n' so it isn't remapped back to us
+    return vim.api.nvim_feedkeys(key, 'n', false)
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-c>', true, false, true), 'ni', false)
+  vim.schedule(function()
+    vim.cmd(cmd)
+  end)
+end
+
 ---`<Tab>` handler for the cmdline (wired in after/plugin/cmdline.lua).
 M.fzf_tab = function()
   if vim.fn.getcmdtype() ~= ':' then

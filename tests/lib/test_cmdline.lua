@@ -297,6 +297,58 @@ files_opts.actions['enter']({ 'my file.txt' }, {})
 assert_eq(cmd_e_calls[1], 'e /a/b/my\\ file.txt', 'enter escapes spaces')
 
 -- ============================================================
+describe('lib.cmdline: to_split_cmd')
+
+reset()
+cmdline = reload_cmdline()
+assert_eq(cmdline.to_split_cmd('e foo.txt', 'vsplit'), 'vsplit foo.txt', 'e -> vsplit')
+assert_eq(cmdline.to_split_cmd('edit foo.txt', 'split'), 'split foo.txt', 'edit -> split')
+assert_eq(cmdline.to_split_cmd('edi! foo.txt', 'vsplit'), 'vsplit! foo.txt', 'bang kept, abbreviation')
+assert_eq(cmdline.to_split_cmd('ed %', 'vsplit'), 'vsplit %', 'abbreviation with % arg')
+assert_eq(cmdline.to_split_cmd('echo foo', 'vsplit'), nil, 'unrelated command not matched')
+assert_eq(cmdline.to_split_cmd('e', 'vsplit'), nil, 'no args -> nil')
+assert_eq(cmdline.to_split_cmd('vsplit foo', 'vsplit'), nil, 'not an edit command')
+assert_eq(cmdline.to_split_cmd('', 'vsplit'), nil, 'empty line')
+
+-- ============================================================
+describe('lib.cmdline: open_split')
+
+-- `:e foo.txt` + <C-v> cancels the cmdline and schedules `:vsplit foo.txt`
+reset()
+cmdline = reload_cmdline()
+state.line = 'e foo.txt'
+cmdline.open_split('vsplit')
+assert_eq(fed[1], '<C-c>', 'cancels the cmdline')
+assert_eq(#scheduled, 1, 'schedules the split')
+scheduled[1]()
+assert_eq(cmd_e_calls[1], 'vsplit foo.txt', 'runs vsplit on schedule')
+
+-- `:e foo.txt` + <C-s> schedules `:split foo.txt`
+reset()
+cmdline = reload_cmdline()
+state.line = 'e foo.txt'
+cmdline.open_split('split')
+scheduled[1]()
+assert_eq(cmd_e_calls[1], 'split foo.txt', 'runs split on schedule')
+
+-- a non-`:e` line falls back to the key's native behavior
+reset()
+cmdline = reload_cmdline()
+state.line = 'echo foo'
+cmdline.open_split('vsplit')
+assert_eq(#scheduled, 0, 'does not schedule a split')
+assert_eq(fed[1], '<C-v>', 'falls back to the native key')
+
+-- outside the `:` cmdline, falls back too
+reset()
+cmdline = reload_cmdline()
+state.cmdtype = '/'
+state.line = 'e foo.txt'
+cmdline.open_split('split')
+assert_eq(#scheduled, 0, 'does not schedule a split')
+assert_eq(fed[1], '<C-s>', 'falls back to the native key')
+
+-- ============================================================
 io.write(string.format('\n\n%d / %d tests passed\n', tests_passed, tests_run))
 
 if tests_passed ~= tests_run then
