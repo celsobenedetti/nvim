@@ -152,10 +152,13 @@ the old restore-once design `SETTLE_MS` was the flicker duration.
   answered, for a reprint that never goes quiet (a reply streaming in over the
   top of it). A hold outliving its redraw would fight the user's own scrolling.
 
-Settled means pi has written _something_ since the resize and the line count
-then held steady across two polls. The "something" matters on its own: a resize
-that does not rewrap reprints to exactly the same line count, so the count
-alone cannot distinguish "finished" from "never started".
+Settled means pi has wiped its scrollback since the resize and the line count
+then held steady across two polls. The wipe is the signal, not just any
+output: it is the `\x1b[3J` that collapses the buffer and loses the cursor, so
+nothing is repaired until it has been seen. Output that only redraws in place
+(a reply streaming in, or nvim repainting the terminal into a new window) can
+arrive long before pi answers, and releasing on it would drop the hold before
+the wipe it was taken for.
 
 ### Anchoring only what moved
 
@@ -178,6 +181,21 @@ between siblings, so there is almost no such thing as a resize that spares a
 neighbour: `nvim_win_set_height` on one window of a three-column layout reports
 _all three_ in `v:event.windows` and takes every height from 22 to 5. The one
 genuinely isolated case is a floating window, which reports only itself.
+
+### Floating windows: the resize that fires no event
+
+A floating window sits outside the tab layout, so showing a pi terminal in one
+(`Snacks.zen`) resizes the terminal and makes pi wipe the scrollback without
+`VimResized` or `WinResized` ever firing. `terminal_check_size` takes the
+_maximum_ size over the windows displaying the terminal, so the pty is resized
+only transiently — but pi sees the width change, clears the scrollback, and the
+cursor is clamped into what survives, exactly as for a split.
+
+A `WinEnter` on a floating window showing a pi terminal takes the same hold.
+The timing is what makes the wipe-detection above load-bearing: `WinEnter`
+arrives well before pi answers, and nvim's own repaint of the terminal into the
+new window fires `on_lines` in the meantime. Releasing on that first output
+would end the hold about 200 ms before the wipe it was taken for.
 
 ### Precedence over tailing
 
@@ -219,6 +237,7 @@ deliberately broken build to confirm it bites:
 | both windows end their recorded distance from the end      | no mitigation               | `cursors not restored: focused 391 lines from end`        |
 | no frame was _drawn_ at the top, from the `on_win` toprows | restore once, when quiet    | `7 of 10 frames were drawn at the top of the buffer`      |
 | a resize sparing the pi windows leaves their cursors alone | no `v:event.windows` filter | `an unrelated resize moved the pi cursor from 361 to 421` |
+| a pi terminal entered in a float keeps its cursor          | no `WinEnter` hold          | `the floating window lost the pi cursor: 400 lines from end` |
 
 The frame assertion ignores frames taken while the wipe had the buffer
 collapsed to the window height, where the top is the only thing nvim can draw.

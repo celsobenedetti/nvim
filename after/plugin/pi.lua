@@ -395,9 +395,10 @@ local REDRAW_GRACE_MS = 500
 --- taken for would fight the user's own scrolling.
 local SETTLE_DEADLINE_MS = 2000
 
---- buf -> hold, while one is in force. `from_end` is the distance the window's
---- cursor sat above the last buffer line when the resize arrived.
----@type table<integer, { anchors: table<integer, integer>, changed: boolean, pending: boolean }>
+--- buf -> hold, while one is in force. `anchors` maps a window to the distance
+--- its cursor sat above the last buffer line when the hold was taken, and
+--- `count` is that line count, against which the scrollback wipe is detected.
+---@type table<integer, { anchors: table<integer, integer>, count: integer, cleared: boolean, pending: boolean }>
 local held = {}
 
 --- Put every anchored window of `buf` back its recorded distance from the end
@@ -446,8 +447,17 @@ function hold_anchor(buf)
   if not hold then
     return false
   end
+  -- pi wipes the scrollback as part of the redraw (`\x1b[3J`), dropping the
+  -- buffer below the count the hold was taken at. Until that drop, output is a
+  -- redraw that leaves the position alone -- and on the floating-window path
+  -- (`Snacks.zen`) nvim redraws the terminal into the new window well before pi
+  -- answers, so releasing on it would drop the hold before the wipe it was
+  -- taken for.
+  if vim.api.nvim_buf_line_count(buf) < hold.count then
+    hold.cleared = true
+  end
   if not hold.pending then
-    hold.changed, hold.pending = true, true
+    hold.pending = true
     vim.schedule(function()
       hold.pending = false
       apply_anchor(buf)
@@ -470,10 +480,9 @@ local function release_when_settled(buf, count)
       held[buf] = nil
       return
     end
-    -- pi has not answered. `changed` is the only usable signal: a resize that
-    -- does not rewrap reprints to exactly the same line count, so the count
-    -- cannot tell "finished" from "never started".
-    if not hold.changed then
+    -- pi has not wiped the scrollback. Either it has not answered yet, or it
+    -- redrew without clearing, which loses no position.
+    if not hold.cleared then
       if vim.uv.now() - started >= REDRAW_GRACE_MS then
         held[buf] = nil -- nothing was disturbed, so there is nothing to repair
         return
@@ -513,7 +522,7 @@ local function anchor_windows(buf, resized)
   if next(anchors) == nil then
     return
   end
-  held[buf] = { anchors = anchors, changed = false, pending = false }
+  held[buf] = { anchors = anchors, count = count, cleared = false, pending = false }
   -- The resize autocmd runs before pi has even been signalled, so attaching
   -- here is still in time to catch the first line of its redraw.
   attach_output(buf)
@@ -546,5 +555,22 @@ vim.api.nvim_create_autocmd({ 'VimResized', 'WinResized' }, {
         anchor_windows(vim.api.nvim_win_get_buf(win), resized)
       end
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd('WinEnter', {
+  desc = "pi: hold a pi terminal's viewport when it opens in a floating window",
+  group = augroup,
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    -- A floating window sits outside the tab layout, so showing a pi terminal
+    -- in one (`Snacks.zen`) resizes the terminal and makes pi redraw its
+    -- scrollback away without firing WinResized. Splits, which do fire it, are
+    -- handled above. Harmless when nothing redraws: the hold releases untouched
+    -- after REDRAW_GRACE_MS.
+    if vim.api.nvim_win_get_config(win).relative == '' then
+      return
+    end
+    anchor_windows(vim.api.nvim_win_get_buf(win))
   end,
 })

@@ -235,6 +235,51 @@ local body = coroutine.create(function()
     ('an unrelated resize moved the pi cursor from %d to %d'):format(untouched, vim.api.nvim_win_get_cursor(pi_win)[1])
   )
   io.stdout:write('PASS: a resize that spared the pi window left its cursor alone\n')
+
+  -- A pi terminal entered in a floating window (`Snacks.zen`). A float sits
+  -- outside the tab layout, so no WinResized fires even though nvim still
+  -- resizes the terminal to it and pi wipes the scrollback. The WinEnter hook
+  -- must take the hold on this path too -- and must not release it on nvim's
+  -- initial redraw of the terminal into the float, which precedes pi's answer.
+  pause(600) -- let the previous hold lapse
+  local float_count = vim.api.nvim_buf_line_count(buf)
+  vim.api.nvim_win_set_cursor(pi_win, { float_count - 30, 0 })
+  local wiped = false
+  vim.api.nvim_buf_attach(buf, false, {
+    on_lines = function()
+      if vim.api.nvim_buf_line_count(buf) < float_count then
+        wiped = true
+      end
+    end,
+  })
+  local float = vim.api.nvim_open_win(buf, true, {
+    relative = 'editor',
+    row = 1,
+    col = 1,
+    width = 40,
+    height = 10,
+    style = 'minimal',
+  })
+  wait_for(function()
+    return wiped
+  end, 'pi never wiped the scrollback for the floating window')
+  local settled = 0
+  local last = vim.api.nvim_buf_line_count(buf)
+  while settled < 3 do
+    pause(100)
+    local now = vim.api.nvim_buf_line_count(buf)
+    settled = now == last and settled + 1 or 0
+    last = now
+  end
+  wait_for(function()
+    return vim.api.nvim_buf_line_count(buf) - vim.api.nvim_win_get_cursor(pi_win)[1] == 30
+  end, function()
+    return ('the floating window lost the pi cursor: %d lines from end (want 30)'):format(
+      vim.api.nvim_buf_line_count(buf) - vim.api.nvim_win_get_cursor(pi_win)[1]
+    )
+  end)
+  io.stdout:write('PASS: a pi terminal entered in a floating window kept its cursor\n')
+  vim.api.nvim_win_close(float, true)
 end)
 
 function step()
