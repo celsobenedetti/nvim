@@ -11,20 +11,24 @@ editor inside hunk's terminal.
 
 Everything after the command name goes straight to `hunk diff`:
 
-| Command          | Runs                 | Reviews                        |
-| ---------------- | -------------------- | ------------------------------ |
-| `:Hunk`          | `hunk diff`          | working tree (incl. untracked) |
-| `:Hunk --cached` | `hunk diff --cached` | the index (alias: `--staged`)  |
-| `:Hunk HEAD~1`   | `hunk diff HEAD~1`   | working tree vs that revision  |
+| Command              | Runs                   | Reviews                        |
+| -------------------- | ---------------------- | ------------------------------ |
+| `:Hunk`              | `hunk diff`            | working tree (incl. untracked) |
+| `:Hunk --cached`     | `hunk diff --cached`   | the index (alias: `--staged`)  |
+| `:Hunk HEAD~1`       | `hunk diff HEAD~1`     | working tree vs that revision  |
+| `:Hunk show HEAD~1`  | `hunk show HEAD~1`     | that single commit             |
 
 Args are not validated: anything `hunk diff` takes (`--watch`, `--mode
-unified`, paths) works, and hunk reports what it rejects. An empty review (say
-`--cached` with nothing staged) renders as `No files match the current filter.`
-and its `e` answers `No file selected.` — hunk is fine, the diff is empty.
+unified`, paths) works, and hunk reports what it rejects. A leading `show`
+switches to `hunk show` and the rest goes to it, so `:Hunk show` reviews the
+last commit and `:Hunk show <rev>` that revision's own changes (`hunk show
+--help`). An empty review (say `--cached` with nothing staged) renders as `No
+files match the current filter.` and its `e` answers `No file selected.` —
+hunk is fine, the diff is empty.
 
 Each invocation gets its own tabpage, named after it (`hunk`,
-`hunk --cached`, `hunk HEAD~1`), and repeating a command jumps to that tab
-instead of starting a second viewer. Tab lookup compares the whole name
+`hunk --cached`, `hunk HEAD~1`, `hunk show HEAD~1`), and repeating a command
+jumps to that tab instead of starting a second viewer. Tab lookup compares the whole name
 (`find_tab`) because `lib.tab.find` matches substrings and would hand plain
 `:Hunk` the `hunk --cached` tab. When hunk quits (`q`), `on_exit` closes its
 tab and wipes the dead terminal buffer.

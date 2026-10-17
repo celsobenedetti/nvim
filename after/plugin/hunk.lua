@@ -6,21 +6,29 @@
 --- Neovim (lib.hunk.open) instead of nesting an editor inside the terminal.
 local EDITOR = vim.fn.stdpath('config') .. '/scripts/hunk-editor/nvim'
 
---- Open `hunk diff <args>` in its own tabpage. The tab is named after the
---- invocation filling it, so each variant (`hunk`, `hunk --cached`, `hunk
---- <rev>`) gets its own tab and a repeated `:Hunk` jumps to the existing one
---- instead of opening a duplicate.
----@param args string[] extra `hunk diff` arguments: `--cached`, a revision, ...
+--- Open `hunk diff <args>` (or `hunk show <args>`) in its own tabpage. The tab
+--- is named after the invocation filling it, so each variant (`hunk`, `hunk
+--- --cached`, `hunk <rev>`, `hunk show <rev>`) gets its own tab and a repeated
+--- `:Hunk` jumps to the existing one instead of opening a duplicate.
+---@param args string[] arguments after `:Hunk`; a leading `show` selects
+---  `hunk show` (one commit), everything else goes to `hunk diff`.
 local function hunk_tab(args)
-  local name = table.concat(vim.list_extend({ 'hunk' }, args), ' ')
-  if not lib.tab.create_or_focus(name) then
+  local cmd, name = { 'hunk', 'diff' }, { 'hunk' }
+  if args[1] == 'show' then
+    cmd[2], name[2] = 'show', 'show'
+    table.remove(args, 1)
+  end
+  vim.list_extend(cmd, args)
+  vim.list_extend(name, args)
+
+  if not lib.tab.create_or_focus(table.concat(name, ' ')) then
     return
   end
 
   local tabid = vim.api.nvim_get_current_tabpage()
   local buf = vim.api.nvim_get_current_buf()
 
-  vim.fn.jobstart(vim.list_extend({ 'hunk', 'diff' }, args), {
+  vim.fn.jobstart(cmd, {
     term = true,
     cwd = lib.cwd.root(),
     env = { EDITOR = EDITOR },
@@ -37,14 +45,15 @@ local function hunk_tab(args)
   })
 end
 
---- `:Hunk`           -> `hunk diff` working tree
---- `:Hunk --cached`  -> `hunk diff --cached` index (alias of `--staged`)
---- `:Hunk <rev>`     -> `hunk diff <rev>`
+--- `:Hunk`            -> `hunk diff` working tree
+--- `:Hunk --cached`   -> `hunk diff --cached` index (alias of `--staged`)
+--- `:Hunk <rev>`      -> `hunk diff <rev>` working tree vs a revision
+--- `:Hunk show <rev>` -> `hunk show <rev>` a single commit
 vim.api.nvim_create_user_command('Hunk', function(opts)
   hunk_tab(lib.strings.split_args(opts.args))
 end, {
   nargs = '*',
-  desc = 'hunk: review the working tree, the index (--cached), or a <revision> (tab)',
+  desc = 'hunk: review the working tree, the index (--cached), a <revision>, or a commit (show <rev>) (tab)',
 })
 
 vim.keymap.set('n', '<leader>hu', function()
