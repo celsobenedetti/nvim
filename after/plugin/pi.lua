@@ -55,6 +55,50 @@ end
 -- Read by after/plugin/winbar.lua (terminal labels) and the autocmds below.
 state.pi = { is_running = is_running }
 
+--- @module 'launch on an org task: open a pi agent on a heading reference'
+--- A heading reference is `<file>:<start>:<end>`, the shape `<leader>gy` puts on
+--- the clipboard for a visual selection. The pi message is that reference
+--- behind a `task: ` prefix.
+
+--- Shell command that starts pi on `location`, naming the session after
+--- `title` when given. Exposed on `state.pi` for tests.
+---@param location string
+---@param title? string
+---@return string
+local function task_command(location, title)
+  local parts = { 'pi' }
+  if title and title ~= '' then
+    parts[#parts + 1] = '--name'
+    parts[#parts + 1] = vim.fn.shellescape(title)
+  end
+  parts[#parts + 1] = vim.fn.shellescape('task: ' .. location)
+  return table.concat(parts, ' ')
+end
+
+state.pi.task_command = task_command
+
+--- Write every modified org buffer, so pi reads from disk what the user sees.
+local function save_org_buffers()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype == 'org' and vim.bo[buf].modified then
+      vim.api.nvim_buf_call(buf, function()
+        vim.cmd('silent write')
+      end)
+    end
+  end
+end
+
+--- Open a pi agent in a vertical split to work on the org task at `location`.
+---@param location string
+---@param title? string
+local function launch_task(location, title)
+  save_org_buffers()
+  vim.cmd('vsplit')
+  vim.cmd.term(task_command(location, title))
+end
+
+state.pi.launch_task = launch_task
+
 --- @module 'clone session: open a sibling pi terminal cloned from this one's
 --- session'
 --- Mirrors what pi's own `/clone` command does (copy the active branch into a

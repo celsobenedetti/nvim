@@ -1,9 +1,10 @@
 --- fzf-lua integration for nvim-orgmode.
 ---
 --- A minimal, self-contained port of telescope-orgmode.nvim exposing only the
---- two entry points I actually use:
----   * search_headings() — fuzzy-find any headline and jump to it
----   * refile_heading()  — refile the headline under the cursor to a chosen target
+--- entry points I actually use:
+---   * search_headings()       — fuzzy-find any headline and jump to it
+---   * search_todo_headings()  — same, restricted to active TODO states
+---   * refile_heading()        — refile the headline under the cursor to a chosen target
 ---
 --- Headlines are loaded once from the orgmode API and fuzzy-filtered inside fzf
 --- (the "static item" pattern), with native file:line preview. Each entry is
@@ -84,23 +85,31 @@ end
 
 --- Lightweight headline records (no API-object resolution — that's deferred to
 --- selection time so we never pay to load every file up front).
----@param opts { archived?: boolean, only_current_file?: boolean, current_file?: string, max_depth?: number }
+---@param opts { archived?: boolean, only_current_file?: boolean, current_file?: string, max_depth?: number, todo_only?: boolean }
 local function load_headlines(opts)
   local results = {}
   for _, file in ipairs(org_files(opts)) do
     local headlines = opts.archived and file:get_headlines_including_archived() or file:get_headlines()
     for _, h in ipairs(headlines) do
-      if (not opts.max_depth or h:get_level() <= opts.max_depth) and (opts.archived or not h:is_archived()) then
-        local todo = h:get_todo()
+      local todo = h:get_todo()
+      local done = h:is_done()
+      if
+        (not opts.max_depth or h:get_level() <= opts.max_depth)
+        and (opts.archived or not h:is_archived())
+        -- `todo_only` keeps active TODO states; DONE/CANCELLED are finished work.
+        and (not opts.todo_only or (todo and todo ~= '' and not done))
+      then
         local priority = h:get_priority()
+        local range = h:get_range()
         table.insert(results, {
           filename = file.filename,
-          line_number = h:get_range().start_line,
+          line_number = range.start_line,
+          end_line = range.end_line,
           title = h:get_title(),
           level = h:get_level(),
           all_tags = h:get_tags(),
           todo_value = (todo and todo ~= '') and todo or nil,
-          todo_type = todo and (h:is_done() and 'DONE' or 'TODO') or nil,
+          todo_type = todo and (done and 'DONE' or 'TODO') or nil,
           priority = (priority and priority ~= '') and priority or nil,
         })
       end
@@ -108,6 +117,9 @@ local function load_headlines(opts)
   end
   return results
 end
+
+-- Exposed for tests.
+M._load_headlines = load_headlines
 
 ---------------------------------------------------------------------------
 -- Display formatting
@@ -160,7 +172,7 @@ local function headline_items(records)
     end
 
     local display = table.concat(parts)
-    items[i] = { filename = r.filename, line_number = r.line_number }
+    items[i] = { filename = r.filename, line_number = r.line_number, end_line = r.end_line, title = r.title }
     entries[i] = string.format('%d\t%s', i, display)
   end
 
@@ -291,8 +303,8 @@ function M.search_headings(opts)
   pick({
     items = items,
     entries = entries,
-    prompt = 'Headlines> ',
-    title = 'Org Headlines',
+    prompt = opts.prompt or 'Headlines> ',
+    title = opts.title or 'Org Headlines',
     multi = true, -- ctrl-a: select all
     actions = {
       ['alt-q'] = function(selected) -- send selection to the quickfix list
@@ -305,7 +317,19 @@ function M.search_headings(opts)
         end
       end,
     },
-    on_confirm = jump_to,
+    on_confirm = opts.on_confirm or jump_to,
+  })
+end
+
+--- Like search_headings, but only active TODO states; the chosen picker item is
+--- handed to `opts.on_confirm` instead of being opened.
+---@param opts { on_confirm: fun(item: table) }
+function M.search_todo_headings(opts)
+  M.search_headings({
+    todo_only = true,
+    prompt = 'TODO> ',
+    title = 'Org TODOs',
+    on_confirm = opts and opts.on_confirm,
   })
 end
 

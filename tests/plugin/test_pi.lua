@@ -111,6 +111,9 @@ local vim_mock = {
       end
       return { name }
     end,
+    shellescape = function(s)
+      return "'" .. s:gsub("'", "'\\''") .. "'"
+    end,
   },
   fs = {
     basename = function(path)
@@ -367,6 +370,24 @@ assert_eq(state.pi.resolve_session(7), nil, 'nil without a registry and without 
 
 setup()
 assert_eq(state.pi.resolve_session(7), nil, 'nil when no pi process is found')
+
+describe('launch_task: the command handed to the terminal')
+
+assert_eq(
+  state.pi.task_command('~/notes/org/inbox.org:76:89', 'Buy milk'),
+  "pi --name 'Buy milk' 'task: ~/notes/org/inbox.org:76:89'",
+  'the session is named after the heading and the message carries the reference'
+)
+assert_eq(
+  state.pi.task_command('~/notes/org/inbox.org:76:89', nil),
+  "pi 'task: ~/notes/org/inbox.org:76:89'",
+  'without a title, just the message'
+)
+assert_eq(
+  state.pi.task_command('a b:1:2', "it's"),
+  "pi --name 'it'\\''s' 'task: a b:1:2'",
+  'spaces and quotes in title/message are shell-escaped'
+)
 
 describe('autocmds')
 
