@@ -47,7 +47,7 @@ end, records)
 assert_eq(vim.inspect(titles), vim.inspect({ 'active' }), 'only active TODO headings are offered')
 
 vim.cmd('luafile ' .. cwd .. '/after/plugin/pi.lua')
-vim.cmd('luafile ' .. cwd .. '/after/plugin/org.lua')
+lib.org_do.setup_commands()
 
 -- :OrgDo saves the dirty buffer, then launches pi on the heading under the cursor.
 vim.api.nvim_buf_set_lines(0, 1, 2, false, { '  changed' })

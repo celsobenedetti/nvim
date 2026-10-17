@@ -114,7 +114,7 @@ return {
       { 'celsobenedetti/orgmode-keymaps.nvim', config = true },
       { 'aaratha/org-cycle-lite.nvim' },
     },
-    cmd = { 'Org' },
+    cmd = { 'Org', 'OrgDo', 'OrgDoSearch' },
     ft = { 'org', 'markdown' },
     keys = {
       { '<leader>gn', goto_current_task, desc = 'org: goto current task' },
@@ -162,6 +162,8 @@ return {
       { '<leader>ocw', ':Org capture w<CR>', desc = 'Org: Today agenda' },
     },
     config = function()
+      lib.org_do.setup_commands()
+
       -- Setup orgmode
       require('orgmode').setup({
         org_agenda_files = agenda_files,
