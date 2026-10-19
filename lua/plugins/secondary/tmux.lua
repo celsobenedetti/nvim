@@ -15,11 +15,15 @@ end
 --- Runs cmd if not inside snippet
 ---@param cmd string
 local cmd = function(cmd)
-  -- escape
-  vim.api.nvim_feedkeys(lib.keys.termcodes('<esc>'), 'n', true)
-  vim.api.nvim_feedkeys(lib.keys.termcodes('<esc>'), 'n', true)
-
+  -- NOTE: feed the <esc>s when the key is pressed, never while building the
+  -- lazy spec below: cmd(...) is called at spec-parse time there, and stray
+  -- escapes at startup cancel a pending insert mode (e.g. org-capture
+  -- autoinsert, gitcommit's startinsert).
   return function()
+    -- escape
+    vim.api.nvim_feedkeys(lib.keys.termcodes('<esc>'), 'n', true)
+    vim.api.nvim_feedkeys(lib.keys.termcodes('<esc>'), 'n', true)
+
     local ok, luasnip = pcall(require, 'luasnip')
     if not ok or not luasnip.in_snippet() then
       vim.cmd(cmd)

@@ -55,16 +55,6 @@ vim.keymap.set('n', 'R', function()
   lib.org_fzf.refile_heading()
 end, { desc = 'org: refile headline', buf = 0 })
 
--- Reading mode: 'concealcursor' controls whether conceal applies on the cursor
--- line. Empty (default) reveals org_hide_emphasis_markers there; 'nvic' keeps
--- =/~/... hidden under the cursor too. Mirrors <leader>mr in markdown, where
--- render-markdown's anti_conceal pins the same window option.
-vim.keymap.set('n', '<leader>rm', function()
-  local on = vim.wo.concealcursor == ''
-  vim.wo.concealcursor = on and 'nvic' or ''
-  vim.notify('org reading mode: ' .. (on and 'on' or 'off'))
-end, { buffer = true, desc = 'org: toggle reading mode' })
-
 vim.api.nvim_create_autocmd('ModeChanged', {
   desc = 'org: toggle indent on visual mode',
   callback = function(ev)
@@ -80,5 +70,8 @@ vim.api.nvim_create_autocmd('ModeChanged', {
 vim.opt_local.formatoptions:remove({ 'r', 'o' })
 
 if vim.fn.expand('%:t'):find('org-capture', 1, true) then
-  vim.cmd('startinsert')
+  -- "ggA": :normal drops the pending insert mode as soon as its typeahead runs
+  -- dry, so move the cursor and use startinsert! (the deferred "A") instead.
+  vim.api.nvim_win_set_cursor(0, { 1, 0 })
+  vim.cmd.startinsert({ bang = true })
 end
