@@ -50,9 +50,13 @@ local buf_names = {}
 local proc_names = {}
 local proc_children = {}
 local cmds = {}
--- toggle_term_docked: the window its buffer is in, and the tab layout
-local toggle_win = -1
-local win_layout = {}
+-- tab pages: winid -> tabid, winid -> bufnr, tabid -> tab number,
+-- tab number -> window layout
+local win_tabs = {}
+local win_bufs = {}
+local tab_numbers = {}
+local win_layouts = {}
+local current_tab = 1
 
 local vim_mock = {
   api = {
@@ -64,6 +68,31 @@ local vim_mock = {
     end,
     nvim_buf_get_name = function(buf)
       return buf_names[buf] or ''
+    end,
+    nvim_get_current_tabpage = function()
+      return current_tab
+    end,
+    nvim_tabpage_list_wins = function(tabid)
+      local wins = {}
+      for win, tab in pairs(win_tabs) do
+        if tab == tabid then
+          wins[#wins + 1] = win
+        end
+      end
+      table.sort(wins)
+      return wins
+    end,
+    nvim_win_get_buf = function(win)
+      return win_bufs[win] or 0
+    end,
+    nvim_win_get_tabpage = function(win)
+      return win_tabs[win] or 0
+    end,
+    nvim_tabpage_get_number = function(tabid)
+      return tab_numbers[tabid] or 0
+    end,
+    nvim_tabpage_is_valid = function(tabid)
+      return tab_numbers[tabid] ~= nil
     end,
   },
   bo = setmetatable({}, {
@@ -88,11 +117,18 @@ local vim_mock = {
       end
       return { name }
     end,
-    bufwinid = function()
-      return toggle_win
+    win_findbuf = function(buf)
+      local wins = {}
+      for win, b in pairs(win_bufs) do
+        if b == buf then
+          wins[#wins + 1] = win
+        end
+      end
+      table.sort(wins)
+      return wins
     end,
-    winlayout = function()
-      return win_layout
+    winlayout = function(tabnr)
+      return win_layouts[tabnr] or {}
     end,
   },
   cmd = function(cmd)
@@ -115,16 +151,36 @@ local function setup(with_agents)
   proc_names = {}
   proc_children = {}
   cmds = {}
+  win_tabs = {}
+  win_bufs = {}
+  tab_numbers = {}
+  win_layouts = {}
+  current_tab = 1
   rawset(_G, 'vim', vim_mock)
   rawset(_G, 'state', with_agents and {
     autoinsert_on_term = true,
+    toggle_term_bufs = {},
     agents = {
       get_agent_bufnr = function(agent)
         return agent_bufs[agent] or 0
       end,
       bufnr = agent_bufs,
     },
-  } or { autoinsert_on_term = true })
+  } or { autoinsert_on_term = true, toggle_term_bufs = {} })
+end
+
+--- Lay out a tab page: `wins` is a list of { window id, buffer }.
+---@param tabid integer
+---@param number integer the tab's number
+---@param wins table[]
+---@param layout table? the tab's window layout, defaults to a single window
+local function set_tab(tabid, number, wins, layout)
+  tab_numbers[tabid] = number
+  for _, w in ipairs(wins) do
+    win_bufs[w[1]] = w[2]
+    win_tabs[w[1]] = tabid
+  end
+  win_layouts[number] = layout or { 'leaf', wins[1][1] }
 end
 
 -- without state.agents nothing is an agent terminal
@@ -359,7 +415,7 @@ assert_eq(
 )
 
 -- the toggle terminal enters insert mode whatever the opt-outs say
-state.toggle_term_bufnr = 7
+state.toggle_term_bufs = { [1] = 7 }
 assert_eq(startinsert({ insert = false }), true, 'toggle terminal ignores the opt-out')
 assert_eq(
   startinsert({ insert = false, floating = true }),
@@ -379,7 +435,7 @@ assert_eq(
 
 -- fresh (TermOpen): a terminal just created is meant to be typed into, even
 -- though its window cursor starts at the top of the screen grid
-state.toggle_term_bufnr = -1
+state.toggle_term_bufs = {}
 assert_eq(
   startinsert({
     insert = true,
@@ -398,35 +454,120 @@ assert_eq(
 )
 
 -- ============================================================
+describe('toggle terminal per tab')
+
+-- two tabs, each with a file window and a terminal window
+setup(true)
+buf_types[7] = 'terminal'
+buf_types[8] = 'terminal'
+set_tab(1, 1, { { 1000, 20 }, { 1001, 7 } }, { 'col', { { 'leaf', 1000 }, { 'leaf', 1001 } } })
+set_tab(2, 2, { { 2000, 21 }, { 2001, 8 } }, { 'col', { { 'leaf', 2000 }, { 'leaf', 2001 } } })
+
+-- every tab owns its own toggle terminal
+state.toggle_term_bufs = { [1] = 7, [2] = 8 }
+assert_eq(lib_term.toggle_term_bufnr(1), 7, 'tab 1 owns its toggle terminal')
+assert_eq(lib_term.toggle_term_bufnr(2), 8, 'tab 2 owns its toggle terminal')
+assert_eq(lib_term.toggle_term_bufnr(), 7, 'the current tab is the default')
+assert_eq(lib_term.toggle_term_bufnr(3), nil, 'a tab without a terminal has none')
+
+-- a terminal is the toggle terminal of its tab, whichever tab that is
+assert_eq(lib_term.is_toggle_term(7), true, 'the toggle terminal of tab 1')
+assert_eq(lib_term.is_toggle_term(8), true, 'the toggle terminal of tab 2')
+buf_types[9] = 'terminal'
+assert_eq(lib_term.is_toggle_term(9), false, 'another terminal is not a toggle terminal')
+buf_types[9] = ''
+assert_eq(lib_term.is_toggle_term(9), false, 'a non-terminal is not a toggle terminal')
+
+-- the window of a tab showing its toggle terminal
+assert_eq(lib_term.toggle_term_window(1), 1001, 'the window of tab 1 showing its terminal')
+assert_eq(lib_term.toggle_term_window(2), 2001, 'the window of tab 2 showing its terminal')
+assert_eq(lib_term.toggle_term_window(3), nil, 'a tab without a terminal has no window')
+
+-- a terminal hidden in its tab has no window, but is still its toggle terminal
+setup(true)
+buf_types[7] = 'terminal'
+set_tab(1, 1, { { 1000, 20 } }, { 'leaf', 1000 })
+state.toggle_term_bufs = { [1] = 7 }
+assert_eq(lib_term.toggle_term_window(1), nil, 'a hidden terminal has no window')
+assert_eq(lib_term.is_toggle_term(7), true, 'a hidden terminal is still a toggle terminal')
+
+-- set/forget a tab's toggle terminal
+setup(true)
+lib_term.set_toggle_term(1, 42)
+assert_eq(lib_term.toggle_term_bufnr(1), 42, 'set_toggle_term remembers the buffer')
+lib_term.set_toggle_term(1, nil)
+assert_eq(lib_term.toggle_term_bufnr(1), nil, 'set_toggle_term(nil) forgets it')
+
+-- a terminal that died is forgotten by every tab that owned it
+setup(true)
+state.toggle_term_bufs = { [1] = 7, [2] = 7, [3] = 8 }
+lib_term.forget_toggle_term(7)
+assert_eq(lib_term.toggle_term_bufnr(1), nil, 'the tab whose terminal died forgot it')
+assert_eq(lib_term.toggle_term_bufnr(2), nil, 'every tab with that terminal forgot it')
+assert_eq(lib_term.toggle_term_bufnr(3), 8, 'the tab with another terminal keeps it')
+
+-- ================================================================
 describe('toggle_term_docked')
 
+--- Lay out a single tab and answer whether its toggle terminal is docked.
+---@param wins table[] list of { window id, buffer }
 ---@param layout table
----@param win integer
-local function docked(layout, win)
-  win_layout = layout
-  toggle_win = win
-  return lib_term.toggle_term_docked()
+---@param termbuf integer the buffer of the tab's toggle terminal
+---@return boolean
+local function docked(wins, layout, termbuf)
+  setup(true)
+  buf_types[termbuf] = 'terminal'
+  set_tab(1, 1, wins, layout)
+  state.toggle_term_bufs = { [1] = termbuf }
+  return lib_term.toggle_term_docked(1)
 end
 
 assert_eq(
-  docked({ 'col', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 1001),
+  docked({ { 1000, 20 }, { 1001, 7 } }, { 'col', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 7),
   true,
   'toggle as the last leaf of a column is docked'
 )
 assert_eq(
-  docked({ 'col', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 1000),
+  docked({ { 1000, 7 }, { 1001, 20 } }, { 'col', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 7),
   false,
   'toggle above another window is not docked'
 )
-assert_eq(docked({ 'row', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 1001), false, 'a row split is not docked')
 assert_eq(
-  docked({ 'col', { { 'leaf', 1000 }, { 'row', { { 'leaf', 1001 }, { 'leaf', 1002 } } } } }, 1002),
+  docked({ { 1000, 20 }, { 1001, 7 } }, { 'row', { { 'leaf', 1000 }, { 'leaf', 1001 } } }, 7),
+  false,
+  'a row split is not docked'
+)
+assert_eq(
+  docked(
+    { { 1000, 20 }, { 1001, 7 }, { 1002, 21 } },
+    { 'col', { { 'leaf', 1000 }, { 'row', { { 'leaf', 1001 }, { 'leaf', 1002 } } } } },
+    7
+  ),
   false,
   'a nested row at the bottom is not docked'
 )
-assert_eq(docked({ 'leaf', 1001 }, 1001), true, 'a lone window is docked')
-toggle_win = -1
-assert_eq(lib_term.toggle_term_docked(), true, 'a hidden toggle counts as docked')
+assert_eq(docked({ { 1000, 7 } }, { 'leaf', 1000 }, 7), true, 'a lone window is docked')
+
+-- a hidden toggle terminal is still docked: the toggle key reopens it
+assert_eq(docked({ { 1000, 20 } }, { 'leaf', 1000 }, 7), true, 'a hidden toggle counts as docked')
+
+-- ...unless its window went to another tab: the terminal belongs to that tab now
+setup(true)
+buf_types[7] = 'terminal'
+set_tab(1, 1, { { 1000, 20 } }, { 'leaf', 1000 })
+set_tab(2, 2, { { 2000, 7 } }, { 'leaf', 2000 })
+state.toggle_term_bufs = { [1] = 7 }
+assert_eq(lib_term.toggle_term_docked(1), false, 'a toggle terminal shown in another tab is not docked')
+assert_eq(lib_term.toggle_term_docked(2), true, 'the tab showing it is unaffected')
+
+-- a tab without a toggle terminal has nothing to detach
+setup(true)
+set_tab(1, 1, { { 1000, 20 } }, { 'leaf', 1000 })
+assert_eq(lib_term.toggle_term_docked(1), true, 'a tab without a toggle terminal is docked')
+
+-- a tab that is gone has nothing left to detach either
+setup(true)
+assert_eq(lib_term.toggle_term_docked(1), false, 'a closed tab is not docked')
 
 io.write(string.format('\n\n%d/%d tests passed\n', tests_passed, tests_run))
 os.exit(tests_passed == tests_run and 0 or 1)

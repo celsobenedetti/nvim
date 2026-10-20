@@ -3,39 +3,55 @@ state.insert_when_entering_terminal = true
 vim.keymap.set('n', '<leader>te', ':term<cr>', { desc = 'terminal: new term' })
 
 --- @module 'toggle terminal'
+--- Every tab page owns its own toggle terminal: the toggle key opens, closes
+--- and reopens the terminal of the *current* tab, leaving the terminals of the
+--- other tabs alone.
 --- references:
 ---     https://github.com/kristijanhusak/neovim-config/commit/5f8da622f6668ba3744b33facfa88bd48a6e56a4#diff-4a7625707401ac0489aab5c8a5daca2adb4ef8de341c8d523d93e6c507fc58d4
-state.toggle_term_bufnr = -1
 local function toggle_terminal()
+  local tabid = vim.api.nvim_get_current_tabpage()
   local target_height = math.max(20, math.floor(vim.fn.winheight(0) * 0.5))
-  if state.toggle_term_bufnr < 0 then
-    vim.cmd('botright sp | term')
+  local bufnr = lib.term.toggle_term_bufnr(tabid)
+
+  if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+    local win = lib.term.toggle_term_window(tabid)
+    if win then
+      -- the tab shows its terminal: close the window. The terminal keeps
+      -- running (and its scrollback) in the background.
+      vim.api.nvim_win_close(win, true)
+      return
+    end
+    -- hidden: reopen the very same terminal
+    vim.cmd('botright sp | b' .. bufnr)
     vim.cmd.resize(target_height)
-    vim.cmd.setlocal('bufhidden=hide')
-    state.toggle_term_bufnr = vim.api.nvim_get_current_buf()
     return
   end
 
-  local winnr = vim.fn.bufwinnr(state.toggle_term_bufnr)
-  if winnr > -1 then
-    vim.api.nvim_win_close(vim.fn.win_getid(winnr), true)
-    return
-  end
-  if not vim.api.nvim_buf_is_valid(state.toggle_term_bufnr) then
-    state.toggle_term_bufnr = -1
-    return
-  end
-  vim.cmd('botright sp | b' .. state.toggle_term_bufnr)
+  -- no terminal yet, or its buffer died: open a fresh one
+  vim.cmd('botright sp | term')
   vim.cmd.resize(target_height)
+  vim.cmd.setlocal('bufhidden=hide')
+  lib.term.set_toggle_term(tabid, vim.api.nvim_get_current_buf())
 end
 vim.keymap.set({ 'n', 't' }, config.keys['<C-/>'], toggle_terminal, { desc = 'Toggle terminal' })
 
---- Forget the toggle terminal. Called when the user takes its window out of
---- the docked bottom slot; the next toggle opens a fresh terminal instead of
---- reusing the moved one.
-local function detach_toggle()
-  state.toggle_term_bufnr = -1
+--- Forget a tab's toggle terminal. Called when the user takes its window out
+--- of the docked bottom slot; the next toggle in that tab opens a fresh
+--- terminal instead of reusing the moved one.
+---@param tabid integer
+local function detach_toggle(tabid)
+  lib.term.set_toggle_term(tabid, nil)
   Snacks.notify.info('Detached', { title = 'Toggle term', icon = '', style = 'fancy' })
+end
+
+--- Check the toggle terminal of every tab and forget the ones whose window
+--- left its tab (moved to another tab) or left the docked bottom slot.
+local function check_toggles()
+  for _, tabid in ipairs(vim.tbl_keys(state.toggle_term_bufs or {})) do
+    if not lib.term.toggle_term_docked(tabid) then
+      detach_toggle(tabid)
+    end
+  end
 end
 
 --- @module 'terminal autocmds'
@@ -66,20 +82,31 @@ vim.api.nvim_create_autocmd('WinResized', {
   desc = 'toggle term: detach when its window is moved',
   group = augroup,
   callback = function()
-    if state.toggle_term_bufnr >= 0 and not lib.term.toggle_term_docked() then
-      detach_toggle()
-    end
+    check_toggles()
   end,
 })
 
--- Moving the toggle terminal's window to a new tab (<C-w>T) leaves it the only
--- window there, so the docked check cannot see it; TabNew catches it.
+-- Moving the toggle terminal's window to a new tab (<C-w>T) takes it out of
+-- its tab as well. The move is only complete when the command ends -- the new
+-- tab first shows the terminal while the old tab still has its window -- so
+-- the check waits for it.
 vim.api.nvim_create_autocmd('TabNew', {
   desc = 'toggle term: detach when its window is moved to a new tab',
   group = augroup,
   callback = function()
-    if lib.term.is_toggle_term() then
-      detach_toggle()
+    vim.schedule(check_toggles)
+  end,
+})
+
+-- A closed tab takes its toggle terminal with it.
+vim.api.nvim_create_autocmd('TabClosed', {
+  desc = 'toggle term: forget the terminal of a closed tab',
+  group = augroup,
+  callback = function()
+    for _, tabid in ipairs(vim.tbl_keys(state.toggle_term_bufs or {})) do
+      if not vim.api.nvim_tabpage_is_valid(tabid) then
+        lib.term.set_toggle_term(tabid, nil)
+      end
     end
   end,
 })
@@ -108,14 +135,10 @@ vim.api.nvim_create_autocmd('TermOpen', {
 
 vim.api.nvim_create_autocmd('TermClose', {
   desc = 'term: TermClose cleanup',
-  callback = function()
-    local bufs = lib.buffers.get_valid_bufs()
-    for _, buf in ipairs(bufs) do
-      if buf == state.toggle_term_bufnr then -- float term still open
-        return
-      end
-    end
-    state.toggle_term_bufnr = -1
+  callback = function(args)
+    -- The terminal's process died: forget it, so the next toggle in its tab
+    -- opens a fresh terminal instead of the dead one.
+    lib.term.forget_toggle_term(args.buf)
   end,
   group = augroup,
 })

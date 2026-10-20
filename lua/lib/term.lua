@@ -173,29 +173,121 @@ end
 ---@type (fun(buffer: integer): boolean)[]
 local startinsert_exemptions = {}
 
+--- Is the buffer the toggle terminal of some tab page? Every tab page owns its
+--- own toggle terminal, so this is not about the current tab: a terminal keeps
+--- its identity when its window travels to another tab.
+---@param buffer integer?
+---@return boolean
+local function is_toggle_term(buffer)
+  if not buffer then
+    buffer = vim.api.nvim_get_current_buf()
+  end
+  if not is_term(buffer) then
+    return false
+  end
+  for _, bufnr in pairs(state.toggle_term_bufs or {}) do
+    if bufnr == buffer then
+      return true
+    end
+  end
+  return false
+end
+
+--- The window of a tab page showing a buffer, nil when that tab does not show
+--- it.
+---@param tabid integer
+---@param bufnr integer
+---@return integer|nil window id
+local function tab_window(tabid, bufnr)
+  if not vim.api.nvim_tabpage_is_valid(tabid) then
+    return nil
+  end
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tabid)) do
+    if vim.api.nvim_win_get_buf(win) == bufnr then
+      return win
+    end
+  end
+  return nil
+end
+
 ---@class LibTerm
 local M = {
   is_term = is_term,
 
-  is_toggle_term = function(buffer)
-    if not buffer then
-      buffer = vim.api.nvim_get_current_buf()
-    end
-    return is_term(buffer) and buffer == state.toggle_term_bufnr
+  is_toggle_term = is_toggle_term,
+
+  --- The toggle terminal of a tab page: the buffer its toggle key opens and
+  --- closes. Nil when the tab has none (yet, or after it was detached).
+  ---@param tabid? integer tabpage id, defaults to the current tab
+  ---@return integer?
+  toggle_term_bufnr = function(tabid)
+    tabid = tabid or vim.api.nvim_get_current_tabpage()
+    return (state.toggle_term_bufs or {})[tabid]
   end,
 
-  --- Whether the toggle terminal's window still sits in the slot the toggle
-  --- gave it: the bottom-most window of a horizontal split, spanning the full
-  --- width. A window move (`<C-w>H/J/K/L`, `<C-w>x`) leaves that slot; a plain
-  --- resize keeps it. A hidden buffer, or one in another tab (the `<C-w>T` case
-  --- `TabNew` handles), counts as docked.
+  --- Remember (or forget) the toggle terminal of a tab page.
+  ---@param tabid integer
+  ---@param bufnr integer? nil forgets the tab's toggle terminal
+  set_toggle_term = function(tabid, bufnr)
+    state.toggle_term_bufs = state.toggle_term_bufs or {}
+    state.toggle_term_bufs[tabid] = bufnr
+  end,
+
+  --- Forget the tabs whose toggle terminal is this buffer -- its process died,
+  --- so the next toggle in those tabs opens a fresh terminal.
+  ---@param bufnr integer
+  forget_toggle_term = function(bufnr)
+    for tabid, buf in pairs(state.toggle_term_bufs or {}) do
+      if buf == bufnr then
+        state.toggle_term_bufs[tabid] = nil
+      end
+    end
+  end,
+
+  --- The window of a tab page showing its toggle terminal, nil when the
+  --- terminal is hidden (the toggle key closed its window).
+  ---@param tabid? integer tabpage id, defaults to the current tab
+  ---@return integer?
+  toggle_term_window = function(tabid)
+    tabid = tabid or vim.api.nvim_get_current_tabpage()
+    local bufnr = (state.toggle_term_bufs or {})[tabid]
+    if not bufnr then
+      return nil
+    end
+    return tab_window(tabid, bufnr)
+  end,
+
+  --- Whether the toggle terminal of a tab page still sits in the slot the
+  --- toggle gave it: the bottom-most window of a horizontal split, spanning the
+  --- full width. A window move (`<C-w>H/J/K/L`, `<C-w>x`) leaves that slot; a
+  --- plain resize keeps it.
+  ---
+  --- A hidden terminal still counts as docked: the toggle key closed its
+  --- window and reopens it later. It stops counting when the window was taken
+  --- to another tab (`<C-w>T`) -- the terminal belongs to that tab now, and
+  --- this tab's toggle opens a fresh one.
+  ---@param tabid? integer tabpage id, defaults to the current tab
   ---@return boolean
-  toggle_term_docked = function()
-    local win = vim.fn.bufwinid(state.toggle_term_bufnr)
-    if win < 0 then
+  toggle_term_docked = function(tabid)
+    tabid = tabid or vim.api.nvim_get_current_tabpage()
+    if not vim.api.nvim_tabpage_is_valid(tabid) then
+      return false -- the tab is gone: forget its terminal
+    end
+    local bufnr = (state.toggle_term_bufs or {})[tabid]
+    if not bufnr then
       return true
     end
-    local layout = vim.fn.winlayout()
+    local win = tab_window(tabid, bufnr)
+    if not win then
+      -- hidden in this tab: still docked, unless its window went to another tab
+      for _, other in ipairs(vim.fn.win_findbuf(bufnr)) do
+        if vim.api.nvim_win_get_tabpage(other) ~= tabid then
+          return false
+        end
+      end
+      return true
+    end
+    local layout = vim.fn.winlayout(vim.api.nvim_tabpage_get_number(tabid))
     if layout[1] == 'leaf' then
       return layout[2] == win
     end
@@ -292,7 +384,7 @@ local M = {
       end
       -- The toggle terminal is opened by a keystroke meant for typing into it,
       -- so it ignores the opt-outs other terminals honour.
-      if buffer ~= state.toggle_term_bufnr then
+      if not is_toggle_term(buffer) then
         if not state.insert_when_entering_terminal or not state.autoinsert_on_term then
           return
         end
