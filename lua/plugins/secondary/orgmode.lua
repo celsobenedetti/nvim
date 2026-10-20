@@ -29,12 +29,6 @@ local agenda_views = {
         org_agenda_sorting_strategy = { 'time-up', 'todo-state-down', 'priority-down' },
       },
       {
-        org_agenda_overriding_header = 'Projects',
-        type = 'tags_todo',
-        match = 'TODO="PROJECT"',
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
-      },
-      {
         org_agenda_overriding_header = 'In Progress',
         type = 'tags_todo',
         match = 'TODO="PROG"',
@@ -46,11 +40,17 @@ local agenda_views = {
         match = 'TODO="NEXT"',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
+      -- {
+      --   org_agenda_overriding_header = 'Waiting',
+      --   type = 'tags_todo',
+      --   match = 'TODO="WAITING"',
+      --   org_agenda_sorting_strategy = { 'priority-down', 'todo-state-up' },
+      -- },
       {
-        org_agenda_overriding_header = 'Waiting',
+        org_agenda_overriding_header = 'Projects',
         type = 'tags_todo',
-        match = 'TODO="WAITING"',
-        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-up' },
+        match = 'TODO="PROJECT"',
+        org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
     },
   },
