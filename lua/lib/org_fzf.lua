@@ -258,6 +258,12 @@ local function pick(o)
         end)
       end
     end,
+    ['ctrl-y'] = function(selected)
+      local item = line_to_item(o.items, selected and selected[1])
+      if item then
+        lib.fzf.set_yank_regs(item.title or item.filename)
+      end
+    end,
   }
   for key, fn in pairs(o.actions or {}) do
     actions[key] = function(selected)

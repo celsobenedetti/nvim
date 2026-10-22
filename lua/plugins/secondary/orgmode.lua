@@ -198,6 +198,7 @@ return {
           agenda = {
             -- org_agenda_switch_to = false,
             -- org_agenda_goto = '<CR>',
+            org_agenda_clockreport_mode = '<leader>cr',
           },
           org = {
             org_set_tags_command = nil,

@@ -32,3 +32,7 @@ vim.api.nvim_buf_set_keymap(
   ':lua require("orgmode").action("org_mappings.agenda.add_note")<CR>',
   { desc = 'org: add note' }
 )
+
+vim.keymap.set('n', 'R', function()
+  lib.org_fzf.refile_heading()
+end, { desc = 'org: refile headline', buf = 0 })
