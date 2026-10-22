@@ -2,8 +2,9 @@
 
 `:OrgFocus` / `<leader>of` renders the headline under the cursor (or the
 headline picked from fzf via `:OrgFocusSearch` / `<leader>oF`) alone in the
-current window. Edits land back in the org file, which stays the source of
-truth. Implementation: `lua/lib/org_focus.lua`, wired from
+current window; on an already-focused buffer it goes back to the real headline
+in the file. Edits land back in the org file, which stays the source of truth.
+Implementation: `lua/lib/org_focus.lua`, wired from
 `lua/plugins/secondary/orgmode.lua`.
 
 ## Research: no native narrowing
@@ -38,12 +39,34 @@ against a file with a drawer, table, src block and nested headings).
    shrank keeps syncing to the right range.
 3. `BufReadCmd` (`:e!` in the focus buffer) re-reads the range — the read side
    of the sync. No timers, no polling, no file watching.
-4. Guards, both one comparison and both non-destructive (the buffer stays
-   modified, nothing is written):
-   - source buffer has unsaved changes → refuse (`:w` in the source first; this
-     is the case where a blind splice would drop someone else's edit),
-   - the headline line at `start` no longer equals the one we last synced →
-     refuse (source moved/reordered; `:e!` re-syncs).
+4. Guard, one string comparison, non-destructive (the focus buffer stays
+   modified, nothing is written): if the source range no longer equals what we
+   last synced, the subtree changed under us (`:w` in the source, a refile, an
+   action) → refuse. The comparison is on the *range only*, so dirty lines
+   outside the subtree never block a write. `:e!` resyncs instead of refusing.
+   `f.end_` is re-read from a fresh parse (`orgmode.api.load(path).headlines`)
+   whenever the subtree is pulled, because an org action can add or remove
+   lines inside it.
+5. `OrgFocus` (`<leader>of`) on a focus buffer writes it, then shows the source
+   buffer with the cursor on the headline — the inverse of focusing. Focusing
+   the same headline again reuses its buffer: unsaved focus edits are flushed
+   into the source, then the range is pulled back, so neither side goes stale.
+
+### Org actions inside a focus buffer
+
+Org resolves "current file" as `nvim_buf_get_name(0)`
+(`utils.current_file_path`) and the headline from the cursor line, so `t`
+(todo state) died with `Current file is not a valid org file`, and the cursor
+line meant something else anyway. Every org keymap is
+`<cmd>lua require("orgmode").action("<name>")<CR>`
+(`config/mappings/map_entry.lua`), so `M.focus` wraps
+`require('orgmode').action` once: while the current buffer is a focus buffer it
+(a) splices unsaved focus edits into the source, (b) swaps the window to the
+source buffer with the cursor at `start + line - 1`, (c) runs the action,
+(d) swaps back, restores the cursor and pulls the range again — so todo state,
+tags, priority, notes, clocks, `insert_heading` all edit the right lines.
+The restore is skipped when the action navigated away (`open_at_point`), so it
+does not steal the jump.
 
 No autocommand on `TextChanged`: syncing per keystroke would need a line diff
 and a write per change. `:w` is the sync, exactly like the real file — and
@@ -52,10 +75,12 @@ dirty focus buffer through the same `BufWriteCmd`.
 
 ## Limitations
 
-- `OrgApi.current()` resolves the focus buffer's name (`orgfocus://…`) to no
-  file, so commands that need the *real* path (refile, agenda from point,
-  `:OrgDo`) do not work from inside a focus buffer. Work from the source buffer,
-  or reload the focus buffer's mapping later if this matters.
+- Interception covers `orgmode.action` (all org keymaps), not org *commands*:
+  `:Org agenda`, capture and `lib.org_fzf.refile_heading` (`R`) still resolve
+  the real path themselves and do not work from inside a focus buffer. `R`
+  warns "no headline under the cursor"; use the source buffer for those.
+- Text objects (`orgmode.org.text_objects.*`) bypass `action` and still see the
+  focus buffer's own text.
 - The headline keeps its original level, so a `**` subtree renders with two
   stars. Deliberate: re-leveling would fight `org_startup_indented` and the
   indent that the subtree's body already carries.
@@ -69,4 +94,6 @@ dirty focus buffer through the same `BufWriteCmd`.
 
 `tests/integration/test_org_focus.lua` (real nvim, `make test-integration`)
 covers: subtree copy, write splicing (add a line, rename the headline, keep the
-outside untouched), `:e!` reload, stale-source abort, unsaved-source abort.
+outside untouched), `:e!` reload and resync, changed-subtree write abort, going
+back to the source headline with `OrgFocus`, and a `todo_next_state` action
+landing on the source headline and being persisted by `:w`.

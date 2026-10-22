@@ -111,7 +111,7 @@ assert_eq(vim.bo[focus].modified, true, ':w! is guarded too')
 assert_eq(vim.fn.readfile(file)[10], '** moved elsewhere', 'the moved headline is untouched')
 assert_eq(vim.fn.readfile(file)[11], '  changed in source', 'the source is unchanged after the abort')
 
--- An unsaved source buffer is a conflict, not a clobber.
+-- A conflicting edit inside the same subtree is refused, not clobbered.
 vim.fn.writefile(original, file)
 vim.api.nvim_win_set_buf(0, src)
 vim.api.nvim_buf_call(src, function()
@@ -120,10 +120,62 @@ end)
 vim.api.nvim_win_set_cursor(0, { 10, 0 })
 vim.cmd('OrgFocus')
 focus = vim.api.nvim_get_current_buf()
-vim.api.nvim_buf_set_lines(focus, 1, 2, false, { '  conflicting edit' })
-vim.api.nvim_buf_set_lines(src, 1, 2, false, { 'unsaved source edit' })
+vim.api.nvim_buf_set_lines(focus, 1, 2, false, { '  conflicting focus edit' })
+vim.api.nvim_buf_set_lines(src, 10, 11, false, { '  conflicting source edit' })
 vim.cmd('write')
-assert_eq(vim.bo[focus].modified, true, 'the conflicting write is refused')
-assert_eq(vim.fn.readfile(file)[1], original[1], 'the source file was not written')
+assert_eq(vim.bo[focus].modified, true, 'a conflicting subtree write is refused')
+assert_eq(vim.fn.readfile(file)[11], original[11], 'the source file was not written')
+
+-- `:e!` resyncs onto the source, even when the source moved on.
+vim.cmd('edit!')
+assert_eq(
+  vim.api.nvim_buf_get_lines(focus, 1, 2, false)[1],
+  '  conflicting source edit',
+  ':e! takes the source buffer state'
+)
+
+-- :OrgFocus inside a focus buffer leaves for the real headline.
+vim.api.nvim_win_set_cursor(0, { 3, 0 })
+vim.cmd('OrgFocus')
+assert_eq(vim.api.nvim_get_current_buf(), src, ':OrgFocus on a focus buffer goes to the source file')
+assert_eq(vim.api.nvim_win_get_cursor(0)[1], 10, 'the cursor lands on the headline')
+
+-- Org actions run against the source headline, not against the focus buffer's
+-- line numbers (`t` used to fail with "Current file is not a valid org file").
+local todo = dir .. '/todo.org'
+vim.fn.writefile({ '#+title: t', '', '* TODO focus me', '  body', '', '* other', '  x' }, todo)
+vim.cmd('edit ' .. todo)
+local todo_src = vim.fn.bufnr(todo)
+vim.api.nvim_win_set_cursor(0, { 3, 0 })
+vim.cmd('OrgFocus')
+local todo_focus = vim.api.nvim_get_current_buf()
+require('orgmode').action('org_mappings.todo_next_state')
+assert_eq(
+  vim.api.nvim_buf_get_lines(todo_src, 2, 3, false)[1],
+  '* DONE focus me',
+  'the todo action hit the source headline'
+)
+assert_eq(vim.api.nvim_buf_get_lines(todo_src, 0, 1, false)[1], '#+title: t', 'the line above was untouched')
+assert_eq(
+  vim.api.nvim_buf_get_lines(todo_focus, 0, 1, false)[1],
+  '* DONE focus me',
+  'the focus buffer mirrors the action'
+)
+assert_eq(vim.bo[todo_focus].modified, false, 'the action leaves the focus buffer clean')
+vim.cmd('write')
+assert_eq(vim.fn.readfile(todo)[3], '* DONE focus me', ':w persists the action without a conflict')
+
+-- Re-focusing reuses the buffer and picks up source-side edits made meanwhile.
+vim.cmd('OrgFocus')
+assert_eq(vim.api.nvim_get_current_buf(), todo_src, 'back on the source headline')
+vim.api.nvim_buf_set_lines(todo_src, 3, 4, false, { '  body changed in source' })
+vim.cmd('write')
+vim.cmd('OrgFocus')
+assert_eq(vim.api.nvim_get_current_buf(), todo_focus, 'the focus buffer was reused')
+assert_eq(
+  vim.api.nvim_buf_get_lines(todo_focus, 1, 2, false)[1],
+  '  body changed in source',
+  're-focusing pulls the source range again'
+)
 
 print('OK')
