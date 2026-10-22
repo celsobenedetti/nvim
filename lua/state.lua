@@ -10,7 +10,6 @@
 ---@field branch_commits_ahead_of_origin number?
 ---@field branch_commits_behind_origin number?
 ---@field NamedTabs string?
----@field zen_mode boolean
 ---@field git_diff_revision string?
 ---@field capture boolean
 ---@field org_current_task string?

@@ -5,7 +5,7 @@ return {
     {
       '<leader>uz',
       function()
-        Snacks.zen({
+        lib.zen.toggle({
           win = {
             style = {
               enter = true,
@@ -32,6 +32,17 @@ return {
               },
             },
           },
+          on_open = function()
+            vim.cmd('norm zt')
+
+            vim.api.nvim_set_hl(0, 'Folded', { fg = colors.bg, bg = 'none' })
+          end,
+          on_close = function()
+            -- highlight is global: keep it while another tab is still in zen
+            if not lib.zen.any() then
+              vim.api.nvim_set_hl(0, 'Folded', { link = 'Normal' })
+            end
+          end,
         })
       end,
       desc = 'toggle Zen',
@@ -40,20 +51,11 @@ return {
   opts = function(_, opts)
     --- @type snacks.zen.Config
     opts.zen = {
-      on_open = function()
-        state.zen_mode = true
-
-        vim.cmd('norm zt')
-
-        vim.api.nvim_set_hl(0, 'Folded', { fg = colors.bg, bg = 'none' })
-      end,
-      on_close = function()
-        state.zen_mode = false
-        vim.api.nvim_set_hl(0, 'Folded', { link = 'Normal' })
-      end,
       show = {
         statusline = false, -- This hides the statusline (including lualine)
-        tabline = false, -- This also hides the tabline
+        -- `false` puts the zen float on row 0, over the tabline; the tabline
+        -- has to stay visible to switch to another tab's zen.
+        tabline = true,
       },
       toggles = {
         dim = false,

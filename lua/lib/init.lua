@@ -31,6 +31,7 @@
 ---@field visual LibVisual
 ---@field overseer LibOverseer
 ---@field diff_filepath LibDiffFilepath
+---@field zen LibZen
 local M = {}
 
 setmetatable(M, {

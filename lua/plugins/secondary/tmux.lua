@@ -59,7 +59,7 @@ return {
       {
         '<C-h>',
         function()
-          if Snacks.zen.win and not Snacks.zen.win.closed then
+          if lib.zen.get() then
             vim.cmd('!tmux select-pane -t 0')
             return
           end
