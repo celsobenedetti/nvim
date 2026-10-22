@@ -3,6 +3,10 @@ local function fzf_lua()
   return require('fzf-lua')
 end
 
+-- ctrl-y for pickers with their own fixed action table (not covered by the
+-- `actions.files` global default set in `config` below).
+local YANK_ACTION = { fn = lib.fzf.yank_entry, exec_silent = true }
+
 return {
   'ibhagwan/fzf-lua',
   dependencies = { 'nvim-mini/mini.icons' },
@@ -32,6 +36,14 @@ return {
         fzf = {
           ['ctrl-a'] = 'select-all', -- mark every result (then <a-q> to send all to qf)
         },
+      },
+      -- ctrl-y: yank the highlighted entry everywhere. `files` is fzf-lua's
+      -- shared default action set, reused (directly or via fallback) by most
+      -- builtin pickers (files, grep, buffers, lsp, diagnostics, quickfix...).
+      -- Pickers with their own fixed action table need `ctrl-y` added at the
+      -- call site instead (see keys below).
+      actions = {
+        files = { ['ctrl-y'] = { fn = lib.fzf.yank_entry, exec_silent = true } },
       },
     }
     fzf.setup(opts)
@@ -96,36 +108,36 @@ return {
     { '<leader>,', function() fzf_lua().buffers() end, desc = 'fzf: Buffers', },
     { '<leader><leader>', function() fzf_lua().buffers() end, desc = 'fzf: Buffers', },
     { '<leader><', function() fzf_lua().buffers({ show_unlisted = true }) end, desc = 'fzf: Buffers (all)', },
-    { '<leader>co', function() fzf_lua().commands({profile = "fzf-vim"}) end, desc = 'fzf: Commands', },
-    { '<leader>zo', function() fzf_lua().zoxide() end, desc = 'fzf: zoxide (session)', },
+    { '<leader>co', function() fzf_lua().commands({profile = "fzf-vim", actions = { ['ctrl-y'] = YANK_ACTION }}) end, desc = 'fzf: Commands', },
+    { '<leader>zo', function() fzf_lua().zoxide({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: zoxide (session)', },
     { '<leader>fF', function() fzf_lua().git_files() end, desc = 'fzf: Find Files (git-files)', },
     { '<leader>rG', function() fzf_lua().live_grep({ hidden = true, no_ignore = true }) end, desc = 'fzf: grep (all)', },
-    { '<leader>sC', function() fzf_lua().command_history({profile = "fzf-vim" }) end, desc = 'fzf: Command History', },
+    { '<leader>sC', function() fzf_lua().command_history({profile = "fzf-vim", actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Command History', },
     { 'grs', function() fzf_lua().lsp_references() end, nowait = true, desc = 'fzf: References', },
     { '<leader>fg', function() fzf_lua().git_files() end, desc = 'fzf: Find Files (git-files)', },
     { '<leader>sr', function() fzf_lua().oldfiles() end, desc = 'fzf: Recent', },
     { '<leader>sR', function() fzf_lua().oldfiles({ cwd_only = true }) end, desc = 'fzf: Recent (cwd)', },
-    { '<leader>gS', function() fzf_lua().git_stash() end, desc = 'fzf: Git Stash', },
+    { '<leader>gS', function() fzf_lua().git_stash({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Git Stash', },
     { '<leader>/', function() fzf_lua().blines() end, desc = 'fzf: Buffer Lines', },
     { '<leader>sB', function() fzf_lua().lines() end, desc = 'fzf: Grep Open Buffers', },
-    { '<leader>s"', function() fzf_lua().registers() end, desc = 'fzf: Registers', },
-    { '<leader>s/', function() fzf_lua().search_history() end, desc = 'fzf: Search History', },
+    { '<leader>s"', function() fzf_lua().registers({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Registers', },
+    { '<leader>s/', function() fzf_lua().search_history({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Search History', },
     { '<leader>sa', function() fzf_lua().autocmds() end, desc = 'fzf: Autocmds', },
     { '<leader>sd', function() fzf_lua().diagnostics_document() end, desc = 'fzf: Buffer Diagnostics', },
     { '<leader>sD', function() fzf_lua().diagnostics_workspace() end, desc = 'fzf: Diagnostics', },
-    { '<leader>sh', function() fzf_lua().helptags() end, desc = 'fzf: Help Pages', },
-    { '<leader>sj', function() fzf_lua().jumps() end, desc = 'fzf: Jumps', },
-    { '<leader>sk', function() fzf_lua().keymaps() end, desc = 'fzf: Keymaps', },
+    { '<leader>sh', function() fzf_lua().helptags({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Help Pages', },
+    { '<leader>sj', function() fzf_lua().jumps({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Jumps', },
+    { '<leader>sk', function() fzf_lua().keymaps({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Keymaps', },
     { '<leader>slo', function() fzf_lua().loclist() end, desc = 'fzf: Location List', },
-    { '<leader>sM', function() fzf_lua().manpages() end, desc = 'fzf: Man Pages', },
-    { '<leader>sm', function() fzf_lua().marks() end, desc = 'fzf: Marks', },
+    { '<leader>sM', function() fzf_lua().manpages({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Man Pages', },
+    { '<leader>sm', function() fzf_lua().marks({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Marks', },
     { '<leader>sq', function() fzf_lua().quickfix() end, desc = 'fzf: Quickfix List', },
-    { '<leader>su', function() fzf_lua().undotree() end, desc = 'fzf: Undotree', },
+    { '<leader>su', function() fzf_lua().undotree({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Undotree', },
     { '<leader>dot', function () fzf_lua().files({ cwd = '~/.dotfiles' }) end , desc = 'snacks: search dotfiles', },
     -- ui
-    { '<leader>uC', function() fzf_lua().colorschemes() end, desc = 'fzf: Colorschemes', },
+    { '<leader>uC', function() fzf_lua().colorschemes({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: Colorschemes', },
     { '<leader>sS', function() fzf_lua().lsp_live_workspace_symbols() end, desc = 'fzf: LSP Workspace Symbols', },
-    { 'z=', function() fzf_lua().spell_suggest() end, desc = 'fzf: spelling', },
+    { 'z=', function() fzf_lua().spell_suggest({ actions = { ['ctrl-y'] = YANK_ACTION } }) end, desc = 'fzf: spelling', },
     { '<leader>sn', function() lib.notes.focus_or_create_notes_tab(function() fzf_lua().files({ cwd = config.dirs.notes }) end) end, desc = 'fzf: search all notes (notes tab)', },
     { '<leader>of', function() lib.notes.focus_or_create_notes_tab(function() fzf_lua().files({ cwd = config.dirs.org }) end) end, desc = 'fzf: search org files (notes tab)', },
   },

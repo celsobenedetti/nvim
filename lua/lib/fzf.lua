@@ -26,6 +26,43 @@ M.selected_path = function(selected, opts)
   return full
 end
 
+---Yank `text` to the unnamed register, and to `*`/`+` too if 'clipboard'
+---says so (mirrors fzf-lua's own `git_yank_commit`).
+---@param text string
+M.set_yank_regs = function(text)
+  local regs, cb = {}, vim.o.clipboard
+  if cb:match('unnamed') then regs[#regs + 1] = '*' end
+  if cb:match('unnamedplus') then regs[#regs + 1] = '+' end
+  if #regs == 0 then regs[#regs + 1] = '"' end
+  for _, reg in ipairs(regs) do
+    vim.fn.setreg(reg, text)
+  end
+  vim.fn.setreg('0', text)
+  vim.notify('yanked: ' .. text, vim.log.levels.INFO)
+end
+
+---Yank the highlighted fzf-lua entry: the resolved file path (plus line
+---number, for file:line entries) when the line looks like one, otherwise the
+---raw display text with ansi codes stripped.
+---@param selected string[]
+---@param opts table fzf-lua action opts
+M.yank_entry = function(selected, opts)
+  local line = selected and selected[1]
+  if not line then
+    return
+  end
+  local fzf = require('fzf-lua')
+  local ok, entry = pcall(require('fzf-lua.path').entry_to_file, line, opts)
+  local text
+  if ok and entry.path then
+    -- `entry.line` defaults to 0 (not nil) when the entry has no line number
+    text = entry.path .. (entry.line and entry.line ~= 0 and (':' .. entry.line) or '')
+  else
+    text = fzf.utils.strip_ansi_coloring(line):match('^%s*(.-)%s*$')
+  end
+  M.set_yank_regs(text)
+end
+
 --- search entries with fzf-lua
 --- runs the command once and fuzzy-filters the results in fzf (like the
 --- Snacks static-item picker), with native file:line preview and jump.
