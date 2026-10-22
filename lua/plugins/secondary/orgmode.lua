@@ -114,7 +114,7 @@ return {
       { 'celsobenedetti/orgmode-keymaps.nvim', config = true },
       { 'aaratha/org-cycle-lite.nvim' },
     },
-    cmd = { 'Org', 'OrgDo', 'OrgDoSearch' },
+    cmd = { 'Org', 'OrgDo', 'OrgDoSearch', 'OrgFocus', 'OrgFocusSearch' },
     ft = { 'org', 'markdown' },
     keys = {
       { '<leader>gn', goto_current_task, desc = 'org: goto current task' },
@@ -132,6 +132,20 @@ return {
           lib.org_fzf.refile_heading()
         end,
         desc = 'org: refile heading (fzf)',
+      },
+      {
+        '<leader>of',
+        function()
+          lib.org_focus.focus_cursor()
+        end,
+        desc = 'org: focus heading',
+      },
+      {
+        '<leader>oF',
+        function()
+          lib.org_focus.focus_search()
+        end,
+        desc = 'org: focus heading (fzf)',
       },
       {
         '<leader>ap',
@@ -163,6 +177,7 @@ return {
     },
     config = function()
       lib.org_do.setup_commands()
+      lib.org_focus.setup_commands()
 
       -- Setup orgmode
       require('orgmode').setup({

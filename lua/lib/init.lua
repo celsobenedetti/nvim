@@ -23,6 +23,7 @@
 ---@field obsidian LibObsidian
 ---@field org LibOrg
 ---@field org_do LibOrgDo
+---@field org_focus LibOrgFocus
 ---@field org_fzf LibOrgFzf
 ---@field strings LibStrings
 ---@field tab LibTab
