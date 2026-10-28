@@ -23,6 +23,21 @@ local function fzf_git_show(selected)
   vim.cmd(string.format('tab Git show %s', commit))
 end
 
+-- git_commits variant for <leader>gl: open in the current window with
+-- `:Git show`, not a new tab.
+local function fzf_git_show_inplace(selected)
+  local line = selected and selected[1]
+  if not line then
+    return
+  end
+  line = require('fzf-lua').utils.strip_ansi_coloring(line)
+  local commit = (line:match('%S+') or ''):gsub('^%^', '')
+  if commit == '' then
+    return
+  end
+  vim.cmd(string.format('Git show %s', commit))
+end
+
 -- git_bcommits variant: scope fugitive's `git show` to the file the picker
 -- was launched from (matches the old per-file CodeDiff).
 local function fzf_git_show_file(selected)
@@ -129,7 +144,7 @@ local keymaps = function()
   vim.keymap.set('n', '<leader>G', ":Git<CR>", { desc = 'git: status (fugitive)' })
   vim.keymap.set('n', 'gs', function() require("fzf-lua").git_status() end, { desc = 'git: status (fzf)' })
   vim.keymap.set('n', '<leader>gs', ":Git diff<CR>", { desc = 'git: diff' })
-  vim.keymap.set('n', '<leader>gl', git_fzf_picker('git_commits', fzf_git_show), { desc = 'pickaxe: find_git_log' })
+  vim.keymap.set('n', '<leader>gl', git_fzf_picker('git_commits', fzf_git_show_inplace), { desc = 'pickaxe: find_git_log' })
   vim.keymap.set('n', '<leader>gf', git_fzf_picker('git_bcommits', fzf_git_show_file, { follow = true }), { desc = 'pickaxe: find_git_log_file' })
   vim.keymap.set('n', '<leader>gb', git_fzf_picker('git_blame', fzf_git_show), { desc = 'fzf: Git Blame Line' })
   vim.keymap.set('n', '<leader>hs', function() git_pickaxe({ global = false }) end, { desc = 'pickaxe: Git Search (Buffer)' })
