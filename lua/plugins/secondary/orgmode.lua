@@ -23,34 +23,45 @@ local agenda_views = {
   T = {
     description = 'Engage',
     types = {
-      {
-        type = 'agenda',
-        org_agenda_span = 'day',
-        org_agenda_sorting_strategy = { 'time-up', 'todo-state-down', 'priority-down' },
-      },
+      -- {
+      --   type = 'agenda',
+      --   org_agenda_span = 'day',
+      --   org_agenda_sorting_strategy = { 'time-up', 'todo-state-down', 'priority-down' },
+      -- },
       {
         org_agenda_overriding_header = 'In Progress',
         type = 'tags_todo',
-        match = 'TODO="PROG"',
+        match = 'TODO="PROG"-work',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       {
         org_agenda_overriding_header = 'Next',
         type = 'tags_todo',
-        match = 'TODO="NEXT"',
+        match = 'TODO="NEXT"-work',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
       },
       -- {
       --   org_agenda_overriding_header = 'Waiting',
       --   type = 'tags_todo',
-      --   match = 'TODO="WAITING"',
+      --   match = 'TODO="WAITING"-work',
       --   org_agenda_sorting_strategy = { 'priority-down', 'todo-state-up' },
       -- },
       {
         org_agenda_overriding_header = 'Projects',
         type = 'tags_todo',
-        match = 'TODO="PROJECT"',
+        match = 'TODO="PROJECT"-work',
         org_agenda_sorting_strategy = { 'priority-down', 'todo-state-down' },
+      },
+    },
+  },
+
+  w = {
+    description = 'Work',
+    types = {
+      {
+        type = 'tags_todo',
+        match = 'work',
+        org_agenda_sorting_strategy = { 'todo-state-down' },
       },
     },
   },
@@ -93,6 +104,20 @@ local agenda_files = {
   config.dirs.org .. '/**/*',
 }
 
+local function set_highlights()
+  if colors.done then
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { fg = colors.done })
+  else
+    vim.api.nvim_set_hl(0, '@org.keyword.done', { link = '@comment.note' })
+  end
+
+  if colors.todo then
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { fg = colors.todo })
+  else
+    vim.api.nvim_set_hl(0, '@org.keyword.todo', { link = '@diff.minus' })
+  end
+end
+
 local function goto_current_task()
   lib.notes.focus_or_create_notes_tab(function()
     local org = require('orgmode')
@@ -114,10 +139,13 @@ return {
       { 'celsobenedetti/orgmode-keymaps.nvim', config = true },
       { 'aaratha/org-cycle-lite.nvim' },
     },
-    cmd = { 'Org', 'OrgDo', 'OrgDoSearch', 'OrgFocus', 'OrgFocusSearch' },
+    -- cmd = { 'Org', 'OrgDo', 'OrgDoSearch', 'OrgFocus', 'OrgFocusSearch' },
+    -- TODO: is there  a better way to eagerly load orgmode on capture keymap?
+    lazy = 'false',
     ft = { 'org', 'markdown' },
     keys = {
       { '<leader>gn', goto_current_task, desc = 'org: goto current task' },
+      -- { '<leader>oc', goto_current_task, desc = 'org: goto current task' },
       { '<leader>oim', ':Org indent_mode<CR>', desc = 'org: toggle indent_mode' },
       {
         '<leader>os',
@@ -172,6 +200,15 @@ return {
         end,
         desc = 'Org: agenda curriculum',
       },
+      {
+        '<leader>W',
+        function()
+          lib.notes.focus_or_create_notes_tab(function()
+            vim.cmd(':Org agenda W')
+          end)
+        end,
+        desc = 'Org: agenda work',
+      },
       { '<leader>oct', ':Org capture t<CR>', desc = 'Org: Today agenda' },
       { '<leader>ocw', ':Org capture w<CR>', desc = 'Org: Today agenda' },
     },
@@ -194,9 +231,10 @@ return {
         org_adapt_indentation = false, -- left flush
         org_id_link_to_org_use_id = true,
         calendar_week_start_day = 1,
-        org_agenda_start_on_weekday = 7, -- start on sunday
+        org_agenda_start_on_weekday = 1, -- start on sunday
         notifications = { enabled = true },
         org_agenda_use_time_grid = false,
+        org_agenda_span = 'day',
         org_deadline_warning_days = 7,
         org_agenda_custom_commands = agenda_views,
         org_blank_before_new_entry = { heading = true, plain_list_item = false },

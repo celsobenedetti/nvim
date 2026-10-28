@@ -8,6 +8,7 @@ return {
     name = 'evergarden',
     lazy = true,
     config = function(_, opts)
+      opts = opts or {}
       local should_override = true
       if
         state.omarchy_colorscheme.colorscheme ~= 'evergarden'
@@ -15,7 +16,8 @@ return {
       then
         return {}
       end
-      local light = state.omarchy_colorscheme.colorscheme_plugin.opts.theme.variant == 'summer'
+      -- local light = state.omarchy_colorscheme.colorscheme_plugin.opts.theme.variant == 'summer'
+      local light = false
 
       local folded = '#1C2225'
       if light then

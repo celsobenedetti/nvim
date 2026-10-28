@@ -29,5 +29,5 @@ vim.keymap.set({ 'n', 'i', 'v', 'c', 't' }, '<C-S-v>', function()
 end, { silent = true, desc = 'neovide: paste with ctrl+shift+v to match term ergonomics' })
 
 lib.notes.focus_or_create_notes_tab(function()
-  vim.cmd(':Org agenda T')
+  vim.cmd(':Org agenda a')
 end)
