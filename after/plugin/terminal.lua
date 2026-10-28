@@ -17,8 +17,11 @@ local function toggle_terminal()
     local win = lib.term.toggle_term_window(tabid)
     if win then
       -- the tab shows its terminal: close the window. The terminal keeps
-      -- running (and its scrollback) in the background.
-      vim.api.nvim_win_close(win, true)
+      -- running (and its scrollback) in the background. If it is the tab's
+      -- only window there is nothing to close it into, so leave it be.
+      if #vim.api.nvim_tabpage_list_wins(tabid) > 1 then
+        vim.api.nvim_win_close(win, true)
+      end
       return
     end
     -- hidden: reopen the very same terminal
