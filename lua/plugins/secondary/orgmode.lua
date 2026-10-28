@@ -139,7 +139,7 @@ return {
       { 'celsobenedetti/orgmode-keymaps.nvim', config = true },
       { 'aaratha/org-cycle-lite.nvim' },
     },
-    -- cmd = { 'Org', 'OrgDo', 'OrgDoSearch', 'OrgFocus', 'OrgFocusSearch' },
+    cmd = { 'Org', 'OrgDo', 'OrgDoSearch', 'OrgFocus', 'OrgFocusSearch' },
     -- TODO: is there  a better way to eagerly load orgmode on capture keymap?
     lazy = 'false',
     ft = { 'org', 'markdown' },
