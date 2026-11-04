@@ -83,24 +83,24 @@ return {
         desc = 'Next git diff hunk (staged + unstaged)',
       },
 
-      {
-        'gid',
-        function()
-          local gs = package.loaded.gitsigns
-          -- Master toggle: read the current state from one flag and set all
-          -- layers to the same value, so they can't drift into mixed states
-          -- (the old triple-invert could). Deleted lines come back as
-          -- persistent virtual lines (GitSignsDeleteVirtLn, delta minus
-          -- style) — `show_deleted`/`toggle_deleted` are deprecated upstream
-          -- but intentionally kept: per-hunk preview_hunk_inline() (see
-          -- <leader>gip) can't show the whole-buffer removed view.
-          local on = not require('gitsigns.config').config.word_diff
-          gs.toggle_word_diff(on)
-          gs.toggle_linehl(on)
-          gs.toggle_deleted(on)
-        end,
-        desc = 'Gitsigns: toggle inline diff (word + line + deleted lines)',
-      },
+      -- {
+      --   'gid',
+      --   function()
+      --     local gs = package.loaded.gitsigns
+      --     -- Master toggle: read the current state from one flag and set all
+      --     -- layers to the same value, so they can't drift into mixed states
+      --     -- (the old triple-invert could). Deleted lines come back as
+      --     -- persistent virtual lines (GitSignsDeleteVirtLn, delta minus
+      --     -- style) — `show_deleted`/`toggle_deleted` are deprecated upstream
+      --     -- but intentionally kept: per-hunk preview_hunk_inline() (see
+      --     -- <leader>gip) can't show the whole-buffer removed view.
+      --     local on = not require('gitsigns.config').config.word_diff
+      --     gs.toggle_word_diff(on)
+      --     gs.toggle_linehl(on)
+      --     gs.toggle_deleted(on)
+      --   end,
+      --   desc = 'Gitsigns: toggle inline diff (word + line + deleted lines)',
+      -- },
       {
         'gh',
         function()

@@ -6,6 +6,20 @@ return {
     version = false,
     config = true,
   },
+
+  {
+    'nvim-mini/mini.diff',
+    version = false,
+    config = true,
+    keys = {
+      {
+        'gid',
+        function()
+          MiniDiff.toggle_overlay()
+        end,
+      },
+    },
+  },
   {
     'nvim-mini/mini.ai',
     version = false,

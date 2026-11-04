@@ -16,8 +16,8 @@ local function nav(kind, dir)
   end
 end
 
-vim.keymap.set('n', ']]', nav('hunk', 1), { buffer = 0, desc = 'diff: next hunk' })
-vim.keymap.set('n', '[[', nav('hunk', -1), { buffer = 0, desc = 'diff: previous hunk' })
+vim.keymap.set('n', ']', nav('hunk', 1), { buffer = 0, desc = 'diff: next hunk' })
+vim.keymap.set('n', '[', nav('hunk', -1), { buffer = 0, desc = 'diff: previous hunk' })
 vim.keymap.set('n', '.', nav('block', 1), { buffer = 0, desc = 'diff: next file' })
 vim.keymap.set('n', ',', nav('block', -1), { buffer = 0, desc = 'diff: previous file' })
 

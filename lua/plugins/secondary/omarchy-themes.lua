@@ -10,6 +10,9 @@ return {
   -- explicitly disable LazyVim, which is enabled by the plugin
   { 'LazyVim/LazyVim', enabled = false },
 
+  -- these are here so that lazy.nvim does not clean then up
+  { 'celsobenedetti/tufte.nvim' },
+
   -- add plugin from omarchy current theme and set colorscheme
   vim.tbl_extend('keep', state.omarchy_colorscheme.colorscheme_plugin, {
     init = function()
