@@ -12,11 +12,17 @@ return {
 
   -- these are here so that lazy.nvim does not clean then up
   { 'celsobenedetti/tufte.nvim' },
+  -- { 'nordtheme/vim' },
+  { 'https://github.com/gbprod/nord.nvim' },
 
   -- add plugin from omarchy current theme and set colorscheme
   vim.tbl_extend('keep', state.omarchy_colorscheme.colorscheme_plugin, {
     init = function()
-      vim.cmd('colorscheme ' .. state.omarchy_colorscheme.colorscheme)
+      local colorscheme = state.omarchy_colorscheme.colorscheme
+      if colorscheme:find('nordfox') then
+        colorscheme = 'nord'
+      end
+      vim.cmd.colorscheme(colorscheme)
     end,
   }),
 }

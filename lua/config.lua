@@ -316,10 +316,6 @@ local keys = {
   ['<C-S-O>'] = '<C-S-O>',
 }
 
-if os.getenv('TMUX') then
-  keys['<C-/>'] = '<C-_>'
-end
-
 if os.getenv('GHOSTTY_BIN_DIR') then
   keys['<C-S-N>'] = 'NOTES'
   keys['<C-tab>'] = 'TABNEXT'
